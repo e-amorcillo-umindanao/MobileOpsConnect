@@ -1,48 +1,72 @@
 ﻿@{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Admin Command Center";
+    bool isSuperAdmin = User.IsInRole("SuperAdmin");
 }
 
-<div class="text-center mb-5">
-    <h1 class="display-4">MobileOps Dashboard</h1>
-    <p class="lead">Real-time Overview</p>
+<div class="text-center mb-4">
+    <h1 class="display-4">Command Center</h1>
+    <p class="lead">System Status: <span class="text-success fw-bold">ONLINE</span></p>
 </div>
 
-<div class="row">
+<div class="row text-center mb-4">
     <div class="col-md-4">
         <div class="card text-white bg-primary mb-3">
             <div class="card-header">Total Products</div>
             <div class="card-body">
-                <h2 class="card-title">@ViewBag.TotalProducts</h2>
-                <p class="card-text">Items currently in the warehouse.</p>
+                <h1 class="card-title">@ViewBag.TotalProducts</h1>
             </div>
         </div>
     </div>
-
     <div class="col-md-4">
         <div class="card text-white bg-danger mb-3">
             <div class="card-header">Low Stock Alerts</div>
             <div class="card-body">
-                <h2 class="card-title">@ViewBag.LowStock</h2>
-                <p class="card-text">Items below reorder point.</p>
+                <h1 class="card-title">@ViewBag.LowStock</h1>
             </div>
         </div>
     </div>
-
     <div class="col-md-4">
         <div class="card text-white bg-success mb-3">
-            <div class="card-header">Total Value</div>
+            <div class="card-header">Total Inventory Value</div>
             <div class="card-body">
-                <h2 class="card-title">₱@ViewBag.TotalValue.ToString("N2")</h2>
-                <p class="card-text">Total asset value.</p>
+                <h3 class="card-title">₱@ViewBag.TotalValue?.ToString("N0")</h3>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
-    <div class="col-md-12">
-        <a href="/Products" class="btn btn-outline-dark btn-lg w-100">
-            Manage Inventory &rarr;
-        </a>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">👥 User Management</div>
+            <div class="card-body">
+                <p>Manage staff accounts, reset passwords, and assign roles.</p>
+                <button class="btn btn-primary">Manage Users</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header">⚙️ System Settings</div>
+            <div class="card-body">
+                <p>Configure email alerts, notifications, and global preferences.</p>
+                <button class="btn btn-secondary">Settings</button>
+            </div>
+        </div>
     </div>
 </div>
+
+@if (isSuperAdmin)
+{
+    <div class="alert alert-danger mt-4 border-3 border-danger">
+        <h4 class="alert-heading">🛡️ Super Admin Zone (Alpha Only)</h4>
+        <p>Restricted actions. Proceed with caution.</p>
+        <hr>
+        <div class="d-flex gap-2">
+            <button class="btn btn-danger">🗑️ Database Backup</button>
+            <button class="btn btn-dark">📜 View Global Audit Logs</button>
+            <button class="btn btn-warning text-dark">⚠️ Maintenance Mode</button>
+        </div>
+    </div>
+}

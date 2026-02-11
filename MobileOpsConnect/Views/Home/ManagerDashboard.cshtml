@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Manager Portal";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4">Manager Overview</h1>
+    <p class="lead">Approvals & Analytics</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card border-warning mb-3">
+            <div class="card-header bg-warning text-dark">
+                <strong>⚠️ Pending Leave Requests</strong>
+            </div>
+            <div class="card-body">
+                <h2 class="card-title">@ViewBag.PendingLeaves</h2>
+                <p class="card-text">Employees waiting for approval.</p>
+                <button class="btn btn-outline-dark btn-sm">Review Requests</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card border-primary mb-3">
+            <div class="card-header bg-primary text-white">
+                <strong>📝 Purchase Orders</strong>
+            </div>
+            <div class="card-body">
+                <h2 class="card-title">@ViewBag.PendingOrders</h2>
+                <p class="card-text">Inventory restock requests.</p>
+                <button class="btn btn-outline-primary btn-sm">Approve Orders</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">📊 Analytics & Reports</h5>
+                <p class="card-text">View detailed sales performance and inventory valuation reports.</p>
+                <a href="#" class="btn btn-success">Download Monthly Report (PDF)</a>
+            </div>
+        </div>
+    </div>
+</div>

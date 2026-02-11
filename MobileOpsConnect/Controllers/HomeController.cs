@@ -21,20 +21,34 @@ namespace MobileOpsConnect.Controllers
 
         public IActionResult Index()
         {
-            // 2. TRAFFIC COP: Identify who is logging in.
-            // If the email address contains "staff", send them to the Staff Portal.
-            // (e.g., staff@mobileops.com)
-            if (User.Identity != null && User.Identity.Name != null && User.Identity.Name.Contains("staff"))
+            // 1. ROUTING: Redirect Staff & Employees to the Staff Portal
+            if (User.IsInRole("WarehouseStaff") || User.IsInRole("Employee"))
             {
                 return RedirectToAction("EmployeeDashboard");
             }
 
-            // 3. ADMIN LOGIC: If it's NOT a staff member, show the Admin Dashboard.
-            // We fetch real data from the database here.
+            // 2. ROUTING: Redirect Department Manager to their specific Dashboard
+            if (User.IsInRole("DepartmentManager"))
+            {
+                return RedirectToAction("ManagerDashboard");
+            }
+
+            // 3. ADMIN DASHBOARD: For SuperAdmin & SystemAdmin
+            // Fetch high-level stats for the "Command Center"
             ViewBag.TotalProducts = _context.Product.Count();
             ViewBag.LowStock = _context.Product.Count(p => p.StockLevel < p.ReorderPoint);
             ViewBag.TotalValue = _context.Product.Sum(p => p.StockLevel * p.UnitPrice);
 
+            return View();
+        }
+
+        // === NEW ACTION ===
+        [Authorize(Roles = "DepartmentManager,SuperAdmin")] // SuperAdmin can peek too
+        public IActionResult ManagerDashboard()
+        {
+            // In a real app, you would fetch "Pending Leave Requests" count here
+            ViewBag.PendingLeaves = 3; // Mock Data
+            ViewBag.PendingOrders = 5; // Mock Data
             return View();
         }
 

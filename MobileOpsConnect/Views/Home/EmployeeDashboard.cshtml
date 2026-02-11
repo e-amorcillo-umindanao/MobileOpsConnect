@@ -1,22 +1,36 @@
 ﻿@{
     ViewData["Title"] = "Staff Portal";
+    // Check EXACTLY if the user is Warehouse Staff
+    bool isWarehouse = User.IsInRole("WarehouseStaff");
 }
 
 <div class="text-center mb-5">
-    <h1 class="display-4">Welcome, Staff</h1>
-    <p class="lead">Warehouse Operations Portal</p>
+    <h1 class="display-4">Welcome, @User.Identity?.Name</h1>
+    <p class="lead">
+        @if (isWarehouse)
+        {
+            <span>Warehouse Operations Portal</span>
+        }
+        else
+        {
+            <span>Employee Self-Service</span>
+        }
+    </p>
 </div>
 
 <div class="row">
-    <div class="col-md-6">
-        <div class="card border-info mb-3">
-            <div class="card-header bg-info text-white">My Tasks</div>
-            <div class="card-body">
-                <h2 class="card-title">0</h2>
-                <p class="card-text">Pending assignments for today.</p>
+    @if (isWarehouse)
+    {
+        <div class="col-md-6">
+            <div class="card border-info mb-3">
+                <div class="card-header bg-info text-white">Warehouse Tasks</div>
+                <div class="card-body">
+                    <h2 class="card-title">0</h2>
+                    <p class="card-text">Pending shipments for today.</p>
+                </div>
             </div>
         </div>
-    </div>
+    }
 
     <div class="col-md-6">
         <div class="card border-secondary mb-3">
@@ -30,14 +44,29 @@
 </div>
 
 <div class="row mt-4">
+    @if (isWarehouse)
+    {
+        <div class="col-md-6 mb-3">
+            <button class="btn btn-primary btn-lg w-100" onclick="alert('Scanner Camera Opening...')">
+                📷 Scan Barcode
+            </button>
+        </div>
+        <div class="col-md-6 mb-3">
+            <a href="/Products" class="btn btn-outline-primary btn-lg w-100">
+                📦 Search Inventory
+            </a>
+        </div>
+    }
+
     <div class="col-md-6 mb-3">
-        <button class="btn btn-primary btn-lg w-100" onclick="alert('Scanner Camera Opening...')">
-            📷 Scan Barcode
+        <button class="btn btn-success btn-lg w-100">
+            📅 File Leave Request
         </button>
     </div>
+
     <div class="col-md-6 mb-3">
-        <a href="/Products" class="btn btn-outline-primary btn-lg w-100">
-            📦 Search Inventory
-        </a>
+        <button class="btn btn-info btn-lg w-100 text-white">
+            📄 View Payslip
+        </button>
     </div>
 </div>
