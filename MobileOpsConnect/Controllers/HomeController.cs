@@ -47,8 +47,8 @@ namespace MobileOpsConnect.Controllers
         public IActionResult ManagerDashboard()
         {
             // In a real app, you would fetch "Pending Leave Requests" count here
-            ViewBag.PendingLeaves = 3; // Mock Data
-            ViewBag.PendingOrders = 5; // Mock Data
+            ViewBag.PendingLeaves = 0; 
+            ViewBag.PendingOrders = 0; 
             return View();
         }
 
