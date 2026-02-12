@@ -1,19 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Admin Command Center";
+    ViewData["Title"] = "Command Center";
     bool isSuperAdmin = User.IsInRole("SuperAdmin");
 }
 
-<div class="text-center mb-4">
-    <h1 class="display-4">Command Center</h1>
-    <p class="lead">System Status: <span class="text-success fw-bold">ONLINE</span></p>
+<div class="text-center mb-5">
+    <h1 class="display-4">Admin Command Center</h1>
+    <p class="lead">System Overview & Control Panel</p>
 </div>
 
-<div class="row text-center mb-4">
+<div class="row mb-4">
     <div class="col-md-4">
         <div class="card text-white bg-primary mb-3">
             <div class="card-header">Total Products</div>
             <div class="card-body">
-                <h1 class="card-title">@ViewBag.TotalProducts</h1>
+                <h5 class="card-title">@ViewBag.TotalProducts</h5>
+                <p class="card-text">Items in inventory.</p>
             </div>
         </div>
     </div>
@@ -21,37 +22,47 @@
         <div class="card text-white bg-danger mb-3">
             <div class="card-header">Low Stock Alerts</div>
             <div class="card-body">
-                <h1 class="card-title">@ViewBag.LowStock</h1>
+                <h5 class="card-title">@ViewBag.LowStockCount</h5>
+                <p class="card-text">Items needing reorder.</p>
             </div>
         </div>
     </div>
     <div class="col-md-4">
         <div class="card text-white bg-success mb-3">
-            <div class="card-header">Total Inventory Value</div>
+            <div class="card-header">Inventory Value</div>
             <div class="card-body">
-                <h3 class="card-title">₱@ViewBag.TotalValue?.ToString("N0")</h3>
+                <h5 class="card-title">₱@ViewBag.TotalValue</h5>
+                <p class="card-text">Total asset value.</p>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-md-6">
-        <div class="card mb-3">
-            <div class="card-header">👥 User Management</div>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
             <div class="card-body">
-                <p>Manage staff accounts, reset passwords, and assign roles.</p>
-                <button class="btn btn-primary">Manage Users</button>
+                <h5 class="card-title">📦 Inventory Management</h5>
+                <p class="card-text">View stock levels, adjust prices, and manage product details.</p>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-primary">Go to Inventory</a>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="card mb-3">
-            <div class="card-header">⚙️ System Settings</div>
+    <div class="col-md-6 mb-4">
+        <div class="card h-100 border-info">
             <div class="card-body">
-                <p>Configure email alerts, notifications, and global preferences.</p>
-                <button class="btn btn-secondary">Settings</button>
+                @if (isSuperAdmin)
+                {
+                    <h5 class="card-title text-danger">🛡️ Manage System Admins</h5>
+                    <p class="card-text">Create and manage System Administrator accounts (Beta).</p>
+                }
+                else
+                {
+                    <h5 class="card-title text-info">👥 Manage User Accounts</h5>
+                    <p class="card-text">Manage Managers, Warehouse Staff, and Employee accounts.</p>
+                }
+                <a asp-controller="Users" asp-action="Index" class="btn btn-info text-white">Manage Users</a>
             </div>
         </div>
     </div>
@@ -59,14 +70,22 @@
 
 @if (isSuperAdmin)
 {
-    <div class="alert alert-danger mt-4 border-3 border-danger">
-        <h4 class="alert-heading">🛡️ Super Admin Zone (Alpha Only)</h4>
-        <p>Restricted actions. Proceed with caution.</p>
-        <hr>
-        <div class="d-flex gap-2">
-            <button class="btn btn-danger">🗑️ Database Backup</button>
-            <button class="btn btn-dark">📜 View Global Audit Logs</button>
-            <button class="btn btn-warning text-dark">⚠️ Maintenance Mode</button>
+    <div class="card border-danger mb-4">
+        <div class="card-header bg-danger text-white">
+            🚨 Super Admin Zone (Developer Controls)
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <button class="btn btn-outline-danger w-100" disabled>🗄️ Database Backup (Coming Soon)</button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-dark w-100" disabled>⚙️ System Settings (Coming Soon)</button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-warning w-100" disabled>📜 Global Audit Logs (Coming Soon)</button>
+                </div>
+            </div>
         </div>
     </div>
 }

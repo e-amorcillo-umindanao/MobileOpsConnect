@@ -44,6 +44,7 @@
 </div>
 
 <div class="row mt-4">
+    @* WAREHOUSE BUTTONS *@
     @if (isWarehouse)
     {
         <div class="col-md-6 mb-3">
@@ -58,13 +59,21 @@
         </div>
     }
 
+    @* HR BUTTONS (Visible to Everyone) *@
+
     <div class="col-md-6 mb-3">
-        <button class="btn btn-success btn-lg w-100">
+        <a asp-controller="LeaveRequests" asp-action="Create" class="btn btn-success btn-lg w-100">
             📅 File Leave Request
-        </button>
+        </a>
     </div>
 
     <div class="col-md-6 mb-3">
+        <a asp-controller="LeaveRequests" asp-action="Index" class="btn btn-warning btn-lg w-100 text-dark">
+            📂 My Leave History
+        </a>
+    </div>
+
+    <div class="col-md-12 mb-3">
         <button class="btn btn-info btn-lg w-100 text-white">
             📄 View Payslip
         </button>

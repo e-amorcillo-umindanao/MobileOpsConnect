@@ -1,0 +1,47 @@
+﻿@model IEnumerable<MobileOpsConnect.Controllers.UserViewModel>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<h1>User Management</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New User</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Email</td>
+                <td>
+                    @if (item.Role == "SuperAdmin")
+                    {
+                        <span class="badge bg-danger">Super Admin</span>
+                    }
+                    else if (item.Role == "SystemAdmin")
+                    {
+                        <span class="badge bg-warning text-dark">System Admin</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-info text-dark">@item.Role</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit Role</a>
+                    <a asp-action="ResetPassword" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-dark">Reset Password</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

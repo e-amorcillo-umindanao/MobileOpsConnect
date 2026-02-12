@@ -1,0 +1,43 @@
+﻿@model MobileOpsConnect.Models.LeaveRequest
+
+@{
+    ViewData["Title"] = "File Leave Request";
+}
+
+<h1>File a New Leave Request</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div class="form-group mb-3">
+                <label asp-for="LeaveType" class="control-label fw-bold">Type of Leave</label>
+                <select asp-for="LeaveType" class="form-control">
+                    <option>Sick Leave</option>
+                    <option>Vacation Leave</option>
+                    <option>Emergency Leave</option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="StartDate" class="control-label fw-bold">Start Date</label>
+                <input asp-for="StartDate" class="form-control" type="date" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="EndDate" class="control-label fw-bold">End Date</label>
+                <input asp-for="EndDate" class="form-control" type="date" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Reason" class="control-label fw-bold">Reason</label>
+                <textarea asp-for="Reason" class="form-control" rows="3" placeholder="Why do you need this leave?"></textarea>
+            </div>
+
+            <div class="form-group mt-4">
+                <input type="submit" value="Submit Request" class="btn btn-success" />
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
