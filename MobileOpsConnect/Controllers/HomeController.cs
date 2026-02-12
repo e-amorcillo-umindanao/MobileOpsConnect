@@ -7,9 +7,7 @@ using System.Diagnostics;
 
 namespace MobileOpsConnect.Controllers
 {
-    // 1. SECURITY LOCK: This protects the entire Dashboard.
-    // If you are not logged in, you will be kicked to the Login Page.
-    [Authorize]
+    [Authorize] // KEY: Forces everyone to log in first
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -19,43 +17,32 @@ namespace MobileOpsConnect.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            // 1. ROUTING: Redirect Staff & Employees to the Staff Portal
-            if (User.IsInRole("WarehouseStaff") || User.IsInRole("Employee"))
+            // === THE TRAFFIC COP LOGIC ===
+
+            // 1. SuperAdmin (Alpha) & SystemAdmin (Beta) -> COMMAND CENTER
+            if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
             {
-                return RedirectToAction("EmployeeDashboard");
+                // Load Data for the Admin Cards
+                ViewBag.TotalProducts = await _context.Products.CountAsync();
+                ViewBag.LowStockCount = await _context.Products.Where(p => p.StockQuantity <= 10).CountAsync();
+                ViewBag.TotalValue = await _context.Products.SumAsync(p => p.StockQuantity * p.Price);
+
+                return View(); // Loads Views/Home/Index.cshtml
             }
 
-            // 2. ROUTING: Redirect Department Manager to their specific Dashboard
-            if (User.IsInRole("DepartmentManager"))
+            // 2. Department Manager (Charlie) -> MANAGER DASHBOARD
+            else if (User.IsInRole("DepartmentManager"))
             {
-                return RedirectToAction("ManagerDashboard");
+                return View("ManagerDashboard"); // Loads Views/Home/ManagerDashboard.cshtml
             }
 
-            // 3. ADMIN DASHBOARD: For SuperAdmin & SystemAdmin
-            // Fetch high-level stats for the "Command Center"
-            ViewBag.TotalProducts = _context.Product.Count();
-            ViewBag.LowStock = _context.Product.Count(p => p.StockLevel < p.ReorderPoint);
-            ViewBag.TotalValue = _context.Product.Sum(p => p.StockLevel * p.UnitPrice);
-
-            return View();
-        }
-
-        // === NEW ACTION ===
-        [Authorize(Roles = "DepartmentManager,SuperAdmin")] // SuperAdmin can peek too
-        public IActionResult ManagerDashboard()
-        {
-            // In a real app, you would fetch "Pending Leave Requests" count here
-            ViewBag.PendingLeaves = 0; 
-            ViewBag.PendingOrders = 0; 
-            return View();
-        }
-
-        public IActionResult EmployeeDashboard()
-        {
-            // 4. STAFF PORTAL: This is the view for Warehouse employees.
-            return View();
+            // 3. Everyone Else (Echo, Delta) -> EMPLOYEE DASHBOARD
+            else
+            {
+                return View("EmployeeDashboard"); // Loads Views/Home/EmployeeDashboard.cshtml
+            }
         }
 
         public IActionResult Privacy()

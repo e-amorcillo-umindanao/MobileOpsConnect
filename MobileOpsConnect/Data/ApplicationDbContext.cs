@@ -1,13 +1,18 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using MobileOpsConnect.Models;
+using MobileOpsConnect.Models;  // <--- THIS LINE IS CRITICAL
 
 namespace MobileOpsConnect.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+    public class ApplicationDbContext : IdentityDbContext
     {
-        public DbSet<MobileOpsConnect.Models.Product> Product { get; set; } = default!;
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
 
+        public DbSet<Product> Products { get; set; } // This needs the 'using' line above to work
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
+        public DbSet<SystemSetting> SystemSettings { get; set; }
     }
 }

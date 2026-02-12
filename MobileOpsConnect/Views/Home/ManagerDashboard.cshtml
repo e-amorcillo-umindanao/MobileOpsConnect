@@ -1,48 +1,81 @@
 ﻿@{
-    ViewData["Title"] = "Manager Portal";
+    ViewData["Title"] = "Manager Overview";
 }
 
 <div class="text-center mb-5">
     <h1 class="display-4">Manager Overview</h1>
-    <p class="lead">Approvals & Analytics</p>
+    <p class="lead">Approvals, Analytics & Self-Service</p>
 </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card border-warning mb-3">
-            <div class="card-header bg-warning text-dark">
-                <strong>⚠️ Pending Leave Requests</strong>
+<h4 class="mb-3 text-secondary">⚡ Operational Approvals</h4>
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card border-warning h-100">
+            <div class="card-header bg-warning text-dark fw-bold">
+                ⚠️ Pending Leave Applications
             </div>
             <div class="card-body">
-                <h2 class="card-title">@ViewBag.PendingLeaves</h2>
-                <p class="card-text">Employees waiting for approval.</p>
-                <button class="btn btn-outline-dark btn-sm">Review Requests</button>
+                <h5 class="card-title">Action Required</h5>
+                <p class="card-text">Review and approve employee leave requests.</p>
+                <a asp-controller="LeaveRequests" asp-action="Index" class="btn btn-outline-dark w-100">Review Requests</a>
             </div>
         </div>
     </div>
 
-    <div class="col-md-6">
-        <div class="card border-primary mb-3">
-            <div class="card-header bg-primary text-white">
-                <strong>📝 Purchase Orders</strong>
+    <div class="col-md-6 mb-3">
+        <div class="card border-primary h-100">
+            <div class="card-header bg-primary text-white fw-bold">
+                🚚 Purchase Orders
             </div>
             <div class="card-body">
-                <h2 class="card-title">@ViewBag.PendingOrders</h2>
-                <p class="card-text">Inventory restock requests.</p>
-                <button class="btn btn-outline-primary btn-sm">Approve Orders</button>
+                <h5 class="card-title">Restock Requests</h5>
+                <p class="card-text">Approve purchase orders for warehouse restocking.</p>
+                <button class="btn btn-outline-primary w-100">Approve Orders</button>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row mt-4">
-    <div class="col-md-12">
-        <div class="card">
+<h4 class="mb-3 text-secondary">📊 Reports & Analytics</h4>
+<div class="row mb-4">
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
             <div class="card-body text-center">
-                <h5 class="card-title">📊 Analytics & Reports</h5>
-                <p class="card-text">View detailed sales performance and inventory valuation reports.</p>
-                <a href="#" class="btn btn-success">Download Monthly Report (PDF)</a>
+                <h5 class="card-title">📈 Analytics Dashboard</h5>
+                <p class="card-text">Sales trends, leave utilization, and performance metrics.</p>
+                <button class="btn btn-dark w-100">Open Dashboard</button>
             </div>
         </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">📦 Inventory Reports</h5>
+                <p class="card-text">Detailed breakdown of stock levels and valuation.</p>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-dark w-100">View Inventory Report</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="mb-3 text-secondary">👤 My Self-Service</h4>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <a asp-controller="LeaveRequests" asp-action="Create" class="btn btn-success w-100 py-3">
+            📅 File My Leave
+        </a>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <button class="btn btn-info w-100 text-white py-3">
+            📄 View My Payslip
+        </button>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <button class="btn btn-secondary w-100 py-3">
+            🔒 Change Password / Profile
+        </button>
     </div>
 </div>

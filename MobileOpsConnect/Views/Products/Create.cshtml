@@ -1,58 +1,49 @@
 ﻿@model MobileOpsConnect.Models.Product
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Product";
 }
 
-<h1>Create</h1>
-
-<h4>Product</h4>
+<h1>Add New Product</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="ProductName" class="control-label"></label>
-                <input asp-for="ProductName" class="form-control" />
-                <span asp-validation-for="ProductName" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="SKU" class="control-label fw-bold"></label>
+                <input asp-for="SKU" class="form-control" placeholder="SCAN or Type Barcode" />
+                <span asp-validation-for="SKU" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Barcode" class="control-label"></label>
-                <input asp-for="Barcode" class="form-control" />
-                <span asp-validation-for="Barcode" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="control-label fw-bold"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="UnitPrice" class="control-label"></label>
-                <input asp-for="UnitPrice" class="form-control" />
-                <span asp-validation-for="UnitPrice" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="Category" class="control-label fw-bold"></label>
+                <input asp-for="Category" class="form-control" />
+                <span asp-validation-for="Category" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="StockLevel" class="control-label"></label>
-                <input asp-for="StockLevel" class="form-control" />
-                <span asp-validation-for="StockLevel" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="StockQuantity" class="control-label fw-bold"></label>
+                <input asp-for="StockQuantity" class="form-control" type="number" />
+                <span asp-validation-for="StockQuantity" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ReorderPoint" class="control-label"></label>
-                <input asp-for="ReorderPoint" class="form-control" />
-                <span asp-validation-for="ReorderPoint" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label asp-for="Price" class="control-label fw-bold"></label>
+                <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="LastUpdated" class="control-label"></label>
-                <input asp-for="LastUpdated" class="form-control" />
-                <span asp-validation-for="LastUpdated" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+
+            <div class="form-group mt-3">
                 <input type="submit" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
             </div>
         </form>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

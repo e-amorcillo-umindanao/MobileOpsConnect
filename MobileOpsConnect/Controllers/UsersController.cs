@@ -47,26 +47,55 @@ namespace MobileOpsConnect.Controllers
             return View(userList);
         }
 
-        // GET: Create
-        public IActionResult Create() => View();
+        // GET: Users/Create
+        public IActionResult Create()
+        {
+            // We pass the current user's role to the view so we can hide/show options
+            ViewBag.IsSuperAdmin = User.IsInRole("SuperAdmin");
+            return View();
+        }
 
-        // POST: Create
+        // POST: Users/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(string email, string password, string role)
         {
-            // SECURITY: Beta cannot create Alpha
-            if (User.IsInRole("SystemAdmin") && role == "SuperAdmin") return Forbid();
+            // 1. SECURITY: Prevent Unauthorized Role Creation
+            if (User.IsInRole("SystemAdmin"))
+            {
+                // System Admin CANNOT create SuperAdmin
+                if (role == "SuperAdmin") return Forbid();
+            }
+            else if (User.IsInRole("SuperAdmin"))
+            {
+                // Super Admin SHOULD only create SystemAdmin (enforce policy)
+                if (role != "SystemAdmin")
+                {
+                    ModelState.AddModelError("", "Super Admins can only create System Administrators.");
+                    ViewBag.IsSuperAdmin = true;
+                    return View();
+                }
+            }
 
+            // 2. Create the User
             var user = new IdentityUser { UserName = email, Email = email, EmailConfirmed = true };
             var result = await _userManager.CreateAsync(user, password);
 
             if (result.Succeeded)
             {
+                // 3. Assign the Role
                 await _userManager.AddToRoleAsync(user, role);
                 return RedirectToAction(nameof(Index));
             }
-            foreach (var error in result.Errors) ModelState.AddModelError("", error.Description);
+
+            // 4. Handle Errors (e.g., Password too weak, Email taken)
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            // Reload view with correct permissions if failed
+            ViewBag.IsSuperAdmin = User.IsInRole("SuperAdmin");
             return View();
         }
 

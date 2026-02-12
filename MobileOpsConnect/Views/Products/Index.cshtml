@@ -1,41 +1,22 @@
 ﻿@model IEnumerable<MobileOpsConnect.Models.Product>
 
 @{
-    ViewData["Title"] = "Index";
-
-    // === SECURITY FIX ===
-    // 1. Only SuperAdmin and SystemAdmin can EDIT/DELETE.
-    bool canEdit = User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin");
-
-    // 2. Only WarehouseStaff (and Admins) can SEE the list.
-    // If a regular "Employee" somehow gets here, we hide the buttons.
+    ViewData["Title"] = "Inventory List";
 }
 
-<h1>Inventory List</h1>
+<h1>Inventory Management</h1>
 
-<div class="mb-3">
-    <a href="/" class="btn btn-secondary">
-        &larr; Back to Dashboard
-    </a>
-
-    @* ONLY Admins can create new products *@
-    @if (canEdit)
-    {
-        <a asp-action="Create" class="btn btn-primary">
-            + Add New Product
-        </a>
-    }
-</div>
-
-<table class="table table-striped table-hover">
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Product</a>
+</p>
+<table class="table table-striped">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.ProductName)</th>
-            <th>@Html.DisplayNameFor(model => model.Barcode)</th>
-            <th>@Html.DisplayNameFor(model => model.UnitPrice)</th>
-            <th>@Html.DisplayNameFor(model => model.StockLevel)</th>
-            <th>@Html.DisplayNameFor(model => model.ReorderPoint)</th>
-            <th>@Html.DisplayNameFor(model => model.LastUpdated)</th>
+            <th>SKU</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Stock Qty</th>
+            <th>Price</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -43,34 +24,25 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.ProductName)</td>
-                <td>@Html.DisplayFor(modelItem => item.Barcode)</td>
-                <td>₱@item.UnitPrice.ToString("N2")</td>
+                <td>@item.SKU</td>
+                <td>@item.Name</td>
+                <td>@item.Category</td>
                 <td>
-                    @if (item.StockLevel < item.ReorderPoint)
+                    @if (item.StockQuantity <= 10)
                     {
-                        <span class="text-danger fw-bold">@item.StockLevel (Low!)</span>
+                        <span class="badge bg-danger">@item.StockQuantity</span>
                     }
                     else
                     {
-                        @item.StockLevel
+
+                        <span class="badge bg-success">@item.StockQuantity</span>
                     }
                 </td>
-                <td>@Html.DisplayFor(modelItem => item.ReorderPoint)</td>
-                <td>@Html.DisplayFor(modelItem => item.LastUpdated)</td>
+                <td>₱@item.Price</td>
                 <td>
-                    @* SECURITY CHECK: Only show Edit/Delete if you are an Admin *@
-                    @if (canEdit)
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.ProductID" class="btn btn-sm btn-warning">Edit</a>
-                    }
-
+                    <a asp-action="Edit" asp-route-id="@item.ProductID" class="btn btn-sm btn-warning">Edit</a>
                     <a asp-action="Details" asp-route-id="@item.ProductID" class="btn btn-sm btn-info">Details</a>
-
-                    @if (canEdit)
-                    {
-                        <a asp-action="Delete" asp-route-id="@item.ProductID" class="btn btn-sm btn-danger">Delete</a>
-                    }
+                    <a asp-action="Delete" asp-route-id="@item.ProductID" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         }

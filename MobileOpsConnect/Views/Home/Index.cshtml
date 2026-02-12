@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Command Center";
     bool isSuperAdmin = User.IsInRole("SuperAdmin");
+    bool isSystemAdmin = User.IsInRole("SystemAdmin");
 }
 
 <div class="text-center mb-5">
@@ -31,7 +32,7 @@
         <div class="card text-white bg-success mb-3">
             <div class="card-header">Inventory Value</div>
             <div class="card-body">
-                <h5 class="card-title">₱@ViewBag.TotalValue</h5>
+                <h5 class="card-title">₱@Convert.ToDecimal(ViewBag.TotalValue).ToString("N2")</h5>
                 <p class="card-text">Total asset value.</p>
             </div>
         </div>
@@ -68,6 +69,31 @@
     </div>
 </div>
 
+@if (isSuperAdmin || isSystemAdmin)
+{
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4">
+            <div class="card border-secondary h-100">
+                <div class="card-body">
+                    <h5 class="card-title">⚙️ System Configuration</h5>
+                    <p class="card-text">Manage global settings, tax rates, and low stock thresholds.</p>
+                    <a asp-controller="Settings" asp-action="Index" class="btn btn-secondary">Open Settings</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card border-warning h-100">
+                <div class="card-body">
+                    <h5 class="card-title">⚠️ HR & Leave Requests</h5>
+                    <p class="card-text">Review and approve leave applications (including Managers).</p>
+                    <a asp-controller="LeaveRequests" asp-action="Index" class="btn btn-warning text-dark">Manage Leaves</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @if (isSuperAdmin)
 {
     <div class="card border-danger mb-4">
@@ -76,13 +102,10 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <button class="btn btn-outline-danger w-100" disabled>🗄️ Database Backup (Coming Soon)</button>
                 </div>
-                <div class="col-md-4">
-                    <button class="btn btn-outline-dark w-100" disabled>⚙️ System Settings (Coming Soon)</button>
-                </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <button class="btn btn-outline-warning w-100" disabled>📜 Global Audit Logs (Coming Soon)</button>
                 </div>
             </div>

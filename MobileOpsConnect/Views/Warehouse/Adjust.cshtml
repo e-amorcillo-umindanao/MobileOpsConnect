@@ -1,0 +1,52 @@
+﻿@model MobileOpsConnect.Models.Product
+
+@{
+    ViewData["Title"] = "Adjust Stock";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-dark text-white text-center">
+                    <h3>@Model.Name</h3>
+                    <small>SKU: @Model.SKU</small>
+                </div>
+
+                <div class="card-body text-center">
+                    <h1 class="display-1 fw-bold text-primary mb-4">@Model.StockQuantity</h1>
+                    <p class="text-muted">Current Stock Level</p>
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">@TempData["Error"]</div>
+                    }
+
+                    <hr />
+
+                    <form asp-action="StockIn" class="mb-3">
+                        <input type="hidden" name="id" value="@Model.ProductID" />
+                        <div class="input-group">
+                            <input type="number" name="quantity" class="form-control" placeholder="Qty to Add" required min="1">
+                            <input type="text" name="notes" class="form-control" placeholder="Reason (e.g. Delivery)" required>
+                            <button type="submit" class="btn btn-success fw-bold">➕ STOCK IN</button>
+                        </div>
+                    </form>
+
+                    <form asp-action="StockOut">
+                        <input type="hidden" name="id" value="@Model.ProductID" />
+                        <div class="input-group">
+                            <input type="number" name="quantity" class="form-control" placeholder="Qty to Remove" required min="1">
+                            <input type="text" name="notes" class="form-control" placeholder="Reason (e.g. Sale/Damage)" required>
+                            <button type="submit" class="btn btn-danger fw-bold">➖ STOCK OUT</button>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-action="Index" class="btn btn-secondary">Back to Scanner</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

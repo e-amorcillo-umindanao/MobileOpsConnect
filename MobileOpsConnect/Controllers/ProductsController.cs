@@ -1,19 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Data;
 using MobileOpsConnect.Models;
 
 namespace MobileOpsConnect.Controllers
 {
-    // 1. BASE SECURITY: You must be logged in to enter this controller.
-    // This allows Staff to see "Index" and "Details".
-    [Authorize]
+    [Authorize] // Require login
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,31 +17,23 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Products
-        // Anyone logged in can see the list (Admins + Warehouse Staff)
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Product.ToListAsync());
+            return View(await _context.Products.ToListAsync());
         }
 
         // GET: Products/Details/5
-        // Anyone logged in can see details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
-            var product = await _context.Product
-                .FirstOrDefaultAsync(m => m.ProductID == id);
+            var product = await _context.Products.FirstOrDefaultAsync(m => m.ProductID == id);
             if (product == null) return NotFound();
 
             return View(product);
         }
 
-        // ==========================================
-        // DANGER ZONE STARTS HERE (ADMINS ONLY)
-        // ==========================================
-
         // GET: Products/Create
-        [Authorize(Roles = "SuperAdmin,SystemAdmin")] // <--- THE SECURITY LOCK
         public IActionResult Create()
         {
             return View();
@@ -57,11 +42,11 @@ namespace MobileOpsConnect.Controllers
         // POST: Products/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "SuperAdmin,SystemAdmin")] // <--- LOCK THE POST TOO
-        public async Task<IActionResult> Create([Bind("ProductID,ProductName,Barcode,UnitPrice,StockLevel,ReorderPoint,LastUpdated")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductID,SKU,Name,Category,StockQuantity,Price")] Product product)
         {
             if (ModelState.IsValid)
             {
+                product.LastUpdated = DateTime.Now;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -70,12 +55,11 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Products/Edit/5
-        [Authorize(Roles = "SuperAdmin,SystemAdmin")] // <--- ONLY ADMINS
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
-            var product = await _context.Product.FindAsync(id);
+            var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
             return View(product);
         }
@@ -83,8 +67,7 @@ namespace MobileOpsConnect.Controllers
         // POST: Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "SuperAdmin,SystemAdmin")] // <--- ONLY ADMINS
-        public async Task<IActionResult> Edit(int id, [Bind("ProductID,ProductName,Barcode,UnitPrice,StockLevel,ReorderPoint,LastUpdated")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductID,SKU,Name,Category,StockQuantity,Price")] Product product)
         {
             if (id != product.ProductID) return NotFound();
 
@@ -92,12 +75,13 @@ namespace MobileOpsConnect.Controllers
             {
                 try
                 {
+                    product.LastUpdated = DateTime.Now;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.ProductID)) return NotFound();
+                    if (!_context.Products.Any(e => e.ProductID == product.ProductID)) return NotFound();
                     else throw;
                 }
                 return RedirectToAction(nameof(Index));
@@ -106,13 +90,11 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Products/Delete/5
-        [Authorize(Roles = "SuperAdmin,SystemAdmin")] // <--- ONLY ADMINS
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
 
-            var product = await _context.Product
-                .FirstOrDefaultAsync(m => m.ProductID == id);
+            var product = await _context.Products.FirstOrDefaultAsync(m => m.ProductID == id);
             if (product == null) return NotFound();
 
             return View(product);
@@ -121,22 +103,15 @@ namespace MobileOpsConnect.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "SuperAdmin,SystemAdmin")] // <--- ONLY ADMINS
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Product.FindAsync(id);
+            var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
-                _context.Product.Remove(product);
+                _context.Products.Remove(product);
             }
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Product.Any(e => e.ProductID == id);
         }
     }
 }

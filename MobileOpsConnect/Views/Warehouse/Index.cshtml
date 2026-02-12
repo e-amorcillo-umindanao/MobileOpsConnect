@@ -1,0 +1,82 @@
+﻿@model IEnumerable<MobileOpsConnect.Models.Product>
+
+@{
+    ViewData["Title"] = "Warehouse Operations";
+    var lowStockList = ViewBag.LowStockItems as List<MobileOpsConnect.Models.Product>;
+}
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="display-5">🏭 Warehouse Operations</h1>
+        <p class="text-muted">Scan barcodes or search manually to perform Stock In/Out.</p>
+    </div>
+</div>
+
+@if (lowStockList != null && lowStockList.Count > 0)
+{
+    <div class="alert alert-danger shadow-sm">
+        <h4 class="alert-heading">⚠️ Low Stock Alerts (@lowStockList.Count Items)</h4>
+        <p>The following items are below the safety threshold. Please restock immediately.</p>
+        <hr>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var item in lowStockList)
+            {
+                <span class="badge bg-danger p-2">
+                    @item.Name (Qty: @item.StockQuantity)
+                </span>
+            }
+        </div>
+    </div>
+}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form asp-action="Index" method="get">
+            <div class="input-group input-group-lg">
+                <span class="input-group-text bg-primary text-white">📡 Scan Barcode</span>
+                <input type="text" name="searchString" class="form-control" placeholder="Scan SKU or Enter Product Name..." value="@ViewData["CurrentFilter"]" autofocus>
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>SKU</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Current Stock</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.SKU</td>
+                <td>@item.Name</td>
+                <td>@item.Category</td>
+                <td>
+                    <h4 class="mb-0">
+                        @if (item.StockQuantity <= 10)
+                        {
+                            <span class="badge bg-danger">@item.StockQuantity</span>
+                        }
+                        else
+                        {
+
+                            <span class="badge bg-success">@item.StockQuantity</span>
+                        }
+                    </h4>
+                </td>
+                <td>
+                    <a asp-action="Adjust" asp-route-id="@item.ProductID" class="btn btn-outline-primary fw-bold">
+                        ⚙️ Manage Stock
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

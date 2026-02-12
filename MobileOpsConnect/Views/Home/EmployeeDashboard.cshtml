@@ -44,17 +44,17 @@
 </div>
 
 <div class="row mt-4">
-    @* WAREHOUSE BUTTONS *@
+    @* WAREHOUSE BUTTONS (Only for Delta) *@
     @if (isWarehouse)
     {
         <div class="col-md-6 mb-3">
-            <button class="btn btn-primary btn-lg w-100" onclick="alert('Scanner Camera Opening...')">
-                📷 Scan Barcode
-            </button>
+            <a asp-controller="Warehouse" asp-action="Index" class="btn btn-primary btn-lg w-100">
+                🏭 Warehouse Operations (Stock In/Out)
+            </a>
         </div>
         <div class="col-md-6 mb-3">
             <a href="/Products" class="btn btn-outline-primary btn-lg w-100">
-                📦 Search Inventory
+                📦 Search Inventory List
             </a>
         </div>
     }
