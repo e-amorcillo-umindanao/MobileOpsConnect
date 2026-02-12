@@ -1,4 +1,5 @@
 ﻿@model MobileOpsConnect.Controllers.EditUserViewModel
+
 @{
     ViewData["Title"] = "Edit User Role";
 }
@@ -10,20 +11,15 @@
         <form asp-action="Edit">
             <input type="hidden" asp-for="Id" />
 
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
             <div class="form-group mb-3">
                 <label class="control-label">Current Role: <strong>@Model.CurrentRole</strong></label>
             </div>
 
             <div class="form-group mb-3">
                 <label asp-for="NewRole" class="control-label">Assign New Role</label>
-                <select asp-for="NewRole" class="form-control">
-                    <option value="DepartmentManager">Department Manager</option>
-                    <option value="WarehouseStaff">Warehouse Staff</option>
-                    <option value="Employee">Employee</option>
-                    @if (User.IsInRole("SuperAdmin"))
-                    {
-                        <option value="SystemAdmin">System Admin</option>
-                    }
+                <select asp-for="NewRole" asp-items="ViewBag.Roles" class="form-control">
                 </select>
             </div>
 

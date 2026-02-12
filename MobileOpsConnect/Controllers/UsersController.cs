@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Models;
-using System.Data;
 
 namespace MobileOpsConnect.Controllers
 {
+    // REVERTED: Only SuperAdmin and SystemAdmin can access this. 
+    // Charlie (Manager) handles Leaves, not User Accounts.
     [Authorize(Roles = "SuperAdmin,SystemAdmin")]
     public class UsersController : Controller
     {
@@ -19,164 +21,219 @@ namespace MobileOpsConnect.Controllers
             _roleManager = roleManager;
         }
 
-        // GET: Users (The List)
+        // GET: Users
         public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
             var allUsers = await _userManager.Users.ToListAsync();
-            var userList = new List<UserViewModel>();
+            var userViewModels = new List<UserViewModel>();
 
             foreach (var user in allUsers)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                var role = roles.FirstOrDefault() ?? "No Role";
+                var role = roles.FirstOrDefault() ?? "Employee";
 
-                // === SCOPE FILTER: Who can I see? ===
+                // SCOPE LOGIC: Alpha sees Beta; Beta sees Staff.
                 if (CanManageUser(currentUser, role, user.Id))
                 {
-                    userList.Add(new UserViewModel
+                    userViewModels.Add(new UserViewModel
                     {
                         Id = user.Id,
                         Email = user.Email,
-                        Role = role,
-                        // If you added IsActive to ApplicationUser, you can access it here:
-                        // IsActive = ((ApplicationUser)user).IsActive 
+                        Role = role
                     });
                 }
             }
-            return View(userList);
+
+            return View(userViewModels);
         }
 
         // GET: Users/Create
         public IActionResult Create()
         {
-            // We pass the current user's role to the view so we can hide/show options
+            // Fix: Pass ViewBag.IsSuperAdmin for the View's logic
             ViewBag.IsSuperAdmin = User.IsInRole("SuperAdmin");
+
+            // Fix: Pass the roles for the dropdown
+            ViewBag.Roles = GetAllowedRolesSelectList();
             return View();
         }
 
         // POST: Users/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        // Note: Using parameters to match your existing Create.cshtml <input name="...">
         public async Task<IActionResult> Create(string email, string password, string role)
         {
-            // 1. SECURITY: Prevent Unauthorized Role Creation
-            if (User.IsInRole("SystemAdmin"))
+            // 1. SECURITY: Prevent Privilege Escalation (The Crash Fix)
+            if (!IsRoleAllowed(role))
             {
-                // System Admin CANNOT create SuperAdmin
-                if (role == "SuperAdmin") return Forbid();
-            }
-            else if (User.IsInRole("SuperAdmin"))
-            {
-                // Super Admin SHOULD only create SystemAdmin (enforce policy)
-                if (role != "SystemAdmin")
-                {
-                    ModelState.AddModelError("", "Super Admins can only create System Administrators.");
-                    ViewBag.IsSuperAdmin = true;
-                    return View();
-                }
+                ModelState.AddModelError("", "You are not authorized to assign this role.");
+                ViewBag.IsSuperAdmin = User.IsInRole("SuperAdmin");
+                ViewBag.Roles = GetAllowedRolesSelectList();
+                return View();
             }
 
-            // 2. Create the User
+            // 2. Create User
             var user = new IdentityUser { UserName = email, Email = email, EmailConfirmed = true };
             var result = await _userManager.CreateAsync(user, password);
 
             if (result.Succeeded)
             {
-                // 3. Assign the Role
                 await _userManager.AddToRoleAsync(user, role);
                 return RedirectToAction(nameof(Index));
             }
 
-            // 4. Handle Errors (e.g., Password too weak, Email taken)
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError(string.Empty, error.Description);
+                ModelState.AddModelError("", error.Description);
             }
 
-            // Reload view with correct permissions if failed
             ViewBag.IsSuperAdmin = User.IsInRole("SuperAdmin");
+            ViewBag.Roles = GetAllowedRolesSelectList();
             return View();
         }
 
-        // GET: Edit (Change Role)
+        // GET: Users/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null) return NotFound();
+
+            var currentUser = await _userManager.GetUserAsync(User);
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            // SECURITY CHECK
-            var currentUser = await _userManager.GetUserAsync(User);
-            var userRoles = await _userManager.GetRolesAsync(user);
-            if (!CanManageUser(currentUser, userRoles.FirstOrDefault(), user.Id)) return Forbid();
+            var roles = await _userManager.GetRolesAsync(user);
+            string currentRole = roles.FirstOrDefault() ?? "Employee";
+
+            // SECURITY: Prevent accessing someone outside your scope
+            if (!CanManageUser(currentUser, currentRole, user.Id))
+            {
+                return Forbid();
+            }
 
             var model = new EditUserViewModel
             {
                 Id = user.Id,
                 Email = user.Email,
-                CurrentRole = userRoles.FirstOrDefault()
+                CurrentRole = currentRole,
+                NewRole = currentRole
             };
+
+            ViewBag.Roles = GetAllowedRolesSelectList();
             return View(model);
         }
 
-        // POST: Edit (Save Role)
+        // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(EditUserViewModel model)
+        public async Task<IActionResult> Edit(string id, EditUserViewModel model)
         {
-            var user = await _userManager.FindByIdAsync(model.Id);
-            if (user == null) return NotFound();
+            if (id != model.Id) return NotFound();
 
-            // 1. Remove old roles
-            var oldRoles = await _userManager.GetRolesAsync(user);
-            await _userManager.RemoveFromRolesAsync(user, oldRoles);
-
-            // 2. Add new role
-            await _userManager.AddToRoleAsync(user, model.NewRole);
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        // GET: Reset Password
-        public async Task<IActionResult> ResetPassword(string id)
-        {
+            var currentUser = await _userManager.GetUserAsync(User);
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
-            return View(new ResetPasswordViewModel { Id = id, Email = user.Email });
+
+            // 1. RE-CHECK PERMISSIONS (Security Fix)
+            var roles = await _userManager.GetRolesAsync(user);
+            string currentDbRole = roles.FirstOrDefault() ?? "Employee";
+
+            if (!CanManageUser(currentUser, currentDbRole, user.Id)) return Forbid();
+
+            // 2. VALIDATE NEW ROLE (Privilege Escalation Fix)
+            if (!IsRoleAllowed(model.NewRole)) return Forbid();
+
+            // 3. PREVENT SELF-LOCKOUT (Logic Fix)
+            if (user.Id == currentUser.Id && model.NewRole != currentDbRole)
+            {
+                ModelState.AddModelError("", "You cannot change your own role.");
+                ViewBag.Roles = GetAllowedRolesSelectList();
+                return View(model);
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Logic: Only update role if it changed
+                if (model.NewRole != currentDbRole)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, currentDbRole);
+                    await _userManager.AddToRoleAsync(user, model.NewRole);
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewBag.Roles = GetAllowedRolesSelectList();
+            return View(model);
         }
 
-        // POST: Reset Password
+        // GET: Users/ResetPassword/5
+        public async Task<IActionResult> ResetPassword(string id)
+        {
+            if (id == null) return NotFound();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            // SECURITY
+            var roles = await _userManager.GetRolesAsync(user);
+            string userRole = roles.FirstOrDefault() ?? "Employee";
+            if (!CanManageUser(currentUser, userRole, user.Id)) return Forbid();
+
+            return View(new ResetPasswordViewModel { Id = user.Id, Email = user.Email });
+        }
+
+        // POST: Users/ResetPassword
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
         {
+            if (!ModelState.IsValid) return View(model);
+
+            var currentUser = await _userManager.GetUserAsync(User);
             var user = await _userManager.FindByIdAsync(model.Id);
             if (user == null) return NotFound();
 
-            // Force reset using a token (bypassing old password)
+            // SECURITY RE-CHECK
+            var roles = await _userManager.GetRolesAsync(user);
+            string userRole = roles.FirstOrDefault() ?? "Employee";
+            if (!CanManageUser(currentUser, userRole, user.Id)) return Forbid();
+
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
 
-            if (result.Succeeded) return RedirectToAction(nameof(Index));
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(Index));
+            }
 
-            foreach (var error in result.Errors) ModelState.AddModelError("", error.Description);
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
             return View(model);
         }
 
-        // === HELPER: The Logic for Alpha vs Beta ===
-        private bool CanManageUser(IdentityUser admin, string targetRole, string targetId)
-        {
-            // I can always manage myself
-            if (admin.Id == targetId) return true;
+        // ================= HELPER METHODS (Fixed Logic) =================
 
-            // Alpha (SuperAdmin) manages Beta (SystemAdmin)
+        // 1. THE SCOPE LOGIC (Restored Original Architecture)
+        private bool CanManageUser(IdentityUser me, string targetRole, string targetId)
+        {
+            // I can always see myself
+            if (me.Id == targetId) return true;
+
+            // Alpha (SuperAdmin) -> Can ONLY manage SystemAdmins (Beta)
             if (User.IsInRole("SuperAdmin"))
             {
                 return targetRole == "SystemAdmin";
             }
 
-            // Beta (SystemAdmin) manages everyone ELSE (Managers, Staff, Employees)
+            // Beta (SystemAdmin) -> Can manage Managers, Staff, Employees
+            // Beta CANNOT manage SuperAdmin or other SystemAdmins
             if (User.IsInRole("SystemAdmin"))
             {
                 return targetRole != "SuperAdmin" && targetRole != "SystemAdmin";
@@ -184,9 +241,42 @@ namespace MobileOpsConnect.Controllers
 
             return false;
         }
+
+        // 2. THE DATA SOURCE (Fixes the Crash)
+        private List<string> GetAllowedRolesList()
+        {
+            var roles = new List<string>();
+
+            if (User.IsInRole("SuperAdmin"))
+            {
+                // Alpha can only create Betas
+                roles.Add("SystemAdmin");
+            }
+            else if (User.IsInRole("SystemAdmin"))
+            {
+                // Beta can create everyone else
+                roles.Add("DepartmentManager");
+                roles.Add("WarehouseStaff");
+                roles.Add("Employee");
+            }
+
+            return roles;
+        }
+
+        // 3. THE UI HELPER (Returns SelectList)
+        private SelectList GetAllowedRolesSelectList()
+        {
+            return new SelectList(GetAllowedRolesList());
+        }
+
+        // 4. THE VALIDATOR (Checks against Strings, not Objects)
+        private bool IsRoleAllowed(string role)
+        {
+            return GetAllowedRolesList().Contains(role);
+        }
     }
 
-    // --- VIEW MODELS ---
+    // VIEW MODELS (Kept separate to match your Views)
     public class UserViewModel { public string Id { get; set; } public string Email { get; set; } public string Role { get; set; } }
     public class EditUserViewModel { public string Id { get; set; } public string Email { get; set; } public string CurrentRole { get; set; } public string NewRole { get; set; } }
     public class ResetPasswordViewModel { public string Id { get; set; } public string Email { get; set; } public string NewPassword { get; set; } }
