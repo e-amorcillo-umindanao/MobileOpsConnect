@@ -1,6 +1,5 @@
 ﻿@{
     ViewData["Title"] = "Staff Portal";
-    // Check EXACTLY if the user is Warehouse Staff
     bool isWarehouse = User.IsInRole("WarehouseStaff");
 }
 
@@ -13,34 +12,10 @@
         }
         else
         {
+
             <span>Employee Self-Service</span>
         }
     </p>
-</div>
-
-<div class="row">
-    @if (isWarehouse)
-    {
-        <div class="col-md-6">
-            <div class="card border-info mb-3">
-                <div class="card-header bg-info text-white">Warehouse Tasks</div>
-                <div class="card-body">
-                    <h2 class="card-title">0</h2>
-                    <p class="card-text">Pending shipments for today.</p>
-                </div>
-            </div>
-        </div>
-    }
-
-    <div class="col-md-6">
-        <div class="card border-secondary mb-3">
-            <div class="card-header bg-secondary text-white">Leave Credits</div>
-            <div class="card-body">
-                <h2 class="card-title">15 Days</h2>
-                <p class="card-text">Remaining annual leave.</p>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div class="row mt-4">
@@ -60,7 +35,6 @@
     }
 
     @* HR BUTTONS (Visible to Everyone) *@
-
     <div class="col-md-6 mb-3">
         <a asp-controller="LeaveRequests" asp-action="Create" class="btn btn-success btn-lg w-100">
             📅 File Leave Request
