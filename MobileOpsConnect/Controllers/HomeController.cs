@@ -45,6 +45,13 @@ namespace MobileOpsConnect.Controllers
             }
         }
 
+        // ADDED: Analytics Method for Managers and Admins
+        [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
+        public IActionResult Analytics()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

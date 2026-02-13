@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Analytics Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📈 Performance & Analytics</h2>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card bg-primary text-white h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title text-uppercase text-white-50">Monthly Revenue</h6>
+                <h2 class="display-6 fw-bold">₱4.2M</h2>
+                <p class="mb-0">↑ 12% from last month</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card bg-success text-white h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title text-uppercase text-white-50">Inventory Turnover</h6>
+                <h2 class="display-6 fw-bold">8.5 Days</h2>
+                <p class="mb-0">Optimal range achieved</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card bg-warning text-dark h-100 shadow-sm border-0">
+            <div class="card-body">
+                <h6 class="card-title text-uppercase text-dark-50">Staff Leave Utilization</h6>
+                <h2 class="display-6 fw-bold">24%</h2>
+                <p class="mb-0">6 staff currently on leave</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light fw-bold">
+                Top Selling Categories (YTD)
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between"><span>Smartphones</span><span>65%</span></div>
+                    <div class="progress"><div class="progress-bar bg-primary" style="width: 65%"></div></div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between"><span>Audio & Wearables</span><span>20%</span></div>
+                    <div class="progress"><div class="progress-bar bg-info" style="width: 20%"></div></div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between"><span>Accessories</span><span>10%</span></div>
+                    <div class="progress"><div class="progress-bar bg-secondary" style="width: 10%"></div></div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between"><span>Spare Parts</span><span>5%</span></div>
+                    <div class="progress"><div class="progress-bar bg-dark" style="width: 5%"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100 border-danger">
+            <div class="card-header bg-danger text-white fw-bold">
+                🚨 Recent System Alerts
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Low stock: iPhone 15 Pro Max (Titanium)
+                    <span class="badge bg-danger rounded-pill">Critical</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Purchase Order PO-2026-089 pending approval
+                    <span class="badge bg-warning text-dark rounded-pill">Warning</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Server database backup completed
+                    <span class="badge bg-success rounded-pill">Info</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

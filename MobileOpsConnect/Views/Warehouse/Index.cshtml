@@ -5,11 +5,12 @@
     var lowStockList = ViewBag.LowStockItems as List<MobileOpsConnect.Models.Product>;
 }
 
-<div class="row mb-4">
-    <div class="col-md-12">
-        <h1 class="display-5">🏭 Warehouse Operations</h1>
-        <p class="text-muted">Scan barcodes or search manually to perform Stock In/Out.</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="display-5 mb-0">🏭 Warehouse Operations</h1>
+        <p class="text-muted mb-0 mt-1">Scan barcodes or search manually to perform Stock In/Out.</p>
     </div>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary shadow-sm">Back to Dashboard</a>
 </div>
 
 @if (lowStockList != null && lowStockList.Count > 0)
@@ -66,7 +67,6 @@
                         }
                         else
                         {
-
                             <span class="badge bg-success">@item.StockQuantity</span>
                         }
                     </h4>

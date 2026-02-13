@@ -1,0 +1,73 @@
+﻿@{
+    ViewData["Title"] = "Purchase Orders";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>🚚 Restock Purchase Orders</h2>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card shadow-sm border-primary">
+    <div class="card-body">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>PO Number</th>
+                    <th>Requested By</th>
+                    <th>Items</th>
+                    <th>Total Cost (₱)</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold text-primary">PO-2026-089</td>
+                    <td>delta@mobileops.com</td>
+                    <td>50x iPhone 15 Pro, 20x AirPods Pro</td>
+                    <td>3,450,000.00</td>
+                    <td>@DateTime.Now.AddDays(-1).ToString("MMM dd, yyyy")</td>
+                    <td>
+                        <form asp-action="ProcessOrder" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="89" />
+                            <input type="hidden" name="actionType" value="Approve" />
+                            <button type="submit" class="btn btn-sm btn-success">✅ Approve</button>
+                        </form>
+                        <form asp-action="ProcessOrder" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="89" />
+                            <input type="hidden" name="actionType" value="Reject" />
+                            <button type="submit" class="btn btn-sm btn-danger">❌ Reject</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-primary">PO-2026-090</td>
+                    <td>delta@mobileops.com</td>
+                    <td>100x USB-C Cables, 50x MagSafe Chargers</td>
+                    <td>125,000.00</td>
+                    <td>@DateTime.Now.ToString("MMM dd, yyyy")</td>
+                    <td>
+                        <form asp-action="ProcessOrder" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="90" />
+                            <input type="hidden" name="actionType" value="Approve" />
+                            <button type="submit" class="btn btn-sm btn-success">✅ Approve</button>
+                        </form>
+                        <form asp-action="ProcessOrder" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="90" />
+                            <input type="hidden" name="actionType" value="Reject" />
+                            <button type="submit" class="btn btn-sm btn-danger">❌ Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

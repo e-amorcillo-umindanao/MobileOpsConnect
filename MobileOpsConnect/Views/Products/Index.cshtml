@@ -4,11 +4,18 @@
     ViewData["Title"] = "Inventory List";
 }
 
-<h1>Inventory Management</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>📦 Inventory Management</h1>
+    <div>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary me-2">Back to Dashboard</a>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Product</a>
-</p>
+        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
+        {
+            <a asp-action="Create" class="btn btn-primary">➕ Create New Product</a>
+        }
+    </div>
+</div>
+
 <table class="table table-striped">
     <thead>
         <tr>
@@ -34,7 +41,6 @@
                     }
                     else
                     {
-
                         <span class="badge bg-success">@item.StockQuantity</span>
                     }
                 </td>
