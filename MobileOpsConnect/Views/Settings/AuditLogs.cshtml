@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Global Audit Logs";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📜 System Audit Logs</h2>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Command Center</a>
+</div>
+
+<div class="alert alert-info">
+    <strong>Note:</strong> Displaying the last 50 system events. Older logs are archived automatically.
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@DateTime.Now.AddMinutes(-5).ToString("g")</td>
+                    <td>alpha@mobileops.com</td>
+                    <td><span class="badge bg-success">LOGIN</span> System access granted.</td>
+                    <td>192.168.1.45</td>
+                </tr>
+                <tr>
+                    <td>@DateTime.Now.AddHours(-1).ToString("g")</td>
+                    <td>beta@mobileops.com</td>
+                    <td><span class="badge bg-primary">CREATE</span> Added new employee (test@mobileops.com).</td>
+                    <td>192.168.1.102</td>
+                </tr>
+                <tr>
+                    <td>@DateTime.Now.AddHours(-3).ToString("g")</td>
+                    <td>delta@mobileops.com</td>
+                    <td><span class="badge bg-warning text-dark">STOCK IN</span> Added 50 units to SKU: DRI-001.</td>
+                    <td>192.168.1.205</td>
+                </tr>
+                <tr>
+                    <td>@DateTime.Now.AddDays(-1).ToString("g")</td>
+                    <td>alpha@mobileops.com</td>
+                    <td><span class="badge bg-danger">SECURITY</span> Changed system tax rate to 12%.</td>
+                    <td>192.168.1.45</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

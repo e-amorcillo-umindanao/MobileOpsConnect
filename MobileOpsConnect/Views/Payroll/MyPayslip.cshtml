@@ -1,0 +1,133 @@
+﻿@{
+    ViewData["Title"] = "My Payslip";
+    var currentUser = User.Identity?.Name;
+
+    // Dynamic Payroll Logic
+    string department = "General Staff";
+    string jobTitle = "Employee";
+    decimal basicSalary = 22000m;
+    decimal overtime = 0m;
+    decimal allowance = 2000m;
+    decimal tax = 1500m;
+
+    if (User.IsInRole("SuperAdmin"))
+    {
+        department = "Executive Board";
+        jobTitle = "Chief Executive Officer";
+        basicSalary = 150000m;
+        allowance = 20000m;
+        tax = 35000m;
+    }
+    else if (User.IsInRole("SystemAdmin"))
+    {
+        department = "IT Infrastructure";
+        jobTitle = "System Administrator";
+        basicSalary = 75000m;
+        allowance = 5000m;
+        tax = 12000m;
+    }
+    else if (User.IsInRole("DepartmentManager"))
+    {
+        department = "Management";
+        jobTitle = "Operations Manager";
+        basicSalary = 55000m;
+        allowance = 4000m;
+        tax = 6500m;
+    }
+    else if (User.IsInRole("WarehouseStaff"))
+    {
+        department = "Warehouse Logistics";
+        jobTitle = "Warehouse Operator";
+        basicSalary = 26000m;
+        overtime = 4500m;
+        allowance = 1500m;
+        tax = 2200m;
+    }
+
+    // Standardized Deductions
+    decimal sss = 1350m;
+    decimal philhealth = 1125m;
+    decimal pagibig = 100m;
+
+    decimal totalEarnings = basicSalary + overtime + allowance;
+    decimal totalDeductions = sss + philhealth + pagibig + tax;
+    decimal netPay = totalEarnings - totalDeductions;
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-3">
+        <h2>📄 Payslip Details</h2>
+        <button class="btn btn-outline-primary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    </div>
+
+    <div class="card border-dark shadow-sm">
+        <div class="card-header bg-dark text-white d-flex justify-content-between">
+            <strong>MobileOps Connect Inc.</strong>
+            <span>Pay Period: @DateTime.Now.ToString("MMMM yyyy")</span>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Employee Email:</strong> @currentUser</p>
+                    <p class="mb-1"><strong>Job Title:</strong> @jobTitle</p>
+                    <p class="mb-1"><strong>Department:</strong> @department</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-1"><strong>Status:</strong> <span class="badge bg-success">PAID</span></p>
+                    <p class="mb-1"><strong>Issue Date:</strong> @DateTime.Now.ToString("dd MMM yyyy")</p>
+                </div>
+            </div>
+
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Earnings</th>
+                        <th class="text-end">Amount (₱)</th>
+                        <th>Deductions</th>
+                        <th class="text-end">Amount (₱)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Basic Salary</td>
+                        <td class="text-end">@basicSalary.ToString("N2")</td>
+                        <td>SSS Contribution</td>
+                        <td class="text-end">@sss.ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <td>Overtime Pay</td>
+                        <td class="text-end">@overtime.ToString("N2")</td>
+                        <td>PhilHealth</td>
+                        <td class="text-end">@philhealth.ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <td>Allowances</td>
+                        <td class="text-end">@allowance.ToString("N2")</td>
+                        <td>Pag-IBIG</td>
+                        <td class="text-end">@pagibig.ToString("N2")</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Withholding Tax</td>
+                        <td class="text-end">@tax.ToString("N2")</td>
+                    </tr>
+                    <tr class="fw-bold bg-light">
+                        <td>Total Earnings</td>
+                        <td class="text-end text-success">@totalEarnings.ToString("N2")</td>
+                        <td>Total Deductions</td>
+                        <td class="text-end text-danger">@totalDeductions.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="text-end mt-4">
+                <h4 class="fw-bold">Net Pay: <span class="text-success border-bottom border-success border-2 pb-1">₱@netPay.ToString("N2")</span></h4>
+            </div>
+
+            <div class="mt-4">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>

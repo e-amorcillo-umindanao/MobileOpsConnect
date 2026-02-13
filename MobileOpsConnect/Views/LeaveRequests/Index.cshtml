@@ -27,11 +27,14 @@
         }
         else
         {
-
             <text>My Leave History</text>
         }
     </h1>
-    <a asp-action="Create" class="btn btn-primary">➕ Apply for New Leave</a>
+
+    @if (!hasPower)
+    {
+        <a asp-action="Create" class="btn btn-primary">➕ Apply for New Leave</a>
+    }
 </div>
 
 <div class="card shadow-sm">
@@ -82,7 +85,6 @@
                             }
                             else
                             {
-
                                 <span class="text-muted">Unknown</span>
                             }
 

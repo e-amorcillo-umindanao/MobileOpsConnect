@@ -67,5 +67,11 @@ namespace MobileOpsConnect.Controllers
             }
             return View("Index", systemSetting);
         }
+
+        // GET: Settings/AuditLogs
+        public IActionResult AuditLogs()
+        {
+            return View();
+        }
     }
 }

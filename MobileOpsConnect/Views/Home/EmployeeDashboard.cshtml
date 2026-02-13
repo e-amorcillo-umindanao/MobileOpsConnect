@@ -12,7 +12,6 @@
         }
         else
         {
-
             <span>Employee Self-Service</span>
         }
     </p>
@@ -28,7 +27,7 @@
             </a>
         </div>
         <div class="col-md-6 mb-3">
-            <a href="/Products" class="btn btn-outline-primary btn-lg w-100">
+            <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary btn-lg w-100">
                 📦 Search Inventory List
             </a>
         </div>
@@ -48,8 +47,8 @@
     </div>
 
     <div class="col-md-12 mb-3">
-        <button class="btn btn-info btn-lg w-100 text-white">
+        <a asp-controller="Payroll" asp-action="MyPayslip" class="btn btn-info btn-lg w-100 text-white">
             📄 View Payslip
-        </button>
+        </a>
     </div>
 </div>

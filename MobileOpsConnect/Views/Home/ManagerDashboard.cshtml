@@ -30,7 +30,7 @@
             <div class="card-body">
                 <h5 class="card-title">Restock Requests</h5>
                 <p class="card-text">Approve purchase orders for warehouse restocking.</p>
-                <button class="btn btn-outline-primary w-100">Approve Orders</button>
+                <button class="btn btn-outline-primary w-100" disabled>Approve Orders (Prototype)</button>
             </div>
         </div>
     </div>
@@ -43,7 +43,7 @@
             <div class="card-body text-center">
                 <h5 class="card-title">📈 Analytics Dashboard</h5>
                 <p class="card-text">Sales trends, leave utilization, and performance metrics.</p>
-                <button class="btn btn-dark w-100">Open Dashboard</button>
+                <button class="btn btn-dark w-100" disabled>Open Dashboard (Prototype)</button>
             </div>
         </div>
     </div>
@@ -68,14 +68,14 @@
     </div>
 
     <div class="col-md-4 mb-3">
-        <button class="btn btn-info w-100 text-white py-3">
+        <a asp-controller="Payroll" asp-action="MyPayslip" class="btn btn-info w-100 text-white py-3">
             📄 View My Payslip
-        </button>
+        </a>
     </div>
 
     <div class="col-md-4 mb-3">
-        <button class="btn btn-secondary w-100 py-3">
+        <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn btn-secondary w-100 py-3">
             🔒 Change Password / Profile
-        </button>
+        </a>
     </div>
 </div>
