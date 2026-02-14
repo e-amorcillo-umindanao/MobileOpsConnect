@@ -14,5 +14,6 @@ namespace MobileOpsConnect.Data
         public DbSet<Product> Products { get; set; } // This needs the 'using' line above to work
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
         public DbSet<SystemSetting> SystemSettings { get; set; }
+        public DbSet<UserFcmToken> UserFcmTokens { get; set; }
     }
 }

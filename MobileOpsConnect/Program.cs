@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Data;
+using MobileOpsConnect.Services;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +21,24 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 // === CHANGE ENDS HERE ===
 
 builder.Services.AddControllersWithViews();
+
+// === FIREBASE CLOUD MESSAGING SETUP ===
+var firebaseKeyPath = builder.Configuration["Firebase:ServiceAccountKeyPath"] ?? "firebase-service-account.json";
+if (File.Exists(firebaseKeyPath))
+{
+    FirebaseApp.Create(new AppOptions
+    {
+        Credential = GoogleCredential.FromFile(firebaseKeyPath),
+    });
+}
+else
+{
+    // Log a warning but don't crash — the app still works without push notifications
+    Console.WriteLine($"⚠️  Firebase service account key not found at: {firebaseKeyPath}");
+    Console.WriteLine("   Push notifications will NOT work until you add the key file.");
+}
+builder.Services.AddScoped<INotificationService, FcmNotificationService>();
+// === END FIREBASE SETUP ===
 
 var app = builder.Build();
 

@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Firebase — NEVER commit this (contains private admin keys)
+firebase-service-account.json

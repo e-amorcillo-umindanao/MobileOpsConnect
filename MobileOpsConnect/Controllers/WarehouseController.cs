@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Data;
 using MobileOpsConnect.Models;
+using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Controllers
 {
@@ -10,10 +11,12 @@ namespace MobileOpsConnect.Controllers
     public class WarehouseController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public WarehouseController(ApplicationDbContext context)
+        public WarehouseController(ApplicationDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         // GET: Warehouse/Index (The Scanner Screen)
@@ -99,6 +102,17 @@ namespace MobileOpsConnect.Controllers
             product.LastUpdated = DateTime.Now;
 
             await _context.SaveChangesAsync();
+
+            // Check for low stock and notify
+            var settings = await _context.SystemSettings.FirstOrDefaultAsync();
+            int threshold = settings?.LowStockThreshold ?? 10;
+            if (product.StockQuantity <= threshold)
+            {
+                await _notificationService.SendToAllAsync(
+                    "⚠️ Low Stock Alert",
+                    $"{product.Name} (SKU: {product.SKU}) is down to {product.StockQuantity} units after stock-out — below the {threshold}-unit threshold.");
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Data;
 using MobileOpsConnect.Models;
+using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Controllers
 {
@@ -10,10 +11,12 @@ namespace MobileOpsConnect.Controllers
     public class ProductsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         // GET: Products
@@ -51,6 +54,10 @@ namespace MobileOpsConnect.Controllers
                 product.LastUpdated = DateTime.Now;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
+
+                // Check for low stock and notify
+                await CheckAndNotifyLowStock(product);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -82,6 +89,9 @@ namespace MobileOpsConnect.Controllers
                     product.LastUpdated = DateTime.Now;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
+
+                    // Check for low stock and notify
+                    await CheckAndNotifyLowStock(product);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -118,6 +128,20 @@ namespace MobileOpsConnect.Controllers
             }
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // === Low Stock Notification Helper ===
+        private async Task CheckAndNotifyLowStock(Product product)
+        {
+            var settings = await _context.SystemSettings.FirstOrDefaultAsync();
+            int threshold = settings?.LowStockThreshold ?? 10;
+
+            if (product.StockQuantity <= threshold)
+            {
+                await _notificationService.SendToAllAsync(
+                    "⚠️ Low Stock Alert",
+                    $"{product.Name} (SKU: {product.SKU}) has only {product.StockQuantity} units left — below the {threshold}-unit threshold.");
+            }
         }
     }
 }

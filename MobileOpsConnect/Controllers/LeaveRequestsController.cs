@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Data;
 using MobileOpsConnect.Models;
+using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Controllers
 {
@@ -17,11 +18,13 @@ namespace MobileOpsConnect.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly INotificationService _notificationService;
 
-        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
+            _notificationService = notificationService;
         }
 
         // GET: LeaveRequests
@@ -125,6 +128,12 @@ namespace MobileOpsConnect.Controllers
 
                 _context.Add(leaveRequest);
                 await _context.SaveChangesAsync();
+
+                // Notify admins about the new leave request
+                await _notificationService.SendToAllAsync(
+                    "📋 New Leave Request",
+                    $"{user.Email} submitted a {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
+
                 return RedirectToAction(nameof(Index));
             }
             return View(leaveRequest);
@@ -143,6 +152,13 @@ namespace MobileOpsConnect.Controllers
 
             leaveRequest.Status = "Approved";
             await _context.SaveChangesAsync();
+
+            // Notify the employee that their leave was approved
+            await _notificationService.SendToUserAsync(
+                leaveRequest.UserID,
+                "✅ Leave Approved",
+                $"Your {leaveRequest.LeaveType} leave ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}) has been approved.");
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -157,6 +173,13 @@ namespace MobileOpsConnect.Controllers
 
             leaveRequest.Status = "Rejected";
             await _context.SaveChangesAsync();
+
+            // Notify the employee that their leave was rejected
+            await _notificationService.SendToUserAsync(
+                leaveRequest.UserID,
+                "❌ Leave Rejected",
+                $"Your {leaveRequest.LeaveType} leave ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}) has been rejected.");
+
             return RedirectToAction(nameof(Index));
         }
 
