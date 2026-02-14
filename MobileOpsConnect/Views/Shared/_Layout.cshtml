@@ -8,15 +8,408 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MobileOpsConnect.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== MobileOps Connect — Premium Theme ===== */
+        :root {
+            --moc-primary: #6366f1;
+            --moc-primary-hover: #4f46e5;
+            --moc-dark: #0f172a;
+            --moc-dark-light: #1e293b;
+            --moc-surface: #ffffff;
+            --moc-bg: #f1f5f9;
+            --moc-border: #e2e8f0;
+            --moc-text: #0f172a;
+            --moc-text-muted: #64748b;
+            --moc-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            --moc-gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--moc-bg);
+            color: var(--moc-text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ---- Navbar ---- */
+        .moc-navbar {
+            background: var(--moc-gradient-dark) !important;
+            border-bottom: 2px solid rgba(99, 102, 241, 0.25);
+        }
+
+            .moc-navbar .navbar-brand {
+                font-weight: 800;
+                font-size: 1.2rem;
+                letter-spacing: -0.5px;
+                color: #ffffff !important;
+            }
+
+                .moc-navbar .navbar-brand .brand-icon {
+                    color: var(--moc-primary);
+                    margin-right: 0.45rem;
+                }
+
+                .moc-navbar .navbar-brand .brand-suffix {
+                    font-weight: 400;
+                    opacity: 0.7;
+                }
+
+            .moc-navbar .nav-link,
+            .moc-navbar .navbar-text,
+            .moc-navbar .navbar-nav .btn-link {
+                color: rgba(255, 255, 255, 0.65) !important;
+                font-weight: 500;
+                font-size: 0.875rem;
+                transition: color 0.2s ease;
+                text-decoration: none;
+            }
+
+                .moc-navbar .nav-link:hover,
+                .moc-navbar .nav-link:focus,
+                .moc-navbar .navbar-nav .btn-link:hover {
+                    color: #ffffff !important;
+                }
+
+            .moc-navbar .navbar-toggler {
+                border: 1px solid rgba(255,255,255,0.15);
+            }
+
+                .moc-navbar .navbar-toggler:focus {
+                    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+                }
+
+        /* ---- Card System ---- */
+        .moc-card {
+            border: 1px solid var(--moc-border);
+            border-radius: 0.875rem !important;
+            background: var(--moc-surface);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            overflow: hidden;
+        }
+
+            .moc-card:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            }
+
+        .moc-card-static {
+            border: 1px solid var(--moc-border);
+            border-radius: 0.875rem !important;
+            background: var(--moc-surface);
+            overflow: hidden;
+        }
+
+        /* ---- Icon Box ---- */
+        .moc-icon-box {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.75rem;
+        }
+
+        .moc-icon-box-lg {
+            width: 56px;
+            height: 56px;
+            min-width: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.875rem;
+        }
+
+        /* ---- Hero Section ---- */
+        .moc-hero {
+            background: var(--moc-gradient);
+            border-radius: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .moc-hero::before {
+                content: '';
+                position: absolute;
+                top: -60%;
+                right: -15%;
+                width: 55%;
+                height: 220%;
+                background: rgba(255, 255, 255, 0.045);
+                border-radius: 50%;
+                pointer-events: none;
+            }
+
+            .moc-hero::after {
+                content: '';
+                position: absolute;
+                bottom: -40%;
+                left: -8%;
+                width: 35%;
+                height: 180%;
+                background: rgba(255, 255, 255, 0.025);
+                border-radius: 50%;
+                pointer-events: none;
+            }
+
+        /* ---- Metric Cards ---- */
+        .moc-metric {
+            border-radius: 0.875rem;
+            border: 1px solid var(--moc-border);
+            background: var(--moc-surface);
+            transition: box-shadow 0.25s ease;
+        }
+
+            .moc-metric:hover {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            }
+
+        /* ---- Super Admin Zone ---- */
+        .moc-superadmin-zone {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            border-radius: 1rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .moc-sa-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 0.75rem;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+            .moc-sa-card:hover {
+                background: rgba(255,255,255,0.08);
+                border-color: rgba(255,255,255,0.14);
+            }
+
+        /* ---- Buttons ---- */
+        .btn-moc-primary {
+            background: var(--moc-gradient);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 0.625rem;
+            padding: 0.6rem 1.5rem;
+            transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+        }
+
+            .btn-moc-primary:hover {
+                opacity: 0.92;
+                color: #fff;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+            }
+
+        .btn-moc-outline {
+            border: 1.5px solid var(--moc-border);
+            color: var(--moc-text);
+            font-weight: 600;
+            border-radius: 0.625rem;
+            padding: 0.6rem 1.5rem;
+            background: transparent;
+            transition: all 0.2s ease;
+        }
+
+            .btn-moc-outline:hover {
+                border-color: var(--moc-primary);
+                color: var(--moc-primary);
+                background: rgba(99, 102, 241, 0.04);
+            }
+
+        /* ---- Footer ---- */
+        .moc-footer {
+            background: var(--moc-dark);
+            color: rgba(255, 255, 255, 0.45);
+            border-top: 2px solid rgba(99, 102, 241, 0.2);
+        }
+
+            .moc-footer a {
+                color: rgba(255, 255, 255, 0.6);
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+
+                .moc-footer a:hover {
+                    color: #ffffff;
+                }
+
+        /* ---- Form Enhancements ---- */
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--moc-primary);
+            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.12);
+        }
+
+        /* ---- Section Divider ---- */
+        .moc-section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+            .moc-section-header h5 {
+                margin: 0;
+                white-space: nowrap;
+            }
+
+            .moc-section-header hr {
+                flex-grow: 1;
+                opacity: 0.15;
+                margin: 0;
+            }
+
+        /* ---- Utility Classes ---- */
+        .text-xs {
+            font-size: 0.75rem !important;
+        }
+
+        .text-sm {
+            font-size: 0.875rem !important;
+        }
+
+        .fw-semibold {
+            font-weight: 600 !important;
+        }
+
+        .letter-tight {
+            letter-spacing: -0.025em;
+        }
+
+        .bg-indigo-50 {
+            background-color: rgba(99, 102, 241, 0.08) !important;
+        }
+
+        .bg-red-50 {
+            background-color: rgba(239, 68, 68, 0.08) !important;
+        }
+
+        .bg-green-50 {
+            background-color: rgba(34, 197, 94, 0.08) !important;
+        }
+
+        .bg-amber-50 {
+            background-color: rgba(245, 158, 11, 0.08) !important;
+        }
+
+        .bg-purple-50 {
+            background-color: rgba(168, 85, 247, 0.08) !important;
+        }
+
+        .bg-cyan-50 {
+            background-color: rgba(6, 182, 212, 0.08) !important;
+        }
+
+        .text-indigo {
+            color: #6366f1 !important;
+        }
+
+        .text-red {
+            color: #ef4444 !important;
+        }
+
+        .text-green {
+            color: #22c55e !important;
+        }
+
+        .text-amber {
+            color: #f59e0b !important;
+        }
+
+        .text-purple {
+            color: #a855f7 !important;
+        }
+
+        .text-cyan {
+            color: #06b6d4 !important;
+        }
+
+        /* ---- Animation ---- */
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .anim-fade-in {
+            animation: fadeInUp 0.45s ease-out both;
+        }
+
+        .anim-delay-1 {
+            animation-delay: 0.06s;
+        }
+
+        .anim-delay-2 {
+            animation-delay: 0.12s;
+        }
+
+        .anim-delay-3 {
+            animation-delay: 0.18s;
+        }
+
+        .anim-delay-4 {
+            animation-delay: 0.24s;
+        }
+
+        /* ---- Scrollbar ---- */
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--moc-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
+
+        /* ---- Responsive ---- */
+        @@media (max-width: 767.98px) {
+            .moc-hero h1 {
+                font-size: 1.65rem;
+            }
+
+            .moc-hero .lead {
+                font-size: 0.9rem;
+            }
+
+            .moc-icon-box {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+            }
+        }
+    </style>
 </head>
 <body>
 
     @if (ViewData["HideLayout"] is not true)
     {
         <header>
-            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container-fluid">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MobileOpsConnect</a>
+            <nav class="navbar navbar-expand-sm navbar-dark moc-navbar shadow-sm">
+                <div class="container-fluid px-3 px-md-4">
+                    <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-shield-lock-fill brand-icon"></i>
+                        <span>MobileOps<span class="brand-suffix">Connect</span></span>
+                    </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -24,10 +417,14 @@
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                    <i class="bi bi-grid-1x2-fill me-1"></i> Dashboard
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                    <i class="bi bi-shield-check me-1"></i> Privacy
+                                </a>
                             </li>
                         </ul>
                         <partial name="_LoginPartial" />
@@ -39,8 +436,8 @@
 
     @if (ViewData["HideLayout"] is not true)
     {
-        <div class="container">
-            <main role="main" class="pb-3">
+        <div class="container-xxl px-3 px-md-4 px-lg-5">
+            <main role="main" class="pb-3 pt-4">
                 @RenderBody()
             </main>
         </div>
@@ -54,9 +451,17 @@
 
     @if (ViewData["HideLayout"] is not true)
     {
-        <footer class="border-top footer text-muted">
-            <div class="container">
-                &copy; 2026 - MobileOpsConnect - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <footer class="moc-footer mt-5 py-4">
+            <div class="container-xxl px-3 px-md-4 px-lg-5">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                    <span class="text-sm">
+                        <i class="bi bi-shield-lock-fill me-1 opacity-50"></i>
+                        &copy; 2026 MobileOpsConnect &mdash; All rights reserved.
+                    </span>
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-sm">
+                        <i class="bi bi-file-earmark-lock me-1"></i> Privacy Policy
+                    </a>
+                </div>
             </div>
         </footer>
     }
