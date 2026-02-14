@@ -2,62 +2,377 @@
 
 @{
     ViewData["Title"] = "Inventory List";
+    int totalProducts = Model.Count();
+    int lowStockCount = Model.Count(p => p.StockQuantity <= 10);
+    int healthyCount = totalProducts - lowStockCount;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>📦 Inventory Management</h1>
-    <div>
-        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary me-2">🔙 Back to Dashboard</a>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                Inventory Online
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-box-seam-fill me-1"></i> @totalProducts Products Tracked
+            </span>
+            @if (lowStockCount > 0)
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(239,68,68,0.25);">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> @lowStockCount Low Stock
+                </span>
+            }
+        </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">Inventory Management</h1>
+        <p class="lead mb-0 opacity-75">
+            Product catalog, stock levels &amp; valuation &mdash; MobileOps Connect ERP
+        </p>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-box-seam-fill"></i>
+    </div>
+</div>
 
+<!-- ═══════════════════════════════════════════════ -->
+<!-- INVENTORY METRICS                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-bar-chart-line-fill text-indigo me-1"></i> Stock Overview
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Total SKUs</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@totalProducts</h3>
+                    <span class="badge bg-indigo-50 text-indigo text-xs fw-semibold">
+                        <i class="bi bi-box-seam me-1"></i> Catalog
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-box-seam-fill text-indigo fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Healthy</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@healthyCount</h3>
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> In Stock
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-green-50 rounded-3">
+                    <i class="bi bi-check2-all text-green fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Low Stock</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@lowStockCount</h3>
+                    <span class="badge bg-red-50 text-red text-xs fw-semibold">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Alert
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-red-50 rounded-3">
+                    <i class="bi bi-exclamation-octagon-fill text-red fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Fill Rate</p>
+                    <h3 class="fw-bold mb-1 letter-tight">
+                        @(totalProducts > 0 ? ((healthyCount * 100) / totalProducts) : 0)<span class="fs-6 fw-semibold text-muted">%</span>
+                    </h3>
+                    <div class="progress mt-1" style="height:4px;width:72px;">
+                        <div class="progress-bar rounded-pill" role="progressbar"
+                             style="width:@(totalProducts > 0 ? ((healthyCount * 100) / totalProducts) : 0)%;background:var(--moc-primary);"
+                             aria-valuenow="@(totalProducts > 0 ? ((healthyCount * 100) / totalProducts) : 0)" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <span class="text-muted text-xs">stock health</span>
+                </div>
+                <div class="moc-icon-box bg-purple-50 rounded-3">
+                    <i class="bi bi-pie-chart-fill text-purple fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACTION BAR                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-5">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-list-columns-reverse text-amber me-1"></i> Product Directory
+    </h5>
+    <hr />
+</div>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 anim-fade-in">
+    <div class="d-flex align-items-center gap-2">
+        <div class="moc-icon-box bg-indigo-50 rounded-3">
+            <i class="bi bi-funnel-fill text-indigo fs-5"></i>
+        </div>
+        <div>
+            <p class="fw-semibold mb-0 text-sm letter-tight">All Products</p>
+            <p class="text-muted text-xs mb-0">Showing @totalProducts item@(totalProducts != 1 ? "s" : "")</p>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline px-3">
+            <i class="bi bi-arrow-left me-1"></i> Dashboard
+        </a>
         @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("WarehouseStaff"))
         {
-            <a asp-action="Create" class="btn btn-primary">➕ Create New Product</a>
+            <a asp-action="Create" class="btn btn-moc-primary px-3">
+                <i class="bi bi-plus-circle me-1"></i> New Product
+            </a>
         }
     </div>
 </div>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>SKU</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Stock Qty</th>
-            <th>Price</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.SKU</td>
-                <td>@item.Name</td>
-                <td>@item.Category</td>
-                <td>
-                    @if (item.StockQuantity <= 10)
-                    {
-                        <span class="badge bg-danger">@item.StockQuantity</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-success">@item.StockQuantity</span>
-                    }
-                </td>
-                <td>₱@item.Price</td>
-                <td>
-                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("WarehouseStaff"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@item.ProductID" class="btn btn-sm btn-warning">Edit</a>
-                    }
-                    <a asp-action="Details" asp-route-id="@item.ProductID" class="btn btn-sm btn-info">Details</a>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PRODUCT TABLE / CARDS                           -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
 
-                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
+    <div class="card-header bg-transparent border-0 p-4 pb-0">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-table text-indigo fs-5"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0 letter-tight">Inventory Catalog</h6>
+                    <span class="text-muted text-xs">@totalProducts product@(totalProducts != 1 ? "s" : "") registered</span>
+                </div>
+            </div>
+            <div class="d-flex gap-1 flex-wrap">
+                <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">@healthyCount Stocked</span>
+                <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@lowStockCount Low</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body p-4 pt-3">
+
+        <!-- ── Desktop Table (md+) ── -->
+        <div class="table-responsive d-none d-md-block">
+            <table class="table table-hover align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
+                <thead>
+                    <tr style="border:none;">
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-3 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-upc-scan me-1"></i> SKU
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-box me-1"></i> Product
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-tag me-1"></i> Category
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
+                            <i class="bi bi-layers me-1"></i> Stock
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-end" style="letter-spacing:0.05em;">
+                            <i class="bi bi-currency-exchange me-1"></i> Price
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 pe-3 py-3 text-end" style="letter-spacing:0.05em;">
+                            <i class="bi bi-lightning me-1"></i> Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
                     {
-                        <a asp-action="Delete" asp-route-id="@item.ProductID" class="btn btn-sm btn-danger">Delete</a>
+                        <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                            <td class="border-0 ps-3 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
+                                <span class="badge rounded-pill bg-indigo-50 text-indigo px-2 py-1 fw-semibold text-xs">
+                                    @item.SKU
+                                </span>
+                            </td>
+                            <td class="border-0 py-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="moc-icon-box bg-purple-50 rounded-3" style="width:36px;height:36px;min-width:36px;">
+                                        <i class="bi bi-box-seam text-purple" style="font-size:0.85rem;"></i>
+                                    </div>
+                                    <span class="fw-semibold text-sm letter-tight">@item.Name</span>
+                                </div>
+                            </td>
+                            <td class="border-0 py-3">
+                                <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                    <i class="bi bi-tag-fill me-1"></i>@item.Category
+                                </span>
+                            </td>
+                            <td class="border-0 py-3 text-center">
+                                @if (item.StockQuantity <= 10)
+                                {
+                                    <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i> @item.StockQuantity
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge rounded-pill bg-green-50 text-green px-3 py-2 fw-semibold text-xs">
+                                        <i class="bi bi-check-circle-fill me-1"></i> @item.StockQuantity
+                                    </span>
+                                }
+                            </td>
+                            <td class="border-0 py-3 text-end">
+                                <span class="fw-bold text-sm letter-tight">₱@item.Price</span>
+                            </td>
+                            <td class="border-0 pe-3 py-3 text-end" style="border-radius:0 0.75rem 0.75rem 0;">
+                                <div class="d-flex justify-content-end gap-1">
+                                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("WarehouseStaff"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.ProductID"
+                                           class="btn btn-sm px-2 py-1 fw-semibold"
+                                           style="background:rgba(245,158,11,0.08);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.2);"
+                                           title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                    }
+                                    <a asp-action="Details" asp-route-id="@item.ProductID"
+                                       class="btn btn-sm btn-moc-outline px-2 py-1"
+                                       title="Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
+                                    {
+                                        <a asp-action="Delete" asp-route-id="@item.ProductID"
+                                           class="btn btn-sm px-2 py-1 fw-semibold"
+                                           style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);"
+                                           title="Delete">
+                                            <i class="bi bi-trash3"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
                     }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ── Mobile Card List (below md) ── -->
+        <div class="d-md-none">
+            @foreach (var item in Model)
+            {
+                <div class="moc-metric p-3 mb-3" style="@(item.StockQuantity <= 10 ? "border-left:4px solid #ef4444 !important;" : "")">
+                    <!-- Top Row: Name + Stock Badge -->
+                    <div class="d-flex align-items-start justify-content-between mb-2">
+                        <div class="d-flex align-items-center gap-2 flex-grow-1 min-width-0">
+                            @if (item.StockQuantity <= 10)
+                            {
+                                <div class="moc-icon-box bg-red-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                                    <i class="bi bi-exclamation-triangle-fill text-red"></i>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                                    <i class="bi bi-box-seam-fill text-indigo"></i>
+                                </div>
+                            }
+                            <div class="min-width-0">
+                                <p class="fw-bold text-sm mb-0 letter-tight text-truncate">@item.Name</p>
+                                <span class="text-muted text-xs">@item.SKU</span>
+                            </div>
+                        </div>
+                        @if (item.StockQuantity <= 10)
+                        {
+                            <span class="badge rounded-pill bg-red-50 text-red px-2 py-1 fw-semibold text-xs ms-2">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i> @item.StockQuantity
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge rounded-pill bg-green-50 text-green px-2 py-1 fw-semibold text-xs ms-2">
+                                <i class="bi bi-check-circle-fill me-1"></i> @item.StockQuantity
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Details Row -->
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                            <i class="bi bi-tag-fill me-1"></i> @item.Category
+                        </span>
+                        <span class="fw-bold text-sm letter-tight">₱@item.Price</span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex gap-2">
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("WarehouseStaff"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.ProductID"
+                               class="btn btn-sm flex-fill py-2 fw-semibold"
+                               style="background:rgba(245,158,11,0.08);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.2);">
+                                <i class="bi bi-pencil-square me-1"></i> Edit
+                            </a>
+                        }
+                        <a asp-action="Details" asp-route-id="@item.ProductID"
+                           class="btn btn-sm btn-moc-outline flex-fill py-2">
+                            <i class="bi bi-eye me-1"></i> Details
+                        </a>
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@item.ProductID"
+                               class="btn btn-sm flex-fill py-2 fw-semibold"
+                               style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
+                                <i class="bi bi-trash3 me-1"></i> Delete
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+
+    <!-- Table Footer -->
+    <div class="card-footer bg-transparent border-0 px-4 py-3"
+         style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span class="text-muted text-xs">
+                <i class="bi bi-info-circle me-1"></i>
+                Showing all @totalProducts product@(totalProducts != 1 ? "s" : "")
+            </span>
+            <div class="d-flex gap-1">
+                <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">@healthyCount Healthy</span>
+                <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@lowStockCount Low</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back -->
+<div class="d-flex justify-content-start mb-4 anim-fade-in">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline px-4 py-2">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+    </a>
+</div>

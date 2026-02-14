@@ -17,137 +17,556 @@
     else { myRank = 1; } // Employee/Staff
 
     bool hasPower = myRank > 1;
+
+    int totalRequests = Model.Count();
+    int pendingCount = Model.Count(l => l.Status == "Pending");
+    int approvedCount = Model.Count(l => l.Status == "Approved");
+    int rejectedCount = Model.Count(l => l.Status == "Rejected");
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                HR Module Active
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-calendar2-week me-1"></i> @totalRequests Total Request@(totalRequests != 1 ? "s" : "")
+            </span>
+            @if (pendingCount > 0)
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(245,158,11,0.25);">
+                    <i class="bi bi-exclamation-circle-fill me-1"></i> @pendingCount Pending
+                </span>
+            }
+        </div>
         @if (hasPower)
         {
-            <text>Manage Leave Requests</text>
+            <h1 class="display-5 fw-bold mb-2 letter-tight">Manage Leave Requests</h1>
+            <p class="lead mb-0 opacity-75">
+                Review, approve &amp; manage employee leave applications
+            </p>
         }
         else
         {
-            <text>My Leave History</text>
+            <h1 class="display-5 fw-bold mb-2 letter-tight">My Leave History</h1>
+            <p class="lead mb-0 opacity-75">
+                Track your submitted leave requests &amp; approval status
+            </p>
         }
-    </h1>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-calendar2-week-fill"></i>
+    </div>
+</div>
 
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEAVE METRICS                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-bar-chart-line-fill text-indigo me-1"></i> Leave Overview
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Total</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@totalRequests</h3>
+                    <span class="badge bg-indigo-50 text-indigo text-xs fw-semibold">
+                        <i class="bi bi-list-check me-1"></i> All
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-calendar2-week text-indigo fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Pending</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@pendingCount</h3>
+                    <span class="badge bg-amber-50 text-amber text-xs fw-semibold">
+                        <i class="bi bi-hourglass-split me-1"></i> Awaiting
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-amber-50 rounded-3">
+                    <i class="bi bi-clock-history text-amber fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Approved</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@approvedCount</h3>
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Cleared
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-green-50 rounded-3">
+                    <i class="bi bi-calendar-check text-green fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Rejected</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@rejectedCount</h3>
+                    <span class="badge bg-red-50 text-red text-xs fw-semibold">
+                        <i class="bi bi-x-circle-fill me-1"></i> Denied
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-red-50 rounded-3">
+                    <i class="bi bi-calendar-x text-red fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACTION BAR                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-5">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-list-columns-reverse text-amber me-1"></i> Leave Directory
+    </h5>
+    <hr />
+</div>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 anim-fade-in">
+    <div class="d-flex align-items-center gap-2">
+        <div class="moc-icon-box bg-indigo-50 rounded-3">
+            <i class="bi bi-funnel-fill text-indigo fs-5"></i>
+        </div>
+        <div>
+            <p class="fw-semibold mb-0 text-sm letter-tight">All Requests</p>
+            <p class="text-muted text-xs mb-0">Showing @totalRequests record@(totalRequests != 1 ? "s" : "")</p>
+        </div>
+    </div>
     @if (!hasPower)
     {
-        <a asp-action="Create" class="btn btn-primary">➕ Apply for New Leave</a>
+        <a asp-action="Create" class="btn btn-moc-primary px-4">
+            <i class="bi bi-plus-circle me-1"></i> Apply for Leave
+        </a>
     }
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-body">
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Employee</th>
-                    <th>Type</th>
-                    <th>Dates</th>
-                    <th>Reason</th>
-                    <th>Status</th>
-                    <th>Requested On</th>
-                    @if (hasPower)
-                    {
-                        <th>Actions</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    // --- LOGIC BLOCK FOR EACH ROW ---
-                    bool isMyRequest = (item.UserID == currentUserId);
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEAVE TABLE / CARDS                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
 
-                    // Get the Requestor's Role to determine THEIR Rank
-                    // Note: In a real app, we'd pass this via ViewModel to avoid loops,
-                    // but for Capstone, this direct lookup is acceptable.
-                    var requestorRoles = await UserManager.GetRolesAsync(item.User);
-                    string rRole = requestorRoles.FirstOrDefault() ?? "Employee";
+    <div class="card-header bg-transparent border-0 p-4 pb-0">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <div class="moc-icon-box bg-cyan-50 rounded-3">
+                    <i class="bi bi-table text-cyan fs-5"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0 letter-tight">Leave Records</h6>
+                    <span class="text-muted text-xs">@totalRequests application@(totalRequests != 1 ? "s" : "")</span>
+                </div>
+            </div>
+            <div class="d-flex gap-1 flex-wrap">
+                <span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1">@pendingCount Pending</span>
+                <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">@approvedCount Approved</span>
+                <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@rejectedCount Rejected</span>
+            </div>
+        </div>
+    </div>
 
-                    int targetRank = 1; // Default to Employee
-                    if (rRole == "SuperAdmin") { targetRank = 4; }
-                    else if (rRole == "SystemAdmin") { targetRank = 3; }
-                    else if (rRole == "DepartmentManager") { targetRank = 2; }
+    <div class="card-body p-4 pt-3">
 
-                    // DECISION: Can I approve this specific person?
-                    // Rule 1: I must be higher rank than them.
-                    // Rule 2: Exception - If I am SuperAdmin (Rank 4), I can approve myself (Rank 4).
-                    bool canApproveThisRow = (myRank > targetRank) || (myRank == 4 && isMyRequest);
-                    // -------------------------------
-
-                    <tr>
-                        <td class="fw-bold">
-                            @if (item.User != null)
-                            {
-                                @item.User.UserName
-                            }
-                            else
-                            {
-                                <span class="text-muted">Unknown</span>
-                            }
-
-                            @if (isMyRequest)
-                            {
-                                <span class="badge bg-secondary ms-2">YOU</span>
-                            }
-
-                            <small class="text-muted d-block" style="font-size: 0.7em;">@rRole</small>
-                        </td>
-                        <td>@item.LeaveType</td>
-                        <td>
-                            @item.StartDate.ToString("MMM dd") - @item.EndDate.ToString("MMM dd")
-                            <br />
-                            <small class="text-muted">(@((item.EndDate - item.StartDate).Days + 1) Days)</small>
-                        </td>
-                        <td>@item.Reason</td>
-                        <td>
-                            @if (item.Status == "Pending")
-                            {
-                                <span class="badge bg-warning text-dark">Pending</span>
-                            }
-                            else if (item.Status == "Approved")
-                            {
-                                <span class="badge bg-success">Approved</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-danger">Rejected</span>
-                            }
-                        </td>
-                        <td>@item.DateRequested.ToString("MMM dd, yyyy")</td>
-
+        <!-- ── Desktop Table (lg+) ── -->
+        <div class="table-responsive d-none d-lg-block">
+            <table class="table table-hover align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
+                <thead>
+                    <tr style="border:none;">
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-3 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-person me-1"></i> Employee
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-tag me-1"></i> Type
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-calendar-range me-1"></i> Dates
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-chat-text me-1"></i> Reason
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
+                            <i class="bi bi-flag me-1"></i> Status
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-clock me-1"></i> Filed
+                        </th>
                         @if (hasPower)
                         {
-                            <td>
-                                @if (item.Status == "Pending")
-                                {
-                                    @if (canApproveThisRow)
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 pe-3 py-3 text-end" style="letter-spacing:0.05em;">
+                                <i class="bi bi-lightning me-1"></i> Actions
+                            </th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        bool isMyRequest = (item.UserID == currentUserId);
+
+                        var requestorRoles = await UserManager.GetRolesAsync(item.User);
+                        string rRole = requestorRoles.FirstOrDefault() ?? "Employee";
+
+                        int targetRank = 1;
+                        if (rRole == "SuperAdmin") { targetRank = 4; }
+                        else if (rRole == "SystemAdmin") { targetRank = 3; }
+                        else if (rRole == "DepartmentManager") { targetRank = 2; }
+
+                        bool canApproveThisRow = (myRank > targetRank) || (myRank == 4 && isMyRequest);
+
+                        <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);@(item.Status == "Pending" && hasPower && canApproveThisRow ? "border-left:3px solid #f59e0b;" : "")">
+                            <td class="border-0 ps-3 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
+                                <div class="d-flex align-items-center gap-2">
+                                    @if (rRole == "SuperAdmin")
                                     {
-                                        <div class="btn-group" role="group">
-                                            <a asp-action="Approve" asp-route-id="@item.LeaveID" class="btn btn-sm btn-success" title="Approve">✅</a>
-                                            <a asp-action="Reject" asp-route-id="@item.LeaveID" class="btn btn-sm btn-danger" title="Reject">❌</a>
+                                        <div class="moc-icon-box bg-red-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                            <i class="bi bi-shield-lock-fill text-red" style="font-size:0.8rem;"></i>
+                                        </div>
+                                    }
+                                    else if (rRole == "SystemAdmin")
+                                    {
+                                        <div class="moc-icon-box bg-amber-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                            <i class="bi bi-gear-fill text-amber" style="font-size:0.8rem;"></i>
+                                        </div>
+                                    }
+                                    else if (rRole == "DepartmentManager")
+                                    {
+                                        <div class="moc-icon-box bg-purple-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                            <i class="bi bi-briefcase-fill text-purple" style="font-size:0.8rem;"></i>
                                         </div>
                                     }
                                     else
                                     {
-                                        <span class="text-muted fst-italic small">Awaiting Higher Approval</span>
+                                        <div class="moc-icon-box bg-indigo-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                            <i class="bi bi-person-fill text-indigo" style="font-size:0.8rem;"></i>
+                                        </div>
                                     }
+                                    <div>
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">
+                                            @if (item.User != null)
+                                            {
+                                                @item.User.UserName
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Unknown</span>
+                                            }
+                                            @if (isMyRequest)
+                                            {
+                                                <span class="badge rounded-pill bg-indigo-50 text-indigo text-xs px-2 py-1 ms-1">YOU</span>
+                                            }
+                                        </p>
+                                        <span class="text-muted text-xs">@rRole</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="border-0 py-3">
+                                <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                    @item.LeaveType
+                                </span>
+                            </td>
+                            <td class="border-0 py-3">
+                                <p class="fw-semibold text-sm mb-0 letter-tight">
+                                    @item.StartDate.ToString("MMM dd") – @item.EndDate.ToString("MMM dd")
+                                </p>
+                                <span class="text-muted text-xs">@((item.EndDate - item.StartDate).Days + 1) Day@(((item.EndDate - item.StartDate).Days + 1) != 1 ? "s" : "")</span>
+                            </td>
+                            <td class="border-0 py-3">
+                                <span class="text-sm text-muted" style="max-width:180px;display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="@item.Reason">
+                                    @item.Reason
+                                </span>
+                            </td>
+                            <td class="border-0 py-3 text-center">
+                                @if (item.Status == "Pending")
+                                {
+                                    <span class="badge rounded-pill bg-amber-50 text-amber px-3 py-2 fw-semibold text-xs">
+                                        <i class="bi bi-hourglass-split me-1"></i> Pending
+                                    </span>
+                                }
+                                else if (item.Status == "Approved")
+                                {
+                                    <span class="badge rounded-pill bg-green-50 text-green px-3 py-2 fw-semibold text-xs">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Approved
+                                    </span>
                                 }
                                 else
                                 {
-                                    <span class="text-muted small">Completed</span>
+                                    <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">
+                                        <i class="bi bi-x-circle-fill me-1"></i> Rejected
+                                    </span>
                                 }
                             </td>
+                            <td class="border-0 py-3">
+                                <span class="text-sm text-muted">@item.DateRequested.ToString("MMM dd, yyyy")</span>
+                            </td>
+                            @if (hasPower)
+                            {
+                                <td class="border-0 pe-3 py-3 text-end" style="border-radius:0 0.75rem 0.75rem 0;">
+                                    @if (item.Status == "Pending")
+                                    {
+                                        @if (canApproveThisRow)
+                                        {
+                                            <div class="d-flex justify-content-end gap-1">
+                                                <a asp-action="Approve" asp-route-id="@item.LeaveID"
+                                                   class="btn btn-sm px-2 py-1 fw-semibold"
+                                                   style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);"
+                                                   title="Approve">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </a>
+                                                <a asp-action="Reject" asp-route-id="@item.LeaveID"
+                                                   class="btn btn-sm px-2 py-1 fw-semibold"
+                                                   style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);"
+                                                   title="Reject">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted text-xs fst-italic">
+                                                <i class="bi bi-lock me-1"></i>Higher Approval
+                                            </span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted text-xs">
+                                            <i class="bi bi-check2-all me-1"></i>Completed
+                                        </span>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ── Mobile Card List (below lg) ── -->
+        <div class="d-lg-none">
+            @foreach (var item in Model)
+            {
+                bool isMyRequest = (item.UserID == currentUserId);
+
+                var requestorRoles = await UserManager.GetRolesAsync(item.User);
+                string rRole = requestorRoles.FirstOrDefault() ?? "Employee";
+
+                int targetRank = 1;
+                if (rRole == "SuperAdmin") { targetRank = 4; }
+                else if (rRole == "SystemAdmin") { targetRank = 3; }
+                else if (rRole == "DepartmentManager") { targetRank = 2; }
+
+                bool canApproveThisRow = (myRank > targetRank) || (myRank == 4 && isMyRequest);
+
+                string borderStyle = "";
+                if (item.Status == "Pending") { borderStyle = "border-left:4px solid #f59e0b !important;"; }
+                else if (item.Status == "Approved") { borderStyle = "border-left:4px solid #22c55e !important;"; }
+                else { borderStyle = "border-left:4px solid #ef4444 !important;"; }
+
+                <div class="moc-metric p-3 mb-3" style="@borderStyle">
+
+                    <!-- Header: Employee + Status -->
+                    <div class="d-flex align-items-start justify-content-between mb-2">
+                        <div class="d-flex align-items-center gap-2 flex-grow-1 min-width-0">
+                            @if (rRole == "SuperAdmin")
+                            {
+                                <div class="moc-icon-box bg-red-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                    <i class="bi bi-shield-lock-fill text-red" style="font-size:0.75rem;"></i>
+                                </div>
+                            }
+                            else if (rRole == "SystemAdmin")
+                            {
+                                <div class="moc-icon-box bg-amber-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                    <i class="bi bi-gear-fill text-amber" style="font-size:0.75rem;"></i>
+                                </div>
+                            }
+                            else if (rRole == "DepartmentManager")
+                            {
+                                <div class="moc-icon-box bg-purple-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                    <i class="bi bi-briefcase-fill text-purple" style="font-size:0.75rem;"></i>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="moc-icon-box bg-indigo-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                    <i class="bi bi-person-fill text-indigo" style="font-size:0.75rem;"></i>
+                                </div>
+                            }
+                            <div class="min-width-0">
+                                <p class="fw-semibold text-sm mb-0 letter-tight text-truncate">
+                                    @if (item.User != null)
+                                    {
+                                        @item.User.UserName
+                                    }
+                                    else
+                                    {
+
+                                        <span class="text-muted">Unknown</span>
+                                    }
+                                    @if (isMyRequest)
+                                    {
+                                        <span class="badge rounded-pill bg-indigo-50 text-indigo text-xs px-2 py-1 ms-1">YOU</span>
+                                    }
+                                </p>
+                                <span class="text-muted text-xs">@rRole</span>
+                            </div>
+                        </div>
+                        @if (item.Status == "Pending")
+                        {
+                            <span class="badge rounded-pill bg-amber-50 text-amber px-2 py-1 fw-semibold text-xs ms-2">
+                                <i class="bi bi-hourglass-split"></i> Pending
+                            </span>
                         }
-                    </tr>
-                }
-            </tbody>
-        </table>
+                        else if (item.Status == "Approved")
+                        {
+                            <span class="badge rounded-pill bg-green-50 text-green px-2 py-1 fw-semibold text-xs ms-2">
+                                <i class="bi bi-check-circle-fill"></i> Approved
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge rounded-pill bg-red-50 text-red px-2 py-1 fw-semibold text-xs ms-2">
+                                <i class="bi bi-x-circle-fill"></i> Rejected
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Details Grid -->
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <div class="rounded-3 p-2" style="background:rgba(6,182,212,0.04);">
+                                <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Type</p>
+                                <p class="fw-semibold text-sm mb-0 letter-tight">@item.LeaveType</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="rounded-3 p-2" style="background:rgba(99,102,241,0.04);">
+                                <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Duration</p>
+                                <p class="fw-semibold text-sm mb-0 letter-tight">@((item.EndDate - item.StartDate).Days + 1) Day@(((item.EndDate - item.StartDate).Days + 1) != 1 ? "s" : "")</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="rounded-3 p-2" style="background:rgba(34,197,94,0.04);">
+                                <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">From</p>
+                                <p class="fw-semibold text-sm mb-0 letter-tight">@item.StartDate.ToString("MMM dd")</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="rounded-3 p-2" style="background:rgba(168,85,247,0.04);">
+                                <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">To</p>
+                                <p class="fw-semibold text-sm mb-0 letter-tight">@item.EndDate.ToString("MMM dd")</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reason -->
+                    <div class="rounded-3 p-2 mb-2" style="background:rgba(0,0,0,0.02);">
+                        <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Reason</p>
+                        <p class="text-sm mb-0">@item.Reason</p>
+                    </div>
+
+                    <!-- Filed date -->
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-muted text-xs">
+                            <i class="bi bi-clock me-1"></i>Filed: @item.DateRequested.ToString("MMM dd, yyyy")
+                        </span>
+                    </div>
+
+                    <!-- Actions (if manager/admin) -->
+                    @if (hasPower)
+                    {
+                        @if (item.Status == "Pending")
+                        {
+                            @if (canApproveThisRow)
+                            {
+                                <div class="d-flex gap-2">
+                                    <a asp-action="Approve" asp-route-id="@item.LeaveID"
+                                       class="btn btn-sm flex-fill py-2 fw-semibold"
+                                       style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);">
+                                        <i class="bi bi-check-circle me-1"></i> Approve
+                                    </a>
+                                    <a asp-action="Reject" asp-route-id="@item.LeaveID"
+                                       class="btn btn-sm flex-fill py-2 fw-semibold"
+                                       style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
+                                        <i class="bi bi-x-circle me-1"></i> Reject
+                                    </a>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center p-2 rounded-3" style="background:rgba(0,0,0,0.02);">
+                                    <span class="text-muted text-xs fst-italic">
+                                        <i class="bi bi-lock me-1"></i> Awaiting higher-level approval
+                                    </span>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center p-2 rounded-3" style="background:rgba(0,0,0,0.02);">
+                                <span class="text-muted text-xs">
+                                    <i class="bi bi-check2-all me-1"></i> Action completed
+                                </span>
+                            </div>
+                        }
+                    }
+                </div>
+            }
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer bg-transparent border-0 px-4 py-3"
+         style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span class="text-muted text-xs">
+                <i class="bi bi-info-circle me-1"></i>
+                Showing all @totalRequests request@(totalRequests != 1 ? "s" : "")
+            </span>
+            <div class="d-flex gap-1 flex-wrap">
+                <span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1">@pendingCount Pending</span>
+                <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">@approvedCount Approved</span>
+                <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@rejectedCount Rejected</span>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="mt-3">
-    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+<!-- Back -->
+<div class="d-flex justify-content-start mb-4 anim-fade-in">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline px-4 py-2">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+    </a>
 </div>

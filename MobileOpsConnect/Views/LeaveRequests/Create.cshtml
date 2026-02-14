@@ -4,40 +4,262 @@
     ViewData["Title"] = "File Leave Request";
 }
 
-<h1>File a New Leave Request</h1>
-<hr />
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                HR Module Active
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-pencil-square me-1"></i> New Application
+            </span>
+        </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">File Leave Request</h1>
+        <p class="lead mb-0 opacity-75">
+            Submit a new leave application for manager approval
+        </p>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-calendar-plus-fill"></i>
+    </div>
+</div>
 
-<div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create">
-            <div class="form-group mb-3">
-                <label asp-for="LeaveType" class="control-label fw-bold">Type of Leave</label>
-                <select asp-for="LeaveType" class="form-control">
-                    <option>Sick Leave</option>
-                    <option>Vacation Leave</option>
-                    <option>Emergency Leave</option>
-                </select>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- QUICK INFO METRICS                              -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-info-circle-fill text-indigo me-1"></i> Leave Info
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Balance</p>
+                    <h3 class="fw-bold mb-1 letter-tight">12 <span class="fs-6 fw-semibold text-muted">days</span></h3>
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Available
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-green-50 rounded-3">
+                    <i class="bi bi-calendar-check text-green fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Used</p>
+                    <h3 class="fw-bold mb-1 letter-tight">3 <span class="fs-6 fw-semibold text-muted">days</span></h3>
+                    <div class="progress mt-1" style="height:4px;width:72px;">
+                        <div class="progress-bar rounded-pill" role="progressbar"
+                             style="width:20%;background:var(--moc-primary);"
+                             aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <span class="text-muted text-xs">of 15 total</span>
+                </div>
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-calendar-minus text-indigo fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Pending</p>
+                    <h3 class="fw-bold mb-1 letter-tight">1</h3>
+                    <span class="badge bg-amber-50 text-amber text-xs fw-semibold">
+                        <i class="bi bi-hourglass-split me-1"></i> Waiting
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-amber-50 rounded-3">
+                    <i class="bi bi-clock-history text-amber fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Approved</p>
+                    <h3 class="fw-bold mb-1 letter-tight">5</h3>
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-check2-all me-1"></i> This Year
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-cyan-50 rounded-3">
+                    <i class="bi bi-calendar-heart text-cyan fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEAVE APPLICATION FORM                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-5">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-pencil-square text-green me-1"></i> Application Form
+    </h5>
+    <hr />
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+
+        <div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
+            <div class="card-body p-4 p-md-5">
+
+                <form asp-action="Create">
+
+                    <!-- ── Leave Type Section ── -->
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="moc-icon-box bg-cyan-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                            <i class="bi bi-bookmark-star-fill text-cyan"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 letter-tight">Leave Type</h6>
+                            <span class="text-muted text-xs">Select the category for your leave</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="LeaveType" class="form-label fw-semibold text-sm mb-2">
+                            <i class="bi bi-tag-fill me-1 text-cyan"></i> Type of Leave
+                        </label>
+                        <select asp-for="LeaveType" class="form-select form-select-lg rounded-3"
+                                style="padding:0.875rem 1rem;font-size:1rem;">
+                            <option>Sick Leave</option>
+                            <option>Vacation Leave</option>
+                            <option>Emergency Leave</option>
+                        </select>
+                    </div>
+
+                    <hr class="my-4 opacity-10" />
+
+                    <!-- ── Date Range Section ── -->
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="moc-icon-box bg-indigo-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                            <i class="bi bi-calendar-range-fill text-indigo"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 letter-tight">Date Range</h6>
+                            <span class="text-muted text-xs">Choose the start and end dates</span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6">
+                            <label asp-for="StartDate" class="form-label fw-semibold text-sm mb-2">
+                                <i class="bi bi-calendar-event me-1 text-green"></i> Start Date
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text rounded-start-3 border-end-0"
+                                      style="background:rgba(34,197,94,0.06);">
+                                    <i class="bi bi-calendar-date text-green"></i>
+                                </span>
+                                <input asp-for="StartDate" class="form-control rounded-end-3 border-start-0" type="date"
+                                       style="padding:0.875rem 1rem;font-size:1rem;" />
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label asp-for="EndDate" class="form-label fw-semibold text-sm mb-2">
+                                <i class="bi bi-calendar-event me-1 text-red"></i> End Date
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text rounded-start-3 border-end-0"
+                                      style="background:rgba(239,68,68,0.06);">
+                                    <i class="bi bi-calendar-date text-red"></i>
+                                </span>
+                                <input asp-for="EndDate" class="form-control rounded-end-3 border-start-0" type="date"
+                                       style="padding:0.875rem 1rem;font-size:1rem;" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 opacity-10" />
+
+                    <!-- ── Reason Section ── -->
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="moc-icon-box bg-amber-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                            <i class="bi bi-chat-left-text-fill text-amber"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 letter-tight">Reason</h6>
+                            <span class="text-muted text-xs">Provide a brief explanation</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Reason" class="form-label fw-semibold text-sm mb-2">
+                            <i class="bi bi-chat-dots me-1 text-amber"></i> Reason for Leave
+                        </label>
+                        <textarea asp-for="Reason" class="form-control rounded-3" rows="4"
+                                  placeholder="Why do you need this leave?"
+                                  style="padding:0.875rem 1rem;font-size:1rem;resize:vertical;min-height:120px;"></textarea>
+                        <small class="text-muted text-xs mt-1 d-flex align-items-center">
+                            <i class="bi bi-info-circle me-1 text-indigo"></i>
+                            Be clear and concise — this helps your manager process faster.
+                        </small>
+                    </div>
+
+                    <hr class="my-4 opacity-10" />
+
+                    <!-- ── Policy Notice ── -->
+                    <div class="rounded-3 p-3 mb-4 d-flex align-items-start gap-3"
+                         style="background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.1);">
+                        <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                            <i class="bi bi-shield-check text-indigo"></i>
+                        </div>
+                        <div>
+                            <p class="fw-semibold text-sm mb-1 letter-tight">Leave Policy Reminder</p>
+                            <p class="text-muted text-xs mb-0">
+                                Leave requests should be filed at least 3 working days in advance (except emergencies).
+                                Your manager will be notified and must approve before the leave becomes effective.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- ── Action Buttons ── -->
+                    <div class="d-grid gap-2">
+                        <input type="submit" value="Submit Request" class="btn btn-moc-primary btn-lg py-3" />
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline btn-lg py-3">
+                            <i class="bi bi-arrow-left me-1"></i> Cancel &amp; Go Back
+                        </a>
+                    </div>
+
+                </form>
+
             </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="StartDate" class="control-label fw-bold">Start Date</label>
-                <input asp-for="StartDate" class="form-control" type="date" />
+            <!-- Card Footer -->
+            <div class="card-footer bg-transparent border-0 px-4 py-3 text-center"
+                 style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
+                <span class="text-muted text-xs">
+                    <i class="bi bi-lock-fill me-1"></i>
+                    Your request is securely submitted and visible only to authorized approvers.
+                </span>
             </div>
+        </div>
 
-            <div class="form-group mb-3">
-                <label asp-for="EndDate" class="control-label fw-bold">End Date</label>
-                <input asp-for="EndDate" class="form-control" type="date" />
-            </div>
-
-            <div class="form-group mb-3">
-                <label asp-for="Reason" class="control-label fw-bold">Reason</label>
-                <textarea asp-for="Reason" class="form-control" rows="3" placeholder="Why do you need this leave?"></textarea>
-            </div>
-
-            <div class="form-group mt-4">
-                <input type="submit" value="Submit Request" class="btn btn-success" />
-                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
     </div>
 </div>

@@ -54,80 +54,354 @@
     decimal netPay = totalEarnings - totalDeductions;
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between mb-3">
-        <h2>📄 Payslip Details</h2>
-        <button class="btn btn-outline-primary" onclick="window.print()">🖨️ Print / Save as PDF</button>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                Payroll Module Active
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(34,197,94,0.25);">
+                <i class="bi bi-check-circle-fill me-1"></i> PAID
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-calendar3 me-1"></i> @DateTime.Now.ToString("MMMM yyyy")
+            </span>
+        </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">My Payslip</h1>
+        <p class="lead mb-0 opacity-75">
+            Compensation breakdown &amp; digital receipt &mdash; MobileOps Connect ERP
+        </p>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-wallet2"></i>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAY SUMMARY METRICS                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-cash-stack text-green me-1"></i> Pay Summary
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Gross Pay</p>
+                    <h3 class="fw-bold mb-1 letter-tight" style="font-size:1.25rem;">₱@totalEarnings.ToString("N2")</h3>
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-arrow-up-short"></i> Earnings
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-green-50 rounded-3">
+                    <i class="bi bi-cash-coin text-green fs-5"></i>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="card border-dark shadow-sm">
-        <div class="card-header bg-dark text-white d-flex justify-content-between">
-            <strong>MobileOps Connect Inc.</strong>
-            <span>Pay Period: @DateTime.Now.ToString("MMMM yyyy")</span>
-        </div>
-        <div class="card-body">
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <p class="mb-1"><strong>Employee Email:</strong> @currentUser</p>
-                    <p class="mb-1"><strong>Job Title:</strong> @jobTitle</p>
-                    <p class="mb-1"><strong>Department:</strong> @department</p>
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Deductions</p>
+                    <h3 class="fw-bold mb-1 letter-tight" style="font-size:1.25rem;">₱@totalDeductions.ToString("N2")</h3>
+                    <span class="badge bg-red-50 text-red text-xs fw-semibold">
+                        <i class="bi bi-arrow-down-short"></i> Withheld
+                    </span>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-1"><strong>Status:</strong> <span class="badge bg-success">PAID</span></p>
-                    <p class="mb-1"><strong>Issue Date:</strong> @DateTime.Now.ToString("dd MMM yyyy")</p>
+                <div class="moc-icon-box bg-red-50 rounded-3">
+                    <i class="bi bi-dash-circle text-red fs-5"></i>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <table class="table table-bordered">
-                <thead class="table-light">
-                    <tr>
-                        <th>Earnings</th>
-                        <th class="text-end">Amount (₱)</th>
-                        <th>Deductions</th>
-                        <th class="text-end">Amount (₱)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Basic Salary</td>
-                        <td class="text-end">@basicSalary.ToString("N2")</td>
-                        <td>SSS Contribution</td>
-                        <td class="text-end">@sss.ToString("N2")</td>
-                    </tr>
-                    <tr>
-                        <td>Overtime Pay</td>
-                        <td class="text-end">@overtime.ToString("N2")</td>
-                        <td>PhilHealth</td>
-                        <td class="text-end">@philhealth.ToString("N2")</td>
-                    </tr>
-                    <tr>
-                        <td>Allowances</td>
-                        <td class="text-end">@allowance.ToString("N2")</td>
-                        <td>Pag-IBIG</td>
-                        <td class="text-end">@pagibig.ToString("N2")</td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td>Withholding Tax</td>
-                        <td class="text-end">@tax.ToString("N2")</td>
-                    </tr>
-                    <tr class="fw-bold bg-light">
-                        <td>Total Earnings</td>
-                        <td class="text-end text-success">@totalEarnings.ToString("N2")</td>
-                        <td>Total Deductions</td>
-                        <td class="text-end text-danger">@totalDeductions.ToString("N2")</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="text-end mt-4">
-                <h4 class="fw-bold">Net Pay: <span class="text-success border-bottom border-success border-2 pb-1">₱@netPay.ToString("N2")</span></h4>
-            </div>
-
-            <div class="mt-4">
-                <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Net Pay</p>
+                    <h3 class="fw-bold mb-1 letter-tight text-green" style="font-size:1.25rem;">₱@netPay.ToString("N2")</h3>
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Final
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-green-50 rounded-3">
+                    <i class="bi bi-wallet2 text-green fs-5"></i>
+                </div>
             </div>
         </div>
+    </div>
+
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Status</p>
+                    <h3 class="fw-bold mb-1 letter-tight" style="font-size:1.25rem;">Paid</h3>
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-patch-check-fill me-1"></i> Processed
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-cyan-50 rounded-3">
+                    <i class="bi bi-patch-check-fill text-cyan fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAYSLIP DIGITAL RECEIPT                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-5">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-receipt-cutoff text-indigo me-1"></i> Digital Payslip
+    </h5>
+    <hr />
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-9 col-xl-8">
+
+        <div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
+
+            <!-- ── Receipt Header ── -->
+            <div class="p-4 p-md-5 pb-0 text-center">
+                <div class="d-flex justify-content-center mb-3">
+                    <div class="moc-icon-box-lg rounded-3" style="background:var(--moc-gradient);width:64px;height:64px;">
+                        <i class="bi bi-shield-lock-fill text-white fs-3"></i>
+                    </div>
+                </div>
+                <h4 class="fw-bold letter-tight mb-1">MobileOps Connect Inc.</h4>
+                <p class="text-muted text-sm mb-1">Official Compensation Statement</p>
+                <span class="badge rounded-pill bg-indigo-50 text-indigo px-3 py-2 fw-semibold text-xs">
+                    <i class="bi bi-calendar3 me-1"></i> Pay Period: @DateTime.Now.ToString("MMMM yyyy")
+                </span>
+            </div>
+
+            <div class="p-4 p-md-5 pt-4">
+
+                <!-- ── Employee Info ── -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <div class="rounded-3 p-3 h-100" style="background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.08);">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:32px;height:32px;min-width:32px;">
+                                    <i class="bi bi-person-fill text-indigo" style="font-size:0.8rem;"></i>
+                                </div>
+                                <span class="text-muted text-xs text-uppercase fw-semibold">Employee Details</span>
+                            </div>
+                            <p class="fw-semibold text-sm mb-1 letter-tight">@currentUser</p>
+                            <p class="text-muted text-xs mb-1">@jobTitle</p>
+                            <p class="text-muted text-xs mb-0">@department</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="rounded-3 p-3 h-100" style="background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.08);">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="moc-icon-box bg-green-50 rounded-3" style="width:32px;height:32px;min-width:32px;">
+                                    <i class="bi bi-receipt text-green" style="font-size:0.8rem;"></i>
+                                </div>
+                                <span class="text-muted text-xs text-uppercase fw-semibold">Payment Info</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="fw-semibold text-sm letter-tight">Status:</span>
+                                <span class="badge rounded-pill bg-green-50 text-green px-2 py-1 fw-semibold text-xs">
+                                    <i class="bi bi-check-circle-fill me-1"></i> PAID
+                                </span>
+                            </div>
+                            <p class="text-muted text-xs mb-1">Issue Date: @DateTime.Now.ToString("dd MMM yyyy")</p>
+                            <p class="text-muted text-xs mb-0">Ref: MOC-@DateTime.Now.ToString("yyyyMM")-001</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="opacity-10 my-4" />
+
+                <!-- ── Earnings Section ── -->
+                <div class="d-flex align-items-center mb-3">
+                    <div class="moc-icon-box bg-green-50 rounded-3 me-3" style="width:36px;height:36px;min-width:36px;">
+                        <i class="bi bi-plus-circle-fill text-green" style="font-size:0.85rem;"></i>
+                    </div>
+                    <h6 class="fw-bold mb-0 letter-tight">Earnings</h6>
+                </div>
+
+                <div class="rounded-3 overflow-hidden mb-4" style="border:1px solid var(--moc-border);">
+                    <!-- Basic Salary -->
+                    <div class="d-flex justify-content-between align-items-center px-3 px-md-4 py-3"
+                         style="background:rgba(34,197,94,0.03);">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-briefcase text-green text-sm"></i>
+                            <span class="fw-semibold text-sm">Basic Salary</span>
+                        </div>
+                        <span class="fw-bold text-sm letter-tight">₱@basicSalary.ToString("N2")</span>
+                    </div>
+                    <hr class="m-0 opacity-08" />
+
+                    <!-- Overtime -->
+                    <div class="d-flex justify-content-between align-items-center px-3 px-md-4 py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-clock-history text-amber text-sm"></i>
+                            <span class="fw-semibold text-sm">Overtime Pay</span>
+                        </div>
+                        <span class="fw-bold text-sm letter-tight">₱@overtime.ToString("N2")</span>
+                    </div>
+                    <hr class="m-0 opacity-08" />
+
+                    <!-- Allowances -->
+                    <div class="d-flex justify-content-between align-items-center px-3 px-md-4 py-3"
+                         style="background:rgba(34,197,94,0.03);">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-gift text-purple text-sm"></i>
+                            <span class="fw-semibold text-sm">Allowances</span>
+                        </div>
+                        <span class="fw-bold text-sm letter-tight">₱@allowance.ToString("N2")</span>
+                    </div>
+                    <hr class="m-0 opacity-08" />
+
+                    <!-- Total Earnings -->
+                    <div class="d-flex justify-content-between align-items-center px-3 px-md-4 py-3"
+                         style="background:rgba(34,197,94,0.06);">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="moc-icon-box bg-green-50 rounded-3" style="width:28px;height:28px;min-width:28px;">
+                                <i class="bi bi-check-lg text-green" style="font-size:0.75rem;"></i>
+                            </div>
+                            <span class="fw-bold text-sm">Total Earnings</span>
+                        </div>
+                        <span class="fw-bold text-green letter-tight">₱@totalEarnings.ToString("N2")</span>
+                    </div>
+                </div>
+
+                <!-- ── Deductions Section ── -->
+                <div class="d-flex align-items-center mb-3">
+                    <div class="moc-icon-box bg-red-50 rounded-3 me-3" style="width:36px;height:36px;min-width:36px;">
+                        <i class="bi bi-dash-circle-fill text-red" style="font-size:0.85rem;"></i>
+                    </div>
+                    <h6 class="fw-bold mb-0 letter-tight">Deductions</h6>
+                </div>
+
+                <div class="rounded-3 overflow-hidden mb-4" style="border:1px solid var(--moc-border);">
+                    <!-- SSS -->
+                    <div class="d-flex justify-content-between align-items-center px-3 px-md-4 py-3"
+                         style="background:rgba(239,68,68,0.02);">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-shield-check text-indigo text-sm"></i>
+                            <span class="fw-semibold text-sm">SSS Contribution</span>
+                        </div>
+                        <span class="fw-bold text-sm letter-tight text-red">−₱@sss.ToString("N2")</span>
+                    </div>
+                    <hr class="m-0 opacity-08" />
+
+                    <!-- PhilHealth -->
+                    <div class="d-flex justify-content-between align-items-center px-3 px-md-4 py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-heart-pulse text-cyan text-sm"></i>
+                            <span class="fw-semibold text-sm">PhilHealth</span>
+                        </div>
+                        <span class="fw-bold text-sm letter-tight text-red">−₱@philhealth.ToString("N2")</span>
+                    </div>
+                    <hr class="m-0 opacity-08" />
+
+                    <!-- Pag-IBIG -->
+                    <div class="d-flex justify-content-between align-items-center px-3 px-md-4 py-3"
+                         style="background:rgba(239,68,68,0.02);">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-house-heart text-amber text-sm"></i>
+                            <span class="fw-semibold text-sm">Pag-IBIG</span>
+                        </div>
+                        <span class="fw-bold text-sm letter-tight text-red">−₱@pagibig.ToString("N2")</span>
+                    </div>
+                    <hr class="m-0 opacity-08" />
+
+                    <!-- Withholding Tax -->
+                    <div class="d-flex justify-content-between align-items-center px-3 px-md-4 py-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-bank text-purple text-sm"></i>
+                            <span class="fw-semibold text-sm">Withholding Tax</span>
+                        </div>
+                        <span class="fw-bold text-sm letter-tight text-red">−₱@tax.ToString("N2")</span>
+                    </div>
+                    <hr class="m-0 opacity-08" />
+
+                    <!-- Total Deductions -->
+                    <div class="d-flex justify-content-between align-items-center px-3 px-md-4 py-3"
+                         style="background:rgba(239,68,68,0.06);">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="moc-icon-box bg-red-50 rounded-3" style="width:28px;height:28px;min-width:28px;">
+                                <i class="bi bi-dash-lg text-red" style="font-size:0.75rem;"></i>
+                            </div>
+                            <span class="fw-bold text-sm">Total Deductions</span>
+                        </div>
+                        <span class="fw-bold text-red letter-tight">−₱@totalDeductions.ToString("N2")</span>
+                    </div>
+                </div>
+
+                <hr class="opacity-10 my-4" />
+
+                <!-- ── NET PAY (Hero Amount) ── -->
+                <div class="rounded-3 p-4 text-center mb-4"
+                     style="background:var(--moc-gradient);border-radius:1rem !important;">
+                    <p class="text-white-50 text-uppercase text-xs fw-semibold mb-2 letter-tight">
+                        <i class="bi bi-wallet2 me-1"></i> Net Take-Home Pay
+                    </p>
+                    <h1 class="text-white fw-bold mb-2 letter-tight" style="font-size:2.5rem;">
+                        ₱@netPay.ToString("N2")
+                    </h1>
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                        <span class="badge rounded-pill px-3 py-2 text-xs fw-semibold"
+                              style="background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.9);">
+                            <i class="bi bi-check-circle-fill me-1"></i> Processed &amp; Paid
+                        </span>
+                        <span class="badge rounded-pill px-3 py-2 text-xs fw-semibold"
+                              style="background:rgba(255,255,255,0.14);color:rgba(255,255,255,0.9);">
+                            <i class="bi bi-calendar3 me-1"></i> @DateTime.Now.ToString("dd MMM yyyy")
+                        </span>
+                    </div>
+                </div>
+
+                <!-- ── Actions ── -->
+                <div class="row g-2">
+                    <div class="col-sm-6">
+                        <button class="btn btn-moc-outline btn-lg w-100 py-3" onclick="window.print()">
+                            <i class="bi bi-printer me-1"></i> Print / Save PDF
+                        </button>
+                    </div>
+                    <div class="col-sm-6">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-moc-primary btn-lg w-100 py-3">
+                            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── Receipt Footer ── -->
+            <div class="card-footer bg-transparent border-0 px-4 p-md-5 py-3 text-center"
+                 style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+                    <span class="text-muted text-xs">
+                        <i class="bi bi-lock-fill me-1"></i>
+                        This is a system-generated document. No signature required.
+                    </span>
+                    <span class="text-muted text-xs">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Ref: MOC-@DateTime.Now.ToString("yyyyMM")-001
+                    </span>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
