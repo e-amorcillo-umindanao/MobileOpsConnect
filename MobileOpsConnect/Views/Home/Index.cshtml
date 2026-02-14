@@ -27,8 +27,16 @@
                 </span>
             }
         </div>
-        <h1 class="display-5 fw-bold mb-2 letter-tight">Alpha's Command Center</h1>
-        <p class="lead mb-0 opacity-75">System Overview &amp; Control Panel &mdash; MobileOps Connect ERP</p>
+        @if (isSuperAdmin)
+        {
+            <h1 class="display-5 fw-bold mb-2 letter-tight">Alpha's Command Center</h1>
+            <p class="lead mb-0 opacity-75">Super Admin Overview &amp; Control Panel &mdash; MobileOps Connect ERP</p>
+        }
+        else if (isSystemAdmin)
+        {
+            <h1 class="display-5 fw-bold mb-2 letter-tight">Beta's Dashboard</h1>
+            <p class="lead mb-0 opacity-75">System Admin Overview &amp; Control Panel &mdash; MobileOps Connect ERP</p>
+        }
     </div>
     <!-- Decorative watermark -->
     <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"

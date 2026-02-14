@@ -4,111 +4,259 @@
     ViewData["Title"] = "System Configuration";
 }
 
-<div class="row justify-content-center mt-2">
-    <div class="col-lg-8 col-xl-7">
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE HEADER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                Configuration Active
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-clock-history me-1"></i> Last saved: @Model.LastUpdated.ToString("g")
+            </span>
+        </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">System Configuration</h1>
+        <p class="lead mb-0 opacity-75">
+            Manage global settings, thresholds &amp; company parameters
+        </p>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-gear-wide-connected"></i>
+    </div>
+</div>
 
-        <!-- Page Header -->
-        <div class="d-flex align-items-center mb-4 anim-fade-in">
-            <div class="moc-icon-box-lg bg-amber-50 rounded-3 me-3">
-                <i class="bi bi-gear-wide-connected text-amber fs-4"></i>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SUCCESS ALERT                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+@if (ViewBag.Message != null)
+{
+    <div class="alert border-0 shadow-sm rounded-3 mb-4 anim-fade-in"
+         role="alert"
+         style="background: rgba(34,197,94,0.08); color: #16a34a; border-left: 4px solid #22c55e !important;">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <div class="moc-icon-box bg-green-50 rounded-3 me-3">
+                    <i class="bi bi-check-circle-fill text-green fs-5"></i>
+                </div>
+                <div>
+                    <span class="fw-semibold">Success!</span>
+                    <span class="text-sm ms-1">@ViewBag.Message</span>
+                </div>
             </div>
-            <div>
-                <h3 class="fw-bold mb-0 letter-tight">System Configuration</h3>
-                <p class="text-muted text-sm mb-0">Manage global settings and system parameters</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+}
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- CURRENT SETTINGS OVERVIEW                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-sliders text-indigo me-1"></i> Current Settings
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Company</p>
+                    <h5 class="fw-bold mb-1 letter-tight text-truncate" style="max-width: 140px;" title="@Model.CompanyName">
+                        @Model.CompanyName
+                    </h5>
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Active
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-building text-indigo fs-5"></i>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Success Alert -->
-        @if (ViewBag.Message != null)
-        {
-            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
-                <div class="d-flex align-items-center">
-                    <i class="bi bi-check-circle-fill me-2 fs-5"></i>
-                    <span>@ViewBag.Message</span>
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Tax Rate</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@Model.TaxRate<span class="fs-6 fw-semibold text-muted">%</span></h3>
+                    <span class="badge bg-amber-50 text-amber text-xs fw-semibold">
+                        <i class="bi bi-receipt me-1"></i> Applied
+                    </span>
                 </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="moc-icon-box bg-amber-50 rounded-3">
+                    <i class="bi bi-percent text-amber fs-5"></i>
+                </div>
             </div>
-        }
+        </div>
+    </div>
 
-        <!-- Settings Card -->
-        <div class="card moc-card-static shadow-sm anim-fade-in anim-delay-1">
-            <div class="card-body p-4 p-md-5">
-                <form asp-action="Edit">
-                    <input type="hidden" asp-for="Id" />
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Low Stock</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@Model.LowStockThreshold <span class="fs-6 fw-semibold text-muted">units</span></h3>
+                    <span class="badge bg-red-50 text-red text-xs fw-semibold">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Threshold
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-red-50 rounded-3">
+                    <i class="bi bi-box-seam-fill text-red fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                    <!-- General Information Section -->
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="bi bi-building text-indigo fs-5 me-2"></i>
-                        <h5 class="fw-semibold mb-0">General Information</h5>
-                    </div>
-                    <hr class="mb-4 opacity-10" />
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Support</p>
+                    <h6 class="fw-bold mb-1 letter-tight text-truncate" style="max-width: 140px;" title="@Model.SupportEmail">
+                        @Model.SupportEmail
+                    </h6>
+                    <span class="badge bg-cyan-50 text-cyan text-xs fw-semibold">
+                        <i class="bi bi-envelope-check-fill me-1"></i> Linked
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-cyan-50 rounded-3">
+                    <i class="bi bi-envelope-fill text-cyan fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                    <div class="mb-3">
-                        <label asp-for="CompanyName" class="form-label fw-semibold text-sm"></label>
-                        <input asp-for="CompanyName" class="form-control form-control-lg rounded-3" />
-                        <span asp-validation-for="CompanyName" class="text-danger text-sm"></span>
-                    </div>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- CONFIGURATION FORM                              -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
 
-                    <div class="mb-4">
-                        <label asp-for="SupportEmail" class="form-label fw-semibold text-sm"></label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text rounded-start-3 bg-light border-end-0">
-                                <i class="bi bi-envelope text-muted"></i>
-                            </span>
-                            <input asp-for="SupportEmail" class="form-control rounded-end-3 border-start-0" />
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+
+            <!-- ── General Information Card ── -->
+            <div class="moc-section-header mt-4">
+                <h5 class="fw-bold letter-tight">
+                    <i class="bi bi-building text-indigo me-1"></i> General Information
+                </h5>
+                <hr />
+            </div>
+
+            <div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <!-- Company Name -->
+                        <div class="col-md-6">
+                            <label asp-for="CompanyName" class="form-label fw-semibold text-sm mb-2">
+                                <i class="bi bi-building me-1 text-indigo"></i> Company Name
+                            </label>
+                            <input asp-for="CompanyName" class="form-control form-control-lg rounded-3" placeholder="Enter company name" />
+                            <span asp-validation-for="CompanyName" class="text-danger text-xs mt-1 d-block"></span>
+                        </div>
+
+                        <!-- Support Email -->
+                        <div class="col-md-6">
+                            <label asp-for="SupportEmail" class="form-label fw-semibold text-sm mb-2">
+                                <i class="bi bi-envelope me-1 text-cyan"></i> Support Email
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text rounded-start-3 border-end-0"
+                                      style="background: rgba(6,182,212,0.06);">
+                                    <i class="bi bi-at text-cyan"></i>
+                                </span>
+                                <input asp-for="SupportEmail" class="form-control rounded-end-3 border-start-0" placeholder="support@company.com" />
+                            </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Inventory Logic Section -->
-                    <div class="d-flex align-items-center mb-3 mt-5">
-                        <i class="bi bi-box-seam-fill text-amber fs-5 me-2"></i>
-                        <h5 class="fw-semibold mb-0">Inventory Logic</h5>
-                    </div>
-                    <hr class="mb-4 opacity-10" />
+            <!-- ── Inventory Logic Card ── -->
+            <div class="moc-section-header mt-5">
+                <h5 class="fw-bold letter-tight">
+                    <i class="bi bi-box-seam-fill text-amber me-1"></i> Inventory Logic
+                </h5>
+                <hr />
+            </div>
 
+            <div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-2">
+                <div class="card-body p-4">
                     <div class="row g-3">
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="LowStockThreshold" class="form-label fw-semibold text-sm"></label>
+                        <!-- Low Stock Threshold -->
+                        <div class="col-md-6">
+                            <label asp-for="LowStockThreshold" class="form-label fw-semibold text-sm mb-2">
+                                <i class="bi bi-exclamation-triangle me-1 text-red"></i> Low Stock Threshold
+                            </label>
                             <div class="input-group input-group-lg">
-                                <input asp-for="LowStockThreshold" class="form-control rounded-start-3" type="number" />
-                                <span class="input-group-text rounded-end-3 bg-light">Units</span>
+                                <input asp-for="LowStockThreshold" class="form-control rounded-start-3" type="number" placeholder="e.g., 10" />
+                                <span class="input-group-text rounded-end-3 fw-semibold text-sm"
+                                      style="background: rgba(239,68,68,0.06); color: #ef4444; border-color: #e2e8f0;">
+                                    <i class="bi bi-box me-1"></i> Units
+                                </span>
                             </div>
-                            <small class="text-muted text-xs mt-1 d-block">
-                                <i class="bi bi-info-circle me-1"></i>
-                                Items below this number trigger alerts.
+                            <small class="text-muted text-xs mt-2 d-flex align-items-center">
+                                <i class="bi bi-info-circle me-1 text-indigo"></i>
+                                Products below this count trigger reorder alerts.
                             </small>
                         </div>
 
-                        <div class="col-md-6 mb-3">
-                            <label asp-for="TaxRate" class="form-label fw-semibold text-sm"></label>
+                        <!-- Tax Rate -->
+                        <div class="col-md-6">
+                            <label asp-for="TaxRate" class="form-label fw-semibold text-sm mb-2">
+                                <i class="bi bi-receipt me-1 text-amber"></i> Tax Rate
+                            </label>
                             <div class="input-group input-group-lg">
-                                <input asp-for="TaxRate" class="form-control rounded-start-3" type="number" step="0.01" />
-                                <span class="input-group-text rounded-end-3 bg-light">%</span>
+                                <input asp-for="TaxRate" class="form-control rounded-start-3" type="number" step="0.01" placeholder="e.g., 12.00" />
+                                <span class="input-group-text rounded-end-3 fw-semibold text-sm"
+                                      style="background: rgba(245,158,11,0.06); color: #f59e0b; border-color: #e2e8f0;">
+                                    <i class="bi bi-percent me-1"></i> Rate
+                                </span>
                             </div>
+                            <small class="text-muted text-xs mt-2 d-flex align-items-center">
+                                <i class="bi bi-info-circle me-1 text-indigo"></i>
+                                Applied to all taxable transactions.
+                            </small>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <hr class="my-4 opacity-10" />
-
-                    <!-- Action Buttons -->
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-moc-primary btn-lg py-3">
-                            <i class="bi bi-check2-circle me-2"></i> Save Configuration
-                        </button>
-                        <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline py-2">
-                            <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
-                        </a>
+            <!-- ── Action Buttons ── -->
+            <div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-3">
+                <div class="card-body p-4">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-8">
+                            <button type="submit" class="btn btn-moc-primary btn-lg w-100 py-3">
+                                <i class="bi bi-check2-circle me-2"></i> Save Configuration
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline btn-lg w-100 py-3">
+                                <i class="bi bi-arrow-left me-1"></i> Dashboard
+                            </a>
+                        </div>
                     </div>
-                </form>
+                    <div class="text-center mt-3">
+                        <small class="text-muted text-xs">
+                            <i class="bi bi-clock-history me-1"></i>
+                            Configuration last modified: @Model.LastUpdated.ToString("g")
+                        </small>
+                    </div>
+                </div>
             </div>
 
-            <!-- Card Footer -->
-            <div class="card-footer text-muted text-center text-sm py-3 bg-light bg-opacity-50"
-                 style="border-radius: 0 0 0.875rem 0.875rem; border-top: 1px solid var(--moc-border);">
-                <i class="bi bi-clock-history me-1"></i>
-                Last Updated: @Model.LastUpdated.ToString("g")
-            </div>
-        </div>
+        </form>
 
     </div>
 </div>

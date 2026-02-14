@@ -2,50 +2,357 @@
 
 @{
     ViewData["Title"] = "User Management";
+    bool isSuperAdmin = User.IsInRole("SuperAdmin");
+
+    int totalUsers = Model.Count();
+    int superAdminCount = Model.Count(u => u.Role == "SuperAdmin");
+    int systemAdminCount = Model.Count(u => u.Role == "SystemAdmin");
+    int otherCount = totalUsers - superAdminCount - systemAdminCount;
 }
 
-<h1>User Management</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New User</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE HEADER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                Directory Online
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-people-fill me-1"></i> @totalUsers Registered Account@(totalUsers != 1 ? "s" : "")
+            </span>
+        </div>
+        @if (isSuperAdmin)
         {
-            <tr>
-                <td>@item.Email</td>
-                <td>
-                    @if (item.Role == "SuperAdmin")
-                    {
-                        <span class="badge bg-danger">Super Admin</span>
-                    }
-                    else if (item.Role == "SystemAdmin")
-                    {
-                        <span class="badge bg-warning text-dark">System Admin</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-info text-dark">@item.Role</span>
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit Role</a>
-                    <a asp-action="ResetPassword" asp-route-id="@item.Id" class="btn btn-sm btn-warning text-dark">Reset Password</a>
-                </td>
-            </tr>
+            <h1 class="display-5 fw-bold mb-2 letter-tight">System Admin Management</h1>
+            <p class="lead mb-0 opacity-75">
+                Create &amp; manage Beta-level System Administrator accounts
+            </p>
         }
-    </tbody>
-</table>
+        else
+        {
+            <h1 class="display-5 fw-bold mb-2 letter-tight">User Management</h1>
+            <p class="lead mb-0 opacity-75">
+                Manage staff accounts, roles &amp; access permissions
+            </p>
+        }
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-people-fill"></i>
+    </div>
+</div>
 
-<div class="mt-4">
-    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- USER STATS METRICS                              -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-bar-chart-line-fill text-indigo me-1"></i> Account Overview
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <!-- Total Users -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Total Users</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@totalUsers</h3>
+                    <span class="badge bg-indigo-50 text-indigo text-xs fw-semibold">
+                        <i class="bi bi-people-fill me-1"></i> All Roles
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-person-lines-fill text-indigo fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Super Admins -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Super Admins</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@superAdminCount</h3>
+                    <span class="badge bg-red-50 text-red text-xs fw-semibold">
+                        <i class="bi bi-shield-lock-fill me-1"></i> Alpha
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-red-50 rounded-3">
+                    <i class="bi bi-shield-lock-fill text-red fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Admins -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Sys Admins</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@systemAdminCount</h3>
+                    <span class="badge bg-amber-50 text-amber text-xs fw-semibold">
+                        <i class="bi bi-gear-fill me-1"></i> Beta
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-amber-50 rounded-3">
+                    <i class="bi bi-gear-wide-connected text-amber fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Other Roles -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Staff &amp; Others</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@otherCount</h3>
+                    <span class="badge bg-cyan-50 text-cyan text-xs fw-semibold">
+                        <i class="bi bi-person-badge me-1"></i> Standard
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-cyan-50 rounded-3">
+                    <i class="bi bi-person-workspace text-cyan fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACTION BAR                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-5">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-person-lines-fill text-amber me-1"></i> User Directory
+    </h5>
+    <hr />
+</div>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 anim-fade-in">
+    <div class="d-flex align-items-center gap-2">
+        <div class="moc-icon-box bg-green-50 rounded-3">
+            <i class="bi bi-person-plus-fill text-green fs-5"></i>
+        </div>
+        <div>
+            <p class="fw-semibold mb-0 text-sm letter-tight">Add New Account</p>
+            <p class="text-muted text-xs mb-0">Register a new user to the system</p>
+        </div>
+    </div>
+    <a asp-action="Create" class="btn btn-moc-primary px-4">
+        <i class="bi bi-plus-circle me-1"></i> Create New User
+    </a>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- USER TABLE                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
+
+    <!-- Table Header Bar -->
+    <div class="card-header bg-transparent border-0 p-4 pb-0">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-table text-indigo fs-5"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0 letter-tight">All Accounts</h6>
+                    <span class="text-muted text-xs">@totalUsers user@(totalUsers != 1 ? "s" : "") registered</span>
+                </div>
+            </div>
+            <span class="badge rounded-pill bg-indigo-50 text-indigo px-3 py-2 fw-semibold text-xs">
+                <i class="bi bi-filter me-1"></i> Showing All
+            </span>
+        </div>
+    </div>
+
+    <div class="card-body p-4 pt-3">
+
+        <!-- ── Desktop Table (md+) ── -->
+        <div class="table-responsive d-none d-md-block">
+            <table class="table table-hover align-middle mb-0" style="border-collapse: separate; border-spacing: 0 0.5rem;">
+                <thead>
+                    <tr style="border:none;">
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-3 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-person me-1"></i> User
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-shield me-1"></i> Role
+                        </th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 text-end pe-3 py-3" style="letter-spacing:0.05em;">
+                            <i class="bi bi-lightning me-1"></i> Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                            <td class="border-0 ps-3 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
+                                <div class="d-flex align-items-center gap-3">
+                                    <!-- Avatar -->
+                                    @if (item.Role == "SuperAdmin")
+                                    {
+                                        <div class="moc-icon-box bg-red-50 rounded-circle">
+                                            <i class="bi bi-shield-lock-fill text-red"></i>
+                                        </div>
+                                    }
+                                    else if (item.Role == "SystemAdmin")
+                                    {
+                                        <div class="moc-icon-box bg-amber-50 rounded-circle">
+                                            <i class="bi bi-gear-fill text-amber"></i>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="moc-icon-box bg-indigo-50 rounded-circle">
+                                            <i class="bi bi-person-fill text-indigo"></i>
+                                        </div>
+                                    }
+                                    <div>
+                                        <p class="fw-semibold mb-0 text-sm letter-tight">@item.Email</p>
+                                        <span class="text-muted text-xs">ID: @item.Id.Substring(0, Math.Min(8, item.Id.Length))…</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="border-0 py-3">
+                                @if (item.Role == "SuperAdmin")
+                                {
+                                    <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">
+                                        <i class="bi bi-shield-lock-fill me-1"></i> Super Admin
+                                    </span>
+                                }
+                                else if (item.Role == "SystemAdmin")
+                                {
+                                    <span class="badge rounded-pill bg-amber-50 text-amber px-3 py-2 fw-semibold text-xs">
+                                        <i class="bi bi-gear-fill me-1"></i> System Admin
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge rounded-pill bg-cyan-50 text-cyan px-3 py-2 fw-semibold text-xs">
+                                        <i class="bi bi-person-badge me-1"></i> @item.Role
+                                    </span>
+                                }
+                            </td>
+                            <td class="border-0 text-end pe-3 py-3" style="border-radius:0 0.75rem 0.75rem 0;">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-moc-outline px-3 py-2"
+                                       title="Edit Role">
+                                        <i class="bi bi-pencil-square me-1"></i> Edit
+                                    </a>
+                                    <a asp-action="ResetPassword" asp-route-id="@item.Id"
+                                       class="btn btn-sm px-3 py-2 fw-semibold"
+                                       style="background:rgba(245,158,11,0.08); color:#f59e0b; border:1.5px solid rgba(245,158,11,0.2);"
+                                       title="Reset Password">
+                                        <i class="bi bi-key-fill me-1"></i> Reset
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ── Mobile Cards (sm & below) ── -->
+        <div class="d-md-none">
+            @foreach (var item in Model)
+            {
+                <div class="moc-metric p-3 mb-3">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <!-- Avatar -->
+                        @if (item.Role == "SuperAdmin")
+                        {
+                            <div class="moc-icon-box bg-red-50 rounded-circle">
+                                <i class="bi bi-shield-lock-fill text-red"></i>
+                            </div>
+                        }
+                        else if (item.Role == "SystemAdmin")
+                        {
+                            <div class="moc-icon-box bg-amber-50 rounded-circle">
+                                <i class="bi bi-gear-fill text-amber"></i>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="moc-icon-box bg-indigo-50 rounded-circle">
+                                <i class="bi bi-person-fill text-indigo"></i>
+                            </div>
+                        }
+                        <div class="flex-grow-1 min-width-0">
+                            <p class="fw-semibold mb-0 text-sm letter-tight text-truncate">@item.Email</p>
+                            <span class="text-muted text-xs">ID: @item.Id.Substring(0, Math.Min(8, item.Id.Length))…</span>
+                        </div>
+                        @if (item.Role == "SuperAdmin")
+                        {
+                            <span class="badge rounded-pill bg-red-50 text-red px-2 py-1 fw-semibold text-xs">
+                                <i class="bi bi-shield-lock-fill"></i> Alpha
+                            </span>
+                        }
+                        else if (item.Role == "SystemAdmin")
+                        {
+                            <span class="badge rounded-pill bg-amber-50 text-amber px-2 py-1 fw-semibold text-xs">
+                                <i class="bi bi-gear-fill"></i> Beta
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                <i class="bi bi-person-badge"></i> @item.Role
+                            </span>
+                        }
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-moc-outline flex-fill py-2">
+                            <i class="bi bi-pencil-square me-1"></i> Edit Role
+                        </a>
+                        <a asp-action="ResetPassword" asp-route-id="@item.Id"
+                           class="btn btn-sm flex-fill py-2 fw-semibold"
+                           style="background:rgba(245,158,11,0.08); color:#f59e0b; border:1.5px solid rgba(245,158,11,0.2);">
+                            <i class="bi bi-key-fill me-1"></i> Reset PW
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+
+    <!-- Table Footer -->
+    <div class="card-footer bg-transparent border-0 px-4 py-3"
+         style="border-top:1px solid var(--moc-border); border-radius: 0 0 0.875rem 0.875rem;">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span class="text-muted text-xs">
+                <i class="bi bi-info-circle me-1"></i>
+                Showing all @totalUsers account@(totalUsers != 1 ? "s" : "")
+            </span>
+            <div class="d-flex gap-1">
+                <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@superAdminCount Alpha</span>
+                <span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1">@systemAdminCount Beta</span>
+                <span class="badge rounded-pill bg-cyan-50 text-cyan text-xs px-2 py-1">@otherCount Staff</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- BACK TO DASHBOARD                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="d-flex justify-content-start mb-4 anim-fade-in">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline px-4 py-2">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+    </a>
 </div>
