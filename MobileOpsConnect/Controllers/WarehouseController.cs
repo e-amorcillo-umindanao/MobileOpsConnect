@@ -30,7 +30,6 @@ namespace MobileOpsConnect.Controllers
             }
 
             // Get Low Stock Items for the Alert Box
-            // (Assuming global threshold of 10, or use SystemSettings if available)
             ViewBag.LowStockItems = await _context.Products
                                           .Where(p => p.StockQuantity <= 10)
                                           .ToListAsync();
@@ -61,8 +60,6 @@ namespace MobileOpsConnect.Controllers
             product.StockQuantity += quantity;
             product.LastUpdated = DateTime.Now;
 
-            // TODO: Add to Transaction History Table here (Optional for now)
-
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -87,6 +84,15 @@ namespace MobileOpsConnect.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        // NEW: GET: Warehouse/LowStock
+        public async Task<IActionResult> LowStock()
+        {
+            var lowStockItems = await _context.Products
+                                          .Where(p => p.StockQuantity <= 10)
+                                          .ToListAsync();
+            return View(lowStockItems);
         }
     }
 }

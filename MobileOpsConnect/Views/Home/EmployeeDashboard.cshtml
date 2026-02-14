@@ -23,12 +23,22 @@
     {
         <div class="col-md-6 mb-3">
             <a asp-controller="Warehouse" asp-action="Index" class="btn btn-primary btn-lg w-100">
-                🏭 Warehouse Operations (Stock In/Out)
+                🏭 Stock In / Stock Out
             </a>
         </div>
         <div class="col-md-6 mb-3">
             <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary btn-lg w-100">
                 📦 Search Inventory List
+            </a>
+        </div>
+        <div class="col-md-6 mb-3">
+            <a asp-controller="Products" asp-action="Create" class="btn btn-dark btn-lg w-100">
+                ➕ Register New Item
+            </a>
+        </div>
+        <div class="col-md-6 mb-3">
+            <a asp-controller="Warehouse" asp-action="LowStock" class="btn btn-danger btn-lg w-100">
+                ⚠️ View Low Stock Alerts
             </a>
         </div>
     }

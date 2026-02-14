@@ -1,0 +1,70 @@
+﻿@model IEnumerable<MobileOpsConnect.Models.Product>
+
+@{
+    ViewData["Title"] = "Low Stock Alerts";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="display-5 mb-0 text-danger">⚠️ Low Stock Alerts</h1>
+        <p class="text-muted mb-0 mt-1">Items below the minimum threshold (10 units) requiring immediate restock.</p>
+    </div>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary shadow-sm">🔙 Back to Dashboard</a>
+</div>
+
+<div class="card shadow-sm border-danger mb-4">
+    <div class="card-body">
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <h3 class="text-success">✅ All stock levels are optimal.</h3>
+                <p class="text-muted">No items are currently below the safety threshold.</p>
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>SKU</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Current Stock</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold">@item.SKU</td>
+                            <td>@item.Name</td>
+                            <td>@item.Category</td>
+                            <td>
+                                <h4 class="mb-0">
+                                    <span class="badge bg-danger">@item.StockQuantity</span>
+                                </h4>
+                            </td>
+                            <td>
+                                @if (item.StockQuantity == 0)
+                                {
+                                    <span class="text-danger fw-bold">OUT OF STOCK</span>
+                                }
+                                else
+                                {
+                                    <span class="text-warning fw-bold text-dark">CRITICAL</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-controller="Warehouse" asp-action="Adjust" asp-route-id="@item.ProductID" class="btn btn-outline-danger fw-bold">
+                                    ⚙️ Adjust Stock
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

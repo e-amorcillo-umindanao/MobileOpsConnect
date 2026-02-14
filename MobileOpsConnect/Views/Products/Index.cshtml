@@ -7,9 +7,9 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1>📦 Inventory Management</h1>
     <div>
-        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary me-2">Back to Dashboard</a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary me-2">🔙 Back to Dashboard</a>
 
-        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
+        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("WarehouseStaff"))
         {
             <a asp-action="Create" class="btn btn-primary">➕ Create New Product</a>
         }
@@ -46,9 +46,16 @@
                 </td>
                 <td>₱@item.Price</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.ProductID" class="btn btn-sm btn-warning">Edit</a>
+                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("WarehouseStaff"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.ProductID" class="btn btn-sm btn-warning">Edit</a>
+                    }
                     <a asp-action="Details" asp-route-id="@item.ProductID" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.ProductID" class="btn btn-sm btn-danger">Delete</a>
+
+                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.ProductID" class="btn btn-sm btn-danger">Delete</a>
+                    }
                 </td>
             </tr>
         }

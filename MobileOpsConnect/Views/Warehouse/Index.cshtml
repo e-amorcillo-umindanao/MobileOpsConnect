@@ -10,33 +10,19 @@
         <h1 class="display-5 mb-0">🏭 Warehouse Operations</h1>
         <p class="text-muted mb-0 mt-1">Scan barcodes or search manually to perform Stock In/Out.</p>
     </div>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary shadow-sm">Back to Dashboard</a>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary shadow-sm">🔙 Back to Dashboard</a>
 </div>
-
-@if (lowStockList != null && lowStockList.Count > 0)
-{
-    <div class="alert alert-danger shadow-sm">
-        <h4 class="alert-heading">⚠️ Low Stock Alerts (@lowStockList.Count Items)</h4>
-        <p>The following items are below the safety threshold. Please restock immediately.</p>
-        <hr>
-        <div class="d-flex flex-wrap gap-2">
-            @foreach (var item in lowStockList)
-            {
-                <span class="badge bg-danger p-2">
-                    @item.Name (Qty: @item.StockQuantity)
-                </span>
-            }
-        </div>
-    </div>
-}
 
 <div class="card shadow-sm mb-4">
     <div class="card-body">
-        <form asp-action="Index" method="get">
-            <div class="input-group input-group-lg">
-                <span class="input-group-text bg-primary text-white">📡 Scan Barcode</span>
-                <input type="text" name="searchString" class="form-control" placeholder="Scan SKU or Enter Product Name..." value="@ViewData["CurrentFilter"]" autofocus>
+        <form asp-action="Index" method="get" id="scanForm">
+            <div class="input-group input-group-lg shadow-sm">
+                <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#scannerModal">
+                    📷 Camera Scan
+                </button>
+                <input type="text" name="searchString" id="barcodeInput" class="form-control" placeholder="Scan SKU or Enter Product Name..." value="@ViewData["CurrentFilter"]" autofocus>
                 <button class="btn btn-primary" type="submit">Search</button>
+                <a asp-controller="Products" asp-action="Create" class="btn btn-success">➕ New Item</a>
             </div>
         </form>
     </div>
@@ -80,3 +66,59 @@
         }
     </tbody>
 </table>
+
+<div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="scannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="scannerModalLabel">📷 ZXing.Net Scanner (Prototype)</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="bg-black text-white d-flex align-items-center justify-content-center mb-3 position-relative" style="height: 250px; border-radius: 8px; overflow: hidden;">
+                    <div class="position-absolute w-100 border-bottom border-danger border-3 shadow" id="scanLine" style="top: 0; animation: scanAnim 2s infinite linear; box-shadow: 0 0 15px red;"></div>
+                    <p class="mb-0 text-muted" style="font-family: monospace;">[ CAMERA FEED INITIALIZING ]</p>
+                </div>
+
+                <p class="text-muted small mb-4">Point your device camera at a product barcode. For this exam prototype, click the button below to simulate a successful read.</p>
+
+                @if (Model.Any())
+                {
+                    <button type="button" class="btn btn-success btn-lg w-100 fw-bold" onclick="simulateScan('@Model.First().SKU')">
+                        🔊 Simulate Scan (Read Barcode)
+                    </button>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-secondary btn-lg w-100 fw-bold" disabled>No products available to scan</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@keyframes scanAnim {
+        0% {
+            top: 0%;
+        }
+
+        50% {
+            top: 100%;
+        }
+
+        100% {
+            top: 0%;
+        }
+    }
+</style>
+
+<script>
+    function simulateScan(sku) {
+        var myModalEl = document.getElementById('scannerModal');
+        var modal = bootstrap.Modal.getInstance(myModalEl);
+        modal.hide();
+        document.getElementById('barcodeInput').value = sku;
+        document.getElementById('scanForm').submit();
+    }
+</script>
