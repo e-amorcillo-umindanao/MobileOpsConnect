@@ -84,8 +84,15 @@ namespace MobileOpsConnect.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        // CHANGED: Task is now Task<IActionResult> to allow redirection
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
+            // ADDED: Redirect already authenticated users away from the login page
+            if (User.Identity.IsAuthenticated)
+            {
+                return LocalRedirect("~/");
+            }
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -99,6 +106,9 @@ namespace MobileOpsConnect.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
+
+            // ADDED: Return the page if not authenticated
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
