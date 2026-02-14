@@ -1,0 +1,218 @@
+﻿@page
+@model RegisterModel
+
+@{
+    ViewData["Title"] = "Register";
+    ViewData["HideLayout"] = true;
+}
+
+<style>
+    .register-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
+    }
+
+    .register-card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08), 0 0.125rem 0.5rem rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+    }
+
+    .register-brand-bar {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        padding: 2rem 2rem 1.75rem;
+        text-align: center;
+    }
+
+        .register-brand-bar h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: .025em;
+            margin: 0;
+            color: #fff;
+        }
+
+        .register-brand-bar p {
+            margin: .5rem 0 0;
+            font-size: .875rem;
+            color: rgba(255, 255, 255, .8);
+        }
+
+    .register-brand-icon {
+        width: 56px;
+        height: 56px;
+        background: rgba(255, 255, 255, .15);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: .75rem;
+    }
+
+        .register-brand-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: #fff;
+        }
+
+    .register-body {
+        padding: 2rem 2rem 1.5rem;
+    }
+
+    .form-floating > .form-control {
+        border-radius: .5rem;
+        border: 1px solid #dee2e6;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+        .form-floating > .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15);
+        }
+
+    .btn-register {
+        border-radius: .5rem;
+        padding: .75rem 1.25rem;
+        font-weight: 600;
+        font-size: 1rem;
+        letter-spacing: .025em;
+        transition: background-color .2s ease, box-shadow .2s ease;
+    }
+
+        .btn-register:hover {
+            box-shadow: 0 .25rem .75rem rgba(13, 110, 253, .35);
+        }
+
+    .register-divider {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        color: #adb5bd;
+        font-size: .8125rem;
+        margin: 1.5rem 0;
+    }
+
+        .register-divider::before,
+        .register-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #dee2e6;
+        }
+
+    .register-links a {
+        color: #6c757d;
+        text-decoration: none;
+        font-size: .8125rem;
+        transition: color .2s ease;
+    }
+
+        .register-links a:hover {
+            color: #0d6efd;
+            text-decoration: underline;
+        }
+
+    .external-btn {
+        border-radius: .5rem;
+        padding: .5rem 1.25rem;
+        font-weight: 500;
+        font-size: .875rem;
+    }
+</style>
+
+<div class="register-wrapper d-flex align-items-center justify-content-center py-4">
+    <div class="w-100" style="max-width: 440px;">
+
+        <div class="register-card">
+
+            <!-- Brand Header -->
+            <div class="register-brand-bar">
+                <div class="register-brand-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48
+                                 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93
+                                 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54
+                                 c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2
+                                 c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41
+                                 c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                    </svg>
+                </div>
+                <h1>MobileOps Connect</h1>
+                <p>Create your account</p>
+            </div>
+
+            <!-- Form Body -->
+            <div class="register-body">
+                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2" role="alert"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username"
+                               aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email" class="form-label">Email address</label>
+                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password"
+                               aria-required="true" placeholder="password" />
+                        <label asp-for="Input.Password" class="form-label">Password</label>
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password"
+                               aria-required="true" placeholder="password" />
+                        <label asp-for="Input.ConfirmPassword" class="form-label">Confirm password</label>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg btn-register">
+                            Create Account
+                        </button>
+                    </div>
+
+                </form>
+
+                <!-- External Logins -->
+                @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                {
+                    <div class="register-divider">or sign up with</div>
+
+                    <form id="external-account" asp-page="./ExternalLogin"
+                          asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div class="d-grid gap-2">
+                            @foreach (var provider in Model.ExternalLogins!)
+                            {
+                                <button type="submit" class="btn btn-outline-secondary external-btn"
+                                        name="provider" value="@provider.Name"
+                                        title="Register using your @provider.DisplayName account">
+                                    @provider.DisplayName
+                                </button>
+                            }
+                        </div>
+                    </form>
+                }
+
+                <!-- Bottom Links -->
+                <div class="register-links text-center mt-4 pt-3 border-top">
+                    <p class="mb-0">
+                        <span class="text-muted small">Already have an account?</span>
+                        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Model.ReturnUrl"
+                           class="fw-semibold" style="color:#0d6efd;">
+                            Sign in
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

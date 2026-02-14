@@ -1,0 +1,234 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+    ViewData["HideLayout"] = true;
+}
+
+<style>
+    .login-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
+    }
+
+    .login-card {
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08), 0 0.125rem 0.5rem rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+    }
+
+    .login-brand-bar {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        padding: 2rem 2rem 1.75rem;
+        text-align: center;
+    }
+
+        .login-brand-bar h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: .025em;
+            margin: 0;
+            color: #fff;
+        }
+
+        .login-brand-bar p {
+            margin: .5rem 0 0;
+            font-size: .875rem;
+            color: rgba(255, 255, 255, .8);
+        }
+
+    .login-brand-icon {
+        width: 56px;
+        height: 56px;
+        background: rgba(255, 255, 255, .15);
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: .75rem;
+    }
+
+        .login-brand-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: #fff;
+        }
+
+    .login-body {
+        padding: 2rem 2rem 1.5rem;
+    }
+
+    .form-floating > .form-control {
+        border-radius: .5rem;
+        border: 1px solid #dee2e6;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+        .form-floating > .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15);
+        }
+
+    .btn-login {
+        border-radius: .5rem;
+        padding: .75rem 1.25rem;
+        font-weight: 600;
+        font-size: 1rem;
+        letter-spacing: .025em;
+        transition: background-color .2s ease, box-shadow .2s ease;
+    }
+
+        .btn-login:hover {
+            box-shadow: 0 .25rem .75rem rgba(13, 110, 253, .35);
+        }
+
+    .login-divider {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        color: #adb5bd;
+        font-size: .8125rem;
+        margin: 1.5rem 0;
+    }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #dee2e6;
+        }
+
+    .login-links a {
+        color: #6c757d;
+        text-decoration: none;
+        font-size: .8125rem;
+        transition: color .2s ease;
+    }
+
+        .login-links a:hover {
+            color: #0d6efd;
+            text-decoration: underline;
+        }
+
+    .form-check-input:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .external-btn {
+        border-radius: .5rem;
+        padding: .5rem 1.25rem;
+        font-weight: 500;
+        font-size: .875rem;
+    }
+</style>
+
+<div class="login-wrapper d-flex align-items-center justify-content-center py-4">
+    <div class="w-100" style="max-width: 440px;">
+
+        <div class="login-card">
+
+            <!-- Brand Header -->
+            <div class="login-brand-bar">
+                <div class="login-brand-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48
+                                 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93
+                                 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54
+                                 c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2
+                                 c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41
+                                 c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+                    </svg>
+                </div>
+                <h1>MobileOps Connect</h1>
+                <p>Sign in to your account</p>
+            </div>
+
+            <!-- Form Body -->
+            <div class="login-body">
+                <form id="account" method="post">
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2" role="alert"></div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username"
+                               aria-required="true" placeholder="name@example.com" />
+                        <label asp-for="Input.Email" class="form-label">Email address</label>
+                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password"
+                               aria-required="true" placeholder="password" />
+                        <label asp-for="Input.Password" class="form-label">Password</label>
+                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            <label asp-for="Input.RememberMe" class="form-check-label small text-muted">
+                                @Html.DisplayNameFor(m => m.Input.RememberMe)
+                            </label>
+                        </div>
+                        <a id="forgot-password" asp-page="./ForgotPassword"
+                           class="small text-decoration-none fw-semibold" style="color:#0d6efd;">
+                            Forgot password?
+                        </a>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button id="login-submit" type="submit" class="btn btn-primary btn-lg btn-login">
+                            Sign in
+                        </button>
+                    </div>
+
+                </form>
+
+                <!-- External Logins -->
+                @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+                {
+                    <div class="login-divider">or continue with</div>
+
+                    <form id="external-account" asp-page="./ExternalLogin"
+                          asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div class="d-grid gap-2">
+                            @foreach (var provider in Model.ExternalLogins!)
+                            {
+                                <button type="submit" class="btn btn-outline-secondary external-btn"
+                                        name="provider" value="@provider.Name"
+                                        title="Log in using your @provider.DisplayName account">
+                                    @provider.DisplayName
+                                </button>
+                            }
+                        </div>
+                    </form>
+                }
+
+                <!-- Bottom Links -->
+                <div class="login-links text-center mt-4 pt-3 border-top">
+                    <p class="mb-1">
+                        <span class="text-muted small">Don't have an account?</span>
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
+                           class="fw-semibold" style="color:#0d6efd;">
+                            Create one
+                        </a>
+                    </p>
+                    <p class="mb-0">
+                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">
+                            Resend email confirmation
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
