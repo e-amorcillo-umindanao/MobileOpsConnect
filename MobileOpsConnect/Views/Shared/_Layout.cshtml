@@ -28,12 +28,19 @@
             --moc-gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
         }
 
+        html {
+            background-color: var(--moc-dark);
+        }
+
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--moc-bg);
             color: var(--moc-text);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* ---- Navbar ---- */
@@ -436,7 +443,7 @@
 
     @if (ViewData["HideLayout"] is not true)
     {
-        <div class="container-xxl px-3 px-md-4 px-lg-5">
+        <div class="container-xxl px-3 px-md-4 px-lg-5" style="flex-grow:1;">
             <main role="main" class="pb-3 pt-4">
                 @RenderBody()
             </main>
