@@ -259,6 +259,18 @@
                                        title="Reset Password">
                                         <i class="bi bi-key-fill me-1"></i> Reset
                                     </a>
+                                    @if (isSuperAdmin && item.Role == "SystemAdmin")
+                                    {
+                                        <button type="button"
+                                                class="btn btn-sm px-3 py-2 fw-semibold"
+                                                style="background:rgba(239,68,68,0.08); color:#ef4444; border:1.5px solid rgba(239,68,68,0.2);"
+                                                title="Remove User"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteUserModal"
+                                                onclick="setDeleteTarget('@item.Id', '@item.Email')">
+                                            <i class="bi bi-trash3 me-1"></i> Remove
+                                        </button>
+                                    }
                                 </div>
                             </td>
                         </tr>
@@ -324,6 +336,17 @@
                            style="background:rgba(245,158,11,0.08); color:#f59e0b; border:1.5px solid rgba(245,158,11,0.2);">
                             <i class="bi bi-key-fill me-1"></i> Reset PW
                         </a>
+                        @if (isSuperAdmin && item.Role == "SystemAdmin")
+                        {
+                            <button type="button"
+                                    class="btn btn-sm py-2 fw-semibold"
+                                    style="background:rgba(239,68,68,0.08); color:#ef4444; border:1.5px solid rgba(239,68,68,0.2);"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteUserModal"
+                                    onclick="setDeleteTarget('@item.Id', '@item.Email')">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        }
                     </div>
                 </div>
             }
@@ -356,3 +379,46 @@
         <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
     </a>
 </div>
+
+@if (isSuperAdmin)
+{
+    <!-- Delete User Confirmation Modal -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+                <div class="modal-header border-0 pb-0" style="background: rgba(239,68,68,0.04);">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="moc-icon-box bg-red-50 rounded-3">
+                            <i class="bi bi-exclamation-triangle-fill text-red fs-5"></i>
+                        </div>
+                        <h5 class="modal-title fw-bold" id="deleteUserModalLabel">Remove System Admin</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 py-4">
+                    <p class="mb-2">Are you sure you want to permanently remove this System Admin?</p>
+                    <p class="fw-semibold text-danger mb-0" id="deleteTargetEmail"></p>
+                </div>
+                <div class="modal-footer border-0 pt-0 px-4 pb-4">
+                    <button type="button" class="btn btn-moc-outline px-4 py-2" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-1"></i> Cancel
+                    </button>
+                    <form id="deleteUserForm" asp-action="Delete" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" id="deleteUserIdInput" />
+                        <button type="submit" class="btn btn-danger px-4 py-2">
+                            <i class="bi bi-trash3 me-1"></i> Remove Permanently
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setDeleteTarget(userId, userEmail) {
+            document.getElementById('deleteUserIdInput').value = userId;
+            document.getElementById('deleteTargetEmail').textContent = userEmail;
+        }
+    </script>
+}

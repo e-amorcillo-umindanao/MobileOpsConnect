@@ -13,6 +13,7 @@ namespace MobileOpsConnect.Models
         public string Email { get; set; }
         public string CurrentRole { get; set; }
         public string NewRole { get; set; }
+        public bool IsOwnAccount { get; set; }
     }
 
     public class ResetPasswordViewModel

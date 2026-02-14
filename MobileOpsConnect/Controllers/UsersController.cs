@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Models;
 
+
 namespace MobileOpsConnect.Controllers
 {
     // REVERTED: Only SuperAdmin and SystemAdmin can access this. 
@@ -14,11 +15,16 @@ namespace MobileOpsConnect.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public UsersController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersController(
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         // GET: Users
@@ -108,6 +114,8 @@ namespace MobileOpsConnect.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             string currentRole = roles.FirstOrDefault() ?? "Employee";
 
+            bool isOwnAccount = (user.Id == currentUser.Id);
+
             // SECURITY: Prevent accessing someone outside your scope
             if (!CanManageUser(currentUser, currentRole, user.Id))
             {
@@ -119,10 +127,16 @@ namespace MobileOpsConnect.Controllers
                 Id = user.Id,
                 Email = user.Email,
                 CurrentRole = currentRole,
-                NewRole = currentRole
+                NewRole = currentRole,
+                IsOwnAccount = isOwnAccount
             };
 
-            ViewBag.Roles = GetAllowedRolesSelectList();
+            ViewBag.IsAlpha = User.IsInRole("SuperAdmin");
+            ViewBag.IsEditingOwnAccount = isOwnAccount;
+            // When Alpha edits another user, include SuperAdmin as a promotion option
+            ViewBag.Roles = User.IsInRole("SuperAdmin") && !isOwnAccount
+                ? GetAllowedRolesForEditSelectList()
+                : GetAllowedRolesSelectList();
             return View(model);
         }
 
@@ -137,22 +151,26 @@ namespace MobileOpsConnect.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
+            bool isOwnAccount = (user.Id == currentUser.Id);
+
             // 1. RE-CHECK PERMISSIONS (Security Fix)
             var roles = await _userManager.GetRolesAsync(user);
             string currentDbRole = roles.FirstOrDefault() ?? "Employee";
 
             if (!CanManageUser(currentUser, currentDbRole, user.Id)) return Forbid();
 
-            // 2. VALIDATE NEW ROLE (Privilege Escalation Fix)
-            if (!IsRoleAllowed(model.NewRole)) return Forbid();
-
-            // 3. PREVENT SELF-LOCKOUT (Logic Fix)
-            if (user.Id == currentUser.Id && model.NewRole != currentDbRole)
+            // 2. PREVENT SELF-ROLE-CHANGE (Alpha's edit page has no dropdown)
+            if (isOwnAccount)
             {
-                ModelState.AddModelError("", "You cannot change your own role.");
-                ViewBag.Roles = GetAllowedRolesSelectList();
-                return View(model);
+                return RedirectToAction(nameof(Index));
             }
+
+            // 3. VALIDATE NEW ROLE (Privilege Escalation Fix)
+            // Alpha can assign SuperAdmin when editing (promotion), so check edit list
+            bool roleAllowed = User.IsInRole("SuperAdmin")
+                ? GetAllowedRolesForEditList().Contains(model.NewRole)
+                : IsRoleAllowed(model.NewRole);
+            if (!roleAllowed) return Forbid();
 
             if (ModelState.IsValid)
             {
@@ -165,7 +183,12 @@ namespace MobileOpsConnect.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Roles = GetAllowedRolesSelectList();
+            model.IsOwnAccount = isOwnAccount;
+            ViewBag.IsAlpha = User.IsInRole("SuperAdmin");
+            ViewBag.IsEditingOwnAccount = isOwnAccount;
+            ViewBag.Roles = User.IsInRole("SuperAdmin") && !isOwnAccount
+                ? GetAllowedRolesForEditSelectList()
+                : GetAllowedRolesSelectList();
             return View(model);
         }
 
@@ -218,6 +241,59 @@ namespace MobileOpsConnect.Controllers
             return View(model);
         }
 
+        // ================= DELETE SYSTEM ADMIN (Alpha only) =================
+
+        // POST: Users/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            // Only SuperAdmin can delete
+            if (!User.IsInRole("SuperAdmin")) return Forbid();
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null) return NotFound();
+
+            // Cannot delete self through this route
+            if (user.Id == currentUser.Id) return Forbid();
+
+            // Can only delete SystemAdmins
+            var roles = await _userManager.GetRolesAsync(user);
+            string targetRole = roles.FirstOrDefault() ?? "Employee";
+            if (targetRole != "SystemAdmin") return Forbid();
+
+            await _userManager.DeleteAsync(user);
+            return RedirectToAction(nameof(Index));
+        }
+
+        // ================= DELETE SELF (Alpha double-confirmation) =================
+
+        // POST: Users/DeleteSelf
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteSelf(string password)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
+
+            // Must be SuperAdmin to use this
+            if (!User.IsInRole("SuperAdmin")) return Forbid();
+
+            // Verify password
+            var passwordValid = await _userManager.CheckPasswordAsync(currentUser, password);
+            if (!passwordValid)
+            {
+                TempData["DeleteError"] = "Incorrect password. Account deletion cancelled.";
+                return RedirectToAction(nameof(Edit), new { id = currentUser.Id });
+            }
+
+            // Delete and sign out
+            await _userManager.DeleteAsync(currentUser);
+            await _signInManager.SignOutAsync();
+            return Redirect("/");
+        }
+
         // ================= HELPER METHODS (Fixed Logic) =================
 
         // 1. THE SCOPE LOGIC (Restored Original Architecture)
@@ -242,7 +318,7 @@ namespace MobileOpsConnect.Controllers
             return false;
         }
 
-        // 2. THE DATA SOURCE (Fixes the Crash)
+        // 2. THE DATA SOURCE — for CREATE (Alpha creates Betas only)
         private List<string> GetAllowedRolesList()
         {
             var roles = new List<string>();
@@ -263,10 +339,29 @@ namespace MobileOpsConnect.Controllers
             return roles;
         }
 
-        // 3. THE UI HELPER (Returns SelectList)
+        // 2b. THE DATA SOURCE — for EDIT (Alpha can also promote to SuperAdmin)
+        private List<string> GetAllowedRolesForEditList()
+        {
+            var roles = GetAllowedRolesList();
+
+            if (User.IsInRole("SuperAdmin"))
+            {
+                // Alpha can promote a Beta to SuperAdmin
+                roles.Add("SuperAdmin");
+            }
+
+            return roles;
+        }
+
+        // 3. THE UI HELPERS (Returns SelectList)
         private SelectList GetAllowedRolesSelectList()
         {
             return new SelectList(GetAllowedRolesList());
+        }
+
+        private SelectList GetAllowedRolesForEditSelectList()
+        {
+            return new SelectList(GetAllowedRolesForEditList());
         }
 
         // 4. THE VALIDATOR (Checks against Strings, not Objects)
