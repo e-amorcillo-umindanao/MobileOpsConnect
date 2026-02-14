@@ -12,10 +12,13 @@ namespace MobileOpsConnect.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult ProcessOrder(int id, string actionType)
         {
-            // Simulates processing an order and returning a success message
-            TempData["Message"] = $"Purchase Order #{id} has been successfully {actionType.ToLower()}d.";
+            // Null-safe with proper past tense
+            var action = actionType?.Trim().ToLower() ?? "process";
+            var pastTense = action.EndsWith("e") ? action + "d" : action + "ed";
+            TempData["Message"] = $"Purchase Order #{id} has been successfully {pastTense}.";
             return RedirectToAction(nameof(Index));
         }
     }

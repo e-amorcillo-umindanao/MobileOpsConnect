@@ -36,21 +36,35 @@ namespace MobileOpsConnect.Controllers
                           User.IsInRole("SystemAdmin") ||
                           User.IsInRole("DepartmentManager");
 
+            List<LeaveRequest> requests;
+
             if (isBoss)
             {
                 // Show ALL requests (so Beta can approve Charlie, and Charlie can approve Echo)
-                var allRequests = await _context.LeaveRequests.Include(l => l.User).ToListAsync();
-                return View(allRequests);
+                requests = await _context.LeaveRequests.Include(l => l.User).ToListAsync();
             }
             else
             {
                 // Regular employees only see their OWN history
-                var myRequests = await _context.LeaveRequests
+                requests = await _context.LeaveRequests
                     .Where(l => l.UserID == user.Id)
                     .Include(l => l.User)
                     .ToListAsync();
-                return View(myRequests);
             }
+
+            // Pre-load roles for all users to avoid N+1 queries in the view
+            var userRoles = new Dictionary<string, string>();
+            foreach (var request in requests)
+            {
+                if (request.User != null && !userRoles.ContainsKey(request.UserID))
+                {
+                    var roles = await _userManager.GetRolesAsync(request.User);
+                    userRoles[request.UserID] = roles.FirstOrDefault() ?? "Employee";
+                }
+            }
+            ViewBag.UserRoles = userRoles;
+
+            return View(requests);
         }
 
         // GET: LeaveRequests/Details/5
@@ -68,6 +82,16 @@ namespace MobileOpsConnect.Controllers
             if (leaveRequest == null)
             {
                 return NotFound();
+            }
+
+            // SECURITY: Only the owner or a boss can view details
+            var user = await _userManager.GetUserAsync(User);
+            bool isBoss = User.IsInRole("SuperAdmin") ||
+                          User.IsInRole("SystemAdmin") ||
+                          User.IsInRole("DepartmentManager");
+            if (!isBoss && leaveRequest.UserID != user?.Id)
+            {
+                return Forbid();
             }
 
             return View(leaveRequest);
@@ -106,9 +130,11 @@ namespace MobileOpsConnect.Controllers
             return View(leaveRequest);
         }
 
-        // === APPROVAL ACTIONS (Only for Bosses) ===
+        // === APPROVAL ACTIONS (Only for Bosses, POST only) ===
 
-        // GET: LeaveRequests/Approve/5
+        // POST: LeaveRequests/Approve/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
         public async Task<IActionResult> Approve(int id)
         {
@@ -120,7 +146,9 @@ namespace MobileOpsConnect.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: LeaveRequests/Reject/5
+        // POST: LeaveRequests/Reject/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
         public async Task<IActionResult> Reject(int id)
         {
@@ -149,15 +177,37 @@ namespace MobileOpsConnect.Controllers
         // POST: LeaveRequests/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LeaveID,UserID,LeaveType,StartDate,EndDate,Reason,Status,DateRequested")] LeaveRequest leaveRequest)
+        public async Task<IActionResult> Edit(int id, [Bind("LeaveID,LeaveType,StartDate,EndDate,Reason")] LeaveRequest formData)
         {
-            if (id != leaveRequest.LeaveID) return NotFound();
+            if (id != formData.LeaveID) return NotFound();
+
+            // Load the real record from DB to preserve sensitive fields
+            var leaveRequest = await _context.LeaveRequests.FindAsync(id);
+            if (leaveRequest == null) return NotFound();
+
+            // SECURITY: Re-check that the request is still "Pending"
+            if (leaveRequest.Status != "Pending") return Forbid();
+
+            // SECURITY: Only the owner can edit their own request
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (leaveRequest.UserID != currentUser?.Id) return Forbid();
+
+            // Remove navigation/system fields from validation
+            ModelState.Remove("User");
+            ModelState.Remove("UserID");
+            ModelState.Remove("Status");
+            ModelState.Remove("DateRequested");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(leaveRequest);
+                    // Only update safe fields
+                    leaveRequest.LeaveType = formData.LeaveType;
+                    leaveRequest.StartDate = formData.StartDate;
+                    leaveRequest.EndDate = formData.EndDate;
+                    leaveRequest.Reason = formData.Reason;
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -181,6 +231,16 @@ namespace MobileOpsConnect.Controllers
 
             if (leaveRequest == null) return NotFound();
 
+            // SECURITY: Only the owner or a boss can access delete
+            var user = await _userManager.GetUserAsync(User);
+            bool isBoss = User.IsInRole("SuperAdmin") ||
+                          User.IsInRole("SystemAdmin") ||
+                          User.IsInRole("DepartmentManager");
+            if (!isBoss && leaveRequest.UserID != user?.Id)
+            {
+                return Forbid();
+            }
+
             return View(leaveRequest);
         }
 
@@ -191,11 +251,19 @@ namespace MobileOpsConnect.Controllers
         {
             if (_context.LeaveRequests == null) return Problem("Entity set 'ApplicationDbContext.LeaveRequests'  is null.");
             var leaveRequest = await _context.LeaveRequests.FindAsync(id);
-            if (leaveRequest != null)
+            if (leaveRequest == null) return NotFound();
+
+            // SECURITY: Only the owner or a boss can delete
+            var user = await _userManager.GetUserAsync(User);
+            bool isBoss = User.IsInRole("SuperAdmin") ||
+                          User.IsInRole("SystemAdmin") ||
+                          User.IsInRole("DepartmentManager");
+            if (!isBoss && leaveRequest.UserID != user?.Id)
             {
-                _context.LeaveRequests.Remove(leaveRequest);
+                return Forbid();
             }
 
+            _context.LeaveRequests.Remove(leaveRequest);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

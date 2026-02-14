@@ -24,9 +24,13 @@ namespace MobileOpsConnect.Controllers
             // 1. SuperAdmin (Alpha) & SystemAdmin (Beta) -> COMMAND CENTER
             if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
             {
+                // Load settings to get the configurable threshold
+                var settings = await _context.SystemSettings.FirstOrDefaultAsync();
+                int threshold = settings?.LowStockThreshold ?? 10;
+
                 // Load Data for the Admin Cards
                 ViewBag.TotalProducts = await _context.Products.CountAsync();
-                ViewBag.LowStockCount = await _context.Products.Where(p => p.StockQuantity <= 10).CountAsync();
+                ViewBag.LowStockCount = await _context.Products.Where(p => p.StockQuantity <= threshold).CountAsync();
                 ViewBag.TotalValue = await _context.Products.SumAsync(p => p.StockQuantity * p.Price);
 
                 return View(); // Loads Views/Home/Index.cshtml

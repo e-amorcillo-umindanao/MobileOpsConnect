@@ -9,6 +9,9 @@
     var currentUser = await UserManager.GetUserAsync(User);
     var currentUserId = currentUser?.Id;
 
+    // Pre-loaded user roles from the controller
+    var userRoles = (Dictionary<string, string>)ViewBag.UserRoles;
+
     // 2. Determine MY Rank (The Viewer)
     int myRank = 0;
     if (User.IsInRole("SuperAdmin")) { myRank = 4; }
@@ -235,8 +238,7 @@
                     {
                         bool isMyRequest = (item.UserID == currentUserId);
 
-                        var requestorRoles = await UserManager.GetRolesAsync(item.User);
-                        string rRole = requestorRoles.FirstOrDefault() ?? "Employee";
+                        string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
 
                         int targetRank = 1;
                         if (rRole == "SuperAdmin") { targetRank = 4; }
@@ -338,18 +340,24 @@
                                         @if (canApproveThisRow)
                                         {
                                             <div class="d-flex justify-content-end gap-1">
-                                                <a asp-action="Approve" asp-route-id="@item.LeaveID"
-                                                   class="btn btn-sm px-2 py-1 fw-semibold"
-                                                   style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);"
-                                                   title="Approve">
-                                                    <i class="bi bi-check-lg"></i>
-                                                </a>
-                                                <a asp-action="Reject" asp-route-id="@item.LeaveID"
-                                                   class="btn btn-sm px-2 py-1 fw-semibold"
-                                                   style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);"
-                                                   title="Reject">
-                                                    <i class="bi bi-x-lg"></i>
-                                                </a>
+                                                <form asp-action="Approve" asp-route-id="@item.LeaveID" method="post" style="display:inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit"
+                                                       class="btn btn-sm px-2 py-1 fw-semibold"
+                                                       style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);"
+                                                       title="Approve">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
+                                                <form asp-action="Reject" asp-route-id="@item.LeaveID" method="post" style="display:inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit"
+                                                       class="btn btn-sm px-2 py-1 fw-semibold"
+                                                       style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);"
+                                                       title="Reject">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </form>
                                             </div>
                                         }
                                         else
@@ -379,8 +387,7 @@
             {
                 bool isMyRequest = (item.UserID == currentUserId);
 
-                var requestorRoles = await UserManager.GetRolesAsync(item.User);
-                string rRole = requestorRoles.FirstOrDefault() ?? "Employee";
+                string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
 
                 int targetRank = 1;
                 if (rRole == "SuperAdmin") { targetRank = 4; }
@@ -511,16 +518,22 @@
                             @if (canApproveThisRow)
                             {
                                 <div class="d-flex gap-2">
-                                    <a asp-action="Approve" asp-route-id="@item.LeaveID"
-                                       class="btn btn-sm flex-fill py-2 fw-semibold"
-                                       style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);">
-                                        <i class="bi bi-check-circle me-1"></i> Approve
-                                    </a>
-                                    <a asp-action="Reject" asp-route-id="@item.LeaveID"
-                                       class="btn btn-sm flex-fill py-2 fw-semibold"
-                                       style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
-                                        <i class="bi bi-x-circle me-1"></i> Reject
-                                    </a>
+                                    <form asp-action="Approve" asp-route-id="@item.LeaveID" method="post" class="flex-fill">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                           class="btn btn-sm w-100 py-2 fw-semibold"
+                                           style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);">
+                                            <i class="bi bi-check-circle me-1"></i> Approve
+                                        </button>
+                                    </form>
+                                    <form asp-action="Reject" asp-route-id="@item.LeaveID" method="post" class="flex-fill">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit"
+                                           class="btn btn-sm w-100 py-2 fw-semibold"
+                                           style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
+                                            <i class="bi bi-x-circle me-1"></i> Reject
+                                        </button>
+                                    </form>
                                 </div>
                             }
                             else

@@ -6,7 +6,7 @@ using MobileOpsConnect.Models;
 
 namespace MobileOpsConnect.Controllers
 {
-    [Authorize(Roles = "WarehouseStaff,SuperAdmin,DepartmentManager")]
+    [Authorize(Roles = "WarehouseStaff,SuperAdmin,SystemAdmin,DepartmentManager")]
     public class WarehouseController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -29,9 +29,13 @@ namespace MobileOpsConnect.Controllers
                 products = products.Where(s => s.Name.Contains(searchString) || s.SKU.Contains(searchString));
             }
 
+            // Get configurable threshold from settings
+            var settings = await _context.SystemSettings.FirstOrDefaultAsync();
+            int threshold = settings?.LowStockThreshold ?? 10;
+
             // Get Low Stock Items for the Alert Box
             ViewBag.LowStockItems = await _context.Products
-                                          .Where(p => p.StockQuantity <= 10)
+                                          .Where(p => p.StockQuantity <= threshold)
                                           .ToListAsync();
 
             return View(await products.ToListAsync());
@@ -53,6 +57,12 @@ namespace MobileOpsConnect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StockIn(int id, int quantity, string notes)
         {
+            if (quantity < 1)
+            {
+                TempData["Error"] = "Quantity must be at least 1.";
+                return RedirectToAction("Adjust", new { id = id });
+            }
+
             var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
 
@@ -69,6 +79,12 @@ namespace MobileOpsConnect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> StockOut(int id, int quantity, string notes)
         {
+            if (quantity < 1)
+            {
+                TempData["Error"] = "Quantity must be at least 1.";
+                return RedirectToAction("Adjust", new { id = id });
+            }
+
             var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
 
@@ -89,8 +105,11 @@ namespace MobileOpsConnect.Controllers
         // NEW: GET: Warehouse/LowStock
         public async Task<IActionResult> LowStock()
         {
+            var settings = await _context.SystemSettings.FirstOrDefaultAsync();
+            int threshold = settings?.LowStockThreshold ?? 10;
+
             var lowStockItems = await _context.Products
-                                          .Where(p => p.StockQuantity <= 10)
+                                          .Where(p => p.StockQuantity <= threshold)
                                           .ToListAsync();
             return View(lowStockItems);
         }
