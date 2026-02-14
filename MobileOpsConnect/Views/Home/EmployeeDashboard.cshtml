@@ -3,62 +3,446 @@
     bool isWarehouse = User.IsInRole("WarehouseStaff");
 }
 
-<div class="text-center mb-5">
-    <h1 class="display-4">Welcome, @User.Identity?.Name</h1>
-    <p class="lead">
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                All Systems Operational
+            </span>
+            @if (isWarehouse)
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                    <i class="bi bi-building-fill me-1"></i> Warehouse Staff &bull; Delta
+                </span>
+            }
+            else
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                    <i class="bi bi-person-badge-fill me-1"></i> Employee &bull; Echo
+                </span>
+            }
+        </div>
         @if (isWarehouse)
         {
-            <span>Warehouse Operations Portal</span>
+            <h1 class="display-5 fw-bold mb-2 letter-tight">Delta's Operations Hub</h1>
+            <p class="lead mb-0 opacity-75">
+                Warehouse Operations &amp; Self-Service Portal &mdash; Welcome, @User.Identity?.Name
+            </p>
         }
         else
         {
-            <span>Employee Self-Service</span>
+            <h1 class="display-5 fw-bold mb-2 letter-tight">Echo's Portal</h1>
+            <p class="lead mb-0 opacity-75">
+                Employee Self-Service Portal &mdash; Welcome, @User.Identity?.Name
+            </p>
         }
-    </p>
+    </div>
+    <!-- Decorative watermark -->
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        @if (isWarehouse)
+        {
+            <i class="bi bi-building-fill"></i>
+        }
+        else
+        {
+            <i class="bi bi-person-badge-fill"></i>
+        }
+    </div>
 </div>
 
-<div class="row mt-4">
-    @* WAREHOUSE BUTTONS (Only for Delta) *@
+<!-- ═══════════════════════════════════════════════ -->
+<!-- QUICK GLANCE METRICS  (Placeholders)            -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        @if (isWarehouse)
+        {
+            <i class="bi bi-speedometer2 text-indigo me-1"></i> <span>Warehouse Snapshot</span>
+        }
+        else
+        {
+            <i class="bi bi-heart-pulse-fill text-indigo me-1"></i> <span>My Snapshot</span>
+        }
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
     @if (isWarehouse)
     {
-        <div class="col-md-6 mb-3">
-            <a asp-controller="Warehouse" asp-action="Index" class="btn btn-primary btn-lg w-100">
-                🏭 Stock In / Stock Out
-            </a>
+        <!-- Stock Movements Today -->
+        <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+            <div class="moc-metric p-3 p-md-4 h-100">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Movements</p>
+                        <h3 class="fw-bold mb-1 letter-tight">17</h3>
+                        <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                            <i class="bi bi-arrow-up-short"></i> Today
+                        </span>
+                    </div>
+                    <div class="moc-icon-box bg-indigo-50 rounded-3">
+                        <i class="bi bi-arrow-left-right text-indigo fs-5"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary btn-lg w-100">
-                📦 Search Inventory List
-            </a>
+
+        <!-- Items In Stock -->
+        <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+            <div class="moc-metric p-3 p-md-4 h-100">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-1">In Stock</p>
+                        <h3 class="fw-bold mb-1 letter-tight">142</h3>
+                        <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                            <i class="bi bi-check-circle-fill me-1"></i> Healthy
+                        </span>
+                    </div>
+                    <div class="moc-icon-box bg-cyan-50 rounded-3">
+                        <i class="bi bi-box-seam-fill text-cyan fs-5"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <a asp-controller="Products" asp-action="Create" class="btn btn-dark btn-lg w-100">
-                ➕ Register New Item
-            </a>
+
+        <!-- Low Stock -->
+        <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+            <div class="moc-metric p-3 p-md-4 h-100">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Low Stock</p>
+                        <h3 class="fw-bold mb-1 letter-tight">8</h3>
+                        <span class="badge bg-red-50 text-red text-xs fw-semibold">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Alert
+                        </span>
+                    </div>
+                    <div class="moc-icon-box bg-red-50 rounded-3">
+                        <i class="bi bi-exclamation-octagon-fill text-red fs-5"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6 mb-3">
-            <a asp-controller="Warehouse" asp-action="LowStock" class="btn btn-danger btn-lg w-100">
-                ⚠️ View Low Stock Alerts
-            </a>
+
+        <!-- Pending Orders -->
+        <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+            <div class="moc-metric p-3 p-md-4 h-100">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Pending POs</p>
+                        <h3 class="fw-bold mb-1 letter-tight">3</h3>
+                        <span class="badge bg-amber-50 text-amber text-xs fw-semibold">
+                            <i class="bi bi-hourglass-split me-1"></i> Waiting
+                        </span>
+                    </div>
+                    <div class="moc-icon-box bg-amber-50 rounded-3">
+                        <i class="bi bi-clipboard2-data text-amber fs-5"></i>
+                    </div>
+                </div>
+            </div>
         </div>
     }
+    else
+    {
+        <!-- Leave Balance -->
+        <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+            <div class="moc-metric p-3 p-md-4 h-100">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Leave Bal.</p>
+                        <h3 class="fw-bold mb-1 letter-tight">12 <span class="fs-6 fw-semibold text-muted">days</span></h3>
+                        <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                            <i class="bi bi-check-circle-fill me-1"></i> Available
+                        </span>
+                    </div>
+                    <div class="moc-icon-box bg-green-50 rounded-3">
+                        <i class="bi bi-calendar-check text-green fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    @* HR BUTTONS (Visible to Everyone) *@
-    <div class="col-md-6 mb-3">
-        <a asp-controller="LeaveRequests" asp-action="Create" class="btn btn-success btn-lg w-100">
-            📅 File Leave Request
-        </a>
+        <!-- Leaves Used -->
+        <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+            <div class="moc-metric p-3 p-md-4 h-100">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Used</p>
+                        <h3 class="fw-bold mb-1 letter-tight">3 <span class="fs-6 fw-semibold text-muted">days</span></h3>
+                        <div class="progress mt-1" style="height:4px;width:72px;">
+                            <div class="progress-bar rounded-pill" role="progressbar"
+                                 style="width:20%;background:var(--moc-primary);"
+                                 aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span class="text-muted text-xs">of 15 total</span>
+                    </div>
+                    <div class="moc-icon-box bg-indigo-50 rounded-3">
+                        <i class="bi bi-calendar-minus text-indigo fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Requests -->
+        <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+            <div class="moc-metric p-3 p-md-4 h-100">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Pending</p>
+                        <h3 class="fw-bold mb-1 letter-tight">1</h3>
+                        <span class="badge bg-amber-50 text-amber text-xs fw-semibold">
+                            <i class="bi bi-hourglass-split me-1"></i> Waiting
+                        </span>
+                    </div>
+                    <div class="moc-icon-box bg-amber-50 rounded-3">
+                        <i class="bi bi-clock-history text-amber fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Payslip -->
+        <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+            <div class="moc-metric p-3 p-md-4 h-100">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div>
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Next Pay</p>
+                        <h3 class="fw-bold mb-1 letter-tight">Jun 30</h3>
+                        <span class="badge bg-cyan-50 text-cyan text-xs fw-semibold">
+                            <i class="bi bi-cash-stack me-1"></i> Scheduled
+                        </span>
+                    </div>
+                    <div class="moc-icon-box bg-cyan-50 rounded-3">
+                        <i class="bi bi-wallet2 text-cyan fs-5"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- WAREHOUSE OPERATIONS  (Delta Only)              -->
+<!-- ═══════════════════════════════════════════════ -->
+@if (isWarehouse)
+{
+    <div class="moc-section-header mt-5">
+        <h5 class="fw-bold letter-tight">
+            <i class="bi bi-building-fill text-cyan me-1"></i> Warehouse Operations
+        </h5>
+        <hr />
     </div>
 
-    <div class="col-md-6 mb-3">
-        <a asp-controller="LeaveRequests" asp-action="Index" class="btn btn-warning btn-lg w-100 text-dark">
-            📂 My Leave History
-        </a>
+    <div class="row g-3 mb-4">
+
+        <!-- Stock In / Stock Out — Primary Action -->
+        <div class="col-md-6 col-lg-3 anim-fade-in anim-delay-1">
+            <div class="card moc-card border-0 shadow-sm h-100">
+                <div class="card-body p-4 d-flex flex-column text-center">
+                    <div class="mx-auto mb-3">
+                        <div class="moc-icon-box-lg bg-indigo-50 rounded-3">
+                            <i class="bi bi-arrow-left-right text-indigo fs-4"></i>
+                        </div>
+                    </div>
+                    <h6 class="fw-bold mb-1 letter-tight">Stock In / Out</h6>
+                    <p class="text-muted text-xs flex-grow-1 mb-3">
+                        Process incoming and outgoing stock movements
+                    </p>
+                    <a asp-controller="Warehouse" asp-action="Index" class="btn btn-moc-primary w-100">
+                        <i class="bi bi-arrow-right-circle me-1"></i> Open
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Inventory -->
+        <div class="col-md-6 col-lg-3 anim-fade-in anim-delay-2">
+            <div class="card moc-card border-0 shadow-sm h-100">
+                <div class="card-body p-4 d-flex flex-column text-center">
+                    <div class="mx-auto mb-3">
+                        <div class="moc-icon-box-lg bg-cyan-50 rounded-3">
+                            <i class="bi bi-search text-cyan fs-4"></i>
+                        </div>
+                    </div>
+                    <h6 class="fw-bold mb-1 letter-tight">Inventory List</h6>
+                    <p class="text-muted text-xs flex-grow-1 mb-3">
+                        Search and browse all products in the system
+                    </p>
+                    <a asp-controller="Products" asp-action="Index" class="btn btn-moc-outline w-100">
+                        <i class="bi bi-arrow-right-circle me-1"></i> Browse
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register New Item -->
+        <div class="col-md-6 col-lg-3 anim-fade-in anim-delay-3">
+            <div class="card moc-card border-0 shadow-sm h-100">
+                <div class="card-body p-4 d-flex flex-column text-center">
+                    <div class="mx-auto mb-3">
+                        <div class="moc-icon-box-lg bg-purple-50 rounded-3">
+                            <i class="bi bi-plus-square-fill text-purple fs-4"></i>
+                        </div>
+                    </div>
+                    <h6 class="fw-bold mb-1 letter-tight">Register Item</h6>
+                    <p class="text-muted text-xs flex-grow-1 mb-3">
+                        Add a new product to the inventory catalog
+                    </p>
+                    <a asp-controller="Products" asp-action="Create" class="btn btn-moc-outline w-100">
+                        <i class="bi bi-plus-circle me-1"></i> Create
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Alerts — Critical Action Card -->
+        <div class="col-md-6 col-lg-3 anim-fade-in anim-delay-4">
+            <div class="card moc-card border-0 shadow-sm h-100 position-relative overflow-hidden"
+                 style="border-left: 4px solid #ef4444 !important;">
+                <div class="card-body p-4 d-flex flex-column text-center">
+                    <div class="mx-auto mb-3 position-relative">
+                        <div class="moc-icon-box-lg bg-red-50 rounded-3">
+                            <i class="bi bi-exclamation-triangle-fill text-red fs-4"></i>
+                        </div>
+                        <!-- Pulsing dot indicator -->
+                        <span class="position-absolute top-0 start-100 translate-middle p-1 border border-2 border-white rounded-circle"
+                              style="background:#ef4444;width:12px;height:12px;">
+                            <span class="visually-hidden">Critical alerts</span>
+                        </span>
+                    </div>
+                    <h6 class="fw-bold mb-1 letter-tight text-red">Low Stock Alerts</h6>
+                    <p class="text-muted text-xs flex-grow-1 mb-2">
+                        Items below threshold — reorder needed
+                    </p>
+
+                    <!-- Urgency indicator -->
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-3 p-2 rounded-3"
+                         style="background:rgba(239,68,68,0.05);">
+                        <div class="moc-icon-box bg-red-50 rounded-3" style="width:28px;height:28px;min-width:28px;">
+                            <i class="bi bi-exclamation-circle-fill text-red" style="font-size:0.75rem;"></i>
+                        </div>
+                        <span class="fw-semibold text-xs" style="color:#991b1b;">8 items critical</span>
+                    </div>
+
+                    <a asp-controller="Warehouse" asp-action="LowStock" class="btn btn-moc-primary w-100"
+                       style="background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                        <i class="bi bi-exclamation-octagon me-1"></i> View Alerts
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HR & SELF-SERVICE  (Visible to Everyone)        -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-5">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-person-gear text-green me-1"></i> HR &amp; Self-Service
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+
+    <!-- File Leave Request -->
+    <div class="col-md-4 anim-fade-in anim-delay-1">
+        <div class="card moc-card border-0 shadow-sm h-100">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="moc-icon-box-lg bg-green-50 rounded-3 me-3">
+                        <i class="bi bi-calendar-plus-fill text-green fs-4"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 letter-tight">File Leave Request</h6>
+                        <span class="text-muted text-xs">Submit New Application</span>
+                    </div>
+                </div>
+                <p class="text-muted text-sm flex-grow-1">
+                    Submit a new leave request for manager approval. Track your remaining balance.
+                </p>
+                <a asp-controller="LeaveRequests" asp-action="Create" class="btn btn-moc-primary w-100">
+                    <i class="bi bi-plus-circle me-1"></i> File Leave
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="col-md-12 mb-3">
-        <a asp-controller="Payroll" asp-action="MyPayslip" class="btn btn-info btn-lg w-100 text-white">
-            📄 View Payslip
-        </a>
+    <!-- My Leave History -->
+    <div class="col-md-4 anim-fade-in anim-delay-2">
+        <div class="card moc-card border-0 shadow-sm h-100">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="moc-icon-box-lg bg-amber-50 rounded-3 me-3">
+                        <i class="bi bi-folder2-open text-amber fs-4"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 letter-tight">My Leave History</h6>
+                        <span class="text-muted text-xs">Past &amp; Pending Records</span>
+                    </div>
+                </div>
+                <p class="text-muted text-sm flex-grow-1">
+                    View all submitted leave requests and their current approval status.
+                </p>
+
+                <!-- Status preview -->
+                <div class="d-flex gap-2 flex-wrap mb-3">
+                    <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1 fw-semibold">
+                        <i class="bi bi-check-circle me-1"></i> 5 Approved
+                    </span>
+                    <span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1 fw-semibold">
+                        <i class="bi bi-hourglass-split me-1"></i> 1 Pending
+                    </span>
+                </div>
+
+                <a asp-controller="LeaveRequests" asp-action="Index" class="btn btn-moc-outline w-100">
+                    <i class="bi bi-arrow-right-circle me-1"></i> View History
+                </a>
+            </div>
+        </div>
     </div>
+
+    <!-- View Payslip -->
+    <div class="col-md-4 anim-fade-in anim-delay-3">
+        <div class="card moc-card border-0 shadow-sm h-100">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="moc-icon-box-lg bg-cyan-50 rounded-3 me-3">
+                        <i class="bi bi-file-earmark-text-fill text-cyan fs-4"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 letter-tight">View Payslip</h6>
+                        <span class="text-muted text-xs">Compensation Details</span>
+                    </div>
+                </div>
+                <p class="text-muted text-sm flex-grow-1">
+                    Access your latest payslip with earnings breakdown, deductions, and net pay.
+                </p>
+
+                <!-- Pay preview -->
+                <div class="rounded-3 p-3 mb-3 d-flex align-items-center justify-content-between"
+                     style="background:rgba(6,182,212,0.04);">
+                    <div>
+                        <p class="fw-semibold text-sm mb-0 letter-tight">Latest Period</p>
+                        <span class="text-muted text-xs">Jun 1 – Jun 15, 2026</span>
+                    </div>
+                    <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1 fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Ready
+                    </span>
+                </div>
+
+                <a asp-controller="Payroll" asp-action="MyPayslip" class="btn btn-moc-outline w-100">
+                    <i class="bi bi-file-earmark-text me-1"></i> View Payslip
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
