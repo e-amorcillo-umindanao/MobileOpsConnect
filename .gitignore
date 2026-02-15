@@ -364,3 +364,7 @@ FodyWeavers.xsd
 
 # Firebase — NEVER commit this (contains private admin keys)
 firebase-service-account.json
+
+# App settings — contain connection strings and API keys
+**/appsettings.json
+**/appsettings.*.json

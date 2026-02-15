@@ -5,17 +5,15 @@
 (function () {
     'use strict';
 
-    // Firebase config (must match firebase-messaging-sw.js)
-    const firebaseConfig = {
-        apiKey: "AIzaSyAL81jGL4I-RRdhk8K-niHwUMOYTQ91kkQ",
-        authDomain: "mobileops-connect.firebaseapp.com",
-        projectId: "mobileops-connect",
-        storageBucket: "mobileops-connect.firebasestorage.app",
-        messagingSenderId: "800744847836",
-        appId: "1:800744847836:web:bd9a01a4cc81740ef97719"
-    };
+    // Firebase config — injected by the server via _Layout.cshtml
+    // (see window.__FIREBASE_CONFIG__ and window.__FIREBASE_VAPID_KEY__)
+    const firebaseConfig = window.__FIREBASE_CONFIG__;
+    const VAPID_KEY = window.__FIREBASE_VAPID_KEY__;
 
-    const VAPID_KEY = 'BO3HeUvBl3pbv-2EKspH6NF2VVobx3tXQ2AnWXL_NywRZC6prbLMtNNrGMF6VzikJFiQAicjy11ijePmavEpyWk';
+    if (!firebaseConfig || !VAPID_KEY) {
+        console.warn('[FCM] Firebase config not found. Ensure server-side injection is working.');
+        return;
+    }
 
     // Only run if the browser supports notifications and service workers
     if (!('Notification' in window) || !('serviceWorker' in navigator)) {
