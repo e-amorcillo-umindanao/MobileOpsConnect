@@ -1,0 +1,82 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<div class="moc-section-header">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-person-circle text-indigo me-1"></i> Profile
+    </h5>
+    <hr />
+</div>
+
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="card moc-card border-0 shadow-sm">
+    <div class="card-body p-4 p-md-5">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            <!-- Username (read-only) -->
+            <div class="d-flex align-items-center mb-3">
+                <div class="moc-icon-box bg-indigo-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                    <i class="bi bi-person-fill text-indigo"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0 letter-tight">Username</h6>
+                    <span class="text-muted text-xs">Your login credential (read-only)</span>
+                </div>
+            </div>
+            <div class="mb-4">
+                <input asp-for="Username" class="form-control form-control-lg rounded-3" disabled
+                       style="padding:0.875rem 1rem;font-size:1rem;background:var(--moc-surface);" />
+            </div>
+
+            <hr class="my-4 opacity-10" />
+
+            <!-- Phone Number -->
+            <div class="d-flex align-items-center mb-3">
+                <div class="moc-icon-box bg-green-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                    <i class="bi bi-telephone-fill text-green"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0 letter-tight">Phone Number</h6>
+                    <span class="text-muted text-xs">Optional contact number</span>
+                </div>
+            </div>
+            <div class="mb-4">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text rounded-start-3 border-end-0"
+                          style="background:rgba(34,197,94,0.06);">
+                        <i class="bi bi-phone text-green"></i>
+                    </span>
+                    <input asp-for="Input.PhoneNumber" class="form-control rounded-end-3 border-start-0"
+                           placeholder="Enter your phone number"
+                           style="padding:0.875rem 1rem;font-size:1rem;" />
+                </div>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger text-xs"></span>
+            </div>
+
+            <!-- Save Button -->
+            <div class="d-grid">
+                <button id="update-profile-button" type="submit" class="btn btn-moc-primary btn-lg py-3">
+                    <i class="bi bi-check-circle me-1"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-footer bg-transparent border-0 px-4 py-3 text-center"
+         style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
+        <span class="text-muted text-xs">
+            <i class="bi bi-shield-check me-1"></i>
+            Profile changes are saved securely and take effect immediately.
+        </span>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

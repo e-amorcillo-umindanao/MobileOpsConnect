@@ -1,0 +1,63 @@
+@page
+@model TwoFactorAuthenticationModel
+@{
+    ViewData["Title"] = "Two-Factor Authentication";
+    ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
+}
+
+<div class="moc-section-header">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-shield-lock-fill text-green me-1"></i> Two-Factor Authentication
+    </h5>
+    <hr />
+</div>
+
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="card moc-card border-0 shadow-sm">
+    <div class="card-body p-4 p-md-5">
+
+        <div class="text-center p-4">
+            <div class="moc-icon-box-lg bg-green-50 rounded-3 mx-auto mb-3" style="width:64px;height:64px;">
+                <i class="bi bi-shield-lock text-green fs-2"></i>
+            </div>
+            <h5 class="fw-bold mb-2 letter-tight">Two-Factor Authentication</h5>
+            <p class="text-muted text-sm mb-4">
+                Two-factor authentication adds an extra layer of security to your account. 
+                This feature requires an authenticator app to generate verification codes.
+            </p>
+
+            @if (Model.Is2faEnabled)
+            {
+                <div class="rounded-3 p-3 d-inline-flex align-items-center gap-2 mb-4"
+                     style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.15);">
+                    <i class="bi bi-check-circle-fill text-green"></i>
+                    <span class="fw-semibold text-sm text-green">2FA is currently enabled</span>
+                </div>
+            }
+            else
+            {
+                <div class="rounded-3 p-3 d-inline-flex align-items-center gap-2 mb-4"
+                     style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);">
+                    <i class="bi bi-exclamation-triangle-fill text-amber"></i>
+                    <span class="fw-semibold text-sm text-amber">2FA is not yet configured</span>
+                </div>
+            }
+        </div>
+
+        <!-- Policy Notice -->
+        <div class="rounded-3 p-3 d-flex align-items-start gap-3"
+             style="background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.1);">
+            <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                <i class="bi bi-info-circle text-indigo"></i>
+            </div>
+            <div>
+                <p class="fw-semibold text-sm mb-1 letter-tight">Note</p>
+                <p class="text-muted text-xs mb-0">
+                    Two-factor authentication configuration is managed by your system administrator.
+                    Contact your admin if you need to enable or disable this feature.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

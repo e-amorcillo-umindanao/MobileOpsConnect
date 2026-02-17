@@ -1,0 +1,12 @@
+@model string
+
+@if (!String.IsNullOrEmpty(Model))
+{
+    var statusMessageClass = Model.StartsWith("Error") ? "bg-red-50 text-red" : "bg-green-50 text-green";
+    var statusIcon = Model.StartsWith("Error") ? "bi-exclamation-circle-fill" : "bi-check-circle-fill";
+    <div class="alert border-0 d-flex align-items-center gap-2 rounded-3 mb-4 anim-fade-in @statusMessageClass" role="alert">
+        <i class="bi @statusIcon"></i>
+        <span class="text-sm fw-semibold">@Model</span>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close" style="font-size:0.65rem;"></button>
+    </div>
+}

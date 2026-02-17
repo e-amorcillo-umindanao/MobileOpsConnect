@@ -1,0 +1,81 @@
+@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "Personal Data";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<div class="moc-section-header">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-database-fill text-red me-1"></i> Personal Data
+    </h5>
+    <hr />
+</div>
+
+<div class="card moc-card border-0 shadow-sm">
+    <div class="card-body p-4 p-md-5">
+
+        <div class="text-center p-4 mb-4">
+            <div class="moc-icon-box-lg bg-red-50 rounded-3 mx-auto mb-3" style="width:64px;height:64px;">
+                <i class="bi bi-database text-red fs-2"></i>
+            </div>
+            <h5 class="fw-bold mb-2 letter-tight">Your Personal Data</h5>
+            <p class="text-muted text-sm mb-0">
+                Your account contains personal data that you have provided. You can download or delete this data at any time.
+            </p>
+        </div>
+
+        <div class="row g-3">
+            <!-- Download -->
+            <div class="col-sm-6">
+                <div class="moc-metric p-4 h-100 text-center">
+                    <div class="moc-icon-box bg-indigo-50 rounded-3 mx-auto mb-3" style="width:48px;height:48px;">
+                        <i class="bi bi-download text-indigo fs-5"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2 letter-tight">Download Data</h6>
+                    <p class="text-muted text-xs mb-3">
+                        Get a copy of all personal data associated with your account.
+                    </p>
+                    <form asp-page="./DownloadPersonalData" method="post">
+                        <button class="btn btn-moc-outline btn-sm px-4 py-2" type="submit">
+                            <i class="bi bi-cloud-download me-1"></i> Download
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Delete -->
+            <div class="col-sm-6">
+                <div class="moc-metric p-4 h-100 text-center" style="border:1px solid rgba(239,68,68,0.15) !important;">
+                    <div class="moc-icon-box bg-red-50 rounded-3 mx-auto mb-3" style="width:48px;height:48px;">
+                        <i class="bi bi-trash3-fill text-red fs-5"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2 letter-tight">Delete Data</h6>
+                    <p class="text-muted text-xs mb-3">
+                        Permanently remove your account and all associated data.
+                    </p>
+                    <a id="delete" asp-page="./DeletePersonalData"
+                       class="btn btn-sm px-4 py-2 fw-semibold"
+                       style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
+                        <i class="bi bi-exclamation-triangle me-1"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning Notice -->
+        <div class="rounded-3 p-3 mt-4 d-flex align-items-start gap-3"
+             style="background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.1);">
+            <div class="moc-icon-box bg-red-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                <i class="bi bi-exclamation-triangle-fill text-red"></i>
+            </div>
+            <div>
+                <p class="fw-semibold text-sm mb-1 letter-tight">Warning</p>
+                <p class="text-muted text-xs mb-0">
+                    Deleting your data will permanently remove your account and all associated information.
+                    This action cannot be undone. Please make sure to download your data first if needed.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

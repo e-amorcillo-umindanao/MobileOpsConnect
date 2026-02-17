@@ -1,0 +1,49 @@
+@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout) && parentLayout is string parentLayoutStr)
+    {
+        Layout = parentLayoutStr;
+    }
+    else
+    {
+        Layout = "/Views/Shared/_Layout.cshtml";
+    }
+}
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                Account Settings
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-person-gear me-1"></i> Profile Management
+            </span>
+        </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">Manage Account</h1>
+        <p class="lead mb-0 opacity-75">
+            Update your profile, security settings &amp; personal information
+        </p>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-person-gear"></i>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4 col-lg-3 anim-fade-in">
+        <partial name="_ManageNav" />
+    </div>
+    <div class="col-md-8 col-lg-9 anim-fade-in anim-delay-1">
+        @RenderBody()
+    </div>
+</div>
+
+@if (IsSectionDefined("Scripts"))
+{
+    @RenderSection("Scripts")
+}
