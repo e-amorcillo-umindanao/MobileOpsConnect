@@ -16,13 +16,15 @@ namespace MobileOpsConnect.Controllers
         private readonly INotificationService _notificationService;
         private readonly IHubContext<InventoryHub> _hubContext;
         private readonly IEmailService _emailService;
+        private readonly IAuditService _auditService;
 
-        public WarehouseController(ApplicationDbContext context, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService)
+        public WarehouseController(ApplicationDbContext context, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService)
         {
             _context = context;
             _notificationService = notificationService;
             _hubContext = hubContext;
             _emailService = emailService;
+            _auditService = auditService;
         }
 
         // GET: Warehouse/Index (The Scanner Screen)
@@ -84,6 +86,10 @@ namespace MobileOpsConnect.Controllers
             // Broadcast real-time update via SignalR
             await _hubContext.Clients.All.SendAsync("StockUpdated", product.ProductID, product.Name, product.StockQuantity, "Stock In");
 
+            // Audit log
+            var user = User.Identity;
+            await _auditService.LogAsync(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "", user?.Name ?? "", "", "STOCK_IN", $"Added {quantity} units to {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.", HttpContext.Connection.RemoteIpAddress?.ToString());
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -115,6 +121,9 @@ namespace MobileOpsConnect.Controllers
 
             // Broadcast real-time update via SignalR
             await _hubContext.Clients.All.SendAsync("StockUpdated", product.ProductID, product.Name, product.StockQuantity, "Stock Out");
+
+            // Audit log
+            await _auditService.LogAsync(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "", User.Identity?.Name ?? "", "", "STOCK_OUT", $"Removed {quantity} units from {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.", HttpContext.Connection.RemoteIpAddress?.ToString());
 
             // Check for low stock and notify
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();

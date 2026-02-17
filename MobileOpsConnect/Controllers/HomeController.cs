@@ -126,6 +126,9 @@ namespace MobileOpsConnect.Controllers
                 var teamCount = (int)ViewBag.TeamCount;
                 ViewBag.OnLeavePercent = teamCount > 0 ? (onLeaveToday * 100) / teamCount : 0;
 
+                // Pending purchase orders for approval
+                ViewBag.PendingOrders = await _context.PurchaseOrders.CountAsync(po => po.Status == "Pending");
+
                 return View("ManagerDashboard");
             }
 
@@ -172,6 +175,13 @@ namespace MobileOpsConnect.Controllers
 
                 // Latest payslip period
                 ViewBag.LatestPayPeriod = $"{DateTime.Now:MMM} 1 – {DateTime.Now:MMM} 15, {DateTime.Now.Year}";
+
+                // Pending POs for Delta (WarehouseStaff)
+                if (User.IsInRole("WarehouseStaff"))
+                {
+                    var userId2 = user?.Id ?? "";
+                    ViewBag.MyPendingOrders = await _context.PurchaseOrders.CountAsync(po => po.RequestedById == userId2 && po.Status == "Pending");
+                }
 
                 return View("EmployeeDashboard");
             }

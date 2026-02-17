@@ -22,4 +22,13 @@ namespace MobileOpsConnect.Models
         public string Email { get; set; }
         public string NewPassword { get; set; }
     }
+
+    public class EmployeeRecordViewModel
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+        public int PendingLeaves { get; set; }
+        public int ApprovedLeaves { get; set; }
+    }
 }

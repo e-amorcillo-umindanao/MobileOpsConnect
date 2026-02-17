@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Data;
 using MobileOpsConnect.Models;
+using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Controllers
 {
@@ -11,10 +13,14 @@ namespace MobileOpsConnect.Controllers
     public class SettingsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAuditService _auditService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public SettingsController(ApplicationDbContext context)
+        public SettingsController(ApplicationDbContext context, IAuditService auditService, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _auditService = auditService;
+            _userManager = userManager;
         }
 
         // GET: Settings
@@ -58,6 +64,11 @@ namespace MobileOpsConnect.Controllers
                     _context.Update(systemSetting);
                     await _context.SaveChangesAsync();
                     ViewBag.Message = "Settings updated successfully!";
+
+                    // Audit log — settings change is a critical security event
+                    var currentUser = await _userManager.GetUserAsync(User);
+                    var roles = await _userManager.GetRolesAsync(currentUser!);
+                    await _auditService.LogAsync(currentUser!.Id, currentUser.Email!, roles.FirstOrDefault() ?? "", "SECURITY", $"Changed system settings (Company: {systemSetting.CompanyName}, Tax: {systemSetting.TaxRate}%, Threshold: {systemSetting.LowStockThreshold}).", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -69,9 +80,27 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Settings/AuditLogs
-        public IActionResult AuditLogs()
+        public async Task<IActionResult> AuditLogs()
         {
-            return View();
+            bool isSuperAdmin = User.IsInRole("SuperAdmin");
+
+            // Alpha sees ALL logs; Beta sees non-critical only
+            var query = _context.AuditLogs.AsQueryable();
+            if (!isSuperAdmin)
+            {
+                query = query.Where(l => !l.IsCritical);
+            }
+
+            var logs = await query.OrderByDescending(l => l.Timestamp).Take(50).ToListAsync();
+
+            ViewBag.IsSuperAdmin = isSuperAdmin;
+            ViewBag.TotalEvents = logs.Count;
+            ViewBag.LoginCount = logs.Count(l => l.Action == "LOGIN");
+            ViewBag.CreateCount = logs.Count(l => l.Action == "CREATE" || l.Action == "UPDATE" || l.Action == "DELETE");
+            ViewBag.StockCount = logs.Count(l => l.Action == "STOCK_IN" || l.Action == "STOCK_OUT");
+            ViewBag.SecurityCount = logs.Count(l => l.IsCritical);
+
+            return View(logs);
         }
     }
 }

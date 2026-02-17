@@ -202,23 +202,23 @@
                         </div>
                     </div>
                     <span class="badge rounded-pill px-3 py-2 fw-semibold text-xs"
-                          style="background:rgba(99,102,241,0.12); color:#4f46e5; border:1px solid rgba(99,102,241,0.2);">
-                        <i class="bi bi-info-circle me-1"></i> Coming Soon
+                          style="background:rgba(34,197,94,0.12); color:#16a34a; border:1px solid rgba(34,197,94,0.2);">
+                        <i class="bi bi-check-circle me-1"></i> Live
                     </span>
                 </div>
 
                 <p class="text-muted text-sm flex-grow-1">
-                    Approve purchase orders submitted by warehouse staff for inventory restocking. This feature is under development.
+                    Approve or reject purchase orders submitted by warehouse staff for inventory restocking.
                 </p>
 
-                <!-- Info -->
-                <div class="d-flex align-items-center gap-2 mb-3 p-2 rounded-3" style="background:rgba(99,102,241,0.04);">
-                    <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:36px;height:36px;min-width:36px;">
-                        <i class="bi bi-inbox-fill text-indigo"></i>
+                <!-- PO Pending Count -->
+                <div class="d-flex align-items-center gap-2 mb-3 p-2 rounded-3" style="background:rgba(245,158,11,0.04);">
+                    <div class="moc-icon-box bg-amber-50 rounded-3" style="width:36px;height:36px;min-width:36px;">
+                        <i class="bi bi-inbox-fill text-amber"></i>
                     </div>
                     <div>
-                        <p class="fw-semibold text-sm mb-0 letter-tight" style="color:#312e81;">Order module coming soon</p>
-                        <span class="text-muted text-xs">Feature in development</span>
+                        <p class="fw-semibold text-sm mb-0 letter-tight" style="color:#92400e;">@(ViewBag.PendingOrders ?? 0) Pending Orders</p>
+                        <span class="text-muted text-xs">Awaiting your approval</span>
                     </div>
                 </div>
 
@@ -390,6 +390,40 @@
                 </p>
                 <a asp-area="Identity" asp-page="/Account/Manage/Index" class="btn btn-moc-outline w-100">
                     <i class="bi bi-gear me-1"></i> Manage Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- EMPLOYEE RECORDS (Manager Only)                 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-5">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-people-fill text-cyan me-1"></i> Team Management
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-6 anim-fade-in anim-delay-1">
+        <div class="card moc-card border-0 shadow-sm h-100">
+            <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="moc-icon-box-lg bg-cyan-50 rounded-3 me-3">
+                        <i class="bi bi-person-badge-fill text-cyan fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0 letter-tight">Employee Records</h5>
+                        <span class="text-muted text-sm">View staff directory & leave stats</span>
+                    </div>
+                </div>
+                <p class="text-muted text-sm flex-grow-1">
+                    View your team's employee information, roles, and leave activity. Read-only access.
+                </p>
+                <a asp-controller="Users" asp-action="EmployeeRecords" class="btn btn-moc-primary w-100">
+                    <i class="bi bi-people me-1"></i> View Employee Records
                 </a>
             </div>
         </div>

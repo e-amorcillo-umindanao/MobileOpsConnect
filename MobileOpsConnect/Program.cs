@@ -45,6 +45,7 @@ else
 }
 builder.Services.AddScoped<INotificationService, FcmNotificationService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+builder.Services.AddScoped<IAuditService, AuditService>();
 // === END FIREBASE SETUP ===
 
 var app = builder.Build();

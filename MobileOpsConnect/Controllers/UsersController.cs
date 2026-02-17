@@ -3,31 +3,40 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MobileOpsConnect.Data;
 using MobileOpsConnect.Models;
+using MobileOpsConnect.Services;
 
 
 namespace MobileOpsConnect.Controllers
 {
     // REVERTED: Only SuperAdmin and SystemAdmin can access this. 
     // Charlie (Manager) handles Leaves, not User Accounts.
-    [Authorize(Roles = "SuperAdmin,SystemAdmin")]
+    [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
     public class UsersController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IAuditService _auditService;
+        private readonly ApplicationDbContext _context;
 
         public UsersController(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            SignInManager<IdentityUser> signInManager)
+            SignInManager<IdentityUser> signInManager,
+            IAuditService auditService,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _auditService = auditService;
+            _context = context;
         }
 
         // GET: Users
+        [Authorize(Roles = "SuperAdmin,SystemAdmin")]
         public async Task<IActionResult> Index()
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -89,6 +98,9 @@ namespace MobileOpsConnect.Controllers
             if (result.Succeeded)
             {
                 await _userManager.AddToRoleAsync(user, role);
+                var currentUser = await _userManager.GetUserAsync(User);
+                var currentRoles = await _userManager.GetRolesAsync(currentUser!);
+                await _auditService.LogAsync(currentUser!.Id, currentUser.Email!, currentRoles.FirstOrDefault() ?? "", "CREATE", $"Created user account: {email} with role {role}.", HttpContext.Connection.RemoteIpAddress?.ToString());
                 return RedirectToAction(nameof(Index));
             }
 
@@ -179,6 +191,8 @@ namespace MobileOpsConnect.Controllers
                 {
                     await _userManager.RemoveFromRoleAsync(user, currentDbRole);
                     await _userManager.AddToRoleAsync(user, model.NewRole);
+                    var myRoles = await _userManager.GetRolesAsync(currentUser!);
+                    await _auditService.LogAsync(currentUser!.Id, currentUser.Email!, myRoles.FirstOrDefault() ?? "", "UPDATE", $"Changed role of {user.Email} from {currentDbRole} to {model.NewRole}.", HttpContext.Connection.RemoteIpAddress?.ToString());
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -230,6 +244,8 @@ namespace MobileOpsConnect.Controllers
 
             if (result.Succeeded)
             {
+                var myRoles = await _userManager.GetRolesAsync(currentUser!);
+                await _auditService.LogAsync(currentUser!.Id, currentUser.Email!, myRoles.FirstOrDefault() ?? "", "SECURITY", $"Reset password for {user.Email}.", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -263,7 +279,9 @@ namespace MobileOpsConnect.Controllers
             string targetRole = roles.FirstOrDefault() ?? "Employee";
             if (targetRole != "SystemAdmin") return Forbid();
 
+            var deletedEmail = user.Email;
             await _userManager.DeleteAsync(user);
+            await _auditService.LogAsync(currentUser!.Id, currentUser.Email!, "SuperAdmin", "DELETE", $"Deleted user account: {deletedEmail} (role: {targetRole}).", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
             return RedirectToAction(nameof(Index));
         }
 
@@ -289,6 +307,8 @@ namespace MobileOpsConnect.Controllers
             }
 
             // Delete and sign out
+            var selfEmail = currentUser.Email;
+            await _auditService.LogAsync(currentUser.Id, selfEmail!, "SuperAdmin", "SECURITY", $"Super Admin self-deleted account: {selfEmail}.", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
             await _userManager.DeleteAsync(currentUser);
             await _signInManager.SignOutAsync();
             return Redirect("/");
@@ -368,6 +388,40 @@ namespace MobileOpsConnect.Controllers
         private bool IsRoleAllowed(string role)
         {
             return GetAllowedRolesList().Contains(role);
+        }
+
+        // ================= EMPLOYEE RECORDS (Read-Only for DepartmentManager) =================
+
+        // GET: Users/EmployeeRecords
+        [Authorize(Roles = "DepartmentManager")]
+        public async Task<IActionResult> EmployeeRecords()
+        {
+            var allUsers = await _userManager.Users.ToListAsync();
+            var records = new List<EmployeeRecordViewModel>();
+
+            foreach (var user in allUsers)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                var role = roles.FirstOrDefault() ?? "Employee";
+
+                // Charlie can only see staff-level roles (not admins)
+                if (role == "WarehouseStaff" || role == "Employee" || role == "DepartmentManager")
+                {
+                    var pendingLeaves = await _context.LeaveRequests.CountAsync(l => l.UserID == user.Id && l.Status == "Pending");
+                    var approvedLeaves = await _context.LeaveRequests.CountAsync(l => l.UserID == user.Id && l.Status == "Approved");
+
+                    records.Add(new EmployeeRecordViewModel
+                    {
+                        Id = user.Id,
+                        Email = user.Email ?? "",
+                        Role = role,
+                        PendingLeaves = pendingLeaves,
+                        ApprovedLeaves = approvedLeaves
+                    });
+                }
+            }
+
+            return View(records);
         }
     }
 }

@@ -23,14 +23,16 @@ namespace MobileOpsConnect.Controllers
         private readonly INotificationService _notificationService;
         private readonly IHubContext<InventoryHub> _hubContext;
         private readonly IEmailService _emailService;
+        private readonly IAuditService _auditService;
 
-        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService)
+        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService)
         {
             _context = context;
             _userManager = userManager;
             _notificationService = notificationService;
             _hubContext = hubContext;
             _emailService = emailService;
+            _auditService = auditService;
         }
 
         // GET: LeaveRequests
@@ -143,6 +145,10 @@ namespace MobileOpsConnect.Controllers
                 // Broadcast real-time update via SignalR
                 await _hubContext.Clients.All.SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Pending", leaveRequest.UserID);
 
+                // Audit log
+                var roles = await _userManager.GetRolesAsync(user);
+                await _auditService.LogAsync(user.Id, user.Email!, roles.FirstOrDefault() ?? "", "CREATE", $"Filed {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+
                 return RedirectToAction(nameof(Index));
             }
             return View(leaveRequest);
@@ -176,6 +182,11 @@ namespace MobileOpsConnect.Controllers
             // Broadcast real-time update via SignalR
             await _hubContext.Clients.All.SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Approved", leaveRequest.UserID);
 
+            // Audit log
+            var approver = await _userManager.GetUserAsync(User);
+            var approverRoles = await _userManager.GetRolesAsync(approver!);
+            await _auditService.LogAsync(approver!.Id, approver.Email!, approverRoles.FirstOrDefault() ?? "", "APPROVE", $"Approved leave request #{id} ({leaveRequest.LeaveType}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -204,6 +215,11 @@ namespace MobileOpsConnect.Controllers
 
             // Broadcast real-time update via SignalR
             await _hubContext.Clients.All.SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Rejected", leaveRequest.UserID);
+
+            // Audit log
+            var rejector = await _userManager.GetUserAsync(User);
+            var rejectorRoles = await _userManager.GetRolesAsync(rejector!);
+            await _auditService.LogAsync(rejector!.Id, rejector.Email!, rejectorRoles.FirstOrDefault() ?? "", "REJECT", $"Rejected leave request #{id} ({leaveRequest.LeaveType}).", HttpContext.Connection.RemoteIpAddress?.ToString());
 
             return RedirectToAction(nameof(Index));
         }
