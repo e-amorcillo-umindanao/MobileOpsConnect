@@ -40,33 +40,60 @@ namespace MobileOpsConnect.Controllers
             // Get company info from settings
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();
             var companyName = settings?.CompanyName ?? "MobileOps Connect";
-            var taxRate = settings?.TaxRate ?? 0.10m;
 
-            // Role-based salary calculation (matches existing MyPayslip.cshtml logic)
-            decimal baseSalary = role switch
+            // ────────────────────────────────────────────────
+            // Role-based salary — EXACTLY matches MyPayslip.cshtml
+            // ────────────────────────────────────────────────
+            decimal basicSalary = 22000m;
+            decimal overtime    = 0m;
+            decimal allowance   = 2000m;
+            decimal tax         = 1500m;
+
+            switch (role)
             {
-                "SuperAdmin" => 75000m,
-                "SystemAdmin" => 55000m,
-                "DepartmentManager" => 45000m,
-                "WarehouseStaff" => 28000m,
-                _ => 22000m
-            };
+                case "SuperAdmin":
+                    basicSalary = 150000m;
+                    allowance   = 20000m;
+                    tax         = 35000m;
+                    break;
+                case "SystemAdmin":
+                    basicSalary = 75000m;
+                    allowance   = 5000m;
+                    tax         = 12000m;
+                    break;
+                case "DepartmentManager":
+                    basicSalary = 55000m;
+                    allowance   = 4000m;
+                    tax         = 6500m;
+                    break;
+                case "WarehouseStaff":
+                    basicSalary = 26000m;
+                    overtime    = 4500m;
+                    allowance   = 1500m;
+                    tax         = 2200m;
+                    break;
+            }
+
+            // Standard deductions — matches view
+            decimal sss        = 1350m;
+            decimal philhealth = 1125m;
+            decimal pagibig    = 100m;
 
             var payslipData = new PayslipData
             {
-                EmployeeName = user.Email?.Split('@')[0] ?? "Employee",
+                EmployeeName  = user.Email?.Split('@')[0] ?? "Employee",
                 EmployeeEmail = user.Email ?? "",
-                Role = role,
-                CompanyName = companyName,
-                PayPeriod = $"{DateTime.Now:MMMM 1} – {DateTime.Now:MMMM} {DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)}, {DateTime.Now.Year}",
-                PayDate = DateTime.Now,
-                BasicSalary = baseSalary,
-                Overtime = baseSalary * 0.05m,
-                Allowances = 3000m,
-                Tax = baseSalary * taxRate,
-                SSS = 1125m,
-                PhilHealth = 450m,
-                PagIbig = 200m
+                Role          = role,
+                CompanyName   = companyName,
+                PayPeriod     = $"{DateTime.Now:MMMM} 1 – {DateTime.Now:MMMM} {DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)}, {DateTime.Now.Year}",
+                PayDate       = DateTime.Now,
+                BasicSalary   = basicSalary,
+                Overtime      = overtime,
+                Allowances    = allowance,
+                Tax           = tax,
+                SSS           = sss,
+                PhilHealth    = philhealth,
+                PagIbig       = pagibig
             };
 
             var document = new PayslipDocument(payslipData);
