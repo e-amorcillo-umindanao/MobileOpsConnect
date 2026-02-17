@@ -4,44 +4,70 @@
     ViewData["Title"] = "Adjust Stock";
 }
 
-<div class="container mt-5">
+<div class="container py-4 anim-fade-in">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-lg">
-                <div class="card-header bg-dark text-white text-center">
-                    <h3>@Model.Name</h3>
-                    <small>SKU: @Model.SKU</small>
+        <div class="col-md-7 col-lg-6">
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <a asp-action="Index" class="btn btn-moc-outline px-3 py-2 text-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Back to Warehouse
+                </a>
+                <span class="text-muted text-xs">SKU: <span class="fw-semibold">@Model.SKU</span></span>
+            </div>
+
+            <div class="card moc-card border-0 shadow-lg overflow-hidden">
+                <!-- Header with Product Info -->
+                <div class="card-header bg-transparent border-0 p-4 pb-0 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle bg-indigo-50 mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-box-seam text-indigo" style="font-size: 2.5rem;"></i>
+                    </div>
+                    <h3 class="fw-bold mb-1 letter-tight">@Model.Name</h3>
+                    <p class="text-muted text-sm mb-0">Adjust inventory levels</p>
                 </div>
 
-                <div class="card-body text-center">
-                    <h1 class="display-1 fw-bold text-primary mb-4">@Model.StockQuantity</h1>
-                    <p class="text-muted">Current Stock Level</p>
+                <div class="card-body p-4">
+                    <!-- Current Stock Display -->
+                    <div class="text-center mb-4 p-3 rounded-4 bg-light border">
+                         <span class="d-block text-uppercase text-xs fw-bold text-muted mb-1">Current Quantity</span>
+                        <h1 class="display-3 fw-bold mb-0 @(Model.StockQuantity <= 10 ? "text-danger" : "text-primary")" style="letter-spacing: -2px;">
+                            @Model.StockQuantity
+                        </h1>
+                         @if (Model.StockQuantity <= 10) {
+                            <div class="mt-2"><span class="badge bg-red-50 text-red"><i class="bi bi-exclamation-triangle-fill me-1"></i> Low Stock Warning</span></div>
+                         }
+                    </div>
 
                     @if (TempData["Error"] != null)
                     {
-                        <div class="alert alert-danger">@TempData["Error"]</div>
+                        <div class="alert alert-danger shadow-sm border-0 d-flex align-items-center gap-2 mb-4">
+                            <i class="bi bi-x-circle-fill fs-5"></i> @TempData["Error"]
+                        </div>
                     }
-
-                    <hr />
 
                     <div class="row g-3">
                         <!-- Stock In Form -->
                         <div class="col-12">
-                            <div class="p-3 border rounded-3 bg-light">
-                                <h5 class="text-success mb-3"><i class="bi bi-box-arrow-in-down"></i> Stock In</h5>
+                            <div class="p-3 border rounded-4 bg-white shadow-sm" style="border-left: 5px solid var(--bs-success) !important;">
+                                <h6 class="text-success fw-bold mb-3 d-flex align-items-center gap-2">
+                                    <i class="bi bi-box-arrow-in-down fs-5"></i> Stock In
+                                </h6>
                                 <form asp-action="StockIn">
                                     <input type="hidden" name="id" value="@Model.ProductID" />
                                     <div class="row g-2">
                                         <div class="col-md-4">
-                                            <label class="form-label small fw-bold text-muted">Quantity</label>
-                                            <input type="number" name="quantity" class="form-control" placeholder="0" required min="1">
+                                            <div class="form-floating">
+                                                <input type="number" name="quantity" class="form-control" id="qtyIn" placeholder="0" required min="1">
+                                                <label for="qtyIn">Quantity</label>
+                                            </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <label class="form-label small fw-bold text-muted">Reason / Notes</label>
                                             <div class="input-group">
-                                                <input type="text" name="notes" class="form-control" placeholder="e.g. Supplier Delivery" required>
+                                                <div class="form-floating flex-grow-1">
+                                                    <input type="text" name="notes" class="form-control" id="noteIn" placeholder="Reason" required>
+                                                    <label for="noteIn">Reason / Notes</label>
+                                                </div>
                                                 <button type="submit" class="btn btn-success fw-bold px-4">
-                                                    ➕ Add
+                                                    <i class="bi bi-plus-lg"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -52,21 +78,27 @@
 
                         <!-- Stock Out Form -->
                         <div class="col-12">
-                            <div class="p-3 border rounded-3 bg-light mt-2">
-                                <h5 class="text-danger mb-3"><i class="bi bi-box-arrow-up"></i> Stock Out</h5>
+                            <div class="p-3 border rounded-4 bg-white shadow-sm" style="border-left: 5px solid var(--bs-danger) !important;">
+                                <h6 class="text-danger fw-bold mb-3 d-flex align-items-center gap-2">
+                                    <i class="bi bi-box-arrow-up fs-5"></i> Stock Out
+                                </h6>
                                 <form asp-action="StockOut">
                                     <input type="hidden" name="id" value="@Model.ProductID" />
                                     <div class="row g-2">
                                         <div class="col-md-4">
-                                            <label class="form-label small fw-bold text-muted">Quantity</label>
-                                            <input type="number" name="quantity" class="form-control" placeholder="0" required min="1">
+                                            <div class="form-floating">
+                                                <input type="number" name="quantity" class="form-control" id="qtyOut" placeholder="0" required min="1">
+                                                <label for="qtyOut">Quantity</label>
+                                            </div>
                                         </div>
                                         <div class="col-md-8">
-                                            <label class="form-label small fw-bold text-muted">Reason / Notes</label>
                                             <div class="input-group">
-                                                <input type="text" name="notes" class="form-control" placeholder="e.g. Customer Sale / Damaged" required>
+                                                 <div class="form-floating flex-grow-1">
+                                                    <input type="text" name="notes" class="form-control" id="noteOut" placeholder="Reason" required>
+                                                    <label for="noteOut">Reason / Notes</label>
+                                                </div>
                                                 <button type="submit" class="btn btn-danger fw-bold px-4">
-                                                    ➖ Remove
+                                                    <i class="bi bi-dash-lg"></i>
                                                 </button>
                                             </div>
                                         </div>
@@ -76,9 +108,6 @@
                         </div>
                     </div>
 
-                </div>
-                <div class="card-footer text-center">
-                    <a asp-action="Index" class="btn btn-secondary">Back to Scanner</a>
                 </div>
             </div>
         </div>
