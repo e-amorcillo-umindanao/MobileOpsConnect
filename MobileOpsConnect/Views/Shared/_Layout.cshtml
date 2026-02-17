@@ -544,6 +544,7 @@
 
         connection.on("StockUpdated", (productId, productName, newQty, action) => {
             showSignalRToast("📦", `${action}`, `${productName} — now at ${newQty} units`);
+            setTimeout(() => location.reload(), 2000);
         });
 
         connection.on("LeaveStatusChanged", (leaveId, status, userId) => {
@@ -553,6 +554,7 @@
                 ? `A new leave request (#${leaveId}) has been submitted.`
                 : `Leave request #${leaveId} has been ${status.toLowerCase()}.`;
             showSignalRToast(icon, label, desc);
+            setTimeout(() => location.reload(), 2000);
         });
 
         connection.start().catch(err => console.error("SignalR Error:", err));
