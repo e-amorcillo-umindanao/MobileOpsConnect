@@ -24,23 +24,57 @@
 
                     <hr />
 
-                    <form asp-action="StockIn" class="mb-3">
-                        <input type="hidden" name="id" value="@Model.ProductID" />
-                        <div class="input-group">
-                            <input type="number" name="quantity" class="form-control" placeholder="Qty to Add" required min="1">
-                            <input type="text" name="notes" class="form-control" placeholder="Reason (e.g. Delivery)" required>
-                            <button type="submit" class="btn btn-success fw-bold">➕ STOCK IN</button>
+                    <div class="row g-3">
+                        <!-- Stock In Form -->
+                        <div class="col-12">
+                            <div class="p-3 border rounded-3 bg-light">
+                                <h5 class="text-success mb-3"><i class="bi bi-box-arrow-in-down"></i> Stock In</h5>
+                                <form asp-action="StockIn">
+                                    <input type="hidden" name="id" value="@Model.ProductID" />
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-bold text-muted">Quantity</label>
+                                            <input type="number" name="quantity" class="form-control" placeholder="0" required min="1">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="form-label small fw-bold text-muted">Reason / Notes</label>
+                                            <div class="input-group">
+                                                <input type="text" name="notes" class="form-control" placeholder="e.g. Supplier Delivery" required>
+                                                <button type="submit" class="btn btn-success fw-bold px-4">
+                                                    ➕ Add
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </form>
 
-                    <form asp-action="StockOut">
-                        <input type="hidden" name="id" value="@Model.ProductID" />
-                        <div class="input-group">
-                            <input type="number" name="quantity" class="form-control" placeholder="Qty to Remove" required min="1">
-                            <input type="text" name="notes" class="form-control" placeholder="Reason (e.g. Sale/Damage)" required>
-                            <button type="submit" class="btn btn-danger fw-bold">➖ STOCK OUT</button>
+                        <!-- Stock Out Form -->
+                        <div class="col-12">
+                            <div class="p-3 border rounded-3 bg-light mt-2">
+                                <h5 class="text-danger mb-3"><i class="bi bi-box-arrow-up"></i> Stock Out</h5>
+                                <form asp-action="StockOut">
+                                    <input type="hidden" name="id" value="@Model.ProductID" />
+                                    <div class="row g-2">
+                                        <div class="col-md-4">
+                                            <label class="form-label small fw-bold text-muted">Quantity</label>
+                                            <input type="number" name="quantity" class="form-control" placeholder="0" required min="1">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <label class="form-label small fw-bold text-muted">Reason / Notes</label>
+                                            <div class="input-group">
+                                                <input type="text" name="notes" class="form-control" placeholder="e.g. Customer Sale / Damaged" required>
+                                                <button type="submit" class="btn btn-danger fw-bold px-4">
+                                                    ➖ Remove
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                    </form>
+                    </div>
 
                 </div>
                 <div class="card-footer text-center">

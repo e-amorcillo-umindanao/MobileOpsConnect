@@ -28,44 +28,50 @@
     </div>
 </div>
 
-<table class="table table-striped align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>SKU</th>
-            <th>Product Name</th>
-            <th>Category</th>
-            <th>Current Stock</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.SKU</td>
-                <td>@item.Name</td>
-                <td>@item.Category</td>
-                <td>
-                    <h4 class="mb-0">
-                        @if (item.StockQuantity <= 10)
-                        {
-                            <span class="badge bg-danger">@item.StockQuantity</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-success">@item.StockQuantity</span>
-                        }
-                    </h4>
-                </td>
-                <td>
-                    <a asp-action="Adjust" asp-route-id="@item.ProductID" class="btn btn-outline-primary fw-bold">
-                        ⚙️ Manage Stock
-                    </a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="card shadow-sm mb-4">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width: 15%;">SKU</th>
+                        <th style="width: 30%;">Product Name</th>
+                        <th style="width: 15%;">Category</th>
+                        <th style="width: 15%;" class="text-center">Current Stock</th>
+                        <th style="width: 25%;" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold text-muted">@item.SKU</td>
+                            <td class="fw-bold">@item.Name</td>
+                            <td><span class="badge bg-secondary">@item.Category</span></td>
+                            <td class="text-center">
+                                <h5 class="mb-0">
+                                    @if (item.StockQuantity <= 10)
+                                    {
+                                        <span class="badge bg-danger shadow-sm">@item.StockQuantity</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success shadow-sm">@item.StockQuantity</span>
+                                    }
+                                </h5>
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Adjust" asp-route-id="@item.ProductID" class="btn btn-outline-primary btn-sm fw-bold px-3">
+                                    ⚙️ Manage Stock
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="scannerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
