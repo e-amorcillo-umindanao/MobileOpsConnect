@@ -37,7 +37,7 @@ namespace MobileOpsConnect.Models
         [ForeignKey("ApprovedById")]
         public IdentityUser? ApprovedBy { get; set; }
 
-        public DateTime DateRequested { get; set; } = DateTime.Now;
+        public DateTime DateRequested { get; set; } = DateTime.UtcNow;
 
         public DateTime? DateProcessed { get; set; }
 

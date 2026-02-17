@@ -10,14 +10,14 @@ namespace MobileOpsConnect.Models
 
         [Required]
         [Display(Name = "SKU Code")]
-        public string SKU { get; set; } // The Barcode
+        public string SKU { get; set; } = string.Empty; // The Barcode
 
         [Required]
         [Display(Name = "Product Name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Display(Name = "Category")]
-        public string Category { get; set; }
+        public string Category { get; set; } = string.Empty;
 
         [Required]
         [Display(Name = "Stock Quantity")]
@@ -28,6 +28,6 @@ namespace MobileOpsConnect.Models
         public decimal Price { get; set; }
 
         [Display(Name = "Last Updated")]
-        public DateTime LastUpdated { get; set; } = DateTime.Now;
+        public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
     }
 }

@@ -1,0 +1,84 @@
+@page
+@model DeletePersonalDataModel
+@{
+    ViewData["Title"] = "Delete Personal Data";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<div class="moc-section-header">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-trash3-fill text-red me-1"></i> Delete Personal Data
+    </h5>
+    <hr />
+</div>
+
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="card moc-card border-0 shadow-sm">
+    <div class="card-body p-4 p-md-5">
+        <div class="text-center mb-4">
+            <div class="moc-icon-box-lg bg-red-50 rounded-3 mx-auto mb-3" style="width:64px;height:64px;">
+                <i class="bi bi-exclamation-triangle text-red fs-2"></i>
+            </div>
+            <h5 class="fw-bold mb-2 letter-tight text-danger">Permanently Delete Account</h5>
+            <p class="text-muted text-sm mb-0">
+                This action is <strong>irreversible</strong>. Your account and all associated data will be permanently deleted.
+            </p>
+        </div>
+
+        <!-- Warning Notice -->
+        <div class="rounded-3 p-3 mb-4 d-flex align-items-start gap-3"
+             style="background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.15);">
+            <div class="moc-icon-box bg-red-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                <i class="bi bi-exclamation-triangle-fill text-red"></i>
+            </div>
+            <div>
+                <p class="fw-semibold text-sm mb-1 letter-tight">Warning</p>
+                <p class="text-muted text-xs mb-0">
+                    Deleting your data will permanently remove your account and cannot be undone.
+                    Make sure to download your data first if needed.
+                </p>
+            </div>
+        </div>
+
+        <form id="delete-user" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            @if (Model.RequirePassword)
+            {
+                <div class="d-flex align-items-center mb-3">
+                    <div class="moc-icon-box bg-red-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                        <i class="bi bi-lock-fill text-red"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold mb-0 letter-tight">Confirm Password</h6>
+                        <span class="text-muted text-xs">Enter your password to confirm deletion</span>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text rounded-start-3 border-end-0" style="background:rgba(239,68,68,0.06);">
+                            <i class="bi bi-key-fill text-red"></i>
+                        </span>
+                        <input asp-for="Input.Password" class="form-control rounded-end-3 border-start-0"
+                               autocomplete="current-password" placeholder="Enter your password"
+                               style="padding:0.875rem 1rem;font-size:1rem;" />
+                    </div>
+                    <span asp-validation-for="Input.Password" class="text-danger text-xs"></span>
+                </div>
+            }
+
+            <div class="d-grid">
+                <button class="btn btn-lg py-3 fw-semibold"
+                        style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.3);"
+                        type="submit">
+                    <i class="bi bi-trash3 me-1"></i> Delete Account & Data
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

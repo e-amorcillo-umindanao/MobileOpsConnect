@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MobileOpsConnect.Controllers;
@@ -6,6 +7,7 @@ namespace MobileOpsConnect.Controllers;
 /// Serves the Firebase Messaging service worker with config injected from appsettings.json
 /// so that sensitive keys are never hardcoded in static JS files.
 /// </summary>
+[AllowAnonymous]
 public class FirebaseController : Controller
 {
     private readonly IConfiguration _config;

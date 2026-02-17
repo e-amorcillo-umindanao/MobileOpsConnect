@@ -21,6 +21,6 @@ namespace MobileOpsConnect.Models
         [Display(Name = "Tax Rate (%)")]
         public decimal TaxRate { get; set; } = 12.00m; // Default VAT
 
-        public DateTime LastUpdated { get; set; } = DateTime.Now;
+        public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
     }
 }

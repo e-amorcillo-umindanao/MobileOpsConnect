@@ -60,15 +60,16 @@ namespace MobileOpsConnect.Controllers
             {
                 try
                 {
-                    systemSetting.LastUpdated = DateTime.Now;
+                    systemSetting.LastUpdated = DateTime.UtcNow;
                     _context.Update(systemSetting);
                     await _context.SaveChangesAsync();
                     ViewBag.Message = "Settings updated successfully!";
 
                     // Audit log — settings change is a critical security event
                     var currentUser = await _userManager.GetUserAsync(User);
-                    var roles = await _userManager.GetRolesAsync(currentUser!);
-                    await _auditService.LogAsync(currentUser!.Id, currentUser.Email!, roles.FirstOrDefault() ?? "", "SECURITY", $"Changed system settings (Company: {systemSetting.CompanyName}, Tax: {systemSetting.TaxRate}%, Threshold: {systemSetting.LowStockThreshold}).", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
+                    if (currentUser == null) return Challenge();
+                    var roles = await _userManager.GetRolesAsync(currentUser);
+                    await _auditService.LogAsync(currentUser.Id, currentUser.Email!, roles.FirstOrDefault() ?? "", "SECURITY", $"Changed system settings (Company: {systemSetting.CompanyName}, Tax: {systemSetting.TaxRate}%, Threshold: {systemSetting.LowStockThreshold}).", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

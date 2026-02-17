@@ -38,7 +38,8 @@ namespace MobileOpsConnect.Controllers
             if (User.IsInRole("WarehouseStaff"))
             {
                 var currentUser = await _userManager.GetUserAsync(User);
-                orders = orders.Where(po => po.RequestedById == currentUser!.Id).ToList();
+                if (currentUser == null) return Challenge();
+                orders = orders.Where(po => po.RequestedById == currentUser.Id).ToList();
             }
 
             ViewBag.CanApprove = User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager");
@@ -76,7 +77,7 @@ namespace MobileOpsConnect.Controllers
                 EstimatedCost = product.Price * Quantity,
                 RequestedById = currentUser.Id,
                 Status = "Pending",
-                DateRequested = DateTime.Now,
+                DateRequested = DateTime.UtcNow,
                 Notes = Notes
             };
 
@@ -116,7 +117,7 @@ namespace MobileOpsConnect.Controllers
 
             order.Status = isApproval ? "Approved" : "Rejected";
             order.ApprovedById = currentUser!.Id;
-            order.DateProcessed = DateTime.Now;
+            order.DateProcessed = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 

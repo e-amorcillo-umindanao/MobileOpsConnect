@@ -7,7 +7,7 @@ namespace MobileOpsConnect.Models
         [Key]
         public int Id { get; set; }
 
-        public DateTime Timestamp { get; set; } = DateTime.Now;
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
         [Required]
         [StringLength(450)]

@@ -1,0 +1,31 @@
+@page
+@model DownloadPersonalDataModel
+@{
+    ViewData["Title"] = "Download Personal Data";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<div class="moc-section-header">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-download text-indigo me-1"></i> Download Your Data
+    </h5>
+    <hr />
+</div>
+
+<div class="card moc-card border-0 shadow-sm">
+    <div class="card-body p-4 p-md-5 text-center">
+        <div class="moc-icon-box-lg bg-indigo-50 rounded-3 mx-auto mb-3" style="width:64px;height:64px;">
+            <i class="bi bi-file-earmark-arrow-down text-indigo fs-2"></i>
+        </div>
+        <h5 class="fw-bold mb-2 letter-tight">Your Data is Ready</h5>
+        <p class="text-muted text-sm mb-4">
+            Click the button below to download a JSON file containing your personal data.
+        </p>
+
+        <form method="post">
+            <button class="btn btn-moc-primary btn-lg px-5 py-3" type="submit">
+                <i class="bi bi-cloud-download me-2"></i> Download Data
+            </button>
+        </form>
+    </div>
+</div>

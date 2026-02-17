@@ -125,14 +125,21 @@ namespace MobileOpsConnect.Controllers
             ModelState.Remove("Status");
             ModelState.Remove("DateRequested");
 
+            // Server-side validation: EndDate must be on or after StartDate
+            if (leaveRequest.EndDate < leaveRequest.StartDate)
+            {
+                ModelState.AddModelError("EndDate", "End date must be on or after the start date.");
+            }
+
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Challenge();
 
                 // Auto-fill system fields
                 leaveRequest.UserID = user.Id;
                 leaveRequest.Status = "Pending";
-                leaveRequest.DateRequested = DateTime.Now;
+                leaveRequest.DateRequested = DateTime.UtcNow;
 
                 _context.Add(leaveRequest);
                 await _context.SaveChangesAsync();
@@ -165,7 +172,11 @@ namespace MobileOpsConnect.Controllers
             var leaveRequest = await _context.LeaveRequests.FindAsync(id);
             if (leaveRequest == null) return NotFound();
 
+            var approver = await _userManager.GetUserAsync(User);
+            if (approver == null) return Challenge();
+
             leaveRequest.Status = "Approved";
+            leaveRequest.ApprovedById = approver.Id;
             await _context.SaveChangesAsync();
 
             // Notify the employee via push + email
@@ -183,9 +194,8 @@ namespace MobileOpsConnect.Controllers
             await _hubContext.Clients.All.SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Approved", leaveRequest.UserID);
 
             // Audit log
-            var approver = await _userManager.GetUserAsync(User);
-            var approverRoles = await _userManager.GetRolesAsync(approver!);
-            await _auditService.LogAsync(approver!.Id, approver.Email!, approverRoles.FirstOrDefault() ?? "", "APPROVE", $"Approved leave request #{id} ({leaveRequest.LeaveType}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+            var approverRoles = await _userManager.GetRolesAsync(approver);
+            await _auditService.LogAsync(approver.Id, approver.Email!, approverRoles.FirstOrDefault() ?? "", "APPROVE", $"Approved leave request #{id} ({leaveRequest.LeaveType}).", HttpContext.Connection.RemoteIpAddress?.ToString());
 
             return RedirectToAction(nameof(Index));
         }
@@ -199,7 +209,11 @@ namespace MobileOpsConnect.Controllers
             var leaveRequest = await _context.LeaveRequests.FindAsync(id);
             if (leaveRequest == null) return NotFound();
 
+            var rejector = await _userManager.GetUserAsync(User);
+            if (rejector == null) return Challenge();
+
             leaveRequest.Status = "Rejected";
+            leaveRequest.ApprovedById = rejector.Id;
             await _context.SaveChangesAsync();
 
             // Notify the employee via push + email
@@ -217,9 +231,8 @@ namespace MobileOpsConnect.Controllers
             await _hubContext.Clients.All.SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Rejected", leaveRequest.UserID);
 
             // Audit log
-            var rejector = await _userManager.GetUserAsync(User);
-            var rejectorRoles = await _userManager.GetRolesAsync(rejector!);
-            await _auditService.LogAsync(rejector!.Id, rejector.Email!, rejectorRoles.FirstOrDefault() ?? "", "REJECT", $"Rejected leave request #{id} ({leaveRequest.LeaveType}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+            var rejectorRoles = await _userManager.GetRolesAsync(rejector);
+            await _auditService.LogAsync(rejector.Id, rejector.Email!, rejectorRoles.FirstOrDefault() ?? "", "REJECT", $"Rejected leave request #{id} ({leaveRequest.LeaveType}).", HttpContext.Connection.RemoteIpAddress?.ToString());
 
             return RedirectToAction(nameof(Index));
         }
@@ -234,6 +247,10 @@ namespace MobileOpsConnect.Controllers
 
             // Security: Only allow edit if it's still Pending
             if (leaveRequest.Status != "Pending") return Forbid();
+
+            // Security: Only the owner can edit their own request
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (leaveRequest.UserID != currentUser?.Id) return Forbid();
 
             return View(leaveRequest);
         }

@@ -99,8 +99,9 @@ namespace MobileOpsConnect.Controllers
             {
                 await _userManager.AddToRoleAsync(user, role);
                 var currentUser = await _userManager.GetUserAsync(User);
-                var currentRoles = await _userManager.GetRolesAsync(currentUser!);
-                await _auditService.LogAsync(currentUser!.Id, currentUser.Email!, currentRoles.FirstOrDefault() ?? "", "CREATE", $"Created user account: {email} with role {role}.", HttpContext.Connection.RemoteIpAddress?.ToString());
+                if (currentUser == null) return Challenge();
+                var currentRoles = await _userManager.GetRolesAsync(currentUser);
+                await _auditService.LogAsync(currentUser.Id, currentUser.Email!, currentRoles.FirstOrDefault() ?? "", "CREATE", $"Created user account: {email} with role {role}.", HttpContext.Connection.RemoteIpAddress?.ToString());
                 return RedirectToAction(nameof(Index));
             }
 
@@ -120,6 +121,7 @@ namespace MobileOpsConnect.Controllers
             if (id == null) return NotFound();
 
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
@@ -160,6 +162,7 @@ namespace MobileOpsConnect.Controllers
             if (id != model.Id) return NotFound();
 
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
@@ -191,8 +194,8 @@ namespace MobileOpsConnect.Controllers
                 {
                     await _userManager.RemoveFromRoleAsync(user, currentDbRole);
                     await _userManager.AddToRoleAsync(user, model.NewRole);
-                    var myRoles = await _userManager.GetRolesAsync(currentUser!);
-                    await _auditService.LogAsync(currentUser!.Id, currentUser.Email!, myRoles.FirstOrDefault() ?? "", "UPDATE", $"Changed role of {user.Email} from {currentDbRole} to {model.NewRole}.", HttpContext.Connection.RemoteIpAddress?.ToString());
+                    var myRoles = await _userManager.GetRolesAsync(currentUser);
+                    await _auditService.LogAsync(currentUser.Id, currentUser.Email!, myRoles.FirstOrDefault() ?? "", "UPDATE", $"Changed role of {user.Email} from {currentDbRole} to {model.NewRole}.", HttpContext.Connection.RemoteIpAddress?.ToString());
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -244,8 +247,8 @@ namespace MobileOpsConnect.Controllers
 
             if (result.Succeeded)
             {
-                var myRoles = await _userManager.GetRolesAsync(currentUser!);
-                await _auditService.LogAsync(currentUser!.Id, currentUser.Email!, myRoles.FirstOrDefault() ?? "", "SECURITY", $"Reset password for {user.Email}.", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
+                var myRoles = await _userManager.GetRolesAsync(currentUser);
+                await _auditService.LogAsync(currentUser.Id, currentUser.Email!, myRoles.FirstOrDefault() ?? "", "SECURITY", $"Reset password for {user.Email}.", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -268,6 +271,7 @@ namespace MobileOpsConnect.Controllers
             if (!User.IsInRole("SuperAdmin")) return Forbid();
 
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
@@ -281,7 +285,7 @@ namespace MobileOpsConnect.Controllers
 
             var deletedEmail = user.Email;
             await _userManager.DeleteAsync(user);
-            await _auditService.LogAsync(currentUser!.Id, currentUser.Email!, "SuperAdmin", "DELETE", $"Deleted user account: {deletedEmail} (role: {targetRole}).", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
+            await _auditService.LogAsync(currentUser.Id, currentUser.Email!, "SuperAdmin", "DELETE", $"Deleted user account: {deletedEmail} (role: {targetRole}).", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
             return RedirectToAction(nameof(Index));
         }
 

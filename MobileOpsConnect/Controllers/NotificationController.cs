@@ -74,7 +74,7 @@ namespace MobileOpsConnect.Controllers
         /// </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Alpha,Beta,SystemAdmin")]
+        [Authorize(Roles = "SuperAdmin,SystemAdmin")]
         public async Task<IActionResult> SendTestNotification([FromBody] SendNotificationRequest request)
         {
             var title = request?.Title ?? "MobileOpsConnect";

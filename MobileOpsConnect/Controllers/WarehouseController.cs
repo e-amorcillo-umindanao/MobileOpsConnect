@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -17,14 +18,16 @@ namespace MobileOpsConnect.Controllers
         private readonly IHubContext<InventoryHub> _hubContext;
         private readonly IEmailService _emailService;
         private readonly IAuditService _auditService;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public WarehouseController(ApplicationDbContext context, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService)
+        public WarehouseController(ApplicationDbContext context, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _notificationService = notificationService;
             _hubContext = hubContext;
             _emailService = emailService;
             _auditService = auditService;
+            _userManager = userManager;
         }
 
         // GET: Warehouse/Index (The Scanner Screen)
@@ -79,7 +82,7 @@ namespace MobileOpsConnect.Controllers
 
             // LOGIC: Add to Stock
             product.StockQuantity += quantity;
-            product.LastUpdated = DateTime.Now;
+            product.LastUpdated = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
@@ -87,8 +90,12 @@ namespace MobileOpsConnect.Controllers
             await _hubContext.Clients.All.SendAsync("StockUpdated", product.ProductID, product.Name, product.StockQuantity, "Stock In");
 
             // Audit log
-            var user = User.Identity;
-            await _auditService.LogAsync(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "", user?.Name ?? "", "", "STOCK_IN", $"Added {quantity} units to {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.", HttpContext.Connection.RemoteIpAddress?.ToString());
+            var currentUser = await _userManager.GetUserAsync(User);
+            var userId = currentUser?.Id ?? "";
+            var userEmail = currentUser?.Email ?? "";
+            var userRoles = currentUser != null ? await _userManager.GetRolesAsync(currentUser) : new List<string>();
+            var userRole = userRoles.FirstOrDefault() ?? "";
+            await _auditService.LogAsync(userId, userEmail, userRole, "STOCK_IN", $"Added {quantity} units to {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.", HttpContext.Connection.RemoteIpAddress?.ToString());
 
             return RedirectToAction(nameof(Index));
         }
@@ -115,7 +122,7 @@ namespace MobileOpsConnect.Controllers
             }
 
             product.StockQuantity -= quantity;
-            product.LastUpdated = DateTime.Now;
+            product.LastUpdated = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
@@ -123,7 +130,12 @@ namespace MobileOpsConnect.Controllers
             await _hubContext.Clients.All.SendAsync("StockUpdated", product.ProductID, product.Name, product.StockQuantity, "Stock Out");
 
             // Audit log
-            await _auditService.LogAsync(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? "", User.Identity?.Name ?? "", "", "STOCK_OUT", $"Removed {quantity} units from {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.", HttpContext.Connection.RemoteIpAddress?.ToString());
+            var currentUser = await _userManager.GetUserAsync(User);
+            var userId = currentUser?.Id ?? "";
+            var userEmail = currentUser?.Email ?? "";
+            var userRoles = currentUser != null ? await _userManager.GetRolesAsync(currentUser) : new List<string>();
+            var userRole = userRoles.FirstOrDefault() ?? "";
+            await _auditService.LogAsync(userId, userEmail, userRole, "STOCK_OUT", $"Removed {quantity} units from {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.", HttpContext.Connection.RemoteIpAddress?.ToString());
 
             // Check for low stock and notify
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();

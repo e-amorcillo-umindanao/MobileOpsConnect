@@ -18,5 +18,15 @@ namespace MobileOpsConnect.Data
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<AccountingEntry> AccountingEntries { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            // Enforce SKU uniqueness to prevent duplicate barcode entries
+            builder.Entity<Product>()
+                .HasIndex(p => p.SKU)
+                .IsUnique();
+        }
     }
 }

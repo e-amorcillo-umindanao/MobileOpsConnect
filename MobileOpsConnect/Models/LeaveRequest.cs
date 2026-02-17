@@ -12,7 +12,7 @@ namespace MobileOpsConnect.Models
         // --- LINK TO USER (Employee) ---
         // We use the UserID string (Guid) to link to the logged-in user
         [Required]
-        public string UserID { get; set; }
+        public string UserID { get; set; } = string.Empty;
 
         [ForeignKey("UserID")]
         public virtual IdentityUser? User { get; set; }
@@ -20,7 +20,7 @@ namespace MobileOpsConnect.Models
         // --- LEAVE DETAILS ---
         [Required]
         [Display(Name = "Leave Type")]
-        public string LeaveType { get; set; } // e.g., Sick, Vacation
+        public string LeaveType { get; set; } = string.Empty; // e.g., Sick, Vacation
 
         [Required]
         [DataType(DataType.Date)]
@@ -33,7 +33,7 @@ namespace MobileOpsConnect.Models
         public DateTime EndDate { get; set; }
 
         [Required]
-        public string Reason { get; set; }
+        public string Reason { get; set; } = string.Empty;
 
         // --- APPROVAL WORKFLOW ---
         // Default status is "Pending"
@@ -42,6 +42,6 @@ namespace MobileOpsConnect.Models
         // Who approved it? (Nullable, because it starts as null)
         public string? ApprovedById { get; set; }
 
-        public DateTime DateRequested { get; set; } = DateTime.Now;
+        public DateTime DateRequested { get; set; } = DateTime.UtcNow;
     }
 }

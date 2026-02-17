@@ -51,7 +51,7 @@ namespace MobileOpsConnect.Controllers
         {
             if (ModelState.IsValid)
             {
-                product.LastUpdated = DateTime.Now;
+                product.LastUpdated = DateTime.UtcNow;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
 
@@ -86,7 +86,7 @@ namespace MobileOpsConnect.Controllers
             {
                 try
                 {
-                    product.LastUpdated = DateTime.Now;
+                    product.LastUpdated = DateTime.UtcNow;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
 

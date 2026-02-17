@@ -89,8 +89,9 @@ namespace MobileOpsConnect.Controllers
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Challenge();
                 entry.RecordedById = user.Id;
-                entry.CreatedAt = DateTime.Now;
+                entry.CreatedAt = DateTime.UtcNow;
 
                 _context.Add(entry);
                 await _context.SaveChangesAsync();

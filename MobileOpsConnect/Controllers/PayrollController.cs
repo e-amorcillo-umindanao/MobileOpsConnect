@@ -42,6 +42,8 @@ namespace MobileOpsConnect.Controllers
 
                 // ────────────────────────────────────────────────
                 // Role-based salary — EXACTLY matches MyPayslip.cshtml
+                // TODO: Move salary configuration to database table or SystemSettings
+                //       to avoid code changes when salary amounts are updated.
                 // ────────────────────────────────────────────────
                 decimal basicSalary = 22000m;
                 decimal overtime    = 0m;
