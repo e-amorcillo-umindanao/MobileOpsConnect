@@ -4,7 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MobileOpsConnect</title>
+    <meta name="theme-color" content="#0f172a" />
+    <title>@ViewData["Title"] - MobileOps Connect</title>
+    <link rel="manifest" href="/manifest.json" />
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -405,6 +407,39 @@
                 min-width: 40px;
             }
         }
+
+        /* ---- SignalR Toast ---- */
+        .signalr-toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+        }
+
+        .signalr-toast {
+            background: var(--moc-surface);
+            border: 1px solid var(--moc-border);
+            border-left: 4px solid var(--moc-primary);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            animation: slideInRight 0.35s ease-out both;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .signalr-toast.toast-hide {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        @@keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
     </style>
 </head>
 <body>
@@ -479,6 +514,46 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
+    @* ── SignalR Real-Time Updates ── *@
+    <div id="signalrToastContainer" class="signalr-toast-container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+    <script>
+        // SignalR connection
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/inventory")
+            .withAutomaticReconnect()
+            .build();
+
+        function showSignalRToast(icon, title, message) {
+            const container = document.getElementById('signalrToastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'signalr-toast';
+            toast.innerHTML = `<div class="d-flex align-items-start gap-2">
+                <span style="font-size:1.3rem;">${icon}</span>
+                <div>
+                    <strong class="d-block text-sm mb-1">${title}</strong>
+                    <span class="text-muted text-xs">${message}</span>
+                </div>
+            </div>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('toast-hide');
+                setTimeout(() => toast.remove(), 350);
+            }, 5000);
+        }
+
+        connection.on("StockUpdated", (productId, productName, newQty, action) => {
+            showSignalRToast("📦", `${action}`, `${productName} — now at ${newQty} units`);
+        });
+
+        connection.on("LeaveStatusChanged", (leaveId, status, userId) => {
+            const icon = status === "Approved" ? "✅" : "❌";
+            showSignalRToast(icon, `Leave ${status}`, `Leave request #${leaveId} has been ${status.toLowerCase()}.`);
+        });
+
+        connection.start().catch(err => console.error("SignalR Error:", err));
+    </script>
+
     @* ── Firebase Cloud Messaging ── *@
     @if (User.Identity != null && User.Identity.IsAuthenticated)
     {
@@ -498,5 +573,14 @@
         <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
         <script src="~/js/fcm-init.js" asp-append-version="true"></script>
     }
+
+    @* ── PWA Service Worker ── *@
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(reg => console.log('[PWA] Service Worker registered:', reg.scope))
+                .catch(err => console.error('[PWA] SW registration failed:', err));
+        }
+    </script>
 </body>
 </html>

@@ -71,54 +71,74 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="scannerModalLabel">📷 ZXing.Net Scanner (Prototype)</h5>
+                <h5 class="modal-title" id="scannerModalLabel">📷 Barcode Scanner</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                <div class="bg-black text-white d-flex align-items-center justify-content-center mb-3 position-relative" style="height: 250px; border-radius: 8px; overflow: hidden;">
-                    <div class="position-absolute w-100 border-bottom border-danger border-3 shadow" id="scanLine" style="top: 0; animation: scanAnim 2s infinite linear; box-shadow: 0 0 15px red;"></div>
-                    <p class="mb-0 text-muted" style="font-family: monospace;">[ CAMERA FEED INITIALIZING ]</p>
-                </div>
-
-                <p class="text-muted small mb-4">Point your device camera at a product barcode. For this exam prototype, click the button below to simulate a successful read.</p>
-
-                @if (Model.Any())
-                {
-                    <button type="button" class="btn btn-success btn-lg w-100 fw-bold" onclick="simulateScan('@Model.First().SKU')">
-                        🔊 Simulate Scan (Read Barcode)
-                    </button>
-                }
-                else
-                {
-                    <button type="button" class="btn btn-secondary btn-lg w-100 fw-bold" disabled>No products available to scan</button>
-                }
+                <div id="reader" style="width: 100%; border-radius: 8px; overflow: hidden;"></div>
+                <p class="text-muted small mt-3 mb-0" id="scanStatus">
+                    <i class="bi bi-camera-fill me-1"></i> Point your device camera at a product barcode to scan.
+                </p>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-    @@keyframes scanAnim {
-        0% {
-            top: 0%;
-        }
+@section Scripts {
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script>
+        let html5QrcodeScanner = null;
 
-        50% {
-            top: 100%;
-        }
+        // Start scanner when modal opens
+        document.getElementById('scannerModal').addEventListener('shown.bs.modal', function () {
+            if (html5QrcodeScanner) return; // Already running
 
-        100% {
-            top: 0%;
-        }
-    }
-</style>
+            html5QrcodeScanner = new Html5Qrcode("reader");
 
-<script>
-    function simulateScan(sku) {
-        var myModalEl = document.getElementById('scannerModal');
-        var modal = bootstrap.Modal.getInstance(myModalEl);
-        modal.hide();
-        document.getElementById('barcodeInput').value = sku;
-        document.getElementById('scanForm').submit();
-    }
-</script>
+            html5QrcodeScanner.start(
+                { facingMode: "environment" }, // Use back camera
+                {
+                    fps: 10,
+                    qrbox: { width: 250, height: 150 },
+                    aspectRatio: 1.5
+                },
+                (decodedText) => {
+                    // SUCCESS — barcode scanned!
+                    document.getElementById('scanStatus').innerHTML =
+                        '<span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Scanned: ' + decodedText + '</span>';
+
+                    // Stop the scanner
+                    html5QrcodeScanner.stop().then(() => {
+                        html5QrcodeScanner = null;
+
+                        // Close modal, populate search, submit
+                        var modalEl = document.getElementById('scannerModal');
+                        var modal = bootstrap.Modal.getInstance(modalEl);
+                        modal.hide();
+
+                        document.getElementById('barcodeInput').value = decodedText;
+                        document.getElementById('scanForm').submit();
+                    });
+                },
+                (errorMessage) => {
+                    // Scan errors are normal (frames without barcode) — ignore silently
+                }
+            ).catch((err) => {
+                document.getElementById('scanStatus').innerHTML =
+                    '<span class="text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i> Camera access denied or unavailable. Please allow camera permissions.</span>';
+                console.error("html5-qrcode start error:", err);
+            });
+        });
+
+        // Stop scanner when modal closes
+        document.getElementById('scannerModal').addEventListener('hidden.bs.modal', function () {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then(() => {
+                    html5QrcodeScanner = null;
+                    document.getElementById('scanStatus').innerHTML =
+                        '<i class="bi bi-camera-fill me-1"></i> Point your device camera at a product barcode to scan.';
+                }).catch(() => { html5QrcodeScanner = null; });
+            }
+        });
+    </script>
+}

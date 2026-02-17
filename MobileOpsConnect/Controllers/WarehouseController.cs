@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Data;
+using MobileOpsConnect.Hubs;
 using MobileOpsConnect.Models;
 using MobileOpsConnect.Services;
 
@@ -12,11 +14,15 @@ namespace MobileOpsConnect.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly INotificationService _notificationService;
+        private readonly IHubContext<InventoryHub> _hubContext;
+        private readonly IEmailService _emailService;
 
-        public WarehouseController(ApplicationDbContext context, INotificationService notificationService)
+        public WarehouseController(ApplicationDbContext context, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService)
         {
             _context = context;
             _notificationService = notificationService;
+            _hubContext = hubContext;
+            _emailService = emailService;
         }
 
         // GET: Warehouse/Index (The Scanner Screen)
@@ -74,6 +80,10 @@ namespace MobileOpsConnect.Controllers
             product.LastUpdated = DateTime.Now;
 
             await _context.SaveChangesAsync();
+
+            // Broadcast real-time update via SignalR
+            await _hubContext.Clients.All.SendAsync("StockUpdated", product.ProductID, product.Name, product.StockQuantity, "Stock In");
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -103,14 +113,25 @@ namespace MobileOpsConnect.Controllers
 
             await _context.SaveChangesAsync();
 
+            // Broadcast real-time update via SignalR
+            await _hubContext.Clients.All.SendAsync("StockUpdated", product.ProductID, product.Name, product.StockQuantity, "Stock Out");
+
             // Check for low stock and notify
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();
             int threshold = settings?.LowStockThreshold ?? 10;
             if (product.StockQuantity <= threshold)
             {
+                var alertMessage = $"{product.Name} (SKU: {product.SKU}) is down to {product.StockQuantity} units after stock-out — below the {threshold}-unit threshold.";
+
                 await _notificationService.SendToAllAsync(
-                    "⚠️ Low Stock Alert",
-                    $"{product.Name} (SKU: {product.SKU}) is down to {product.StockQuantity} units after stock-out — below the {threshold}-unit threshold.");
+                    "⚠️ Low Stock Alert", alertMessage);
+
+                // Send email alert to support/admin
+                var supportEmail = settings?.SupportEmail ?? "support@mobileops.com";
+                await _emailService.SendEmailAsync(
+                    supportEmail,
+                    $"⚠️ Low Stock Alert: {product.Name}",
+                    $"<h2>Low Stock Alert</h2><p>{alertMessage}</p><p>Please reorder this item as soon as possible.</p><hr><p><small>MobileOps Connect ERP — Automated Alert</small></p>");
             }
 
             return RedirectToAction(nameof(Index));

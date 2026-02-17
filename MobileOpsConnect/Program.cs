@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Data;
+using MobileOpsConnect.Hubs;
 using MobileOpsConnect.Services;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
@@ -21,6 +23,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 // === CHANGE ENDS HERE ===
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 // === FIREBASE CLOUD MESSAGING SETUP ===
 var firebaseKeyPath = builder.Configuration["Firebase:ServiceAccountKeyPath"] ?? "firebase-service-account.json";
@@ -38,6 +41,7 @@ else
     Console.WriteLine("   Push notifications will NOT work until you add the key file.");
 }
 builder.Services.AddScoped<INotificationService, FcmNotificationService>();
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 // === END FIREBASE SETUP ===
 
 var app = builder.Build();
@@ -61,6 +65,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.MapHub<InventoryHub>("/hubs/inventory");
 
 app.MapControllerRoute(
     name: "default",

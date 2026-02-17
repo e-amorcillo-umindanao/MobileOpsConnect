@@ -72,9 +72,12 @@
             </span>
         </div>
         <h1 class="display-5 fw-bold mb-2 letter-tight">My Payslip</h1>
-        <p class="lead mb-0 opacity-75">
+        <p class="lead mb-3 opacity-75">
             Compensation breakdown &amp; digital receipt &mdash; MobileOps Connect ERP
         </p>
+        <a asp-action="DownloadPayslip" class="btn btn-light btn-lg shadow-sm fw-bold">
+            <i class="bi bi-file-earmark-pdf-fill text-danger me-2"></i> Download PDF Payslip
+        </a>
     </div>
     <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
          style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
