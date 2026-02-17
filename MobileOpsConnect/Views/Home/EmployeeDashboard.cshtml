@@ -56,7 +56,7 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- QUICK GLANCE METRICS  (Placeholders)            -->
+<!-- QUICK GLANCE METRICS                            -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="moc-section-header mt-2">
     <h5 class="fw-bold letter-tight">
@@ -81,9 +81,9 @@
                 <div class="d-flex align-items-start justify-content-between">
                     <div>
                         <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Movements</p>
-                        <h3 class="fw-bold mb-1 letter-tight">17</h3>
+                        <h3 class="fw-bold mb-1 letter-tight">0</h3>
                         <span class="badge bg-green-50 text-green text-xs fw-semibold">
-                            <i class="bi bi-arrow-up-short"></i> Today
+                            <i class="bi bi-dash-lg"></i> Today
                         </span>
                     </div>
                     <div class="moc-icon-box bg-indigo-50 rounded-3">
@@ -99,7 +99,7 @@
                 <div class="d-flex align-items-start justify-content-between">
                     <div>
                         <p class="text-muted text-uppercase text-xs fw-semibold mb-1">In Stock</p>
-                        <h3 class="fw-bold mb-1 letter-tight">142</h3>
+                        <h3 class="fw-bold mb-1 letter-tight">@ViewBag.TotalProducts</h3>
                         <span class="badge bg-green-50 text-green text-xs fw-semibold">
                             <i class="bi bi-check-circle-fill me-1"></i> Healthy
                         </span>
@@ -117,9 +117,10 @@
                 <div class="d-flex align-items-start justify-content-between">
                     <div>
                         <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Low Stock</p>
-                        <h3 class="fw-bold mb-1 letter-tight">8</h3>
-                        <span class="badge bg-red-50 text-red text-xs fw-semibold">
-                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Alert
+                        <h3 class="fw-bold mb-1 letter-tight">@ViewBag.LowStockCount</h3>
+                        <span class="badge @(ViewBag.LowStockCount > 0 ? "bg-red-50 text-red" : "bg-green-50 text-green") text-xs fw-semibold">
+                            <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill") me-1"></i>
+                            @(ViewBag.LowStockCount > 0 ? "Alert" : "All Good")
                         </span>
                     </div>
                     <div class="moc-icon-box bg-red-50 rounded-3">
@@ -135,7 +136,7 @@
                 <div class="d-flex align-items-start justify-content-between">
                     <div>
                         <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Pending POs</p>
-                        <h3 class="fw-bold mb-1 letter-tight">3</h3>
+                        <h3 class="fw-bold mb-1 letter-tight">0</h3>
                         <span class="badge bg-amber-50 text-amber text-xs fw-semibold">
                             <i class="bi bi-hourglass-split me-1"></i> Waiting
                         </span>
@@ -155,7 +156,7 @@
                 <div class="d-flex align-items-start justify-content-between">
                     <div>
                         <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Leave Bal.</p>
-                        <h3 class="fw-bold mb-1 letter-tight">12 <span class="fs-6 fw-semibold text-muted">days</span></h3>
+                        <h3 class="fw-bold mb-1 letter-tight">@ViewBag.LeaveBalance <span class="fs-6 fw-semibold text-muted">days</span></h3>
                         <span class="badge bg-green-50 text-green text-xs fw-semibold">
                             <i class="bi bi-check-circle-fill me-1"></i> Available
                         </span>
@@ -173,13 +174,13 @@
                 <div class="d-flex align-items-start justify-content-between">
                     <div>
                         <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Used</p>
-                        <h3 class="fw-bold mb-1 letter-tight">3 <span class="fs-6 fw-semibold text-muted">days</span></h3>
+                        <h3 class="fw-bold mb-1 letter-tight">@ViewBag.LeavesUsed <span class="fs-6 fw-semibold text-muted">days</span></h3>
                         <div class="progress mt-1" style="height:4px;width:72px;">
                             <div class="progress-bar rounded-pill" role="progressbar"
-                                 style="width:20%;background:var(--moc-primary);"
-                                 aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                 style="width:@(ViewBag.LeaveUsedPercent)%;background:var(--moc-primary);"
+                                 aria-valuenow="@ViewBag.LeaveUsedPercent" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
-                        <span class="text-muted text-xs">of 15 total</span>
+                        <span class="text-muted text-xs">of @ViewBag.LeaveAllowance total</span>
                     </div>
                     <div class="moc-icon-box bg-indigo-50 rounded-3">
                         <i class="bi bi-calendar-minus text-indigo fs-5"></i>
@@ -194,9 +195,10 @@
                 <div class="d-flex align-items-start justify-content-between">
                     <div>
                         <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Pending</p>
-                        <h3 class="fw-bold mb-1 letter-tight">1</h3>
-                        <span class="badge bg-amber-50 text-amber text-xs fw-semibold">
-                            <i class="bi bi-hourglass-split me-1"></i> Waiting
+                        <h3 class="fw-bold mb-1 letter-tight">@ViewBag.UserPending</h3>
+                        <span class="badge @(ViewBag.UserPending > 0 ? "bg-amber-50 text-amber" : "bg-green-50 text-green") text-xs fw-semibold">
+                            <i class="bi @(ViewBag.UserPending > 0 ? "bi-hourglass-split" : "bi-check-circle-fill") me-1"></i>
+                            @(ViewBag.UserPending > 0 ? "Waiting" : "None")
                         </span>
                     </div>
                     <div class="moc-icon-box bg-amber-50 rounded-3">
@@ -212,7 +214,7 @@
                 <div class="d-flex align-items-start justify-content-between">
                     <div>
                         <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Next Pay</p>
-                        <h3 class="fw-bold mb-1 letter-tight">Jun 30</h3>
+                        <h3 class="fw-bold mb-1 letter-tight">@ViewBag.NextPayDate</h3>
                         <span class="badge bg-cyan-50 text-cyan text-xs fw-semibold">
                             <i class="bi bi-cash-stack me-1"></i> Scheduled
                         </span>
@@ -303,36 +305,54 @@
         <!-- Low Stock Alerts — Critical Action Card -->
         <div class="col-md-6 col-lg-3 anim-fade-in anim-delay-4">
             <div class="card moc-card border-0 shadow-sm h-100 position-relative overflow-hidden"
-                 style="border-left: 4px solid #ef4444 !important;">
+                 style="border-left: 4px solid @(ViewBag.LowStockCount > 0 ? "#ef4444" : "#22c55e") !important;">
                 <div class="card-body p-4 d-flex flex-column text-center">
                     <div class="mx-auto mb-3 position-relative">
-                        <div class="moc-icon-box-lg bg-red-50 rounded-3">
-                            <i class="bi bi-exclamation-triangle-fill text-red fs-4"></i>
+                        <div class="moc-icon-box-lg @(ViewBag.LowStockCount > 0 ? "bg-red-50" : "bg-green-50") rounded-3">
+                            <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-exclamation-triangle-fill text-red" : "bi-check-circle-fill text-green") fs-4"></i>
                         </div>
-                        <!-- Pulsing dot indicator -->
-                        <span class="position-absolute top-0 start-100 translate-middle p-1 border border-2 border-white rounded-circle"
-                              style="background:#ef4444;width:12px;height:12px;">
-                            <span class="visually-hidden">Critical alerts</span>
-                        </span>
+                        @if (ViewBag.LowStockCount > 0)
+                        {
+                            <!-- Pulsing dot indicator for alerts -->
+                            <span class="position-absolute top-0 start-100 translate-middle p-1 border border-2 border-white rounded-circle"
+                                  style="background:#ef4444;width:12px;height:12px;">
+                                <span class="visually-hidden">Critical alerts</span>
+                            </span>
+                        }
                     </div>
-                    <h6 class="fw-bold mb-1 letter-tight text-red">Low Stock Alerts</h6>
+                    <h6 class="fw-bold mb-1 letter-tight @(ViewBag.LowStockCount > 0 ? "text-red" : "text-green")">Low Stock Alerts</h6>
                     <p class="text-muted text-xs flex-grow-1 mb-2">
-                        Items below threshold — reorder needed
+                        @(ViewBag.LowStockCount > 0 ? "Items below threshold — reorder needed" : "Inventory levels are healthy")
                     </p>
 
                     <!-- Urgency indicator -->
-                    <div class="d-flex align-items-center justify-content-center gap-2 mb-3 p-2 rounded-3"
-                         style="background:rgba(239,68,68,0.05);">
-                        <div class="moc-icon-box bg-red-50 rounded-3" style="width:28px;height:28px;min-width:28px;">
-                            <i class="bi bi-exclamation-circle-fill text-red" style="font-size:0.75rem;"></i>
+                    @if (ViewBag.LowStockCount > 0)
+                    {
+                        <div class="d-flex align-items-center justify-content-center gap-2 mb-3 p-2 rounded-3"
+                             style="background:rgba(239,68,68,0.05);">
+                            <div class="moc-icon-box bg-red-50 rounded-3" style="width:28px;height:28px;min-width:28px;">
+                                <i class="bi bi-exclamation-circle-fill text-red" style="font-size:0.75rem;"></i>
+                            </div>
+                            <span class="fw-semibold text-xs" style="color:#991b1b;">@ViewBag.LowStockCount items critical</span>
                         </div>
-                        <span class="fw-semibold text-xs" style="color:#991b1b;">8 items critical</span>
-                    </div>
-
-                    <a asp-controller="Warehouse" asp-action="LowStock" class="btn btn-moc-primary w-100"
-                       style="background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
-                        <i class="bi bi-exclamation-octagon me-1"></i> View Alerts
-                    </a>
+                        <a asp-controller="Warehouse" asp-action="LowStock" class="btn btn-moc-primary w-100"
+                           style="background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                            <i class="bi bi-exclamation-octagon me-1"></i> View Alerts
+                        </a>
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center justify-content-center gap-2 mb-3 p-2 rounded-3"
+                             style="background:rgba(34,197,94,0.05);">
+                            <div class="moc-icon-box bg-green-50 rounded-3" style="width:28px;height:28px;min-width:28px;">
+                                <i class="bi bi-check-circle-fill text-green" style="font-size:0.75rem;"></i>
+                            </div>
+                            <span class="fw-semibold text-xs" style="color:#166534;">All stocked up</span>
+                        </div>
+                        <a asp-controller="Warehouse" asp-action="LowStock" class="btn btn-moc-outline w-100">
+                            <i class="bi bi-shield-check me-1"></i> Check Levels
+                        </a>
+                    }
                 </div>
             </div>
         </div>
@@ -395,10 +415,10 @@
                 <!-- Status preview -->
                 <div class="d-flex gap-2 flex-wrap mb-3">
                     <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1 fw-semibold">
-                        <i class="bi bi-check-circle me-1"></i> 5 Approved
+                        <i class="bi bi-check-circle me-1"></i> @ViewBag.UserApproved Approved
                     </span>
                     <span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1 fw-semibold">
-                        <i class="bi bi-hourglass-split me-1"></i> 1 Pending
+                        <i class="bi bi-hourglass-split me-1"></i> @ViewBag.UserPending Pending
                     </span>
                 </div>
 
@@ -431,7 +451,7 @@
                      style="background:rgba(6,182,212,0.04);">
                     <div>
                         <p class="fw-semibold text-sm mb-0 letter-tight">Latest Period</p>
-                        <span class="text-muted text-xs">Jun 1 – Jun 15, 2026</span>
+                        <span class="text-muted text-xs">@ViewBag.LatestPayPeriod</span>
                     </div>
                     <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1 fw-semibold">
                         <i class="bi bi-check-circle-fill me-1"></i> Ready

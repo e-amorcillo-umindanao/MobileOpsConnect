@@ -62,11 +62,11 @@
             <div class="d-flex align-items-start justify-content-between">
                 <div>
                     <p class="text-muted text-uppercase text-xs fw-semibold mb-1 d-flex align-items-center gap-1">
-                        Active Users
+                        Registered Users
                     </p>
-                    <h3 class="fw-bold mb-1 letter-tight">128</h3>
+                    <h3 class="fw-bold mb-1 letter-tight">@ViewBag.ActiveUsers</h3>
                     <span class="badge bg-green-50 text-green text-xs fw-semibold">
-                        <i class="bi bi-arrow-up-short"></i> 12.5%
+                        <i class="bi bi-check-circle-fill me-1"></i> Total
                     </span>
                 </div>
                 <div class="moc-icon-box bg-indigo-50 rounded-3">
@@ -76,19 +76,20 @@
         </div>
     </div>
 
-    <!-- Total Errors (24h) -->
+    <!-- Pending Leaves -->
     <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
         <div class="moc-metric p-3 p-md-4 h-100">
             <div class="d-flex align-items-start justify-content-between">
                 <div>
-                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Errors <span class="d-none d-md-inline">(24h)</span></p>
-                    <h3 class="fw-bold mb-1 letter-tight">3</h3>
-                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
-                        <i class="bi bi-arrow-down-short"></i> 58%
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Pending <span class="d-none d-md-inline">Leaves</span></p>
+                    <h3 class="fw-bold mb-1 letter-tight">@ViewBag.PendingLeaves</h3>
+                    <span class="badge @(ViewBag.PendingLeaves > 0 ? "bg-amber-50 text-amber" : "bg-green-50 text-green") text-xs fw-semibold">
+                        <i class="bi @(ViewBag.PendingLeaves > 0 ? "bi-hourglass-split" : "bi-check-circle-fill") me-1"></i>
+                        @(ViewBag.PendingLeaves > 0 ? "Needs Review" : "All Clear")
                     </span>
                 </div>
-                <div class="moc-icon-box bg-red-50 rounded-3">
-                    <i class="bi bi-exclamation-triangle-fill text-red fs-5"></i>
+                <div class="moc-icon-box bg-amber-50 rounded-3">
+                    <i class="bi bi-calendar-event text-amber fs-5"></i>
                 </div>
             </div>
         </div>
@@ -100,13 +101,25 @@
             <div class="d-flex align-items-start justify-content-between">
                 <div>
                     <p class="text-muted text-uppercase text-xs fw-semibold mb-1">DB Size</p>
-                    <h3 class="fw-bold mb-1 letter-tight">2.4 <span class="fs-6 fw-semibold text-muted">GB</span></h3>
-                    <div class="progress mt-1" style="height:4px;width:72px;">
-                        <div class="progress-bar rounded-pill" role="progressbar"
-                             style="width:48%;background:var(--moc-primary);"
-                             aria-valuenow="48" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span class="text-muted text-xs">of 5 GB</span>
+                    @if (ViewBag.DbSizeMB != null)
+                    {
+                        var dbMb = (decimal)ViewBag.DbSizeMB;
+                        if (dbMb >= 1024)
+                        {
+                            <h3 class="fw-bold mb-1 letter-tight">@((dbMb / 1024).ToString("F1")) <span class="fs-6 fw-semibold text-muted">GB</span></h3>
+                        }
+                        else
+                        {
+                            <h3 class="fw-bold mb-1 letter-tight">@dbMb.ToString("F0") <span class="fs-6 fw-semibold text-muted">MB</span></h3>
+                        }
+                    }
+                    else
+                    {
+                        <h3 class="fw-bold mb-1 letter-tight">N/A</h3>
+                    }
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Online
+                    </span>
                 </div>
                 <div class="moc-icon-box bg-purple-50 rounded-3">
                     <i class="bi bi-database-fill text-purple fs-5"></i>
@@ -121,7 +134,7 @@
             <div class="d-flex align-items-start justify-content-between">
                 <div>
                     <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Uptime</p>
-                    <h3 class="fw-bold mb-1 letter-tight">99.97<span class="fs-6 fw-semibold text-muted">%</span></h3>
+                    <h3 class="fw-bold mb-1 letter-tight">@ViewBag.UptimeDisplay</h3>
                     <span class="badge bg-green-50 text-green text-xs fw-semibold">
                         <i class="bi bi-check-circle-fill me-1"></i> Healthy
                     </span>

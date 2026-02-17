@@ -8,80 +8,126 @@
 </div>
 
 <div class="row">
+    <!-- Card 1: Total Inventory Value -->
     <div class="col-md-4 mb-4">
         <div class="card bg-primary text-white h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="card-title text-uppercase text-white-50">Monthly Revenue</h6>
-                <h2 class="display-6 fw-bold">₱4.2M</h2>
-                <p class="mb-0">↑ 12% from last month</p>
+                <h6 class="card-title text-uppercase text-white-50">Total Inventory Value</h6>
+                <h2 class="display-6 fw-bold">₱@(((decimal)ViewBag.TotalValue).ToString("N0"))</h2>
+                <p class="mb-0">
+                    <i class="bi bi-box-seam"></i> @ViewBag.TotalProducts Total Products
+                </p>
             </div>
         </div>
     </div>
+
+    <!-- Card 2: Low Stock Alerts -->
     <div class="col-md-4 mb-4">
-        <div class="card bg-success text-white h-100 shadow-sm border-0">
+        <div class="card bg-danger text-white h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="card-title text-uppercase text-white-50">Inventory Turnover</h6>
-                <h2 class="display-6 fw-bold">8.5 Days</h2>
-                <p class="mb-0">Optimal range achieved</p>
+                <h6 class="card-title text-uppercase text-white-50">Low Stock Items</h6>
+                <h2 class="display-6 fw-bold">@ViewBag.LowStockCount</h2>
+                <p class="mb-0">
+                    @(ViewBag.LowStockCount > 0 ? "⚠️ Reorder required" : "✅ Stock levels healthy")
+                </p>
             </div>
         </div>
     </div>
+
+    <!-- Card 3: Staff Leave Utilization -->
     <div class="col-md-4 mb-4">
         <div class="card bg-warning text-dark h-100 shadow-sm border-0">
             <div class="card-body">
-                <h6 class="card-title text-uppercase text-dark-50">Staff Leave Utilization</h6>
-                <h2 class="display-6 fw-bold">24%</h2>
-                <p class="mb-0">6 staff currently on leave</p>
+                <h6 class="card-title text-uppercase text-dark-50">Staff On Leave</h6>
+                <h2 class="display-6 fw-bold">@ViewBag.OnLeaveCount</h2>
+                <p class="mb-0">
+                    @ViewBag.LeaveUtilPercent% of workforce
+                </p>
             </div>
         </div>
     </div>
 </div>
 
 <div class="row">
+    <!-- Chart: Inventory Distribution by Category -->
     <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100">
             <div class="card-header bg-light fw-bold">
-                Top Selling Categories (YTD)
+                Inventory Distribution (by Product Count)
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between"><span>Smartphones</span><span>65%</span></div>
-                    <div class="progress"><div class="progress-bar bg-primary" style="width: 65%"></div></div>
-                </div>
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between"><span>Audio & Wearables</span><span>20%</span></div>
-                    <div class="progress"><div class="progress-bar bg-info" style="width: 20%"></div></div>
-                </div>
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between"><span>Accessories</span><span>10%</span></div>
-                    <div class="progress"><div class="progress-bar bg-secondary" style="width: 10%"></div></div>
-                </div>
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between"><span>Spare Parts</span><span>5%</span></div>
-                    <div class="progress"><div class="progress-bar bg-dark" style="width: 5%"></div></div>
-                </div>
+                @if (ViewBag.TopCategories != null)
+                {
+                    foreach (var cat in ViewBag.TopCategories)
+                    {
+                        var colorClass = "bg-primary"; 
+                        // Cycle colors based on simple hash or index if we had one, but random is fine for now
+                        if (cat.Category == "Electronics" || cat.Category == "Smartphones") colorClass = "bg-primary";
+                        else if (cat.Category == "Accessories") colorClass = "bg-info";
+                        else if (cat.Category == "Furniture") colorClass = "bg-success";
+                        else colorClass = "bg-secondary";
+
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>@(string.IsNullOrEmpty(cat.Category) ? "Uncategorized" : cat.Category)</span>
+                                <span>@cat.Percent% (@cat.Count)</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar @colorClass" style="width: @cat.Percent%"></div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted text-center py-5">No inventory data available.</p>
+                }
             </div>
         </div>
     </div>
 
+    <!-- List: Recent System Alerts -->
     <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100 border-danger">
             <div class="card-header bg-danger text-white fw-bold">
-                🚨 Recent System Alerts
+                🚨 System Actions Required
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Low stock: iPhone 15 Pro Max (Titanium)
-                    <span class="badge bg-danger rounded-pill">Critical</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Purchase Order PO-2026-089 pending approval
-                    <span class="badge bg-warning text-dark rounded-pill">Warning</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Server database backup completed
-                    <span class="badge bg-success rounded-pill">Info</span>
-                </li>
+                <!-- Pending Leaves -->
+                @if (ViewBag.PendingLeaves > 0)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>@ViewBag.PendingLeaves</strong> leave requests pending approval
+                        </div>
+                        <a asp-controller="LeaveRequests" asp-action="Index" class="badge bg-warning text-dark rounded-pill text-decoration-none">
+                            Review
+                        </a>
+                    </li>
+                }
+
+                <!-- Low Stock Items List -->
+                @if (ViewBag.LowStockAlerts != null)
+                {
+                    foreach (var item in ViewBag.LowStockAlerts)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                Low stock: <strong>@item.Name</strong>
+                                <br><small class="text-muted">Only @item.StockQuantity remaining</small>
+                            </div>
+                            <span class="badge bg-danger rounded-pill">Critical</span>
+                        </li>
+                    }
+                }
+
+                @if (ViewBag.PendingLeaves == 0 && (ViewBag.LowStockAlerts == null || ViewBag.LowStockAlerts.Count == 0))
+                {
+                     <li class="list-group-item text-center text-muted py-4">
+                        <i class="bi bi-check-circle-fill text-success fs-3 d-block mb-2"></i>
+                        No critical alerts at this time.
+                    </li>
+                }
             </ul>
         </div>
     </div>

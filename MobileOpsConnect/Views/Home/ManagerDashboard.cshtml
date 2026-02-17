@@ -29,7 +29,7 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- DEPARTMENT METRICS  (Placeholders)              -->
+<!-- DEPARTMENT METRICS                              -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="moc-section-header mt-2">
     <h5 class="fw-bold letter-tight">
@@ -45,9 +45,10 @@
             <div class="d-flex align-items-start justify-content-between">
                 <div>
                     <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Pending</p>
-                    <h3 class="fw-bold mb-1 letter-tight">5</h3>
-                    <span class="badge bg-amber-50 text-amber text-xs fw-semibold">
-                        <i class="bi bi-exclamation-circle-fill me-1"></i> Action
+                    <h3 class="fw-bold mb-1 letter-tight">@ViewBag.PendingLeaves</h3>
+                    <span class="badge @(ViewBag.PendingLeaves > 0 ? "bg-amber-50 text-amber" : "bg-green-50 text-green") text-xs fw-semibold">
+                        <i class="bi @(ViewBag.PendingLeaves > 0 ? "bi-exclamation-circle-fill" : "bi-check-circle-fill") me-1"></i>
+                        @(ViewBag.PendingLeaves > 0 ? "Action" : "Clear")
                     </span>
                 </div>
                 <div class="moc-icon-box bg-amber-50 rounded-3">
@@ -63,7 +64,7 @@
             <div class="d-flex align-items-start justify-content-between">
                 <div>
                     <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Team</p>
-                    <h3 class="fw-bold mb-1 letter-tight">24</h3>
+                    <h3 class="fw-bold mb-1 letter-tight">@ViewBag.TeamCount</h3>
                     <span class="badge bg-indigo-50 text-indigo text-xs fw-semibold">
                         <i class="bi bi-people-fill me-1"></i> Active
                     </span>
@@ -81,13 +82,13 @@
             <div class="d-flex align-items-start justify-content-between">
                 <div>
                     <p class="text-muted text-uppercase text-xs fw-semibold mb-1">On Leave</p>
-                    <h3 class="fw-bold mb-1 letter-tight">3</h3>
+                    <h3 class="fw-bold mb-1 letter-tight">@ViewBag.OnLeaveToday</h3>
                     <div class="progress mt-1" style="height:4px;width:72px;">
                         <div class="progress-bar rounded-pill" role="progressbar"
-                             style="width:12%;background:var(--moc-primary);"
-                             aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"></div>
+                             style="width:@(ViewBag.OnLeavePercent)%;background:var(--moc-primary);"
+                             aria-valuenow="@ViewBag.OnLeavePercent" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    <span class="text-muted text-xs">of 24 staff</span>
+                    <span class="text-muted text-xs">of @ViewBag.TeamCount staff</span>
                 </div>
                 <div class="moc-icon-box bg-cyan-50 rounded-3">
                     <i class="bi bi-calendar2-x text-cyan fs-5"></i>
@@ -96,19 +97,20 @@
         </div>
     </div>
 
-    <!-- Department Performance -->
+    <!-- Inventory Health -->
     <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
         <div class="moc-metric p-3 p-md-4 h-100">
             <div class="d-flex align-items-start justify-content-between">
                 <div>
-                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Performance</p>
-                    <h3 class="fw-bold mb-1 letter-tight">96.2<span class="fs-6 fw-semibold text-muted">%</span></h3>
-                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
-                        <i class="bi bi-arrow-up-short"></i> 3.1%
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Inventory</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@ViewBag.TotalProducts</h3>
+                    <span class="badge @(ViewBag.LowStockCount > 0 ? "bg-amber-50 text-amber" : "bg-green-50 text-green") text-xs fw-semibold">
+                        <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill") me-1"></i>
+                        @(ViewBag.LowStockCount > 0 ? $"{ViewBag.LowStockCount} Low Stock" : "Healthy")
                     </span>
                 </div>
                 <div class="moc-icon-box bg-green-50 rounded-3">
-                    <i class="bi bi-graph-up-arrow text-green fs-5"></i>
+                    <i class="bi bi-box-seam-fill text-green fs-5"></i>
                 </div>
             </div>
         </div>
@@ -144,10 +146,20 @@
                             <span class="text-muted text-sm">Employee Requests</span>
                         </div>
                     </div>
-                    <span class="badge rounded-pill px-3 py-2 fw-semibold text-xs"
-                          style="background:rgba(245,158,11,0.12); color:#d97706; border:1px solid rgba(245,158,11,0.2);">
-                        <i class="bi bi-exclamation-circle-fill me-1"></i> Action Required
-                    </span>
+                    @if (ViewBag.PendingLeaves > 0)
+                    {
+                        <span class="badge rounded-pill px-3 py-2 fw-semibold text-xs"
+                              style="background:rgba(245,158,11,0.12); color:#d97706; border:1px solid rgba(245,158,11,0.2);">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i> Action Required
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge rounded-pill px-3 py-2 fw-semibold text-xs"
+                              style="background:rgba(34,197,94,0.12); color:#16a34a; border:1px solid rgba(34,197,94,0.2);">
+                            <i class="bi bi-check-circle-fill me-1"></i> All Clear
+                        </span>
+                    }
                 </div>
 
                 <p class="text-muted text-sm flex-grow-1">
@@ -160,8 +172,8 @@
                         <i class="bi bi-clock-history text-amber"></i>
                     </div>
                     <div>
-                        <p class="fw-semibold text-sm mb-0 letter-tight" style="color:#92400e;">5 requests awaiting review</p>
-                        <span class="text-muted text-xs">Oldest pending: 2 days ago</span>
+                        <p class="fw-semibold text-sm mb-0 letter-tight" style="color:#92400e;">@ViewBag.PendingLeaves request(s) awaiting review</p>
+                        <span class="text-muted text-xs">Oldest pending: @ViewBag.OldestPendingDays</span>
                     </div>
                 </div>
 
@@ -191,22 +203,22 @@
                     </div>
                     <span class="badge rounded-pill px-3 py-2 fw-semibold text-xs"
                           style="background:rgba(99,102,241,0.12); color:#4f46e5; border:1px solid rgba(99,102,241,0.2);">
-                        <i class="bi bi-arrow-repeat me-1"></i> Pending Review
+                        <i class="bi bi-info-circle me-1"></i> Coming Soon
                     </span>
                 </div>
 
                 <p class="text-muted text-sm flex-grow-1">
-                    Approve purchase orders submitted by warehouse staff for inventory restocking. Keep supply chains moving smoothly.
+                    Approve purchase orders submitted by warehouse staff for inventory restocking. This feature is under development.
                 </p>
 
-                <!-- Urgency Indicator -->
+                <!-- Info -->
                 <div class="d-flex align-items-center gap-2 mb-3 p-2 rounded-3" style="background:rgba(99,102,241,0.04);">
                     <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:36px;height:36px;min-width:36px;">
                         <i class="bi bi-inbox-fill text-indigo"></i>
                     </div>
                     <div>
-                        <p class="fw-semibold text-sm mb-0 letter-tight" style="color:#312e81;">3 orders pending approval</p>
-                        <span class="text-muted text-xs">Estimated value: ₱24,500.00</span>
+                        <p class="fw-semibold text-sm mb-0 letter-tight" style="color:#312e81;">Order module coming soon</p>
+                        <span class="text-muted text-xs">Feature in development</span>
                     </div>
                 </div>
 
@@ -282,23 +294,23 @@
                     Detailed breakdown of stock levels, product categories, and overall inventory valuation.
                 </p>
 
-                <!-- Placeholder Stats Preview -->
+                <!-- Dynamic Stats Preview -->
                 <div class="row g-2 mb-3">
                     <div class="col-4">
                         <div class="rounded-3 p-2 text-center" style="background:rgba(6,182,212,0.05);">
-                            <p class="fw-bold mb-0 text-sm letter-tight">142</p>
+                            <p class="fw-bold mb-0 text-sm letter-tight">@ViewBag.TotalProducts</p>
                             <span class="text-muted text-xs">Products</span>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="rounded-3 p-2 text-center" style="background:rgba(239,68,68,0.05);">
-                            <p class="fw-bold mb-0 text-sm letter-tight text-red">8</p>
+                            <p class="fw-bold mb-0 text-sm letter-tight text-red">@ViewBag.LowStockCount</p>
                             <span class="text-muted text-xs">Low Stock</span>
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="rounded-3 p-2 text-center" style="background:rgba(34,197,94,0.05);">
-                            <p class="fw-bold mb-0 text-sm letter-tight text-green">97%</p>
+                            <p class="fw-bold mb-0 text-sm letter-tight text-green">@(ViewBag.InStockPercent)%</p>
                             <span class="text-muted text-xs">In Stock</span>
                         </div>
                     </div>
