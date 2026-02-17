@@ -263,3 +263,40 @@
 
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const startDateInput = document.getElementById('StartDate');
+            const endDateInput = document.getElementById('EndDate');
+
+            // Default start date to today
+            if (startDateInput && !startDateInput.value) {
+                const today = new Date().toISOString().split('T')[0];
+                startDateInput.value = today;
+                endDateInput.min = today;
+            }
+
+            // On start date change: set min on end date, auto-focus end date
+            if (startDateInput && endDateInput) {
+                startDateInput.addEventListener('change', function () {
+                    if (this.value) {
+                        endDateInput.min = this.value;
+
+                        // Clear end date if it's now before start date
+                        if (endDateInput.value && endDateInput.value < this.value) {
+                            endDateInput.value = '';
+                        }
+
+                        // Auto-focus end date field
+                        endDateInput.focus();
+                        // Try to open the date picker (works in most browsers)
+                        if (typeof endDateInput.showPicker === 'function') {
+                            try { endDateInput.showPicker(); } catch (e) { /* ignore */ }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+}

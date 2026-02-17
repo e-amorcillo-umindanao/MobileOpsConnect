@@ -2,69 +2,316 @@
 
 @{
     ViewData["Title"] = "Low Stock Alerts";
+    int totalLow = Model.Count();
+    int outOfStock = Model.Count(p => p.StockQuantity == 0);
+    int criticalCount = totalLow - outOfStock;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1 class="display-5 mb-0 text-danger">⚠️ Low Stock Alerts</h1>
-        <p class="text-muted mb-0 mt-1">Items below the minimum threshold (10 units) requiring immediate restock.</p>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-shield-exclamation me-1"></i> Inventory Alert
+            </span>
+            @if (totalLow > 0)
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(239,68,68,0.25);">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> @totalLow Item@(totalLow != 1 ? "s" : "") Below Threshold
+                </span>
+            }
+            else
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(34,197,94,0.25);">
+                    <i class="bi bi-check-circle-fill me-1"></i> All Stocked
+                </span>
+            }
+        </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">Low Stock Alerts</h1>
+        <p class="lead mb-0 opacity-75">
+            Items below the minimum safety threshold requiring attention
+        </p>
     </div>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary shadow-sm">🔙 Back to Dashboard</a>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-exclamation-octagon-fill"></i>
+    </div>
 </div>
 
-<div class="card shadow-sm border-danger mb-4">
-    <div class="card-body">
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ALERT METRICS                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-speedometer2 text-red me-1"></i> Alert Summary
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <!-- Total Low Stock -->
+    <div class="col-6 col-lg-4 anim-fade-in anim-delay-1">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Total Alerts</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@totalLow</h3>
+                    <span class="badge @(totalLow > 0 ? "bg-red-50 text-red" : "bg-green-50 text-green") text-xs fw-semibold">
+                        <i class="bi @(totalLow > 0 ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill") me-1"></i>
+                        @(totalLow > 0 ? "Needs Action" : "All Clear")
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-red-50 rounded-3">
+                    <i class="bi bi-exclamation-octagon-fill text-red fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Out of Stock -->
+    <div class="col-6 col-lg-4 anim-fade-in anim-delay-2">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Out of Stock</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@outOfStock</h3>
+                    <span class="badge @(outOfStock > 0 ? "bg-red-50 text-red" : "bg-green-50 text-green") text-xs fw-semibold">
+                        <i class="bi @(outOfStock > 0 ? "bi-x-circle-fill" : "bi-check-circle-fill") me-1"></i>
+                        @(outOfStock > 0 ? "Critical" : "None")
+                    </span>
+                </div>
+                <div class="moc-icon-box @(outOfStock > 0 ? "bg-red-50" : "bg-green-50") rounded-3">
+                    <i class="bi @(outOfStock > 0 ? "bi-bag-x-fill text-red" : "bi-bag-check-fill text-green") fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Critical (Low but not zero) -->
+    <div class="col-12 col-lg-4 anim-fade-in anim-delay-3">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Running Low</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@criticalCount</h3>
+                    <span class="badge @(criticalCount > 0 ? "bg-amber-50 text-amber" : "bg-green-50 text-green") text-xs fw-semibold">
+                        <i class="bi @(criticalCount > 0 ? "bi-exclamation-circle-fill" : "bi-check-circle-fill") me-1"></i>
+                        @(criticalCount > 0 ? "Reorder Soon" : "None")
+                    </span>
+                </div>
+                <div class="moc-icon-box @(criticalCount > 0 ? "bg-amber-50" : "bg-green-50") rounded-3">
+                    <i class="bi @(criticalCount > 0 ? "bi-exclamation-diamond-fill text-amber" : "bi-check2-all text-green") fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACTION BAR                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-5">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-list-columns-reverse text-amber me-1"></i> Alert Details
+    </h5>
+    <hr />
+</div>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 anim-fade-in">
+    <div class="d-flex align-items-center gap-2">
+        <div class="moc-icon-box bg-red-50 rounded-3">
+            <i class="bi bi-funnel-fill text-red fs-5"></i>
+        </div>
+        <div>
+            <p class="fw-semibold mb-0 text-sm letter-tight">Low Stock Items</p>
+            <p class="text-muted text-xs mb-0">Showing @totalLow item@(totalLow != 1 ? "s" : "") below threshold</p>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-controller="Warehouse" asp-action="Index" class="btn btn-moc-outline px-3">
+            <i class="bi bi-arrow-left me-1"></i> Warehouse
+        </a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline px-3">
+            <i class="bi bi-house me-1"></i> Dashboard
+        </a>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ALERT TABLE                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
+    <div class="card-body p-0">
         @if (!Model.Any())
         {
-            <div class="text-center py-5">
-                <h3 class="text-success">✅ All stock levels are optimal.</h3>
-                <p class="text-muted">No items are currently below the safety threshold.</p>
+            <div class="text-center p-5">
+                <div class="moc-icon-box-lg bg-green-50 rounded-3 mx-auto mb-3">
+                    <i class="bi bi-check-circle-fill text-green fs-3"></i>
+                </div>
+                <h5 class="fw-bold mb-2 letter-tight">All Stock Levels Healthy</h5>
+                <p class="text-muted text-sm mb-0">
+                    No items are currently below the safety threshold. Great job keeping inventory in check!
+                </p>
             </div>
         }
         else
         {
-            <table class="table table-hover align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>SKU</th>
-                        <th>Product Name</th>
-                        <th>Category</th>
-                        <th>Current Stock</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td class="fw-bold">@item.SKU</td>
-                            <td>@item.Name</td>
-                            <td>@item.Category</td>
-                            <td>
-                                <h4 class="mb-0">
-                                    <span class="badge bg-danger">@item.StockQuantity</span>
-                                </h4>
-                            </td>
-                            <td>
-                                @if (item.StockQuantity == 0)
-                                {
-                                    <span class="text-danger fw-bold">OUT OF STOCK</span>
-                                }
-                                else
-                                {
-                                    <span class="text-warning fw-bold text-dark">CRITICAL</span>
-                                }
-                            </td>
-                            <td>
-                                <a asp-controller="Warehouse" asp-action="Adjust" asp-route-id="@item.ProductID" class="btn btn-outline-danger fw-bold">
-                                    ⚙️ Adjust Stock
-                                </a>
-                            </td>
+            <!-- Desktop Table -->
+            <div class="table-responsive d-none d-md-block">
+                <table class="table table-hover align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
+                    <thead>
+                        <tr style="border:none;">
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-4 py-3" style="letter-spacing:0.05em;">
+                                <i class="bi bi-upc-scan me-1"></i> SKU
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                <i class="bi bi-box me-1"></i> Product
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                <i class="bi bi-tag me-1"></i> Category
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
+                                <i class="bi bi-layers me-1"></i> Stock
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
+                                <i class="bi bi-flag me-1"></i> Status
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 pe-4 py-3 text-end" style="letter-spacing:0.05em;">
+                                <i class="bi bi-lightning me-1"></i> Action
+                            </th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                                <td class="border-0 ps-4 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
+                                    <span class="badge rounded-pill bg-indigo-50 text-indigo px-2 py-1 fw-semibold text-xs">
+                                        @item.SKU
+                                    </span>
+                                </td>
+                                <td class="border-0 py-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="moc-icon-box bg-red-50 rounded-3" style="width:36px;height:36px;min-width:36px;">
+                                            <i class="bi bi-exclamation-triangle-fill text-red" style="font-size:0.85rem;"></i>
+                                        </div>
+                                        <span class="fw-semibold text-sm letter-tight">@item.Name</span>
+                                    </div>
+                                </td>
+                                <td class="border-0 py-3">
+                                    <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                        <i class="bi bi-tag-fill me-1"></i>@item.Category
+                                    </span>
+                                </td>
+                                <td class="border-0 py-3 text-center">
+                                    @if (item.StockQuantity == 0)
+                                    {
+                                        <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">
+                                            <i class="bi bi-x-circle-fill me-1"></i> 0
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge rounded-pill bg-amber-50 text-amber px-3 py-2 fw-semibold text-xs">
+                                            <i class="bi bi-exclamation-circle-fill me-1"></i> @item.StockQuantity
+                                        </span>
+                                    }
+                                </td>
+                                <td class="border-0 py-3 text-center">
+                                    @if (item.StockQuantity == 0)
+                                    {
+                                        <span class="badge rounded-pill px-3 py-2 fw-bold text-xs"
+                                              style="background:rgba(239,68,68,0.12);color:#dc2626;">
+                                            OUT OF STOCK
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge rounded-pill px-3 py-2 fw-bold text-xs"
+                                              style="background:rgba(245,158,11,0.12);color:#d97706;">
+                                            CRITICAL
+                                        </span>
+                                    }
+                                </td>
+                                <td class="border-0 pe-4 py-3 text-end" style="border-radius:0 0.75rem 0.75rem 0;">
+                                    <a asp-controller="Warehouse" asp-action="Adjust" asp-route-id="@item.ProductID"
+                                       class="btn btn-sm btn-moc-primary px-3 py-1">
+                                        <i class="bi bi-sliders me-1"></i> Adjust Stock
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile Card List -->
+            <div class="d-md-none p-3">
+                @foreach (var item in Model)
+                {
+                    <div class="moc-metric p-3 mb-3" style="border-left:4px solid @(item.StockQuantity == 0 ? "#ef4444" : "#f59e0b") !important;">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2 flex-grow-1">
+                                <div class="moc-icon-box bg-red-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                                    <i class="bi bi-exclamation-triangle-fill text-red"></i>
+                                </div>
+                                <div>
+                                    <p class="fw-bold text-sm mb-0 letter-tight">@item.Name</p>
+                                    <span class="text-muted text-xs">@item.SKU</span>
+                                </div>
+                            </div>
+                            @if (item.StockQuantity == 0)
+                            {
+                                <span class="badge rounded-pill bg-red-50 text-red px-2 py-1 fw-semibold text-xs ms-2">
+                                    <i class="bi bi-x-circle-fill me-1"></i> 0
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge rounded-pill bg-amber-50 text-amber px-2 py-1 fw-semibold text-xs ms-2">
+                                    <i class="bi bi-exclamation-circle-fill me-1"></i> @item.StockQuantity
+                                </span>
+                            }
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                <i class="bi bi-tag-fill me-1"></i> @item.Category
+                            </span>
+                            @if (item.StockQuantity == 0)
+                            {
+                                <span class="badge rounded-pill px-2 py-1 fw-bold text-xs"
+                                      style="background:rgba(239,68,68,0.12);color:#dc2626;">OUT OF STOCK</span>
+                            }
+                            else
+                            {
+                                <span class="badge rounded-pill px-2 py-1 fw-bold text-xs"
+                                      style="background:rgba(245,158,11,0.12);color:#d97706;">CRITICAL</span>
+                            }
+                        </div>
+                        <a asp-controller="Warehouse" asp-action="Adjust" asp-route-id="@item.ProductID"
+                           class="btn btn-sm btn-moc-primary w-100 py-2">
+                            <i class="bi bi-sliders me-1"></i> Adjust Stock
+                        </a>
+                    </div>
+                }
+            </div>
         }
+    </div>
+
+    <!-- Table Footer -->
+    <div class="card-footer bg-transparent border-0 px-4 py-3"
+         style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span class="text-muted text-xs">
+                <i class="bi bi-info-circle me-1"></i>
+                Showing all @totalLow item@(totalLow != 1 ? "s" : "") below safety threshold
+            </span>
+            <div class="d-flex gap-1">
+                <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@outOfStock Out of Stock</span>
+                <span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1">@criticalCount Critical</span>
+            </div>
+        </div>
     </div>
 </div>

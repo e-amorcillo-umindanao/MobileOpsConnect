@@ -2,33 +2,258 @@
 
 @{
     ViewData["Title"] = "Product Details";
+    bool isLowStock = Model.StockQuantity <= 10;
 }
 
-<h1>Product Details</h1>
-
-<div>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.SKU)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.SKU)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Name)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Name)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Category)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Category)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.StockQuantity)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.StockQuantity)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Price)</dt>
-        <dd class="col-sm-10">₱@Html.DisplayFor(model => model.Price)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.LastUpdated)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.LastUpdated)</dd>
-    </dl>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-upc-scan me-1"></i> SKU: @Model.SKU
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-tag-fill me-1"></i> @Model.Category
+            </span>
+            @if (isLowStock)
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(239,68,68,0.25);">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Low Stock
+                </span>
+            }
+        </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">@Model.Name</h1>
+        <p class="lead mb-0 opacity-75">
+            Product details &amp; inventory information
+        </p>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-box-seam-fill"></i>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.ProductID" class="btn btn-warning">Edit</a> |
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PRODUCT METRICS                                 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-bar-chart-line-fill text-indigo me-1"></i> Quick Overview
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <!-- Category -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Category</p>
+                    <h4 class="fw-bold mb-1 letter-tight">@Model.Category</h4>
+                    <span class="badge bg-cyan-50 text-cyan text-xs fw-semibold">
+                        <i class="bi bi-tag-fill me-1"></i> Classification
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-cyan-50 rounded-3">
+                    <i class="bi bi-bookmark-star-fill text-cyan fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stock Quantity -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">In Stock</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@Model.StockQuantity <span class="fs-6 fw-semibold text-muted">units</span></h3>
+                    @if (isLowStock)
+                    {
+                        <span class="badge bg-red-50 text-red text-xs fw-semibold">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Low Stock
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                            <i class="bi bi-check-circle-fill me-1"></i> Healthy
+                        </span>
+                    }
+                </div>
+                <div class="moc-icon-box @(isLowStock ? "bg-red-50" : "bg-green-50") rounded-3">
+                    <i class="bi @(isLowStock ? "bi-exclamation-octagon-fill text-red" : "bi-box-seam-fill text-green") fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Price -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Unit Price</p>
+                    <h3 class="fw-bold mb-1 letter-tight">₱@Model.Price.ToString("N2")</h3>
+                    <span class="badge bg-indigo-50 text-indigo text-xs fw-semibold">
+                        <i class="bi bi-currency-exchange me-1"></i> Per Unit
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-cash-stack text-indigo fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Last Updated -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Last Updated</p>
+                    <h4 class="fw-bold mb-1 letter-tight">@Model.LastUpdated.ToString("MMM dd")</h4>
+                    <span class="badge bg-purple-50 text-purple text-xs fw-semibold">
+                        <i class="bi bi-clock-history me-1"></i> @Model.LastUpdated.ToString("yyyy")
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-purple-50 rounded-3">
+                    <i class="bi bi-calendar-check text-purple fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- FULL DETAILS CARD                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-5">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-file-earmark-text-fill text-amber me-1"></i> Full Details
+    </h5>
+    <hr />
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
+            <div class="card-body p-4 p-md-5">
+
+                <!-- SKU -->
+                <div class="d-flex align-items-center py-3" style="border-bottom:1px solid var(--moc-border);">
+                    <div class="moc-icon-box bg-indigo-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                        <i class="bi bi-upc-scan text-indigo"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-0">SKU Code</p>
+                        <p class="fw-bold text-sm mb-0 letter-tight">@Model.SKU</p>
+                    </div>
+                    <span class="badge rounded-pill bg-indigo-50 text-indigo px-2 py-1 fw-semibold text-xs">Barcode</span>
+                </div>
+
+                <!-- Product Name -->
+                <div class="d-flex align-items-center py-3" style="border-bottom:1px solid var(--moc-border);">
+                    <div class="moc-icon-box bg-purple-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                        <i class="bi bi-box-seam text-purple"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-0">Product Name</p>
+                        <p class="fw-bold text-sm mb-0 letter-tight">@Model.Name</p>
+                    </div>
+                </div>
+
+                <!-- Category -->
+                <div class="d-flex align-items-center py-3" style="border-bottom:1px solid var(--moc-border);">
+                    <div class="moc-icon-box bg-cyan-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                        <i class="bi bi-bookmark-star-fill text-cyan"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-0">Category</p>
+                        <p class="fw-bold text-sm mb-0 letter-tight">@Model.Category</p>
+                    </div>
+                    <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                        <i class="bi bi-tag-fill me-1"></i>@Model.Category
+                    </span>
+                </div>
+
+                <!-- Stock Quantity -->
+                <div class="d-flex align-items-center py-3" style="border-bottom:1px solid var(--moc-border);">
+                    <div class="moc-icon-box @(isLowStock ? "bg-red-50" : "bg-green-50") rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                        <i class="bi @(isLowStock ? "bi-exclamation-triangle-fill text-red" : "bi-check-circle-fill text-green")"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-0">Stock Quantity</p>
+                        <p class="fw-bold text-sm mb-0 letter-tight">@Model.StockQuantity units</p>
+                    </div>
+                    @if (isLowStock)
+                    {
+                        <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> @Model.StockQuantity
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge rounded-pill bg-green-50 text-green px-3 py-2 fw-semibold text-xs">
+                            <i class="bi bi-check-circle-fill me-1"></i> @Model.StockQuantity
+                        </span>
+                    }
+                </div>
+
+                <!-- Price -->
+                <div class="d-flex align-items-center py-3" style="border-bottom:1px solid var(--moc-border);">
+                    <div class="moc-icon-box bg-amber-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                        <i class="bi bi-cash-stack text-amber"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-0">Price</p>
+                        <p class="fw-bold text-sm mb-0 letter-tight">₱@Model.Price.ToString("N2")</p>
+                    </div>
+                </div>
+
+                <!-- Last Updated -->
+                <div class="d-flex align-items-center py-3">
+                    <div class="moc-icon-box bg-purple-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                        <i class="bi bi-clock-history text-purple"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="text-muted text-uppercase text-xs fw-semibold mb-0">Last Updated</p>
+                        <p class="fw-bold text-sm mb-0 letter-tight">@Model.LastUpdated.ToString("MMMM dd, yyyy — h:mm tt")</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Card Footer with Actions -->
+            <div class="card-footer bg-transparent border-0 p-4"
+                 style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
+                <div class="d-flex flex-wrap gap-2 justify-content-between">
+                    <a asp-action="Index" class="btn btn-moc-outline px-3">
+                        <i class="bi bi-arrow-left me-1"></i> Back to List
+                    </a>
+                    <div class="d-flex gap-2">
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model.ProductID"
+                               class="btn px-3 fw-semibold"
+                               style="background:rgba(245,158,11,0.08);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.2);">
+                                <i class="bi bi-pencil-square me-1"></i> Edit
+                            </a>
+                        }
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
+                        {
+                            <a asp-action="Delete" asp-route-id="@Model.ProductID"
+                               class="btn px-3 fw-semibold"
+                               style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
+                                <i class="bi bi-trash3 me-1"></i> Delete
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

@@ -1,89 +1,269 @@
 ﻿@model List<MobileOpsConnect.Models.PurchaseOrder>
 @{
     ViewData["Title"] = "Purchase Orders";
+    int totalOrders = Model.Count;
+    int pendingCount = Model.Count(po => po.Status == "Pending");
+    int approvedCount = Model.Count(po => po.Status == "Approved");
+    int rejectedCount = Model.Count(po => po.Status == "Rejected");
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>🚚 Restock Purchase Orders</h2>
-    <div class="d-flex gap-2">
-        @if (User.IsInRole("WarehouseStaff"))
-        {
-            <a asp-action="Create" class="btn btn-moc-primary">
-                <i class="bi bi-plus-circle me-1"></i> Submit New PO
-            </a>
-        }
-        <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline">Back to Dashboard</a>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                Procurement Module
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-clipboard2-data-fill me-1"></i> @totalOrders Order@(totalOrders != 1 ? "s" : "")
+            </span>
+            @if (pendingCount > 0)
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(245,158,11,0.25);">
+                    <i class="bi bi-hourglass-split me-1"></i> @pendingCount Pending
+                </span>
+            }
+        </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">Purchase Orders</h1>
+        <p class="lead mb-0 opacity-75">
+            Restock requests, approval tracking &amp; order history
+        </p>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-truck"></i>
     </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ORDER METRICS                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-speedometer2 text-indigo me-1"></i> Order Summary
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <!-- Total Orders -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Total POs</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@totalOrders</h3>
+                    <span class="badge bg-indigo-50 text-indigo text-xs fw-semibold">
+                        <i class="bi bi-clipboard2-data me-1"></i> All Time
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-clipboard2-data-fill text-indigo fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Pending</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@pendingCount</h3>
+                    <span class="badge @(pendingCount > 0 ? "bg-amber-50 text-amber" : "bg-green-50 text-green") text-xs fw-semibold">
+                        <i class="bi @(pendingCount > 0 ? "bi-hourglass-split" : "bi-check-circle-fill") me-1"></i>
+                        @(pendingCount > 0 ? "Awaiting" : "None")
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-amber-50 rounded-3">
+                    <i class="bi bi-clock-history text-amber fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approved -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Approved</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@approvedCount</h3>
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Confirmed
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-green-50 rounded-3">
+                    <i class="bi bi-check2-all text-green fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rejected -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Rejected</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@rejectedCount</h3>
+                    <span class="badge @(rejectedCount > 0 ? "bg-red-50 text-red" : "bg-green-50 text-green") text-xs fw-semibold">
+                        <i class="bi @(rejectedCount > 0 ? "bi-x-circle-fill" : "bi-check-circle-fill") me-1"></i>
+                        @(rejectedCount > 0 ? "Declined" : "None")
+                    </span>
+                </div>
+                <div class="moc-icon-box @(rejectedCount > 0 ? "bg-red-50" : "bg-green-50") rounded-3">
+                    <i class="bi @(rejectedCount > 0 ? "bi-x-octagon-fill text-red" : "bi-check2-all text-green") fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACTION BAR                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-5">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-list-columns-reverse text-amber me-1"></i> Order History
+    </h5>
+    <hr />
+</div>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3 anim-fade-in">
+    <div class="d-flex align-items-center gap-2">
+        <div class="moc-icon-box bg-indigo-50 rounded-3">
+            <i class="bi bi-funnel-fill text-indigo fs-5"></i>
+        </div>
+        <div>
+            <p class="fw-semibold mb-0 text-sm letter-tight">All Orders</p>
+            <p class="text-muted text-xs mb-0">Showing @totalOrders record@(totalOrders != 1 ? "s" : "")</p>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline px-3">
+            <i class="bi bi-arrow-left me-1"></i> Dashboard
+        </a>
+        @if (User.IsInRole("WarehouseStaff"))
+        {
+            <a asp-action="Create" class="btn btn-moc-primary px-3">
+                <i class="bi bi-plus-circle me-1"></i> Submit New PO
+            </a>
+        }
+    </div>
+</div>
+
+<!-- Alerts -->
 @if (TempData["Message"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["Message"]
+    <div class="alert alert-success alert-dismissible fade show shadow-sm border-0 d-flex align-items-center gap-2 mb-4 anim-fade-in" role="alert">
+        <i class="bi bi-check-circle-fill fs-5"></i> @TempData["Message"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 @if (TempData["Error"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        @TempData["Error"]
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm border-0 d-flex align-items-center gap-2 mb-4 anim-fade-in" role="alert">
+        <i class="bi bi-x-circle-fill fs-5"></i> @TempData["Error"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
-@if (Model.Count == 0)
-{
-    <div class="card moc-card border-0 shadow-sm">
-        <div class="card-body p-5 text-center">
-            <div class="moc-icon-box-lg bg-indigo-50 rounded-3 mx-auto mb-3">
-                <i class="bi bi-inbox text-indigo fs-3"></i>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ORDER TABLE                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
+    <div class="card-body p-0">
+
+        @if (Model.Count == 0)
+        {
+            <div class="text-center p-5">
+                <div class="moc-icon-box-lg bg-indigo-50 rounded-3 mx-auto mb-3">
+                    <i class="bi bi-inbox text-indigo fs-3"></i>
+                </div>
+                <h5 class="fw-bold mb-2 letter-tight">No Purchase Orders Yet</h5>
+                <p class="text-muted text-sm mb-0">
+                    @if (User.IsInRole("WarehouseStaff"))
+                    {
+                        <text>Submit your first purchase order to restock inventory.</text>
+                    }
+                    else
+                    {
+                        <text>No purchase order requests from warehouse staff yet.</text>
+                    }
+                </p>
             </div>
-            <h5 class="fw-bold mb-2">No Purchase Orders Yet</h5>
-            <p class="text-muted">
-                @if (User.IsInRole("WarehouseStaff"))
-                {
-                    <text>Submit your first purchase order to restock inventory.</text>
-                }
-                else
-                {
-                    <text>No purchase order requests from warehouse staff yet.</text>
-                }
-            </p>
-        </div>
-    </div>
-}
-else
-{
-    <div class="card moc-card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+        }
+        else
+        {
+            <!-- Desktop Table -->
+            <div class="table-responsive d-none d-md-block">
+                <table class="table table-hover align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
                     <thead>
-                        <tr style="background: var(--moc-surface);">
-                            <th class="text-uppercase text-xs fw-semibold text-muted ps-4 py-3">PO #</th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted py-3">Product</th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted py-3">Qty</th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted py-3">Cost (₱)</th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted py-3">Requested By</th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted py-3">Date</th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted py-3">Status</th>
+                        <tr style="border:none;">
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-4 py-3" style="letter-spacing:0.05em;">
+                                <i class="bi bi-hash me-1"></i> PO #
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                <i class="bi bi-box me-1"></i> Product
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
+                                <i class="bi bi-layers me-1"></i> Qty
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-end" style="letter-spacing:0.05em;">
+                                <i class="bi bi-currency-exchange me-1"></i> Cost
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                <i class="bi bi-person me-1"></i> Requested By
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                <i class="bi bi-calendar me-1"></i> Date
+                            </th>
+                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
+                                <i class="bi bi-flag me-1"></i> Status
+                            </th>
                             @if ((bool)ViewBag.CanApprove)
                             {
-                                <th class="text-uppercase text-xs fw-semibold text-muted pe-4 py-3">Action</th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 pe-4 py-3 text-end" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-lightning me-1"></i> Action
+                                </th>
                             }
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var po in Model)
                         {
-                            <tr>
-                                <td class="ps-4 fw-bold text-primary">PO-@po.Id.ToString("D4")</td>
-                                <td>@(po.Product?.Name ?? "N/A")</td>
-                                <td>@po.Quantity</td>
-                                <td>@po.EstimatedCost.ToString("N2")</td>
-                                <td>@(po.RequestedBy?.Email ?? "N/A")</td>
-                                <td>@po.DateRequested.ToString("MMM dd, yyyy")</td>
-                                <td>
+                            <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                                <td class="border-0 ps-4 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
+                                    <span class="badge rounded-pill bg-indigo-50 text-indigo px-2 py-1 fw-semibold text-xs">
+                                        PO-@po.Id.ToString("D4")
+                                    </span>
+                                </td>
+                                <td class="border-0 py-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="moc-icon-box bg-purple-50 rounded-3" style="width:36px;height:36px;min-width:36px;">
+                                            <i class="bi bi-box-seam text-purple" style="font-size:0.85rem;"></i>
+                                        </div>
+                                        <span class="fw-semibold text-sm letter-tight">@(po.Product?.Name ?? "N/A")</span>
+                                    </div>
+                                </td>
+                                <td class="border-0 py-3 text-center">
+                                    <span class="fw-bold text-sm">@po.Quantity</span>
+                                </td>
+                                <td class="border-0 py-3 text-end">
+                                    <span class="fw-bold text-sm letter-tight">₱@po.EstimatedCost.ToString("N2")</span>
+                                </td>
+                                <td class="border-0 py-3">
+                                    <span class="text-sm text-muted">@(po.RequestedBy?.Email ?? "N/A")</span>
+                                </td>
+                                <td class="border-0 py-3">
+                                    <span class="text-sm text-muted">@po.DateRequested.ToString("MMM dd, yyyy")</span>
+                                </td>
+                                <td class="border-0 py-3 text-center">
                                     @if (po.Status == "Pending")
                                     {
                                         <span class="badge rounded-pill bg-amber-50 text-amber px-3 py-2 fw-semibold text-xs">
@@ -105,24 +285,35 @@ else
                                 </td>
                                 @if ((bool)ViewBag.CanApprove)
                                 {
-                                    <td class="pe-4">
+                                    <td class="border-0 pe-4 py-3 text-end" style="border-radius:0 0.75rem 0.75rem 0;">
                                         @if (po.Status == "Pending")
                                         {
-                                            <form asp-action="ProcessOrder" method="post" class="d-inline">
-                                                <input type="hidden" name="id" value="@po.Id" />
-                                                <input type="hidden" name="actionType" value="Approve" />
-                                                <button type="submit" class="btn btn-sm btn-success">✅ Approve</button>
-                                            </form>
-                                            <form asp-action="ProcessOrder" method="post" class="d-inline ms-1">
-                                                <input type="hidden" name="id" value="@po.Id" />
-                                                <input type="hidden" name="actionType" value="Reject" />
-                                                <button type="submit" class="btn btn-sm btn-danger">❌ Reject</button>
-                                            </form>
+                                            <div class="d-flex justify-content-end gap-1">
+                                                <form asp-action="ProcessOrder" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@po.Id" />
+                                                    <input type="hidden" name="actionType" value="Approve" />
+                                                    <button type="submit" class="btn btn-sm px-2 py-1 fw-semibold"
+                                                            style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);"
+                                                            title="Approve">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
+                                                <form asp-action="ProcessOrder" method="post" class="d-inline">
+                                                    <input type="hidden" name="id" value="@po.Id" />
+                                                    <input type="hidden" name="actionType" value="Reject" />
+                                                    <button type="submit" class="btn btn-sm px-2 py-1 fw-semibold"
+                                                            style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);"
+                                                            title="Reject">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
                                         }
                                         else
                                         {
                                             <span class="text-muted text-xs">
-                                                @(po.Status == "Approved" ? "✅" : "❌") @po.DateProcessed?.ToString("MMM dd")
+                                                <i class="bi @(po.Status == "Approved" ? "bi-check-circle-fill text-green" : "bi-x-circle-fill text-red") me-1"></i>
+                                                @po.DateProcessed?.ToString("MMM dd")
                                             </span>
                                         }
                                     </td>
@@ -132,6 +323,92 @@ else
                     </tbody>
                 </table>
             </div>
+
+            <!-- Mobile Card List -->
+            <div class="d-md-none p-3">
+                @foreach (var po in Model)
+                {
+                    <div class="moc-metric p-3 mb-3" style="border-left:4px solid @(po.Status == "Pending" ? "#f59e0b" : po.Status == "Approved" ? "#22c55e" : "#ef4444") !important;">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2 flex-grow-1">
+                                <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                                    <i class="bi bi-clipboard2-data-fill text-indigo"></i>
+                                </div>
+                                <div>
+                                    <p class="fw-bold text-sm mb-0 letter-tight">PO-@po.Id.ToString("D4")</p>
+                                    <span class="text-muted text-xs">@(po.Product?.Name ?? "N/A")</span>
+                                </div>
+                            </div>
+                            @if (po.Status == "Pending")
+                            {
+                                <span class="badge rounded-pill bg-amber-50 text-amber px-2 py-1 fw-semibold text-xs ms-2">
+                                    <i class="bi bi-clock-fill me-1"></i> Pending
+                                </span>
+                            }
+                            else if (po.Status == "Approved")
+                            {
+                                <span class="badge rounded-pill bg-green-50 text-green px-2 py-1 fw-semibold text-xs ms-2">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Approved
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge rounded-pill bg-red-50 text-red px-2 py-1 fw-semibold text-xs ms-2">
+                                    <i class="bi bi-x-circle-fill me-1"></i> Rejected
+                                </span>
+                            }
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="text-sm text-muted">
+                                <i class="bi bi-layers me-1"></i> @po.Quantity units
+                            </span>
+                            <span class="fw-bold text-sm letter-tight">₱@po.EstimatedCost.ToString("N2")</span>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <span class="text-muted text-xs">@(po.RequestedBy?.Email ?? "N/A")</span>
+                            <span class="text-muted text-xs">@po.DateRequested.ToString("MMM dd, yyyy")</span>
+                        </div>
+                        @if ((bool)ViewBag.CanApprove && po.Status == "Pending")
+                        {
+                            <div class="d-flex gap-2">
+                                <form asp-action="ProcessOrder" method="post" class="flex-fill">
+                                    <input type="hidden" name="id" value="@po.Id" />
+                                    <input type="hidden" name="actionType" value="Approve" />
+                                    <button type="submit" class="btn btn-sm w-100 py-2 fw-semibold"
+                                            style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);">
+                                        <i class="bi bi-check-lg me-1"></i> Approve
+                                    </button>
+                                </form>
+                                <form asp-action="ProcessOrder" method="post" class="flex-fill">
+                                    <input type="hidden" name="id" value="@po.Id" />
+                                    <input type="hidden" name="actionType" value="Reject" />
+                                    <button type="submit" class="btn btn-sm w-100 py-2 fw-semibold"
+                                            style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
+                                        <i class="bi bi-x-lg me-1"></i> Reject
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+
+    <!-- Table Footer -->
+    <div class="card-footer bg-transparent border-0 px-4 py-3"
+         style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <span class="text-muted text-xs">
+                <i class="bi bi-info-circle me-1"></i>
+                Showing all @totalOrders order@(totalOrders != 1 ? "s" : "")
+            </span>
+            <div class="d-flex gap-1">
+                <span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1">@pendingCount Pending</span>
+                <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">@approvedCount Approved</span>
+                <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@rejectedCount Rejected</span>
+            </div>
         </div>
     </div>
-}
+</div>
