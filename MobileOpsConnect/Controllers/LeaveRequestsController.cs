@@ -140,6 +140,9 @@ namespace MobileOpsConnect.Controllers
                     "📋 New Leave Request",
                     $"{user.Email} submitted a {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
 
+                // Broadcast real-time update via SignalR
+                await _hubContext.Clients.All.SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Pending", leaveRequest.UserID);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(leaveRequest);

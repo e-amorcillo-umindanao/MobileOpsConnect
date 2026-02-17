@@ -547,8 +547,12 @@
         });
 
         connection.on("LeaveStatusChanged", (leaveId, status, userId) => {
-            const icon = status === "Approved" ? "✅" : "❌";
-            showSignalRToast(icon, `Leave ${status}`, `Leave request #${leaveId} has been ${status.toLowerCase()}.`);
+            const icon = status === "Approved" ? "✅" : status === "Rejected" ? "❌" : "📋";
+            const label = status === "Pending" ? "New Leave Request" : `Leave ${status}`;
+            const desc = status === "Pending"
+                ? `A new leave request (#${leaveId}) has been submitted.`
+                : `Leave request #${leaveId} has been ${status.toLowerCase()}.`;
+            showSignalRToast(icon, label, desc);
         });
 
         connection.start().catch(err => console.error("SignalR Error:", err));
