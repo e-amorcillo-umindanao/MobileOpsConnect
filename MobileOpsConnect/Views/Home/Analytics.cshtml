@@ -1,134 +1,315 @@
 ﻿@{
     ViewData["Title"] = "Analytics Dashboard";
+
+    decimal totalValue = (decimal)ViewBag.TotalValue;
+    int totalProducts = (int)ViewBag.TotalProducts;
+    int lowStockCount = (int)ViewBag.LowStockCount;
+    int onLeaveCount = (int)ViewBag.OnLeaveCount;
+    int leaveUtilPercent = (int)ViewBag.LeaveUtilPercent;
+    int pendingLeaves = (int)ViewBag.PendingLeaves;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>📈 Performance & Analytics</h2>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Dashboard</a>
-</div>
-
-<div class="row">
-    <!-- Card 1: Total Inventory Value -->
-    <div class="col-md-4 mb-4">
-        <div class="card bg-primary text-white h-100 shadow-sm border-0">
-            <div class="card-body">
-                <h6 class="card-title text-uppercase text-white-50">Total Inventory Value</h6>
-                <h2 class="display-6 fw-bold">₱@(((decimal)ViewBag.TotalValue).ToString("N0"))</h2>
-                <p class="mb-0">
-                    <i class="bi bi-box-seam"></i> @ViewBag.TotalProducts Total Products
-                </p>
-            </div>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                Analytics Module
+            </span>
+            @if (lowStockCount > 0)
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(239,68,68,0.25);">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> @lowStockCount Low Stock Alert@(lowStockCount != 1 ? "s" : "")
+                </span>
+            }
+            @if (pendingLeaves > 0)
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(245,158,11,0.25);">
+                    <i class="bi bi-hourglass-split me-1"></i> @pendingLeaves Pending Leave@(pendingLeaves != 1 ? "s" : "")
+                </span>
+            }
         </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">Performance &amp; Analytics</h1>
+        <p class="lead mb-0 opacity-75">
+            Real-time overview of inventory, staffing &amp; operational alerts
+        </p>
     </div>
-
-    <!-- Card 2: Low Stock Alerts -->
-    <div class="col-md-4 mb-4">
-        <div class="card bg-danger text-white h-100 shadow-sm border-0">
-            <div class="card-body">
-                <h6 class="card-title text-uppercase text-white-50">Low Stock Items</h6>
-                <h2 class="display-6 fw-bold">@ViewBag.LowStockCount</h2>
-                <p class="mb-0">
-                    @(ViewBag.LowStockCount > 0 ? "⚠️ Reorder required" : "✅ Stock levels healthy")
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Card 3: Staff Leave Utilization -->
-    <div class="col-md-4 mb-4">
-        <div class="card bg-warning text-dark h-100 shadow-sm border-0">
-            <div class="card-body">
-                <h6 class="card-title text-uppercase text-dark-50">Staff On Leave</h6>
-                <h2 class="display-6 fw-bold">@ViewBag.OnLeaveCount</h2>
-                <p class="mb-0">
-                    @ViewBag.LeaveUtilPercent% of workforce
-                </p>
-            </div>
-        </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-graph-up-arrow"></i>
     </div>
 </div>
 
-<div class="row">
-    <!-- Chart: Inventory Distribution by Category -->
-    <div class="col-md-6 mb-4">
-        <div class="card shadow-sm h-100">
-            <div class="card-header bg-light fw-bold">
-                Inventory Distribution (by Product Count)
+<!-- ═══════════════════════════════════════════════ -->
+<!-- KEY METRICS                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-speedometer2 text-indigo me-1"></i> Key Metrics
+    </h5>
+    <hr />
+</div>
+
+<div class="row g-3 mb-4">
+    <!-- Total Inventory Value -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Inventory Value</p>
+                    <h3 class="fw-bold mb-1 letter-tight">₱@totalValue.ToString("N0")</h3>
+                    <span class="badge bg-indigo-50 text-indigo text-xs fw-semibold">
+                        <i class="bi bi-box-seam me-1"></i> @totalProducts Products
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-cash-stack text-indigo fs-5"></i>
+                </div>
             </div>
-            <div class="card-body">
+        </div>
+    </div>
+
+    <!-- Total Products -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Total Products</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@totalProducts</h3>
+                    <span class="badge bg-purple-50 text-purple text-xs fw-semibold">
+                        <i class="bi bi-grid-fill me-1"></i> Catalog
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-purple-50 rounded-3">
+                    <i class="bi bi-box-seam-fill text-purple fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Low Stock Items -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Low Stock</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@lowStockCount</h3>
+                    @if (lowStockCount > 0)
+                    {
+                        <span class="badge bg-red-50 text-red text-xs fw-semibold">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Reorder Needed
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                            <i class="bi bi-check-circle-fill me-1"></i> Healthy
+                        </span>
+                    }
+                </div>
+                <div class="moc-icon-box @(lowStockCount > 0 ? "bg-red-50" : "bg-green-50") rounded-3">
+                    <i class="bi @(lowStockCount > 0 ? "bi-exclamation-octagon-fill text-red" : "bi-check2-all text-green") fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Staff On Leave -->
+    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Staff On Leave</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@onLeaveCount</h3>
+                    <div class="progress mt-1" style="height:4px;width:72px;">
+                        <div class="progress-bar rounded-pill" role="progressbar"
+                             style="width:@leaveUtilPercent%;background:var(--moc-primary);"
+                             aria-valuenow="@leaveUtilPercent" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <span class="text-muted text-xs">@leaveUtilPercent% of workforce</span>
+                </div>
+                <div class="moc-icon-box bg-amber-50 rounded-3">
+                    <i class="bi bi-people-fill text-amber fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- CHARTS & ALERTS ROW                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="row g-4 mb-4">
+
+    <!-- Inventory Distribution Chart -->
+    <div class="col-lg-6 anim-fade-in anim-delay-1">
+        <div class="moc-section-header mt-3">
+            <h5 class="fw-bold letter-tight">
+                <i class="bi bi-pie-chart-fill text-purple me-1"></i> Inventory Distribution
+            </h5>
+            <hr />
+        </div>
+
+        <div class="card moc-card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
                 @if (ViewBag.TopCategories != null)
                 {
+                    var colors = new[] {
+                        new { bg = "rgba(99,102,241,0.12)", bar = "var(--moc-primary)", text = "text-indigo" },
+                        new { bg = "rgba(139,92,246,0.12)", bar = "#8b5cf6", text = "text-purple" },
+                        new { bg = "rgba(6,182,212,0.12)", bar = "#06b6d4", text = "text-cyan" },
+                        new { bg = "rgba(34,197,94,0.12)", bar = "#22c55e", text = "text-green" },
+                        new { bg = "rgba(245,158,11,0.12)", bar = "#f59e0b", text = "text-amber" },
+                        new { bg = "rgba(239,68,68,0.12)", bar = "#ef4444", text = "text-red" }
+                    };
+                    int ci = 0;
+
                     foreach (var cat in ViewBag.TopCategories)
                     {
-                        var colorClass = "bg-primary"; 
-                        // Cycle colors based on simple hash or index if we had one, but random is fine for now
-                        if (cat.Category == "Electronics" || cat.Category == "Smartphones") colorClass = "bg-primary";
-                        else if (cat.Category == "Accessories") colorClass = "bg-info";
-                        else if (cat.Category == "Furniture") colorClass = "bg-success";
-                        else colorClass = "bg-secondary";
+                        var c = colors[ci % colors.Length];
+                        ci++;
 
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between">
-                                <span>@(string.IsNullOrEmpty(cat.Category) ? "Uncategorized" : cat.Category)</span>
-                                <span>@cat.Percent% (@cat.Count)</span>
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-2 d-flex align-items-center justify-content-center"
+                                         style="width:32px;height:32px;min-width:32px;background:@c.bg;">
+                                        <i class="bi bi-tag-fill @c.text" style="font-size:0.8rem;"></i>
+                                    </div>
+                                    <span class="fw-semibold text-sm letter-tight">
+                                        @(string.IsNullOrEmpty(cat.Category) ? "Uncategorized" : cat.Category)
+                                    </span>
+                                </div>
+                                <div class="text-end">
+                                    <span class="fw-bold text-sm">@cat.Count</span>
+                                    <span class="text-muted text-xs ms-1">(@cat.Percent%)</span>
+                                </div>
                             </div>
-                            <div class="progress">
-                                <div class="progress-bar @colorClass" style="width: @cat.Percent%"></div>
+                            <div class="progress rounded-pill" style="height:8px;background:var(--moc-border);">
+                                <div class="progress-bar rounded-pill"
+                                     style="width:@cat.Percent%;background:@c.bar;transition:width 1s ease;"
+                                     role="progressbar"></div>
                             </div>
                         </div>
                     }
                 }
                 else
                 {
-                    <p class="text-muted text-center py-5">No inventory data available.</p>
-                }
-            </div>
-        </div>
-    </div>
-
-    <!-- List: Recent System Alerts -->
-    <div class="col-md-6 mb-4">
-        <div class="card shadow-sm h-100 border-danger">
-            <div class="card-header bg-danger text-white fw-bold">
-                🚨 System Actions Required
-            </div>
-            <ul class="list-group list-group-flush">
-                <!-- Pending Leaves -->
-                @if (ViewBag.PendingLeaves > 0)
-                {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div>
-                            <strong>@ViewBag.PendingLeaves</strong> leave requests pending approval
+                    <div class="text-center p-5">
+                        <div class="moc-icon-box-lg bg-indigo-50 rounded-3 mx-auto mb-3">
+                            <i class="bi bi-inbox text-indigo fs-3"></i>
                         </div>
-                        <a asp-controller="LeaveRequests" asp-action="Index" class="badge bg-warning text-dark rounded-pill text-decoration-none">
-                            Review
-                        </a>
-                    </li>
+                        <h6 class="fw-bold mb-1 letter-tight">No Data Available</h6>
+                        <p class="text-muted text-sm mb-0">Inventory distribution data will appear here once products are added.</p>
+                    </div>
                 }
-
-                <!-- Low Stock Items List -->
-                @if (ViewBag.LowStockAlerts != null)
-                {
-                    foreach (var item in ViewBag.LowStockAlerts)
-                    {
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                Low stock: <strong>@item.Name</strong>
-                                <br><small class="text-muted">Only @item.StockQuantity remaining</small>
-                            </div>
-                            <span class="badge bg-danger rounded-pill">Critical</span>
-                        </li>
-                    }
-                }
-
-                @if (ViewBag.PendingLeaves == 0 && (ViewBag.LowStockAlerts == null || ViewBag.LowStockAlerts.Count == 0))
-                {
-                     <li class="list-group-item text-center text-muted py-4">
-                        <i class="bi bi-check-circle-fill text-success fs-3 d-block mb-2"></i>
-                        No critical alerts at this time.
-                    </li>
-                }
-            </ul>
+            </div>
         </div>
     </div>
+
+    <!-- System Actions Required -->
+    <div class="col-lg-6 anim-fade-in anim-delay-2">
+        <div class="moc-section-header mt-3">
+            <h5 class="fw-bold letter-tight">
+                <i class="bi bi-bell-fill text-red me-1"></i> Actions Required
+            </h5>
+            <hr />
+        </div>
+
+        <div class="card moc-card border-0 shadow-sm h-100">
+            <div class="card-body p-0">
+
+                @{
+                    bool hasAlerts = pendingLeaves > 0 || (ViewBag.LowStockAlerts != null && ((IEnumerable<dynamic>)ViewBag.LowStockAlerts).Any());
+                }
+
+                @if (!hasAlerts)
+                {
+                    <div class="text-center p-5">
+                        <div class="moc-icon-box-lg bg-green-50 rounded-3 mx-auto mb-3">
+                            <i class="bi bi-check-circle-fill text-green fs-3"></i>
+                        </div>
+                        <h6 class="fw-bold mb-1 letter-tight">All Clear</h6>
+                        <p class="text-muted text-sm mb-0">No critical alerts at this time. Everything is running smoothly.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-3">
+                        <!-- Pending Leave Requests -->
+                        @if (pendingLeaves > 0)
+                        {
+                            <div class="moc-metric p-3 mb-3" style="border-left:4px solid #f59e0b !important;">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="moc-icon-box bg-amber-50 rounded-3" style="width:44px;height:44px;min-width:44px;">
+                                            <i class="bi bi-calendar-event-fill text-amber fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <p class="fw-bold text-sm mb-0 letter-tight">Leave Requests Pending</p>
+                                            <span class="text-muted text-xs">
+                                                <strong>@pendingLeaves</strong> request@(pendingLeaves != 1 ? "s" : "") awaiting approval
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <a asp-controller="LeaveRequests" asp-action="Index"
+                                       class="btn btn-sm px-3 py-1 fw-semibold"
+                                       style="background:rgba(245,158,11,0.08);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.2);">
+                                        <i class="bi bi-arrow-right me-1"></i> Review
+                                    </a>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Low Stock Alerts -->
+                        @if (ViewBag.LowStockAlerts != null)
+                        {
+                            foreach (var item in ViewBag.LowStockAlerts)
+                            {
+                                bool isOutOfStock = item.StockQuantity == 0;
+                                <div class="moc-metric p-3 mb-3" style="border-left:4px solid @(isOutOfStock ? "#ef4444" : "#f59e0b") !important;">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="moc-icon-box @(isOutOfStock ? "bg-red-50" : "bg-amber-50") rounded-3"
+                                                 style="width:44px;height:44px;min-width:44px;">
+                                                <i class="bi @(isOutOfStock ? "bi-x-circle-fill text-red" : "bi-exclamation-triangle-fill text-amber") fs-5"></i>
+                                            </div>
+                                            <div>
+                                                <p class="fw-bold text-sm mb-0 letter-tight">@item.Name</p>
+                                                <span class="text-muted text-xs">
+                                                    Only <strong>@item.StockQuantity</strong> remaining
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <span class="badge rounded-pill @(isOutOfStock ? "bg-red-50 text-red" : "bg-amber-50 text-amber") px-3 py-2 fw-semibold text-xs">
+                                            @(isOutOfStock ? "OUT OF STOCK" : "CRITICAL")
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- NAVIGATION FOOTER                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="d-flex flex-wrap justify-content-center gap-2 mb-4 anim-fade-in">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline px-4 py-2">
+        <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+    </a>
+    <a asp-controller="Products" asp-action="Index" class="btn btn-moc-outline px-4 py-2">
+        <i class="bi bi-grid me-1"></i> View Products
+    </a>
+    <a asp-controller="Warehouse" asp-action="LowStock" class="btn btn-moc-outline px-4 py-2">
+        <i class="bi bi-exclamation-triangle me-1"></i> Low Stock Alerts
+    </a>
 </div>
