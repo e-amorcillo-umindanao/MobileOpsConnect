@@ -2,159 +2,256 @@
 
 @{
     ViewData["Title"] = "Accounting Ledger";
+    int totalEntries = Model.Count();
+    int incomeCount = Model.Count(e => e.Type == "Income");
+    int expenseCount = Model.Count(e => e.Type == "Expense");
 }
 
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-0 text-gray-800">
-                <i class="bi bi-journal-text me-2 text-primary"></i>Accounting Ledger
-            </h1>
-            <p class="text-muted small mb-0">Track all financial transactions, income, and expenses.</p>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-journal-text text-success me-1" style="font-size:0.8rem;vertical-align:text-top;"></i>
+                Financial Records
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-receipt me-1"></i> @totalEntries Entries
+            </span>
         </div>
-        <a asp-action="Create" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i> New Entry
-        </a>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">Accounting Ledger</h1>
+        <p class="lead mb-0 opacity-75">
+            Track all financial transactions, income, and expenses.
+        </p>
     </div>
+    <!-- Decorative Icon -->
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-calculator"></i>
+    </div>
+</div>
 
-    <!-- Summary Cards -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Income</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@(((decimal)ViewBag.TotalIncome).ToString("C"))</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-arrow-up-circle-fill text-success fa-2x"></i>
-                        </div>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACTION BAR                                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 anim-fade-in anim-delay-1">
+    <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline px-3">
+        <i class="bi bi-arrow-left me-1"></i> Dashboard
+    </a>
+    <a asp-action="Create" class="btn btn-moc-primary px-4 py-2 shadow-sm">
+        <i class="bi bi-plus-lg me-1"></i> New Entry
+    </a>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SUMMARY CARDS                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="row g-3 mb-4">
+    <!-- Total Income -->
+    <div class="col-md-4 anim-fade-in anim-delay-1">
+        <div class="card moc-card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-uppercase text-xs fw-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-green,#22c55e);">Total Income</p>
+                        <h3 class="fw-bold mb-0 letter-tight">@(((decimal)ViewBag.TotalIncome).ToString("C"))</h3>
                     </div>
+                    <div class="moc-icon-box rounded-3" style="width:48px;height:48px;background:rgba(34,197,94,0.08);">
+                        <i class="bi bi-arrow-up-circle-fill fs-4" style="color:#22c55e;"></i>
+                    </div>
+                </div>
+                <div class="mt-3 pt-3" style="border-top:1px solid rgba(0,0,0,0.05);">
+                    <span class="text-muted text-xs"><i class="bi bi-receipt me-1"></i>@incomeCount transactions</span>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card border-left-danger shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Expenses</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@(((decimal)ViewBag.TotalExpense).ToString("C"))</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-arrow-down-circle-fill text-danger fa-2x"></i>
-                        </div>
+    </div>
+
+    <!-- Total Expenses -->
+    <div class="col-md-4 anim-fade-in anim-delay-2">
+        <div class="card moc-card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-uppercase text-xs fw-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-red,#ef4444);">Total Expenses</p>
+                        <h3 class="fw-bold mb-0 letter-tight">@(((decimal)ViewBag.TotalExpense).ToString("C"))</h3>
+                    </div>
+                    <div class="moc-icon-box rounded-3" style="width:48px;height:48px;background:rgba(239,68,68,0.08);">
+                        <i class="bi bi-arrow-down-circle-fill fs-4" style="color:#ef4444;"></i>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Net Result</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">@(((decimal)ViewBag.NetResult).ToString("C"))</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="bi bi-wallet2 text-primary fa-2x"></i>
-                        </div>
-                    </div>
+                <div class="mt-3 pt-3" style="border-top:1px solid rgba(0,0,0,0.05);">
+                    <span class="text-muted text-xs"><i class="bi bi-receipt me-1"></i>@expenseCount transactions</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Filter Form -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Filter Transactions</h6>
+    <!-- Net Result -->
+    <div class="col-md-4 anim-fade-in anim-delay-3">
+        @{
+            decimal netResult = (decimal)ViewBag.NetResult;
+            bool isPositive = netResult >= 0;
+        }
+        <div class="card moc-card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <p class="text-uppercase text-xs fw-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-indigo,#6366f1);">Net Result</p>
+                        <h3 class="fw-bold mb-0 letter-tight" style="color:@(isPositive ? "#22c55e" : "#ef4444");">@netResult.ToString("C")</h3>
+                    </div>
+                    <div class="moc-icon-box rounded-3" style="width:48px;height:48px;background:rgba(99,102,241,0.08);">
+                        <i class="bi bi-wallet2 fs-4" style="color:#6366f1;"></i>
+                    </div>
+                </div>
+                <div class="mt-3 pt-3" style="border-top:1px solid rgba(0,0,0,0.05);">
+                    <span class="text-muted text-xs">
+                        <i class="bi bi-@(isPositive ? "graph-up-arrow text-success" : "graph-down-arrow text-danger") me-1"></i>
+                        @(isPositive ? "Profit" : "Loss")
+                    </span>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <form method="get" class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">Type</label>
-                    <select name="filterType" class="form-select">
-                        <option value="">All Types</option>
-                        <option value="Income">Income</option>
-                        <option value="Expense">Expense</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Category</label>
-                    <input type="text" name="filterCategory" class="form-control" placeholder="Search category...">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Start Date</label>
-                    <input type="date" name="startDate" class="form-control">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">End Date</label>
-                    <input type="date" name="endDate" class="form-control">
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-secondary w-100">
-                        <i class="bi bi-filter"></i> Filter
-                    </button>
-                </div>
-            </form>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- FILTER PANEL                                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-2">
+    <div class="card-header bg-transparent border-0 p-4 pb-0">
+        <div class="d-flex align-items-center gap-2">
+            <div class="moc-icon-box bg-amber-50 rounded-3">
+                <i class="bi bi-funnel text-amber fs-5"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-0 letter-tight">Filter Transactions</h6>
+                <span class="text-muted text-xs">Narrow down results by type, category, or date range</span>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label text-xs fw-semibold text-uppercase text-muted" style="letter-spacing:0.05em;">Type</label>
+                <select name="filterType" class="form-select" style="border-radius:0.625rem;padding:0.625rem 1rem;">
+                    <option value="">All Types</option>
+                    <option value="Income">Income</option>
+                    <option value="Expense">Expense</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label text-xs fw-semibold text-uppercase text-muted" style="letter-spacing:0.05em;">Category</label>
+                <input type="text" name="filterCategory" class="form-control" placeholder="Search category..." style="border-radius:0.625rem;padding:0.625rem 1rem;">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label text-xs fw-semibold text-uppercase text-muted" style="letter-spacing:0.05em;">Start Date</label>
+                <input type="date" name="startDate" class="form-control" style="border-radius:0.625rem;padding:0.625rem 1rem;">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label text-xs fw-semibold text-uppercase text-muted" style="letter-spacing:0.05em;">End Date</label>
+                <input type="date" name="endDate" class="form-control" style="border-radius:0.625rem;padding:0.625rem 1rem;">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-moc-primary w-100 py-2" style="border-radius:0.625rem;">
+                    <i class="bi bi-search me-1"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TRANSACTIONS TABLE                              -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-3">
+    <div class="card-header bg-transparent border-0 p-4 pb-0">
+        <div class="d-flex align-items-center gap-2">
+            <div class="moc-icon-box bg-indigo-50 rounded-3">
+                <i class="bi bi-list-ul text-indigo fs-5"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-0 letter-tight">Transaction History</h6>
+                <span class="text-muted text-xs">@totalEntries record@(totalEntries != 1 ? "s" : "") found</span>
+            </div>
         </div>
     </div>
 
-    <!-- Transactions Table -->
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover" width="100%" cellspacing="0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Date</th>
-                            <th>Type</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Amount</th>
-                            <th>Ref #</th>
-                            <th>Actions</th>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.25rem;">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-4 py-3" style="letter-spacing:0.05em;">Date</th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">Type</th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">Category</th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">Description</th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-end" style="letter-spacing:0.05em;">Amount</th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">Ref #</th>
+                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 pe-4 text-center" style="letter-spacing:0.05em;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr style="transition: transform 0.2s;">
+                            <td class="border-0 ps-4 py-3">
+                                <span class="fw-semibold text-sm">@item.TransactionDate.ToString("MMM dd, yyyy")</span>
+                            </td>
+                            <td class="border-0 py-3">
+                                @if (item.Type == "Income")
+                                {
+                                    <span class="badge rounded-pill px-3 py-1" style="background:rgba(34,197,94,0.1);color:#16a34a;">
+                                        <i class="bi bi-arrow-up-short"></i> Income
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge rounded-pill px-3 py-1" style="background:rgba(239,68,68,0.1);color:#dc2626;">
+                                        <i class="bi bi-arrow-down-short"></i> Expense
+                                    </span>
+                                }
+                            </td>
+                            <td class="border-0 py-3">
+                                <span class="badge rounded-pill bg-indigo-50 text-indigo px-2 py-1 fw-semibold text-xs">@item.Category</span>
+                            </td>
+                            <td class="border-0 py-3 text-sm text-muted">@item.Description</td>
+                            <td class="border-0 py-3 text-end">
+                                <span class="fw-bold text-sm" style="color:@(item.Type == "Income" ? "#22c55e" : "#ef4444");">
+                                    @(item.Type == "Income" ? "+" : "−")@item.Amount.ToString("C")
+                                </span>
+                            </td>
+                            <td class="border-0 py-3">
+                                <span class="text-muted text-xs">@(item.ReferenceNumber ?? "—")</span>
+                            </td>
+                            <td class="border-0 py-3 pe-4 text-center">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm px-3 py-1" style="background:rgba(99,102,241,0.08);color:#6366f1;border-radius:0.5rem;">
+                                    <i class="bi bi-eye me-1"></i> View
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@item.TransactionDate.ToString("MMM dd, yyyy")</td>
-                                <td>
-                                    @if(item.Type == "Income")
-                                    {
-                                        <span class="badge bg-success">Income</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger">Expense</span>
-                                    }
-                                </td>
-                                <td>@item.Category</td>
-                                <td>@item.Description</td>
-                                <td class="font-weight-bold @(item.Type == "Income" ? "text-success" : "text-danger")">
-                                    @item.Amount.ToString("C")
-                                </td>
-                                <td>@item.ReferenceNumber</td>
-                                <td>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">
-                                        <i class="bi bi-eye"></i>
+                    }
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5 border-0">
+                                <div class="py-4">
+                                    <div class="moc-icon-box-lg rounded-3 mx-auto mb-3" style="width:64px;height:64px;background:rgba(99,102,241,0.06);">
+                                        <i class="bi bi-journal-x fs-2" style="color:#6366f1;"></i>
+                                    </div>
+                                    <h6 class="fw-bold mb-1 letter-tight">No Transactions Found</h6>
+                                    <p class="text-muted text-sm mb-3">Start by recording your first transaction.</p>
+                                    <a asp-action="Create" class="btn btn-moc-primary px-4">
+                                        <i class="bi bi-plus-lg me-1"></i> New Entry
                                     </a>
-                                </td>
-                            </tr>
-                        }
-                        @if (!Model.Any())
-                        {
-                            <tr>
-                                <td colspan="7" class="text-center text-muted">No transactions found.</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
