@@ -134,7 +134,8 @@
             <div class="d-flex align-items-start justify-content-between">
                 <div>
                     <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Uptime</p>
-                    <h3 class="fw-bold mb-1 letter-tight">@ViewBag.UptimeDisplay</h3>
+                    <h3 id="uptimeCounter" class="fw-bold mb-1 letter-tight"
+                        data-start-utc="@ViewBag.AppStartTimeUtc">@ViewBag.UptimeDisplay</h3>
                     <span class="badge bg-green-50 text-green text-xs fw-semibold">
                         <i class="bi bi-check-circle-fill me-1"></i> Healthy
                     </span>
@@ -449,3 +450,29 @@
         </div>
     </div>
 }
+
+<!-- Live Uptime Ticker -->
+<script>
+(function () {
+    const el = document.getElementById('uptimeCounter');
+    if (!el) return;
+    const startUtc = new Date(el.dataset.startUtc).getTime();
+    if (isNaN(startUtc)) return;
+
+    function tick() {
+        const diff = Date.now() - startUtc;
+        const totalSec = Math.floor(diff / 1000);
+        const days = Math.floor(totalSec / 86400);
+        const hrs  = Math.floor((totalSec % 86400) / 3600);
+        const mins = Math.floor((totalSec % 3600) / 60);
+        const secs = totalSec % 60;
+
+        if (days >= 1)      el.textContent = days + 'd ' + hrs + 'h';
+        else if (hrs >= 1)  el.textContent = hrs + 'h ' + mins + 'm';
+        else                el.textContent = mins + 'm ' + secs + 's';
+    }
+
+    tick();
+    setInterval(tick, 1000);
+})();
+</script>
