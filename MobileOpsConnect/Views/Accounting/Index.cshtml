@@ -1,0 +1,160 @@
+@model IEnumerable<MobileOpsConnect.Models.AccountingEntry>
+
+@{
+    ViewData["Title"] = "Accounting Ledger";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">
+                <i class="bi bi-journal-text me-2 text-primary"></i>Accounting Ledger
+            </h1>
+            <p class="text-muted small mb-0">Track all financial transactions, income, and expenses.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> New Entry
+        </a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Total Income</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@(((decimal)ViewBag.TotalIncome).ToString("C"))</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-arrow-up-circle-fill text-success fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Total Expenses</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@(((decimal)ViewBag.TotalExpense).ToString("C"))</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-arrow-down-circle-fill text-danger fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Net Result</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@(((decimal)ViewBag.NetResult).ToString("C"))</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-wallet2 text-primary fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Form -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Filter Transactions</h6>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Type</label>
+                    <select name="filterType" class="form-select">
+                        <option value="">All Types</option>
+                        <option value="Income">Income</option>
+                        <option value="Expense">Expense</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Category</label>
+                    <input type="text" name="filterCategory" class="form-control" placeholder="Search category...">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" name="startDate" class="form-control">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">End Date</label>
+                    <input type="date" name="endDate" class="form-control">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-secondary w-100">
+                        <i class="bi bi-filter"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Ref #</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.TransactionDate.ToString("MMM dd, yyyy")</td>
+                                <td>
+                                    @if(item.Type == "Income")
+                                    {
+                                        <span class="badge bg-success">Income</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Expense</span>
+                                    }
+                                </td>
+                                <td>@item.Category</td>
+                                <td>@item.Description</td>
+                                <td class="font-weight-bold @(item.Type == "Income" ? "text-success" : "text-danger")">
+                                    @item.Amount.ToString("C")
+                                </td>
+                                <td>@item.ReferenceNumber</td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info text-white">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">No transactions found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

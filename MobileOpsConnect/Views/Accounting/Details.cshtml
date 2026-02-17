@@ -1,0 +1,61 @@
+@model MobileOpsConnect.Models.AccountingEntry
+
+@{
+    ViewData["Title"] = "Transaction Details";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Transaction Details</h6>
+                <a asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Ledger
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <h2 class="display-4 font-weight-bold @(Model.Type == "Income" ? "text-success" : "text-danger")">
+                        @Model.Amount.ToString("C")
+                    </h2>
+                    <span class="badge @(Model.Type == "Income" ? "bg-success" : "bg-danger") px-3 py-2 rounded-pill">
+                        @Model.Type
+                    </span>
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Transaction Date</dt>
+                    <dd class="col-sm-8">@Model.TransactionDate.ToString("MMMM dd, yyyy")</dd>
+
+                    <dt class="col-sm-4">Category</dt>
+                    <dd class="col-sm-8">@Model.Category</dd>
+
+                    <dt class="col-sm-4">Description</dt>
+                    <dd class="col-sm-8">@Model.Description</dd>
+
+                    <dt class="col-sm-4">Reference #</dt>
+                    <dd class="col-sm-8">@(Model.ReferenceNumber ?? "N/A")</dd>
+
+                    <dt class="col-sm-4">Recorded By</dt>
+                    <dd class="col-sm-8">@Model.RecordedBy?.Email (@Model.RecordedBy?.UserName)</dd>
+
+                    <dt class="col-sm-4">Recorded On</dt>
+                    <dd class="col-sm-8">@Model.CreatedAt.ToString("g")</dd>
+
+                    @if(Model.PurchaseOrderId != null)
+                    {
+                        <dt class="col-sm-4">Linked PO</dt>
+                        <dd class="col-sm-8">
+                            <a asp-controller="Orders" asp-action="Details" asp-route-id="@Model.PurchaseOrderId">
+                                View Purchase Order #@Model.PurchaseOrderId
+                            </a>
+                        </dd>
+                    }
+
+                    <dt class="col-sm-4">Notes</dt>
+                    <dd class="col-sm-8">@(Model.Notes ?? "No notes provided.")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

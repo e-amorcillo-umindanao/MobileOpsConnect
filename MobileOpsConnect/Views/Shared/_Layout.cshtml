@@ -464,6 +464,14 @@
                                     <i class="bi bi-grid-1x2-fill me-1"></i> Dashboard
                                 </a>
                             </li>
+                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Accounting" asp-action="Index">
+                                        <i class="bi bi-journal-text me-1"></i> Accounting
+                                    </a>
+                                </li>
+                            }
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
                                     <i class="bi bi-shield-check me-1"></i> Privacy
