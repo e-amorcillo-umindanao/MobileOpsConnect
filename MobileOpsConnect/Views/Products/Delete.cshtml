@@ -1,28 +1,217 @@
 ﻿@model MobileOpsConnect.Models.Product
 
 @{
-    ViewData["Title"] = "Delete Product";
+    ViewData["Title"] = "Archive Product";
 }
 
-<h1>Delete Product</h1>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(239,68,68,0.25);">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i> Archive Confirmation
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-box-seam-fill me-1"></i> SKU: @Model.SKU
+            </span>
+        </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">Archive Product</h1>
+        <p class="lead mb-0 opacity-75">
+            Review the product details below before archiving
+        </p>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-archive-fill"></i>
+    </div>
+</div>
 
-<h3 class="text-danger">Are you sure you want to delete this?</h3>
-<div>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- WARNING ALERT                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-metric p-3 p-md-4 mb-4 anim-fade-in anim-delay-1" style="border-left:4px solid #f59e0b !important;">
+    <div class="d-flex align-items-start gap-3">
+        <div class="moc-icon-box bg-amber-50 rounded-3" style="min-width:44px;">
+            <i class="bi bi-exclamation-triangle-fill text-amber fs-5"></i>
+        </div>
+        <div>
+            <h6 class="fw-bold mb-1 letter-tight">Are you sure you want to archive this product?</h6>
+            <p class="text-muted text-sm mb-0">
+                This product will be moved to the <strong>Archived</strong> section with stock set to zero.
+                It will remain visible in your inventory archive for reference but will no longer appear in the active product list.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PRODUCT DETAILS                                 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-4">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-info-circle-fill text-indigo me-1"></i> Product Details
+    </h5>
     <hr />
-    <dl class="row">
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.SKU)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.SKU)</dd>
+</div>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Name)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.Name)</dd>
+<div class="row g-3 mb-4 anim-fade-in anim-delay-2">
+    <div class="col-6 col-lg-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">SKU Code</p>
+                    <h4 class="fw-bold mb-1 letter-tight">@Model.SKU</h4>
+                    <span class="badge bg-cyan-50 text-cyan text-xs fw-semibold">
+                        <i class="bi bi-upc-scan me-1"></i> Barcode
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-cyan-50 rounded-3">
+                    <i class="bi bi-upc-scan text-cyan fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.StockQuantity)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(model => model.StockQuantity)</dd>
-    </dl>
+    <div class="col-6 col-lg-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Product Name</p>
+                    <h4 class="fw-bold mb-1 letter-tight">@Model.Name</h4>
+                    <span class="badge bg-indigo-50 text-indigo text-xs fw-semibold">
+                        <i class="bi bi-box-seam me-1"></i> Item
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-indigo-50 rounded-3">
+                    <i class="bi bi-box-seam text-indigo fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="ProductID" />
-        <button type="submit" class="btn btn-danger">Delete</button> |
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
+    <div class="col-6 col-lg-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Category</p>
+                    <h4 class="fw-bold mb-1 letter-tight">
+                        @(string.IsNullOrEmpty(Model.Category) ? "Uncategorized" : Model.Category)
+                    </h4>
+                    <span class="badge bg-purple-50 text-purple text-xs fw-semibold">
+                        <i class="bi bi-tag-fill me-1"></i> Group
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-purple-50 rounded-3">
+                    <i class="bi bi-tag-fill text-purple fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Current Stock</p>
+                    <h4 class="fw-bold mb-1 letter-tight">@Model.StockQuantity</h4>
+                    @if (Model.StockQuantity == 0)
+                    {
+                        <span class="badge bg-red-50 text-red text-xs fw-semibold">
+                            <i class="bi bi-x-circle-fill me-1"></i> Out of Stock
+                        </span>
+                    }
+                    else if (Model.StockQuantity <= 10)
+                    {
+                        <span class="badge bg-amber-50 text-amber text-xs fw-semibold">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Low Stock
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                            <i class="bi bi-check-circle-fill me-1"></i> In Stock
+                        </span>
+                    }
+                </div>
+                <div class="moc-icon-box bg-amber-50 rounded-3">
+                    <i class="bi bi-stack text-amber fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Unit Price</p>
+                    <h4 class="fw-bold mb-1 letter-tight">₱@Model.Price.ToString("N2")</h4>
+                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
+                        <i class="bi bi-currency-exchange me-1"></i> PHP
+                    </span>
+                </div>
+                <div class="moc-icon-box bg-green-50 rounded-3">
+                    <i class="bi bi-currency-exchange text-green fs-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-lg-4">
+        <div class="moc-metric p-3 p-md-4 h-100">
+            <div class="d-flex align-items-start justify-content-between">
+                <div>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Last Updated</p>
+                    <h4 class="fw-bold mb-1 letter-tight">@Model.LastUpdated.ToString("MMM dd")</h4>
+                    <span class="badge bg-slate-50 text-muted text-xs fw-semibold">
+                        <i class="bi bi-clock-history me-1"></i> @Model.LastUpdated.ToString("yyyy")
+                    </span>
+                </div>
+                <div class="moc-icon-box rounded-3" style="background:rgba(100,116,139,0.08);">
+                    <i class="bi bi-clock-history fs-5" style="color:#64748b;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- ACTION BUTTONS                                  -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-3">
+    <div class="card-body p-4">
+        <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center justify-content-between gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <div class="moc-icon-box bg-red-50 rounded-3">
+                    <i class="bi bi-archive-fill text-red fs-5"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0 letter-tight">Confirm Archive</h6>
+                    <span class="text-muted text-xs">This action will move the product to the archived section</span>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-action="Index" class="btn btn-moc-outline px-4 py-2">
+                    <i class="bi bi-arrow-left me-1"></i> Cancel
+                </a>
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="ProductID" />
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn px-4 py-2 fw-semibold"
+                            style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
+                        <i class="bi bi-archive me-1"></i> Archive Product
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back -->
+<div class="d-flex justify-content-start mb-4 anim-fade-in">
+    <a asp-action="Index" class="btn btn-moc-outline px-4 py-2">
+        <i class="bi bi-arrow-left me-1"></i> Back to Inventory
+    </a>
 </div>

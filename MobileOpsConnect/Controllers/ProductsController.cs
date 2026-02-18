@@ -115,7 +115,7 @@ namespace MobileOpsConnect.Controllers
             return View(product);
         }
 
-        // POST: Products/Delete/5
+        // POST: Products/Delete/5 (Soft-delete: archives the product by setting stock to 0)
         [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -124,7 +124,9 @@ namespace MobileOpsConnect.Controllers
             var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
-                _context.Products.Remove(product);
+                product.StockQuantity = 0;
+                product.LastUpdated = DateTime.UtcNow;
+                _context.Products.Update(product);
             }
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
