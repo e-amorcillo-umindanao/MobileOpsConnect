@@ -33,8 +33,8 @@
             </div>
         </div>
         <div class="col-auto">
-            <a asp-controller="Settings" asp-action="Index" class="btn" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px);border-radius:0.75rem;">
-                <i class="bi bi-arrow-left me-1"></i> Settings
+            <a asp-controller="Home" asp-action="Index" class="btn" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px);border-radius:0.75rem;">
+                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
             </a>
         </div>
     </div>
@@ -118,7 +118,8 @@
         }
         else
         {
-            <div class="table-responsive">
+            <!-- ══════ DESKTOP TABLE (hidden on small screens) ══════ -->
+            <div class="table-responsive d-none d-md-block">
                 <table class="table table-hover align-middle mb-0">
                     <thead>
                         <tr style="background: var(--moc-surface);">
@@ -194,6 +195,70 @@
                         }
                     </tbody>
                 </table>
+            </div>
+
+            <!-- ══════ MOBILE CARDS (visible only on small screens) ══════ -->
+            <div class="d-md-none p-3">
+                @foreach (var log in Model)
+                {
+                    var actionBadge = log.Action switch
+                    {
+                        "LOGIN" => "bg-green-50 text-green",
+                        "CREATE" => "bg-cyan-50 text-cyan",
+                        "UPDATE" => "bg-indigo-50 text-indigo",
+                        "DELETE" => "bg-red-50 text-red",
+                        "STOCK_IN" => "bg-green-50 text-green",
+                        "STOCK_OUT" => "bg-amber-50 text-amber",
+                        "APPROVE" => "bg-green-50 text-green",
+                        "REJECT" => "bg-red-50 text-red",
+                        "SECURITY" => "bg-red-50 text-red",
+                        _ => "bg-purple-50 text-purple"
+                    };
+                    var actionIcon = log.Action switch
+                    {
+                        "LOGIN" => "bi-box-arrow-in-right",
+                        "CREATE" => "bi-plus-circle-fill",
+                        "UPDATE" => "bi-pencil-fill",
+                        "DELETE" => "bi-trash-fill",
+                        "STOCK_IN" => "bi-arrow-down-circle-fill",
+                        "STOCK_OUT" => "bi-arrow-up-circle-fill",
+                        "APPROVE" => "bi-check-circle-fill",
+                        "REJECT" => "bi-x-circle-fill",
+                        "SECURITY" => "bi-shield-fill-exclamation",
+                        _ => "bi-activity"
+                    };
+                    var cardBorder = log.IsCritical ? "border-left: 3px solid var(--moc-red);" : "border-left: 3px solid var(--moc-indigo);";
+                    <div class="mb-3 p-3 rounded-3 shadow-sm" style="background: var(--moc-surface, #f8f9fa); @cardBorder">
+                        <!-- Row 1: User + Action -->
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div style="min-width:0; flex:1;">
+                                <span class="fw-semibold text-sm d-block" style="word-break:break-all;">@log.UserEmail</span>
+                                @if (!string.IsNullOrEmpty(log.UserRole))
+                                {
+                                    <span class="text-xs text-muted">@log.UserRole</span>
+                                }
+                            </div>
+                            <div class="ms-2 flex-shrink-0">
+                                <span class="badge rounded-pill @actionBadge px-2 py-1 fw-semibold text-xs">
+                                    <i class="bi @actionIcon me-1"></i> @log.Action.Replace("_", " ")
+                                </span>
+                                @if (log.IsCritical)
+                                {
+                                    <i class="bi bi-exclamation-triangle-fill text-danger ms-1" title="Security Event"></i>
+                                }
+                            </div>
+                        </div>
+                        <!-- Row 2: Details (full text, wrapped) -->
+                        <p class="text-sm mb-2" style="word-break:break-word;">@log.Details</p>
+                        <!-- Row 3: Timestamp + IP -->
+                        <div class="d-flex align-items-center justify-content-between text-muted">
+                            <span class="text-xs">
+                                <i class="bi bi-clock me-1"></i>@log.Timestamp.ToString("MMM dd, yyyy hh:mm tt")
+                            </span>
+                            <span class="text-xs font-monospace">@log.IpAddress</span>
+                        </div>
+                    </div>
+                }
             </div>
         }
     </div>
