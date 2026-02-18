@@ -3,8 +3,13 @@
 @{
     ViewData["Title"] = "Inventory List";
     int totalProducts = Model.Count();
-    int lowStockCount = Model.Count(p => p.StockQuantity <= 10);
-    int healthyCount = totalProducts - lowStockCount;
+    int outOfStockCount = Model.Count(p => p.StockQuantity == 0);
+    int activeCount = totalProducts - outOfStockCount;
+    int lowStockCount = Model.Count(p => p.StockQuantity > 0 && p.StockQuantity <= 10);
+    int healthyCount = activeCount - lowStockCount;
+
+    var activeProducts = Model.Where(p => p.StockQuantity > 0).ToList();
+    var archivedProducts = Model.Where(p => p.StockQuantity == 0).ToList();
 }
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -24,6 +29,12 @@
             {
                 <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(239,68,68,0.25);">
                     <i class="bi bi-exclamation-triangle-fill me-1"></i> @lowStockCount Low Stock
+                </span>
+            }
+            @if (outOfStockCount > 0)
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(148,163,184,0.25);">
+                    <i class="bi bi-archive-fill me-1"></i> @outOfStockCount Archived
                 </span>
             }
         </div>
@@ -104,19 +115,15 @@
         <div class="moc-metric p-3 p-md-4 h-100">
             <div class="d-flex align-items-start justify-content-between">
                 <div>
-                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Fill Rate</p>
-                    <h3 class="fw-bold mb-1 letter-tight">
-                        @(totalProducts > 0 ? ((healthyCount * 100) / totalProducts) : 0)<span class="fs-6 fw-semibold text-muted">%</span>
-                    </h3>
-                    <div class="progress mt-1" style="height:4px;width:72px;">
-                        <div class="progress-bar rounded-pill" role="progressbar"
-                             style="width:@(totalProducts > 0 ? ((healthyCount * 100) / totalProducts) : 0)%;background:var(--moc-primary);"
-                             aria-valuenow="@(totalProducts > 0 ? ((healthyCount * 100) / totalProducts) : 0)" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    <span class="text-muted text-xs">stock health</span>
+                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Out of Stock</p>
+                    <h3 class="fw-bold mb-1 letter-tight">@outOfStockCount</h3>
+                    <span class="badge @(outOfStockCount > 0 ? "bg-red-50 text-red" : "bg-green-50 text-green") text-xs fw-semibold">
+                        <i class="bi @(outOfStockCount > 0 ? "bi-archive-fill" : "bi-check-circle-fill") me-1"></i>
+                        @(outOfStockCount > 0 ? "Archived" : "None")
+                    </span>
                 </div>
                 <div class="moc-icon-box bg-purple-50 rounded-3">
-                    <i class="bi bi-pie-chart-fill text-purple fs-5"></i>
+                    <i class="bi bi-archive-fill text-purple fs-5"></i>
                 </div>
             </div>
         </div>
@@ -139,8 +146,8 @@
             <i class="bi bi-funnel-fill text-indigo fs-5"></i>
         </div>
         <div>
-            <p class="fw-semibold mb-0 text-sm letter-tight">All Products</p>
-            <p class="text-muted text-xs mb-0">Showing @totalProducts item@(totalProducts != 1 ? "s" : "")</p>
+            <p class="fw-semibold mb-0 text-sm letter-tight" id="inv-tab-label">Active Products</p>
+            <p class="text-muted text-xs mb-0" id="inv-tab-count">Showing @activeCount item@(activeCount != 1 ? "s" : "")</p>
         </div>
     </div>
     <div class="d-flex flex-wrap gap-2">
@@ -157,6 +164,24 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
+<!-- TAB PILLS — Active / Archived                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="d-flex gap-2 mb-3 anim-fade-in">
+    <button class="btn btn-sm px-3 py-2 fw-semibold inv-tab-btn active"
+            data-tab="active"
+            style="background:var(--moc-primary);color:#fff;border:none;border-radius:0.5rem;">
+        <i class="bi bi-box-seam me-1"></i> Active
+        <span class="badge rounded-pill ms-1" style="background:rgba(255,255,255,0.2);">@activeCount</span>
+    </button>
+    <button class="btn btn-sm px-3 py-2 fw-semibold inv-tab-btn"
+            data-tab="archived"
+            style="background:var(--moc-surface);color:var(--moc-text-secondary);border:1px solid var(--moc-border);border-radius:0.5rem;">
+        <i class="bi bi-archive me-1"></i> Archived
+        <span class="badge rounded-pill bg-purple-50 text-purple ms-1">@outOfStockCount</span>
+    </button>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
 <!-- PRODUCT TABLE / CARDS                           -->
 <!-- ═══════════════════════════════════════════════ -->
 <div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
@@ -168,11 +193,11 @@
                     <i class="bi bi-table text-indigo fs-5"></i>
                 </div>
                 <div>
-                    <h6 class="fw-bold mb-0 letter-tight">Inventory Catalog</h6>
-                    <span class="text-muted text-xs">@totalProducts product@(totalProducts != 1 ? "s" : "") registered</span>
+                    <h6 class="fw-bold mb-0 letter-tight" id="inv-card-title">Inventory Catalog</h6>
+                    <span class="text-muted text-xs" id="inv-card-subtitle">@activeCount active product@(activeCount != 1 ? "s" : "")</span>
                 </div>
             </div>
-            <div class="d-flex gap-1 flex-wrap">
+            <div class="d-flex gap-1 flex-wrap" id="inv-card-badges">
                 <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">@healthyCount Stocked</span>
                 <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@lowStockCount Low</span>
             </div>
@@ -181,175 +206,315 @@
 
     <div class="card-body p-4 pt-3">
 
-        <!-- ── Desktop Table (md+) ── -->
-        <div class="table-responsive d-none d-md-block">
-            <table class="table table-hover align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
-                <thead>
-                    <tr style="border:none;">
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-3 py-3" style="letter-spacing:0.05em;">
-                            <i class="bi bi-upc-scan me-1"></i> SKU
-                        </th>
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
-                            <i class="bi bi-box me-1"></i> Product
-                        </th>
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
-                            <i class="bi bi-tag me-1"></i> Category
-                        </th>
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
-                            <i class="bi bi-layers me-1"></i> Stock
-                        </th>
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-end" style="letter-spacing:0.05em;">
-                            <i class="bi bi-currency-exchange me-1"></i> Price
-                        </th>
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 pe-3 py-3 text-end" style="letter-spacing:0.05em;">
-                            <i class="bi bi-lightning me-1"></i> Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
+        <!-- ══════════════════════════════════════ -->
+        <!-- ACTIVE PRODUCTS SECTION               -->
+        <!-- ══════════════════════════════════════ -->
+        <div id="inv-active-section">
+
+            @if (activeProducts.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <div class="moc-icon-box-lg bg-green-50 rounded-3 mx-auto mb-3">
+                        <i class="bi bi-box-seam text-green fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2 letter-tight">No Active Products</h5>
+                    <p class="text-muted text-sm mb-0">All products are currently out of stock. Check the Archive tab.</p>
+                </div>
+            }
+            else
+            {
+                <!-- Desktop Table (md+) -->
+                <div class="table-responsive d-none d-md-block">
+                    <table class="table table-hover align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
+                        <thead>
+                            <tr style="border:none;">
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-3 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-upc-scan me-1"></i> SKU
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-box me-1"></i> Product
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-tag me-1"></i> Category
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-layers me-1"></i> Stock
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-end" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-currency-exchange me-1"></i> Price
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 pe-3 py-3 text-end" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-lightning me-1"></i> Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in activeProducts)
+                            {
+                                <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+                                    <td class="border-0 ps-3 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
+                                        <span class="badge rounded-pill bg-indigo-50 text-indigo px-2 py-1 fw-semibold text-xs">
+                                            @item.SKU
+                                        </span>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="moc-icon-box bg-purple-50 rounded-3" style="width:36px;height:36px;min-width:36px;">
+                                                <i class="bi bi-box-seam text-purple" style="font-size:0.85rem;"></i>
+                                            </div>
+                                            <span class="fw-semibold text-sm letter-tight">@item.Name</span>
+                                        </div>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                            <i class="bi bi-tag-fill me-1"></i>@item.Category
+                                        </span>
+                                    </td>
+                                    <td class="border-0 py-3 text-center">
+                                        @if (item.StockQuantity <= 10)
+                                        {
+                                            <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">
+                                                <i class="bi bi-exclamation-triangle-fill me-1"></i> @item.StockQuantity
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge rounded-pill bg-green-50 text-green px-3 py-2 fw-semibold text-xs">
+                                                <i class="bi bi-check-circle-fill me-1"></i> @item.StockQuantity
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="border-0 py-3 text-end">
+                                        <span class="fw-bold text-sm letter-tight">₱@item.Price</span>
+                                    </td>
+                                    <td class="border-0 pe-3 py-3 text-end" style="border-radius:0 0.75rem 0.75rem 0;">
+                                        <div class="d-flex justify-content-end gap-1">
+                                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
+                                            {
+                                                <a asp-action="Edit" asp-route-id="@item.ProductID"
+                                                   class="btn btn-sm px-2 py-1 fw-semibold"
+                                                   style="background:rgba(245,158,11,0.08);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.2);"
+                                                   title="Edit">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                            }
+                                            <a asp-action="Details" asp-route-id="@item.ProductID"
+                                               class="btn btn-sm btn-moc-outline px-2 py-1"
+                                               title="Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
+                                            {
+                                                <a asp-action="Delete" asp-route-id="@item.ProductID"
+                                                   class="btn btn-sm px-2 py-1 fw-semibold"
+                                                   style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);"
+                                                   title="Delete">
+                                                    <i class="bi bi-trash3"></i>
+                                                </a>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Card List (below md) -->
+                <div class="d-md-none">
+                    @foreach (var item in activeProducts)
                     {
-                        <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-                            <td class="border-0 ps-3 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
-                                <span class="badge rounded-pill bg-indigo-50 text-indigo px-2 py-1 fw-semibold text-xs">
-                                    @item.SKU
-                                </span>
-                            </td>
-                            <td class="border-0 py-3">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="moc-icon-box bg-purple-50 rounded-3" style="width:36px;height:36px;min-width:36px;">
-                                        <i class="bi bi-box-seam text-purple" style="font-size:0.85rem;"></i>
+                        <div class="moc-metric p-3 mb-3" style="@(item.StockQuantity <= 10 ? "border-left:4px solid #ef4444 !important;" : "")">
+                            <div class="d-flex align-items-start justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2 flex-grow-1 min-width-0">
+                                    @if (item.StockQuantity <= 10)
+                                    {
+                                        <div class="moc-icon-box bg-red-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                                            <i class="bi bi-exclamation-triangle-fill text-red"></i>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                                            <i class="bi bi-box-seam-fill text-indigo"></i>
+                                        </div>
+                                    }
+                                    <div class="min-width-0">
+                                        <p class="fw-bold text-sm mb-0 letter-tight text-truncate">@item.Name</p>
+                                        <span class="text-muted text-xs">@item.SKU</span>
                                     </div>
-                                    <span class="fw-semibold text-sm letter-tight">@item.Name</span>
                                 </div>
-                            </td>
-                            <td class="border-0 py-3">
-                                <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
-                                    <i class="bi bi-tag-fill me-1"></i>@item.Category
-                                </span>
-                            </td>
-                            <td class="border-0 py-3 text-center">
                                 @if (item.StockQuantity <= 10)
                                 {
-                                    <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">
+                                    <span class="badge rounded-pill bg-red-50 text-red px-2 py-1 fw-semibold text-xs ms-2">
                                         <i class="bi bi-exclamation-triangle-fill me-1"></i> @item.StockQuantity
                                     </span>
                                 }
                                 else
                                 {
-                                    <span class="badge rounded-pill bg-green-50 text-green px-3 py-2 fw-semibold text-xs">
+                                    <span class="badge rounded-pill bg-green-50 text-green px-2 py-1 fw-semibold text-xs ms-2">
                                         <i class="bi bi-check-circle-fill me-1"></i> @item.StockQuantity
                                     </span>
                                 }
-                            </td>
-                            <td class="border-0 py-3 text-end">
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                    <i class="bi bi-tag-fill me-1"></i> @item.Category
+                                </span>
                                 <span class="fw-bold text-sm letter-tight">₱@item.Price</span>
-                            </td>
-                            <td class="border-0 pe-3 py-3 text-end" style="border-radius:0 0.75rem 0.75rem 0;">
-                                <div class="d-flex justify-content-end gap-1">
-                                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
-                                    {
-                                        <a asp-action="Edit" asp-route-id="@item.ProductID"
-                                           class="btn btn-sm px-2 py-1 fw-semibold"
-                                           style="background:rgba(245,158,11,0.08);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.2);"
-                                           title="Edit">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                    }
-                                    <a asp-action="Details" asp-route-id="@item.ProductID"
-                                       class="btn btn-sm btn-moc-outline px-2 py-1"
-                                       title="Details">
-                                        <i class="bi bi-eye"></i>
+                            </div>
+                            <div class="d-flex gap-2">
+                                @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.ProductID"
+                                       class="btn btn-sm flex-fill py-2 fw-semibold"
+                                       style="background:rgba(245,158,11,0.08);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.2);">
+                                        <i class="bi bi-pencil-square me-1"></i> Edit
                                     </a>
-                                    @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
-                                    {
-                                        <a asp-action="Delete" asp-route-id="@item.ProductID"
-                                           class="btn btn-sm px-2 py-1 fw-semibold"
-                                           style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);"
-                                           title="Delete">
-                                            <i class="bi bi-trash3"></i>
-                                        </a>
-                                    }
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <!-- ── Mobile Card List (below md) ── -->
-        <div class="d-md-none">
-            @foreach (var item in Model)
-            {
-                <div class="moc-metric p-3 mb-3" style="@(item.StockQuantity <= 10 ? "border-left:4px solid #ef4444 !important;" : "")">
-                    <!-- Top Row: Name + Stock Badge -->
-                    <div class="d-flex align-items-start justify-content-between mb-2">
-                        <div class="d-flex align-items-center gap-2 flex-grow-1 min-width-0">
-                            @if (item.StockQuantity <= 10)
-                            {
-                                <div class="moc-icon-box bg-red-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
-                                    <i class="bi bi-exclamation-triangle-fill text-red"></i>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
-                                    <i class="bi bi-box-seam-fill text-indigo"></i>
-                                </div>
-                            }
-                            <div class="min-width-0">
-                                <p class="fw-bold text-sm mb-0 letter-tight text-truncate">@item.Name</p>
-                                <span class="text-muted text-xs">@item.SKU</span>
+                                }
+                                <a asp-action="Details" asp-route-id="@item.ProductID"
+                                   class="btn btn-sm btn-moc-outline flex-fill py-2">
+                                    <i class="bi bi-eye me-1"></i> Details
+                                </a>
+                                @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.ProductID"
+                                       class="btn btn-sm flex-fill py-2 fw-semibold"
+                                       style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
+                                        <i class="bi bi-trash3 me-1"></i> Delete
+                                    </a>
+                                }
                             </div>
                         </div>
-                        @if (item.StockQuantity <= 10)
-                        {
-                            <span class="badge rounded-pill bg-red-50 text-red px-2 py-1 fw-semibold text-xs ms-2">
-                                <i class="bi bi-exclamation-triangle-fill me-1"></i> @item.StockQuantity
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge rounded-pill bg-green-50 text-green px-2 py-1 fw-semibold text-xs ms-2">
-                                <i class="bi bi-check-circle-fill me-1"></i> @item.StockQuantity
-                            </span>
-                        }
-                    </div>
-
-                    <!-- Details Row -->
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
-                            <i class="bi bi-tag-fill me-1"></i> @item.Category
-                        </span>
-                        <span class="fw-bold text-sm letter-tight">₱@item.Price</span>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="d-flex gap-2">
-                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
-                        {
-                            <a asp-action="Edit" asp-route-id="@item.ProductID"
-                               class="btn btn-sm flex-fill py-2 fw-semibold"
-                               style="background:rgba(245,158,11,0.08);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.2);">
-                                <i class="bi bi-pencil-square me-1"></i> Edit
-                            </a>
-                        }
-                        <a asp-action="Details" asp-route-id="@item.ProductID"
-                           class="btn btn-sm btn-moc-outline flex-fill py-2">
-                            <i class="bi bi-eye me-1"></i> Details
-                        </a>
-                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
-                        {
-                            <a asp-action="Delete" asp-route-id="@item.ProductID"
-                               class="btn btn-sm flex-fill py-2 fw-semibold"
-                               style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
-                                <i class="bi bi-trash3 me-1"></i> Delete
-                            </a>
-                        }
-                    </div>
+                    }
                 </div>
             }
+
+        </div>
+
+        <!-- ══════════════════════════════════════ -->
+        <!-- ARCHIVED PRODUCTS SECTION (hidden)    -->
+        <!-- ══════════════════════════════════════ -->
+        <div id="inv-archived-section" style="display:none;">
+
+            @if (archivedProducts.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <div class="moc-icon-box-lg bg-green-50 rounded-3 mx-auto mb-3">
+                        <i class="bi bi-check-circle-fill text-green fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2 letter-tight">No Archived Products</h5>
+                    <p class="text-muted text-sm mb-0">All products currently have stock. Nothing to archive.</p>
+                </div>
+            }
+            else
+            {
+                <!-- Desktop Table (md+) -->
+                <div class="table-responsive d-none d-md-block">
+                    <table class="table align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
+                        <thead>
+                            <tr style="border:none;">
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-3 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-upc-scan me-1"></i> SKU
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-box me-1"></i> Product
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-tag me-1"></i> Category
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-layers me-1"></i> Stock
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-end" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-currency-exchange me-1"></i> Price
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 pe-3 py-3 text-end" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-lightning me-1"></i> Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in archivedProducts)
+                            {
+                                <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);opacity:0.5;">
+                                    <td class="border-0 ps-3 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
+                                        <span class="badge rounded-pill bg-indigo-50 text-indigo px-2 py-1 fw-semibold text-xs">
+                                            @item.SKU
+                                        </span>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div class="moc-icon-box bg-purple-50 rounded-3" style="width:36px;height:36px;min-width:36px;">
+                                                <i class="bi bi-archive text-purple" style="font-size:0.85rem;"></i>
+                                            </div>
+                                            <span class="fw-semibold text-sm letter-tight text-muted">@item.Name</span>
+                                        </div>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                            <i class="bi bi-tag-fill me-1"></i>@item.Category
+                                        </span>
+                                    </td>
+                                    <td class="border-0 py-3 text-center">
+                                        <span class="badge rounded-pill px-3 py-2 fw-semibold text-xs" style="background:rgba(100,116,139,0.1);color:#64748b;">
+                                            <i class="bi bi-archive-fill me-1"></i> Out of Stock
+                                        </span>
+                                    </td>
+                                    <td class="border-0 py-3 text-end">
+                                        <span class="fw-bold text-sm letter-tight text-muted">₱@item.Price</span>
+                                    </td>
+                                    <td class="border-0 pe-3 py-3 text-end" style="border-radius:0 0.75rem 0.75rem 0;">
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <a asp-action="Details" asp-route-id="@item.ProductID"
+                                               class="btn btn-sm btn-moc-outline px-2 py-1"
+                                               title="Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Card List (below md) -->
+                <div class="d-md-none">
+                    @foreach (var item in archivedProducts)
+                    {
+                        <div class="moc-metric p-3 mb-3" style="opacity:0.5;border-left:4px solid #94a3b8 !important;">
+                            <div class="d-flex align-items-start justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2 flex-grow-1 min-width-0">
+                                    <div class="moc-icon-box bg-purple-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
+                                        <i class="bi bi-archive-fill text-purple"></i>
+                                    </div>
+                                    <div class="min-width-0">
+                                        <p class="fw-bold text-sm mb-0 letter-tight text-truncate text-muted">@item.Name</p>
+                                        <span class="text-muted text-xs">@item.SKU</span>
+                                    </div>
+                                </div>
+                                <span class="badge rounded-pill px-2 py-1 fw-semibold text-xs ms-2" style="background:rgba(100,116,139,0.1);color:#64748b;">
+                                    <i class="bi bi-archive-fill me-1"></i> 0
+                                </span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mb-3">
+                                <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                    <i class="bi bi-tag-fill me-1"></i> @item.Category
+                                </span>
+                                <span class="fw-bold text-sm letter-tight text-muted">₱@item.Price</span>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a asp-action="Details" asp-route-id="@item.ProductID"
+                                   class="btn btn-sm btn-moc-outline flex-fill py-2">
+                                    <i class="bi bi-eye me-1"></i> Details
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
         </div>
 
     </div>
@@ -358,15 +523,80 @@
     <div class="card-footer bg-transparent border-0 px-4 py-3"
          style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <span class="text-muted text-xs">
+            <span class="text-muted text-xs" id="inv-footer-text">
                 <i class="bi bi-info-circle me-1"></i>
-                Showing all @totalProducts product@(totalProducts != 1 ? "s" : "")
+                Showing @activeCount active product@(activeCount != 1 ? "s" : "")
             </span>
-            <div class="d-flex gap-1">
+            <div class="d-flex gap-1" id="inv-footer-badges">
                 <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">@healthyCount Healthy</span>
                 <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@lowStockCount Low</span>
             </div>
         </div>
     </div>
+
 </div>
 
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB TOGGLE SCRIPT                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<script>
+(function () {
+    const btns = document.querySelectorAll('.inv-tab-btn');
+    const activeSection = document.getElementById('inv-active-section');
+    const archivedSection = document.getElementById('inv-archived-section');
+    const tabLabel = document.getElementById('inv-tab-label');
+    const tabCount = document.getElementById('inv-tab-count');
+    const cardTitle = document.getElementById('inv-card-title');
+    const cardSubtitle = document.getElementById('inv-card-subtitle');
+    const cardBadges = document.getElementById('inv-card-badges');
+    const footerText = document.getElementById('inv-footer-text');
+    const footerBadges = document.getElementById('inv-footer-badges');
+
+    const activeCount = @activeCount;
+    const archivedCount = @outOfStockCount;
+    const healthyCount = @healthyCount;
+    const lowStockCount = @lowStockCount;
+
+    btns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const tab = this.dataset.tab;
+
+            // Toggle active class + styles
+            btns.forEach(b => {
+                b.classList.remove('active');
+                b.style.background = 'var(--moc-surface)';
+                b.style.color = 'var(--moc-text-secondary)';
+                b.style.border = '1px solid var(--moc-border)';
+            });
+            this.classList.add('active');
+            this.style.background = 'var(--moc-primary)';
+            this.style.color = '#fff';
+            this.style.border = 'none';
+
+            if (tab === 'active') {
+                activeSection.style.display = '';
+                archivedSection.style.display = 'none';
+                tabLabel.textContent = 'Active Products';
+                tabCount.textContent = 'Showing ' + activeCount + ' item' + (activeCount !== 1 ? 's' : '');
+                cardTitle.textContent = 'Inventory Catalog';
+                cardSubtitle.textContent = activeCount + ' active product' + (activeCount !== 1 ? 's' : '');
+                cardBadges.innerHTML = '<span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">' + healthyCount + ' Stocked</span>' +
+                    '<span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">' + lowStockCount + ' Low</span>';
+                footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + activeCount + ' active product' + (activeCount !== 1 ? 's' : '');
+                footerBadges.innerHTML = '<span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">' + healthyCount + ' Healthy</span>' +
+                    '<span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">' + lowStockCount + ' Low</span>';
+            } else {
+                activeSection.style.display = 'none';
+                archivedSection.style.display = '';
+                tabLabel.textContent = 'Archived Products';
+                tabCount.textContent = 'Showing ' + archivedCount + ' item' + (archivedCount !== 1 ? 's' : '');
+                cardTitle.textContent = 'Archived Inventory';
+                cardSubtitle.textContent = archivedCount + ' out-of-stock product' + (archivedCount !== 1 ? 's' : '');
+                cardBadges.innerHTML = '<span class="badge rounded-pill text-xs px-2 py-1" style="background:rgba(100,116,139,0.1);color:#64748b;">' + archivedCount + ' Archived</span>';
+                footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + archivedCount + ' archived product' + (archivedCount !== 1 ? 's' : '');
+                footerBadges.innerHTML = '<span class="badge rounded-pill text-xs px-2 py-1" style="background:rgba(100,116,139,0.1);color:#64748b;"><i class="bi bi-archive-fill me-1"></i> Out of Stock</span>';
+            }
+        });
+    });
+})();
+</script>

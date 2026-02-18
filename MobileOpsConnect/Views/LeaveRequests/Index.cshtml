@@ -25,6 +25,10 @@
     int pendingCount = Model.Count(l => l.Status == "Pending");
     int approvedCount = Model.Count(l => l.Status == "Approved");
     int rejectedCount = Model.Count(l => l.Status == "Rejected");
+    int archivedCount = approvedCount + rejectedCount;
+
+    var activeLeaves = Model.Where(l => l.Status == "Pending").ToList();
+    var archivedLeaves = Model.Where(l => l.Status == "Approved" || l.Status == "Rejected").ToList();
 }
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -44,6 +48,12 @@
             {
                 <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(245,158,11,0.25);">
                     <i class="bi bi-exclamation-circle-fill me-1"></i> @pendingCount Pending
+                </span>
+            }
+            @if (archivedCount > 0)
+            {
+                <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(148,163,184,0.25);">
+                    <i class="bi bi-archive-fill me-1"></i> @archivedCount Archived
                 </span>
             }
         </div>
@@ -164,8 +174,8 @@
             <i class="bi bi-funnel-fill text-indigo fs-5"></i>
         </div>
         <div>
-            <p class="fw-semibold mb-0 text-sm letter-tight">All Requests</p>
-            <p class="text-muted text-xs mb-0">Showing @totalRequests record@(totalRequests != 1 ? "s" : "")</p>
+            <p class="fw-semibold mb-0 text-sm letter-tight" id="lv-tab-label">Active Requests</p>
+            <p class="text-muted text-xs mb-0" id="lv-tab-count">Showing @pendingCount record@(pendingCount != 1 ? "s" : "")</p>
         </div>
     </div>
     @if (!hasPower)
@@ -174,6 +184,24 @@
             <i class="bi bi-plus-circle me-1"></i> Apply for Leave
         </a>
     }
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB PILLS — Active / Archive                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="d-flex gap-2 mb-3 anim-fade-in">
+    <button class="btn btn-sm px-3 py-2 fw-semibold lv-tab-btn active"
+            data-tab="active"
+            style="background:var(--moc-primary);color:#fff;border:none;border-radius:0.5rem;">
+        <i class="bi bi-hourglass-split me-1"></i> Active
+        <span class="badge rounded-pill ms-1" style="background:rgba(255,255,255,0.2);">@pendingCount</span>
+    </button>
+    <button class="btn btn-sm px-3 py-2 fw-semibold lv-tab-btn"
+            data-tab="archived"
+            style="background:var(--moc-surface);color:var(--moc-text-secondary);border:1px solid var(--moc-border);border-radius:0.5rem;">
+        <i class="bi bi-archive me-1"></i> Archive
+        <span class="badge rounded-pill bg-purple-50 text-purple ms-1">@archivedCount</span>
+    </button>
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -188,53 +216,193 @@
                     <i class="bi bi-table text-cyan fs-5"></i>
                 </div>
                 <div>
-                    <h6 class="fw-bold mb-0 letter-tight">Leave Records</h6>
-                    <span class="text-muted text-xs">@totalRequests application@(totalRequests != 1 ? "s" : "")</span>
+                    <h6 class="fw-bold mb-0 letter-tight" id="lv-card-title">Leave Records</h6>
+                    <span class="text-muted text-xs" id="lv-card-subtitle">@pendingCount pending application@(pendingCount != 1 ? "s" : "")</span>
                 </div>
             </div>
-            <div class="d-flex gap-1 flex-wrap">
+            <div class="d-flex gap-1 flex-wrap" id="lv-card-badges">
                 <span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1">@pendingCount Pending</span>
-                <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">@approvedCount Approved</span>
-                <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@rejectedCount Rejected</span>
             </div>
         </div>
     </div>
 
     <div class="card-body p-4 pt-3">
 
-        <!-- ── Desktop Table (lg+) ── -->
-        <div class="table-responsive d-none d-lg-block">
-            <table class="table table-hover align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
-                <thead>
-                    <tr style="border:none;">
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-3 py-3" style="letter-spacing:0.05em;">
-                            <i class="bi bi-person me-1"></i> Employee
-                        </th>
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
-                            <i class="bi bi-tag me-1"></i> Type
-                        </th>
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
-                            <i class="bi bi-calendar-range me-1"></i> Dates
-                        </th>
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
-                            <i class="bi bi-chat-text me-1"></i> Reason
-                        </th>
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
-                            <i class="bi bi-flag me-1"></i> Status
-                        </th>
-                        <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
-                            <i class="bi bi-clock me-1"></i> Filed
-                        </th>
-                        @if (hasPower)
-                        {
-                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 pe-3 py-3 text-end" style="letter-spacing:0.05em;">
-                                <i class="bi bi-lightning me-1"></i> Actions
-                            </th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
+        <!-- ══════════════════════════════════════════ -->
+        <!-- ACTIVE LEAVES SECTION (Pending Only)      -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="lv-active-section">
+
+            @if (activeLeaves.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <div class="moc-icon-box-lg bg-green-50 rounded-3 mx-auto mb-3">
+                        <i class="bi bi-check-circle-fill text-green fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2 letter-tight">All Caught Up!</h5>
+                    <p class="text-muted text-sm mb-0">No pending leave requests. Check the Archive tab for resolved applications.</p>
+                </div>
+            }
+            else
+            {
+                <!-- ── Desktop Table (lg+) ── -->
+                <div class="table-responsive d-none d-lg-block">
+                    <table class="table table-hover align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
+                        <thead>
+                            <tr style="border:none;">
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-3 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-person me-1"></i> Employee
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-tag me-1"></i> Type
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-calendar-range me-1"></i> Dates
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-chat-text me-1"></i> Reason
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-flag me-1"></i> Status
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-clock me-1"></i> Filed
+                                </th>
+                                @if (hasPower)
+                                {
+                                    <th class="text-uppercase text-xs fw-semibold text-muted border-0 pe-3 py-3 text-end" style="letter-spacing:0.05em;">
+                                        <i class="bi bi-lightning me-1"></i> Actions
+                                    </th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in activeLeaves)
+                            {
+                                bool isMyRequest = (item.UserID == currentUserId);
+
+                                string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
+
+                                int targetRank = 1;
+                                if (rRole == "SuperAdmin") { targetRank = 4; }
+                                else if (rRole == "SystemAdmin") { targetRank = 3; }
+                                else if (rRole == "DepartmentManager") { targetRank = 2; }
+
+                                bool canApproveThisRow = (myRank > targetRank);
+
+                                <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);@(hasPower && canApproveThisRow ? "border-left:3px solid #f59e0b;" : "")">
+                                    <td class="border-0 ps-3 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if (rRole == "SuperAdmin")
+                                            {
+                                                <div class="moc-icon-box bg-red-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                                    <i class="bi bi-shield-lock-fill text-red" style="font-size:0.8rem;"></i>
+                                                </div>
+                                            }
+                                            else if (rRole == "SystemAdmin")
+                                            {
+                                                <div class="moc-icon-box bg-amber-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                                    <i class="bi bi-gear-fill text-amber" style="font-size:0.8rem;"></i>
+                                                </div>
+                                            }
+                                            else if (rRole == "DepartmentManager")
+                                            {
+                                                <div class="moc-icon-box bg-purple-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                                    <i class="bi bi-briefcase-fill text-purple" style="font-size:0.8rem;"></i>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="moc-icon-box bg-indigo-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                                    <i class="bi bi-person-fill text-indigo" style="font-size:0.8rem;"></i>
+                                                </div>
+                                            }
+                                            <div>
+                                                <p class="fw-semibold text-sm mb-0 letter-tight">
+                                                    @if (item.User != null)
+                                                    {
+                                                        @item.User.UserName
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">Unknown</span>
+                                                    }
+                                                    @if (isMyRequest)
+                                                    {
+                                                        <span class="badge rounded-pill bg-indigo-50 text-indigo text-xs px-2 py-1 ms-1">YOU</span>
+                                                    }
+                                                </p>
+                                                <span class="text-muted text-xs">@rRole</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                            @item.LeaveType
+                                        </span>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">
+                                            @item.StartDate.ToString("MMM dd") – @item.EndDate.ToString("MMM dd")
+                                        </p>
+                                        <span class="text-muted text-xs">@((item.EndDate - item.StartDate).Days + 1) Day@(((item.EndDate - item.StartDate).Days + 1) != 1 ? "s" : "")</span>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <span class="text-sm text-muted" style="max-width:180px;display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="@item.Reason">
+                                            @item.Reason
+                                        </span>
+                                    </td>
+                                    <td class="border-0 py-3 text-center">
+                                        <span class="badge rounded-pill bg-amber-50 text-amber px-3 py-2 fw-semibold text-xs">
+                                            <i class="bi bi-hourglass-split me-1"></i> Pending
+                                        </span>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <span class="text-sm text-muted">@item.DateRequested.ToString("MMM dd, yyyy")</span>
+                                    </td>
+                                    @if (hasPower)
+                                    {
+                                        <td class="border-0 pe-3 py-3 text-end" style="border-radius:0 0.75rem 0.75rem 0;">
+                                            @if (canApproveThisRow)
+                                            {
+                                                <div class="d-flex justify-content-end gap-1">
+                                                    <form asp-action="Approve" asp-route-id="@item.LeaveID" method="post" style="display:inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit"
+                                                           class="btn btn-sm px-2 py-1 fw-semibold"
+                                                           style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);"
+                                                           title="Approve">
+                                                            <i class="bi bi-check-lg"></i>
+                                                        </button>
+                                                    </form>
+                                                    <form asp-action="Reject" asp-route-id="@item.LeaveID" method="post" style="display:inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <button type="submit"
+                                                           class="btn btn-sm px-2 py-1 fw-semibold"
+                                                           style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);"
+                                                           title="Reject">
+                                                            <i class="bi bi-x-lg"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted text-xs fst-italic">
+                                                    <i class="bi bi-lock me-1"></i>Higher Approval
+                                                </span>
+                                            }
+                                        </td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ── Mobile Card List (below lg) ── -->
+                <div class="d-lg-none">
+                    @foreach (var item in activeLeaves)
                     {
                         bool isMyRequest = (item.UserID == currentUserId);
 
@@ -247,35 +415,37 @@
 
                         bool canApproveThisRow = (myRank > targetRank);
 
-                        <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);@(item.Status == "Pending" && hasPower && canApproveThisRow ? "border-left:3px solid #f59e0b;" : "")">
-                            <td class="border-0 ps-3 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
-                                <div class="d-flex align-items-center gap-2">
+                        <div class="moc-metric p-3 mb-3" style="border-left:4px solid #f59e0b !important;">
+
+                            <!-- Header: Employee + Status -->
+                            <div class="d-flex align-items-start justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2 flex-grow-1 min-width-0">
                                     @if (rRole == "SuperAdmin")
                                     {
                                         <div class="moc-icon-box bg-red-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
-                                            <i class="bi bi-shield-lock-fill text-red" style="font-size:0.8rem;"></i>
+                                            <i class="bi bi-shield-lock-fill text-red" style="font-size:0.75rem;"></i>
                                         </div>
                                     }
                                     else if (rRole == "SystemAdmin")
                                     {
                                         <div class="moc-icon-box bg-amber-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
-                                            <i class="bi bi-gear-fill text-amber" style="font-size:0.8rem;"></i>
+                                            <i class="bi bi-gear-fill text-amber" style="font-size:0.75rem;"></i>
                                         </div>
                                     }
                                     else if (rRole == "DepartmentManager")
                                     {
                                         <div class="moc-icon-box bg-purple-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
-                                            <i class="bi bi-briefcase-fill text-purple" style="font-size:0.8rem;"></i>
+                                            <i class="bi bi-briefcase-fill text-purple" style="font-size:0.75rem;"></i>
                                         </div>
                                     }
                                     else
                                     {
                                         <div class="moc-icon-box bg-indigo-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
-                                            <i class="bi bi-person-fill text-indigo" style="font-size:0.8rem;"></i>
+                                            <i class="bi bi-person-fill text-indigo" style="font-size:0.75rem;"></i>
                                         </div>
                                     }
-                                    <div>
-                                        <p class="fw-semibold text-sm mb-0 letter-tight">
+                                    <div class="min-width-0">
+                                        <p class="fw-semibold text-sm mb-0 letter-tight text-truncate">
                                             @if (item.User != null)
                                             {
                                                 @item.User.UserName
@@ -292,270 +462,351 @@
                                         <span class="text-muted text-xs">@rRole</span>
                                     </div>
                                 </div>
-                            </td>
-                            <td class="border-0 py-3">
-                                <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
-                                    @item.LeaveType
+                                <span class="badge rounded-pill bg-amber-50 text-amber px-2 py-1 fw-semibold text-xs ms-2">
+                                    <i class="bi bi-hourglass-split"></i> Pending
                                 </span>
-                            </td>
-                            <td class="border-0 py-3">
-                                <p class="fw-semibold text-sm mb-0 letter-tight">
-                                    @item.StartDate.ToString("MMM dd") – @item.EndDate.ToString("MMM dd")
-                                </p>
-                                <span class="text-muted text-xs">@((item.EndDate - item.StartDate).Days + 1) Day@(((item.EndDate - item.StartDate).Days + 1) != 1 ? "s" : "")</span>
-                            </td>
-                            <td class="border-0 py-3">
-                                <span class="text-sm text-muted" style="max-width:180px;display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="@item.Reason">
-                                    @item.Reason
+                            </div>
+
+                            <!-- Details Grid -->
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <div class="rounded-3 p-2" style="background:rgba(6,182,212,0.04);">
+                                        <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Type</p>
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">@item.LeaveType</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="rounded-3 p-2" style="background:rgba(99,102,241,0.04);">
+                                        <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Duration</p>
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">@((item.EndDate - item.StartDate).Days + 1) Day@(((item.EndDate - item.StartDate).Days + 1) != 1 ? "s" : "")</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="rounded-3 p-2" style="background:rgba(34,197,94,0.04);">
+                                        <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">From</p>
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">@item.StartDate.ToString("MMM dd")</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="rounded-3 p-2" style="background:rgba(168,85,247,0.04);">
+                                        <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">To</p>
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">@item.EndDate.ToString("MMM dd")</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Reason -->
+                            <div class="rounded-3 p-2 mb-2" style="background:rgba(0,0,0,0.02);">
+                                <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Reason</p>
+                                <p class="text-sm mb-0">@item.Reason</p>
+                            </div>
+
+                            <!-- Filed date -->
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="text-muted text-xs">
+                                    <i class="bi bi-clock me-1"></i>Filed: @item.DateRequested.ToString("MMM dd, yyyy")
                                 </span>
-                            </td>
-                            <td class="border-0 py-3 text-center">
-                                @if (item.Status == "Pending")
+                            </div>
+
+                            <!-- Actions (if manager/admin) -->
+                            @if (hasPower)
+                            {
+                                @if (canApproveThisRow)
                                 {
-                                    <span class="badge rounded-pill bg-amber-50 text-amber px-3 py-2 fw-semibold text-xs">
-                                        <i class="bi bi-hourglass-split me-1"></i> Pending
-                                    </span>
+                                    <div class="d-flex gap-2">
+                                        <form asp-action="Approve" asp-route-id="@item.LeaveID" method="post" class="flex-fill">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit"
+                                               class="btn btn-sm w-100 py-2 fw-semibold"
+                                               style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);">
+                                                <i class="bi bi-check-circle me-1"></i> Approve
+                                            </button>
+                                        </form>
+                                        <form asp-action="Reject" asp-route-id="@item.LeaveID" method="post" class="flex-fill">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit"
+                                               class="btn btn-sm w-100 py-2 fw-semibold"
+                                               style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
+                                                <i class="bi bi-x-circle me-1"></i> Reject
+                                            </button>
+                                        </form>
+                                    </div>
                                 }
-                                else if (item.Status == "Approved")
+                                else
                                 {
-                                    <span class="badge rounded-pill bg-green-50 text-green px-3 py-2 fw-semibold text-xs">
-                                        <i class="bi bi-check-circle-fill me-1"></i> Approved
+                                    <div class="text-center p-2 rounded-3" style="background:rgba(0,0,0,0.02);">
+                                        <span class="text-muted text-xs fst-italic">
+                                            <i class="bi bi-lock me-1"></i> Awaiting higher-level approval
+                                        </span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+            }
+
+        </div>
+
+        <!-- ══════════════════════════════════════════ -->
+        <!-- ARCHIVED LEAVES SECTION (hidden)          -->
+        <!-- ══════════════════════════════════════════ -->
+        <div id="lv-archived-section" style="display:none;">
+
+            @if (archivedLeaves.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <div class="moc-icon-box-lg bg-amber-50 rounded-3 mx-auto mb-3">
+                        <i class="bi bi-hourglass-split text-amber fs-4"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2 letter-tight">No Archived Leaves</h5>
+                    <p class="text-muted text-sm mb-0">No leave requests have been resolved yet. All requests are still pending.</p>
+                </div>
+            }
+            else
+            {
+                <!-- ── Desktop Table (lg+) ── -->
+                <div class="table-responsive d-none d-lg-block">
+                    <table class="table align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
+                        <thead>
+                            <tr style="border:none;">
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-3 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-person me-1"></i> Employee
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-tag me-1"></i> Type
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-calendar-range me-1"></i> Dates
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-chat-text me-1"></i> Reason
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3 text-center" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-flag me-1"></i> Status
+                                </th>
+                                <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3" style="letter-spacing:0.05em;">
+                                    <i class="bi bi-clock me-1"></i> Filed
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in archivedLeaves)
+                            {
+                                bool isMyRequest = (item.UserID == currentUserId);
+
+                                string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
+
+                                <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);opacity:0.55;">
+                                    <td class="border-0 ps-3 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if (rRole == "SuperAdmin")
+                                            {
+                                                <div class="moc-icon-box bg-red-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                                    <i class="bi bi-shield-lock-fill text-red" style="font-size:0.8rem;"></i>
+                                                </div>
+                                            }
+                                            else if (rRole == "SystemAdmin")
+                                            {
+                                                <div class="moc-icon-box bg-amber-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                                    <i class="bi bi-gear-fill text-amber" style="font-size:0.8rem;"></i>
+                                                </div>
+                                            }
+                                            else if (rRole == "DepartmentManager")
+                                            {
+                                                <div class="moc-icon-box bg-purple-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                                    <i class="bi bi-briefcase-fill text-purple" style="font-size:0.8rem;"></i>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="moc-icon-box bg-indigo-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                                    <i class="bi bi-person-fill text-indigo" style="font-size:0.8rem;"></i>
+                                                </div>
+                                            }
+                                            <div>
+                                                <p class="fw-semibold text-sm mb-0 letter-tight">
+                                                    @if (item.User != null)
+                                                    {
+                                                        @item.User.UserName
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">Unknown</span>
+                                                    }
+                                                    @if (isMyRequest)
+                                                    {
+                                                        <span class="badge rounded-pill bg-indigo-50 text-indigo text-xs px-2 py-1 ms-1">YOU</span>
+                                                    }
+                                                </p>
+                                                <span class="text-muted text-xs">@rRole</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
+                                            @item.LeaveType
+                                        </span>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">
+                                            @item.StartDate.ToString("MMM dd") – @item.EndDate.ToString("MMM dd")
+                                        </p>
+                                        <span class="text-muted text-xs">@((item.EndDate - item.StartDate).Days + 1) Day@(((item.EndDate - item.StartDate).Days + 1) != 1 ? "s" : "")</span>
+                                    </td>
+                                    <td class="border-0 py-3">
+                                        <span class="text-sm text-muted" style="max-width:180px;display:inline-block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="@item.Reason">
+                                            @item.Reason
+                                        </span>
+                                    </td>
+                                    <td class="border-0 py-3 text-center">
+                                        @if (item.Status == "Approved")
+                                        {
+                                            <span class="badge rounded-pill bg-green-50 text-green px-3 py-2 fw-semibold text-xs">
+                                                <i class="bi bi-check-circle-fill me-1"></i> Approved
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">
+                                                <i class="bi bi-x-circle-fill me-1"></i> Rejected
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="border-0 py-3" style="border-radius:0 0.75rem 0.75rem 0;">
+                                        <span class="text-sm text-muted">@item.DateRequested.ToString("MMM dd, yyyy")</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ── Mobile Card List (below lg) ── -->
+                <div class="d-lg-none">
+                    @foreach (var item in archivedLeaves)
+                    {
+                        bool isMyRequest = (item.UserID == currentUserId);
+
+                        string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
+
+                        string borderStyle = "";
+                        if (item.Status == "Approved") { borderStyle = "border-left:4px solid #22c55e !important;"; }
+                        else { borderStyle = "border-left:4px solid #ef4444 !important;"; }
+
+                        <div class="moc-metric p-3 mb-3" style="@borderStyle opacity:0.55;">
+
+                            <!-- Header: Employee + Status -->
+                            <div class="d-flex align-items-start justify-content-between mb-2">
+                                <div class="d-flex align-items-center gap-2 flex-grow-1 min-width-0">
+                                    @if (rRole == "SuperAdmin")
+                                    {
+                                        <div class="moc-icon-box bg-red-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                            <i class="bi bi-shield-lock-fill text-red" style="font-size:0.75rem;"></i>
+                                        </div>
+                                    }
+                                    else if (rRole == "SystemAdmin")
+                                    {
+                                        <div class="moc-icon-box bg-amber-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                            <i class="bi bi-gear-fill text-amber" style="font-size:0.75rem;"></i>
+                                        </div>
+                                    }
+                                    else if (rRole == "DepartmentManager")
+                                    {
+                                        <div class="moc-icon-box bg-purple-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                            <i class="bi bi-briefcase-fill text-purple" style="font-size:0.75rem;"></i>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="moc-icon-box bg-indigo-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
+                                            <i class="bi bi-person-fill text-indigo" style="font-size:0.75rem;"></i>
+                                        </div>
+                                    }
+                                    <div class="min-width-0">
+                                        <p class="fw-semibold text-sm mb-0 letter-tight text-truncate">
+                                            @if (item.User != null)
+                                            {
+                                                @item.User.UserName
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Unknown</span>
+                                            }
+                                            @if (isMyRequest)
+                                            {
+                                                <span class="badge rounded-pill bg-indigo-50 text-indigo text-xs px-2 py-1 ms-1">YOU</span>
+                                            }
+                                        </p>
+                                        <span class="text-muted text-xs">@rRole</span>
+                                    </div>
+                                </div>
+                                @if (item.Status == "Approved")
+                                {
+                                    <span class="badge rounded-pill bg-green-50 text-green px-2 py-1 fw-semibold text-xs ms-2">
+                                        <i class="bi bi-check-circle-fill"></i> Approved
                                     </span>
                                 }
                                 else
                                 {
-                                    <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">
-                                        <i class="bi bi-x-circle-fill me-1"></i> Rejected
+                                    <span class="badge rounded-pill bg-red-50 text-red px-2 py-1 fw-semibold text-xs ms-2">
+                                        <i class="bi bi-x-circle-fill"></i> Rejected
                                     </span>
                                 }
-                            </td>
-                            <td class="border-0 py-3">
-                                <span class="text-sm text-muted">@item.DateRequested.ToString("MMM dd, yyyy")</span>
-                            </td>
-                            @if (hasPower)
-                            {
-                                <td class="border-0 pe-3 py-3 text-end" style="border-radius:0 0.75rem 0.75rem 0;">
-                                    @if (item.Status == "Pending")
-                                    {
-                                        @if (canApproveThisRow)
-                                        {
-                                            <div class="d-flex justify-content-end gap-1">
-                                                <form asp-action="Approve" asp-route-id="@item.LeaveID" method="post" style="display:inline;">
-                                                    @Html.AntiForgeryToken()
-                                                    <button type="submit"
-                                                       class="btn btn-sm px-2 py-1 fw-semibold"
-                                                       style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);"
-                                                       title="Approve">
-                                                        <i class="bi bi-check-lg"></i>
-                                                    </button>
-                                                </form>
-                                                <form asp-action="Reject" asp-route-id="@item.LeaveID" method="post" style="display:inline;">
-                                                    @Html.AntiForgeryToken()
-                                                    <button type="submit"
-                                                       class="btn btn-sm px-2 py-1 fw-semibold"
-                                                       style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);"
-                                                       title="Reject">
-                                                        <i class="bi bi-x-lg"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-muted text-xs fst-italic">
-                                                <i class="bi bi-lock me-1"></i>Higher Approval
-                                            </span>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted text-xs">
-                                            <i class="bi bi-check2-all me-1"></i>Completed
-                                        </span>
-                                    }
-                                </td>
-                            }
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <!-- ── Mobile Card List (below lg) ── -->
-        <div class="d-lg-none">
-            @foreach (var item in Model)
-            {
-                bool isMyRequest = (item.UserID == currentUserId);
-
-                string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
-
-                int targetRank = 1;
-                if (rRole == "SuperAdmin") { targetRank = 4; }
-                else if (rRole == "SystemAdmin") { targetRank = 3; }
-                else if (rRole == "DepartmentManager") { targetRank = 2; }
-
-                bool canApproveThisRow = (myRank > targetRank);
-
-                string borderStyle = "";
-                if (item.Status == "Pending") { borderStyle = "border-left:4px solid #f59e0b !important;"; }
-                else if (item.Status == "Approved") { borderStyle = "border-left:4px solid #22c55e !important;"; }
-                else { borderStyle = "border-left:4px solid #ef4444 !important;"; }
-
-                <div class="moc-metric p-3 mb-3" style="@borderStyle">
-
-                    <!-- Header: Employee + Status -->
-                    <div class="d-flex align-items-start justify-content-between mb-2">
-                        <div class="d-flex align-items-center gap-2 flex-grow-1 min-width-0">
-                            @if (rRole == "SuperAdmin")
-                            {
-                                <div class="moc-icon-box bg-red-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
-                                    <i class="bi bi-shield-lock-fill text-red" style="font-size:0.75rem;"></i>
-                                </div>
-                            }
-                            else if (rRole == "SystemAdmin")
-                            {
-                                <div class="moc-icon-box bg-amber-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
-                                    <i class="bi bi-gear-fill text-amber" style="font-size:0.75rem;"></i>
-                                </div>
-                            }
-                            else if (rRole == "DepartmentManager")
-                            {
-                                <div class="moc-icon-box bg-purple-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
-                                    <i class="bi bi-briefcase-fill text-purple" style="font-size:0.75rem;"></i>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="moc-icon-box bg-indigo-50 rounded-circle" style="width:36px;height:36px;min-width:36px;">
-                                    <i class="bi bi-person-fill text-indigo" style="font-size:0.75rem;"></i>
-                                </div>
-                            }
-                            <div class="min-width-0">
-                                <p class="fw-semibold text-sm mb-0 letter-tight text-truncate">
-                                    @if (item.User != null)
-                                    {
-                                        @item.User.UserName
-                                    }
-                                    else
-                                    {
-
-                                        <span class="text-muted">Unknown</span>
-                                    }
-                                    @if (isMyRequest)
-                                    {
-                                        <span class="badge rounded-pill bg-indigo-50 text-indigo text-xs px-2 py-1 ms-1">YOU</span>
-                                    }
-                                </p>
-                                <span class="text-muted text-xs">@rRole</span>
                             </div>
-                        </div>
-                        @if (item.Status == "Pending")
-                        {
-                            <span class="badge rounded-pill bg-amber-50 text-amber px-2 py-1 fw-semibold text-xs ms-2">
-                                <i class="bi bi-hourglass-split"></i> Pending
-                            </span>
-                        }
-                        else if (item.Status == "Approved")
-                        {
-                            <span class="badge rounded-pill bg-green-50 text-green px-2 py-1 fw-semibold text-xs ms-2">
-                                <i class="bi bi-check-circle-fill"></i> Approved
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="badge rounded-pill bg-red-50 text-red px-2 py-1 fw-semibold text-xs ms-2">
-                                <i class="bi bi-x-circle-fill"></i> Rejected
-                            </span>
-                        }
-                    </div>
 
-                    <!-- Details Grid -->
-                    <div class="row g-2 mb-2">
-                        <div class="col-6">
-                            <div class="rounded-3 p-2" style="background:rgba(6,182,212,0.04);">
-                                <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Type</p>
-                                <p class="fw-semibold text-sm mb-0 letter-tight">@item.LeaveType</p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="rounded-3 p-2" style="background:rgba(99,102,241,0.04);">
-                                <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Duration</p>
-                                <p class="fw-semibold text-sm mb-0 letter-tight">@((item.EndDate - item.StartDate).Days + 1) Day@(((item.EndDate - item.StartDate).Days + 1) != 1 ? "s" : "")</p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="rounded-3 p-2" style="background:rgba(34,197,94,0.04);">
-                                <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">From</p>
-                                <p class="fw-semibold text-sm mb-0 letter-tight">@item.StartDate.ToString("MMM dd")</p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="rounded-3 p-2" style="background:rgba(168,85,247,0.04);">
-                                <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">To</p>
-                                <p class="fw-semibold text-sm mb-0 letter-tight">@item.EndDate.ToString("MMM dd")</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Reason -->
-                    <div class="rounded-3 p-2 mb-2" style="background:rgba(0,0,0,0.02);">
-                        <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Reason</p>
-                        <p class="text-sm mb-0">@item.Reason</p>
-                    </div>
-
-                    <!-- Filed date -->
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <span class="text-muted text-xs">
-                            <i class="bi bi-clock me-1"></i>Filed: @item.DateRequested.ToString("MMM dd, yyyy")
-                        </span>
-                    </div>
-
-                    <!-- Actions (if manager/admin) -->
-                    @if (hasPower)
-                    {
-                        @if (item.Status == "Pending")
-                        {
-                            @if (canApproveThisRow)
-                            {
-                                <div class="d-flex gap-2">
-                                    <form asp-action="Approve" asp-route-id="@item.LeaveID" method="post" class="flex-fill">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit"
-                                           class="btn btn-sm w-100 py-2 fw-semibold"
-                                           style="background:rgba(34,197,94,0.08);color:#22c55e;border:1.5px solid rgba(34,197,94,0.2);">
-                                            <i class="bi bi-check-circle me-1"></i> Approve
-                                        </button>
-                                    </form>
-                                    <form asp-action="Reject" asp-route-id="@item.LeaveID" method="post" class="flex-fill">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit"
-                                           class="btn btn-sm w-100 py-2 fw-semibold"
-                                           style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
-                                            <i class="bi bi-x-circle me-1"></i> Reject
-                                        </button>
-                                    </form>
+                            <!-- Details Grid -->
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <div class="rounded-3 p-2" style="background:rgba(6,182,212,0.04);">
+                                        <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Type</p>
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">@item.LeaveType</p>
+                                    </div>
                                 </div>
-                            }
-                            else
-                            {
-                                <div class="text-center p-2 rounded-3" style="background:rgba(0,0,0,0.02);">
-                                    <span class="text-muted text-xs fst-italic">
-                                        <i class="bi bi-lock me-1"></i> Awaiting higher-level approval
-                                    </span>
+                                <div class="col-6">
+                                    <div class="rounded-3 p-2" style="background:rgba(99,102,241,0.04);">
+                                        <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Duration</p>
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">@((item.EndDate - item.StartDate).Days + 1) Day@(((item.EndDate - item.StartDate).Days + 1) != 1 ? "s" : "")</p>
+                                    </div>
                                 </div>
-                            }
-                        }
-                        else
-                        {
-                            <div class="text-center p-2 rounded-3" style="background:rgba(0,0,0,0.02);">
+                                <div class="col-6">
+                                    <div class="rounded-3 p-2" style="background:rgba(34,197,94,0.04);">
+                                        <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">From</p>
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">@item.StartDate.ToString("MMM dd")</p>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="rounded-3 p-2" style="background:rgba(168,85,247,0.04);">
+                                        <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">To</p>
+                                        <p class="fw-semibold text-sm mb-0 letter-tight">@item.EndDate.ToString("MMM dd")</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Reason -->
+                            <div class="rounded-3 p-2 mb-2" style="background:rgba(0,0,0,0.02);">
+                                <p class="text-muted text-xs mb-0 text-uppercase fw-semibold">Reason</p>
+                                <p class="text-sm mb-0">@item.Reason</p>
+                            </div>
+
+                            <!-- Filed date -->
+                            <div class="d-flex align-items-center justify-content-between mb-2">
                                 <span class="text-muted text-xs">
-                                    <i class="bi bi-check2-all me-1"></i> Action completed
+                                    <i class="bi bi-clock me-1"></i>Filed: @item.DateRequested.ToString("MMM dd, yyyy")
                                 </span>
                             </div>
-                        }
+
+                            <!-- No action buttons for archived items -->
+                            <div class="text-center p-2 rounded-3" style="background:rgba(0,0,0,0.02);">
+                                <span class="text-muted text-xs">
+                                    <i class="bi bi-archive me-1"></i> Archived — @item.Status
+                                </span>
+                            </div>
+                        </div>
                     }
                 </div>
             }
+
         </div>
 
     </div>
@@ -564,14 +815,12 @@
     <div class="card-footer bg-transparent border-0 px-4 py-3"
          style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
         <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <span class="text-muted text-xs">
+            <span class="text-muted text-xs" id="lv-footer-text">
                 <i class="bi bi-info-circle me-1"></i>
-                Showing all @totalRequests request@(totalRequests != 1 ? "s" : "")
+                Showing @pendingCount pending request@(pendingCount != 1 ? "s" : "")
             </span>
-            <div class="d-flex gap-1 flex-wrap">
+            <div class="d-flex gap-1 flex-wrap" id="lv-footer-badges">
                 <span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1">@pendingCount Pending</span>
-                <span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">@approvedCount Approved</span>
-                <span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">@rejectedCount Rejected</span>
             </div>
         </div>
     </div>
@@ -583,3 +832,67 @@
         <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
     </a>
 </div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- TAB TOGGLE SCRIPT                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<script>
+(function () {
+    const btns = document.querySelectorAll('.lv-tab-btn');
+    const activeSection = document.getElementById('lv-active-section');
+    const archivedSection = document.getElementById('lv-archived-section');
+    const tabLabel = document.getElementById('lv-tab-label');
+    const tabCount = document.getElementById('lv-tab-count');
+    const cardTitle = document.getElementById('lv-card-title');
+    const cardSubtitle = document.getElementById('lv-card-subtitle');
+    const cardBadges = document.getElementById('lv-card-badges');
+    const footerText = document.getElementById('lv-footer-text');
+    const footerBadges = document.getElementById('lv-footer-badges');
+
+    const pendingCount = @pendingCount;
+    const archivedCount = @archivedCount;
+    const approvedCount = @approvedCount;
+    const rejectedCount = @rejectedCount;
+
+    btns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const tab = this.dataset.tab;
+
+            btns.forEach(b => {
+                b.classList.remove('active');
+                b.style.background = 'var(--moc-surface)';
+                b.style.color = 'var(--moc-text-secondary)';
+                b.style.border = '1px solid var(--moc-border)';
+            });
+            this.classList.add('active');
+            this.style.background = 'var(--moc-primary)';
+            this.style.color = '#fff';
+            this.style.border = 'none';
+
+            if (tab === 'active') {
+                activeSection.style.display = '';
+                archivedSection.style.display = 'none';
+                tabLabel.textContent = 'Active Requests';
+                tabCount.textContent = 'Showing ' + pendingCount + ' record' + (pendingCount !== 1 ? 's' : '');
+                cardTitle.textContent = 'Leave Records';
+                cardSubtitle.textContent = pendingCount + ' pending application' + (pendingCount !== 1 ? 's' : '');
+                cardBadges.innerHTML = '<span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1">' + pendingCount + ' Pending</span>';
+                footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + pendingCount + ' pending request' + (pendingCount !== 1 ? 's' : '');
+                footerBadges.innerHTML = '<span class="badge rounded-pill bg-amber-50 text-amber text-xs px-2 py-1">' + pendingCount + ' Pending</span>';
+            } else {
+                activeSection.style.display = 'none';
+                archivedSection.style.display = '';
+                tabLabel.textContent = 'Archived Requests';
+                tabCount.textContent = 'Showing ' + archivedCount + ' record' + (archivedCount !== 1 ? 's' : '');
+                cardTitle.textContent = 'Leave Archive';
+                cardSubtitle.textContent = archivedCount + ' resolved application' + (archivedCount !== 1 ? 's' : '');
+                cardBadges.innerHTML = '<span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">' + approvedCount + ' Approved</span>' +
+                    '<span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">' + rejectedCount + ' Rejected</span>';
+                footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + archivedCount + ' archived request' + (archivedCount !== 1 ? 's' : '');
+                footerBadges.innerHTML = '<span class="badge rounded-pill bg-green-50 text-green text-xs px-2 py-1">' + approvedCount + ' Approved</span>' +
+                    '<span class="badge rounded-pill bg-red-50 text-red text-xs px-2 py-1">' + rejectedCount + ' Rejected</span>';
+            }
+        });
+    });
+})();
+</script>
