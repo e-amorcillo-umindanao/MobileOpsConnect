@@ -178,13 +178,6 @@ namespace MobileOpsConnect.Controllers
                 // Latest payslip period
                 ViewBag.LatestPayPeriod = $"{DateTime.Now:MMM} 1 – {DateTime.Now:MMM} 15, {DateTime.Now.Year}";
 
-                // Pending POs for Delta (WarehouseStaff)
-                if (User.IsInRole("WarehouseStaff"))
-                {
-                    var userId2 = user?.Id ?? "";
-                    ViewBag.MyPendingOrders = await _context.PurchaseOrders.CountAsync(po => po.RequestedById == userId2 && po.Status == "Pending");
-                }
-
                 return View("EmployeeDashboard");
             }
         }

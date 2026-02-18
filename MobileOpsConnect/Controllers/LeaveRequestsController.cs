@@ -175,6 +175,13 @@ namespace MobileOpsConnect.Controllers
             var approver = await _userManager.GetUserAsync(User);
             if (approver == null) return Challenge();
 
+            // HIERARCHY: Approver rank must be strictly higher than requester rank
+            var requester = await _userManager.FindByIdAsync(leaveRequest.UserID);
+            if (requester == null) return NotFound();
+            int approverRank = await GetRank(approver);
+            int requesterRank = await GetRank(requester);
+            if (approverRank <= requesterRank) return Forbid();
+
             leaveRequest.Status = "Approved";
             leaveRequest.ApprovedById = approver.Id;
             await _context.SaveChangesAsync();
@@ -211,6 +218,13 @@ namespace MobileOpsConnect.Controllers
 
             var rejector = await _userManager.GetUserAsync(User);
             if (rejector == null) return Challenge();
+
+            // HIERARCHY: Rejector rank must be strictly higher than requester rank
+            var requester = await _userManager.FindByIdAsync(leaveRequest.UserID);
+            if (requester == null) return NotFound();
+            int rejectorRank = await GetRank(rejector);
+            int requesterRank = await GetRank(requester);
+            if (rejectorRank <= requesterRank) return Forbid();
 
             leaveRequest.Status = "Rejected";
             leaveRequest.ApprovedById = rejector.Id;
@@ -352,6 +366,21 @@ namespace MobileOpsConnect.Controllers
         private bool LeaveRequestExists(int id)
         {
             return (_context.LeaveRequests?.Any(e => e.LeaveID == id)).GetValueOrDefault();
+        }
+
+        // HIERARCHY HELPER: Maps a user to a rank integer.
+        // SuperAdmin=4, SystemAdmin=3, DepartmentManager=2, Everyone else=1
+        private async Task<int> GetRank(IdentityUser user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            var role = roles.FirstOrDefault() ?? "";
+            return role switch
+            {
+                "SuperAdmin" => 4,
+                "SystemAdmin" => 3,
+                "DepartmentManager" => 2,
+                _ => 1
+            };
         }
     }
 }

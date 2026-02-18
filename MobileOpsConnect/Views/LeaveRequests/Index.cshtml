@@ -245,7 +245,7 @@
                         else if (rRole == "SystemAdmin") { targetRank = 3; }
                         else if (rRole == "DepartmentManager") { targetRank = 2; }
 
-                        bool canApproveThisRow = (myRank > targetRank) || (myRank == 4 && isMyRequest);
+                        bool canApproveThisRow = (myRank > targetRank);
 
                         <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);@(item.Status == "Pending" && hasPower && canApproveThisRow ? "border-left:3px solid #f59e0b;" : "")">
                             <td class="border-0 ps-3 py-3" style="border-radius:0.75rem 0 0 0.75rem;">
@@ -394,7 +394,7 @@
                 else if (rRole == "SystemAdmin") { targetRank = 3; }
                 else if (rRole == "DepartmentManager") { targetRank = 2; }
 
-                bool canApproveThisRow = (myRank > targetRank) || (myRank == 4 && isMyRequest);
+                bool canApproveThisRow = (myRank > targetRank);
 
                 string borderStyle = "";
                 if (item.Status == "Pending") { borderStyle = "border-left:4px solid #f59e0b !important;"; }

@@ -10,7 +10,7 @@ using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Controllers
 {
-    [Authorize(Roles = "WarehouseStaff,SuperAdmin,SystemAdmin,DepartmentManager")]
+    [Authorize(Roles = "WarehouseStaff")]
     public class WarehouseController : Controller
     {
         private readonly ApplicationDbContext _context;

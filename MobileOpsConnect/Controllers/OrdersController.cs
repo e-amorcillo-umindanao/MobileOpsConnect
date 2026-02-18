@@ -9,7 +9,7 @@ using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager,WarehouseStaff")]
+    [Authorize(Roles = "DepartmentManager")]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -34,20 +34,12 @@ namespace MobileOpsConnect.Controllers
                 .OrderByDescending(po => po.DateRequested)
                 .ToListAsync();
 
-            // Warehouse staff only sees their own POs
-            if (User.IsInRole("WarehouseStaff"))
-            {
-                var currentUser = await _userManager.GetUserAsync(User);
-                if (currentUser == null) return Challenge();
-                orders = orders.Where(po => po.RequestedById == currentUser.Id).ToList();
-            }
-
-            ViewBag.CanApprove = User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager");
+            ViewBag.CanApprove = true;
             return View(orders);
         }
 
         // GET: Orders/Create
-        [Authorize(Roles = "WarehouseStaff")]
+        [Authorize(Roles = "DepartmentManager")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Products = new SelectList(await _context.Products.OrderBy(p => p.Name).ToListAsync(), "ProductID", "Name");
@@ -57,7 +49,7 @@ namespace MobileOpsConnect.Controllers
         // POST: Orders/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "WarehouseStaff")]
+        [Authorize(Roles = "DepartmentManager")]
         public async Task<IActionResult> Create(int ProductId, int Quantity, string? Notes)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -90,7 +82,7 @@ namespace MobileOpsConnect.Controllers
                 $"{currentUser.Email} submitted PO for {Quantity}x {product.Name} (₱{order.EstimatedCost:N0}).");
 
             // Audit log
-            await _auditService.LogAsync(currentUser.Id, currentUser.Email!, "WarehouseStaff", "CREATE", $"Submitted purchase order #{order.Id} for {Quantity}x {product.Name}.", HttpContext.Connection.RemoteIpAddress?.ToString());
+            await _auditService.LogAsync(currentUser.Id, currentUser.Email!, "DepartmentManager", "CREATE", $"Submitted purchase order #{order.Id} for {Quantity}x {product.Name}.", HttpContext.Connection.RemoteIpAddress?.ToString());
 
             TempData["Message"] = $"Purchase Order #{order.Id} submitted successfully!";
             return RedirectToAction(nameof(Index));
@@ -99,7 +91,7 @@ namespace MobileOpsConnect.Controllers
         // POST: Orders/ProcessOrder
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
+        [Authorize(Roles = "DepartmentManager")]
         public async Task<IActionResult> ProcessOrder(int id, string actionType)
         {
             var order = await _context.PurchaseOrders.Include(po => po.Product).FirstOrDefaultAsync(po => po.Id == id);
