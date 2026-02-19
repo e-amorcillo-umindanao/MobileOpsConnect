@@ -3,48 +3,192 @@
     ViewData["Title"] = "Edit Product";
 }
 
-<h1>Edit Product</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ProductID" />
+<!-- ═══════════════════════════════════════════════ -->
+<!-- HERO BANNER                                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-hero p-4 p-md-5 mb-4 text-white anim-fade-in">
+    <div class="position-relative" style="z-index: 2;">
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+                Inventory Module
+            </span>
+            <span class="badge rounded-pill px-3 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+                <i class="bi bi-pencil-square me-1"></i> Edit Product
+            </span>
+        </div>
+        <h1 class="display-5 fw-bold mb-2 letter-tight">Edit Product</h1>
+        <p class="lead mb-0 opacity-75">
+            Update product details and pricing
+        </p>
+    </div>
+    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
+         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
+        <i class="bi bi-pencil-square"></i>
+    </div>
+</div>
 
-            <div class="form-group mb-3">
-                <label asp-for="SKU" class="control-label fw-bold"></label>
-                <input asp-for="SKU" class="form-control" />
-                <span asp-validation-for="SKU" class="text-danger"></span>
-            </div>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- FORM SECTION                                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="moc-section-header mt-2">
+    <h5 class="fw-bold letter-tight">
+        <i class="bi bi-pencil-square text-amber me-1"></i> Product Information
+    </h5>
+    <hr />
+</div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Name" class="control-label fw-bold"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
 
-            <div class="form-group mb-3">
-                <label asp-for="Category" class="control-label fw-bold"></label>
-                <input asp-for="Category" class="form-control" />
-                <span asp-validation-for="Category" class="text-danger"></span>
-            </div>
+        <div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-1">
+            <div class="card-body p-4 p-md-5">
 
-            <div class="form-group mb-3">
-                <label asp-for="StockQuantity" class="control-label fw-bold"></label>
-                <input asp-for="StockQuantity" class="form-control" />
-                <span asp-validation-for="StockQuantity" class="text-danger"></span>
-            </div>
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <input type="hidden" asp-for="ProductID" />
 
-            <div class="form-group mb-3">
-                <label asp-for="Price" class="control-label fw-bold"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
+                    <!-- ── Identification Section ── -->
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="moc-icon-box bg-indigo-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                            <i class="bi bi-upc-scan text-indigo"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 letter-tight">Identification</h6>
+                            <span class="text-muted text-xs">Barcode and product name</span>
+                        </div>
+                    </div>
 
-            <div class="form-group mt-3">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    <div class="mb-4">
+                        <label asp-for="SKU" class="form-label fw-semibold text-sm mb-2">
+                            <i class="bi bi-upc me-1 text-indigo"></i> SKU / Barcode <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text rounded-start-3 border-end-0"
+                                  style="background:rgba(99,102,241,0.06);">
+                                <i class="bi bi-upc-scan text-indigo"></i>
+                            </span>
+                            <input asp-for="SKU" class="form-control rounded-end-3 border-start-0"
+                                   placeholder="SCAN or type barcode"
+                                   style="padding:0.875rem 1rem;font-size:1rem;" />
+                        </div>
+                        <span asp-validation-for="SKU" class="text-danger text-xs"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Name" class="form-label fw-semibold text-sm mb-2">
+                            <i class="bi bi-box me-1 text-purple"></i> Product Name <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text rounded-start-3 border-end-0"
+                                  style="background:rgba(139,92,246,0.06);">
+                                <i class="bi bi-box-seam text-purple"></i>
+                            </span>
+                            <input asp-for="Name" class="form-control rounded-end-3 border-start-0"
+                                   placeholder="Enter product name"
+                                   style="padding:0.875rem 1rem;font-size:1rem;" />
+                        </div>
+                        <span asp-validation-for="Name" class="text-danger text-xs"></span>
+                    </div>
+
+                    <hr class="my-4 opacity-10" />
+
+                    <!-- ── Classification Section ── -->
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="moc-icon-box bg-cyan-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                            <i class="bi bi-bookmark-star-fill text-cyan"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 letter-tight">Classification</h6>
+                            <span class="text-muted text-xs">Category grouping for inventory</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Category" class="form-label fw-semibold text-sm mb-2">
+                            <i class="bi bi-tag-fill me-1 text-cyan"></i> Category <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text rounded-start-3 border-end-0"
+                                  style="background:rgba(6,182,212,0.06);">
+                                <i class="bi bi-tag text-cyan"></i>
+                            </span>
+                            <input asp-for="Category" class="form-control rounded-end-3 border-start-0"
+                                   placeholder="e.g. Electronics, Accessories, Furniture"
+                                   style="padding:0.875rem 1rem;font-size:1rem;" />
+                        </div>
+                        <span asp-validation-for="Category" class="text-danger text-xs"></span>
+                    </div>
+
+                    <hr class="my-4 opacity-10" />
+
+                    <!-- ── Stock & Pricing Section ── -->
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="moc-icon-box bg-green-50 rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
+                            <i class="bi bi-cash-stack text-green"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold mb-0 letter-tight">Stock &amp; Pricing</h6>
+                            <span class="text-muted text-xs">Correction of stock and price update</span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6">
+                            <label asp-for="StockQuantity" class="form-label fw-semibold text-sm mb-2">
+                                <i class="bi bi-layers me-1 text-green"></i> Stock Quantity <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text rounded-start-3 border-end-0"
+                                      style="background:rgba(34,197,94,0.06);">
+                                    <i class="bi bi-plus-slash-minus text-green"></i>
+                                </span>
+                                <input asp-for="StockQuantity" class="form-control rounded-end-3 border-start-0"
+                                       type="number" min="0" placeholder="0"
+                                       style="padding:0.875rem 1rem;font-size:1rem;" />
+                            </div>
+                            <span asp-validation-for="StockQuantity" class="text-danger text-xs"></span>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label asp-for="Price" class="form-label fw-semibold text-sm mb-2">
+                                <i class="bi bi-cash me-1 text-amber"></i> Unit Price (₱) <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text rounded-start-3 border-end-0"
+                                      style="background:rgba(245,158,11,0.06);">
+                                    <i class="bi bi-currency-exchange text-amber"></i>
+                                </span>
+                                <input asp-for="Price" class="form-control rounded-end-3 border-start-0"
+                                       type="number" step="0.01" min="0" placeholder="0.00"
+                                       style="padding:0.875rem 1rem;font-size:1rem;" />
+                            </div>
+                            <span asp-validation-for="Price" class="text-danger text-xs"></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 opacity-10" />
+
+                     <!-- ── Action Buttons ── -->
+                    <div class="d-grid gap-2">
+                        <input type="submit" value="Save Changes" class="btn btn-moc-primary btn-lg py-3" />
+                        <a asp-action="Index" class="btn btn-moc-outline btn-lg py-3">
+                            <i class="bi bi-arrow-left me-1"></i> Cancel &amp; Back to List
+                        </a>
+                    </div>
+
+                </form>
+
             </div>
-        </form>
+             <!-- Card Footer -->
+            <div class="card-footer bg-transparent border-0 px-4 py-3 text-center"
+                 style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
+                <span class="text-muted text-xs">
+                    <i class="bi bi-lock-fill me-1"></i>
+                    Price and stock changes are logged for audit purposes.
+                </span>
+            </div>
+        </div>
+
     </div>
 </div>
