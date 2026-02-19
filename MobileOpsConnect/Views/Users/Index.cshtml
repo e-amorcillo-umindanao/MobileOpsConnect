@@ -283,7 +283,7 @@
         <div class="d-md-none">
             @foreach (var item in Model)
             {
-                <div class="moc-metric p-3 mb-3">
+                <div class="moc-metric p-3 mb-3" style="overflow: hidden;">
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <!-- Avatar -->
                         @if (item.Role == "SuperAdmin")
@@ -322,8 +322,10 @@
                         }
                         else
                         {
-                            <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs">
-                                <i class="bi bi-person-badge"></i> @item.Role
+                            <span class="badge rounded-pill bg-cyan-50 text-cyan px-2 py-1 fw-semibold text-xs"
+                                  style="max-width: 7.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <i class="bi bi-person-badge"></i>
+                                @(item.Role == "DepartmentManager" ? "Dept Mgr" : item.Role)
                             </span>
                         }
                     </div>
