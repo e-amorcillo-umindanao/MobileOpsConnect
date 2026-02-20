@@ -1,0 +1,134 @@
+﻿--- Page 1 ---
+NAME
+EVANDER HAROLD S. AMORCILLO
+PROJECT TITLE
+MobileOps Connect
+SUBJECT:
+CODE:
+TIME:
+IT15/L Integrative Programming and Technologies
+8441
+10:00 AM
+ΓÇô
+12:00 PM
+TOPIC
+(Type of
+Business Process)
+#33 Mobile Business System
+Products/Service
+s
+Mobile
+-
+Integrated ERP Solution
+Deployed Link /
+Website link
+https://moppscon.runasp.net/
+Role Based
+-
+Access
+Super Admin Acct.
+(if done)
+Username:
+Alpha@mobileops.com
+Password:
+Password123!
+Admin Acct.
+Username:
+Beta@mobileops.com
+Password:
+Password123!
+Username:
+Charlie@mobileops.com
+Password:
+Password123!
+Client Acct.
+Username:
+Delta@mobileops.com
+Password:
+Password123!
+Username:
+Charlie@mobileops.com
+Password:
+Password123!
+3
+rd
+Deliverables
+-
+Deployed
+Transactions (CRUD)
+Log in
+-
+Page
+(Screenshot)
+--- Page 2 ---
+Log in
+-
+Page
+-
+Source Code
+(Screenshot)
+Dashboard
+(Client/End
+-
+User)
+(Screenshot)
+--- Page 3 ---
+Dashboard
+-
+Source Code
+(Client/End
+-
+User)
+(Screenshot)
+Update/Edit Page
+(Screenshot)
+--- Page 4 ---
+Update/Edit Page
+-
+Source Code
+(Screenshot)
+Archive
+(Screenshot)
+Archive
+ΓÇô
+Source
+Code
+(Screenshot)
+--- Page 5 ---
+Display Records
+(Screenshot)
+Display Records
+-
+Source Code
+(Screenshot)
+--- Page 6 ---
+Database
+ΓÇô
+SQL
+Server (Local)
+Screenshot
+--- Page 7 ---
+Database
+ΓÇô
+Deployed/Online
+Screenshot
+D
+ate
+Submitted:
+February 20, 2026
+TeacherΓÇÖs
+Feedback
+_________________________________________________________________
+_________________________________________________________________
+_________________________________________________________________
+_________________________________________________________________
+_________________________________________________________________
+_________________________________________________________________
+__________________
+______________
+__________________________
+StudentΓÇÖs Signature (after feedback
+ing
+)
+TeacherΓÇÖs Signature
+--- Page 8 ---
