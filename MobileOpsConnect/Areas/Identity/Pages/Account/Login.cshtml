@@ -7,226 +7,641 @@
 }
 
 <style>
-    .login-wrapper {
-        min-height: 100vh;
-        background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
+    /* ============================================================
+       LINEAR-STYLE LOGIN PAGE — Premium Dark Aesthetic
+       ============================================================ */
+
+    /* ---- CSS Custom Properties ---- */
+    :root {
+        --lin-bg:             #0A0A0B;
+        --lin-card-bg:        rgba(255, 255, 255, 0.03);
+        --lin-card-border:    rgba(255, 255, 255, 0.06);
+        --lin-text-primary:   #F5F5F5;
+        --lin-text-secondary: rgba(255, 255, 255, 0.45);
+        --lin-text-muted:     rgba(255, 255, 255, 0.3);
+        --lin-input-bg:       rgba(255, 255, 255, 0.04);
+        --lin-input-border:   rgba(255, 255, 255, 0.08);
+        --lin-input-focus:    rgba(255, 255, 255, 0.15);
+        --lin-primary:        #5E5ADB;
+        --lin-focus-ring:     rgba(99, 102, 241, 0.2);
+        --lin-divider:        rgba(255, 255, 255, 0.06);
+        --lin-link:           rgba(255, 255, 255, 0.7);
+        --lin-link-hover:     #FFFFFF;
+        --lin-label:          rgba(255, 255, 255, 0.55);
+        --lin-placeholder:    rgba(255, 255, 255, 0.2);
+        --lin-social-bg:      rgba(255, 255, 255, 0.04);
+        --lin-social-border:  rgba(255, 255, 255, 0.08);
+        --lin-social-hover-bg:    rgba(255, 255, 255, 0.07);
+        --lin-social-hover-border: rgba(255, 255, 255, 0.12);
+        --lin-social-text:    rgba(255, 255, 255, 0.8);
     }
 
-    .login-card {
-        border: none;
-        border-radius: 1rem;
-        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08), 0 0.125rem 0.5rem rgba(0, 0, 0, 0.04);
+    /* ---- Reset & Base ---- */
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: var(--lin-bg) !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
         overflow: hidden;
     }
 
-    .login-brand-bar {
-        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-        padding: 2rem 2rem 1.75rem;
-        text-align: center;
-    }
-
-        .login-brand-bar h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: .025em;
-            margin: 0;
-            color: #fff;
-        }
-
-        .login-brand-bar p {
-            margin: .5rem 0 0;
-            font-size: .875rem;
-            color: rgba(255, 255, 255, .8);
-        }
-
-    .login-brand-icon {
-        width: 56px;
-        height: 56px;
-        background: rgba(255, 255, 255, .15);
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: .75rem;
-    }
-
-        .login-brand-icon svg {
-            width: 28px;
-            height: 28px;
-            fill: #fff;
-        }
-
-    .login-body {
-        padding: 2rem 2rem 1.5rem;
-    }
-
-    .form-floating > .form-control {
-        border-radius: .5rem;
-        border: 1px solid #dee2e6;
-        transition: border-color .2s ease, box-shadow .2s ease;
-    }
-
-        .form-floating > .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15);
-        }
-
-    .btn-login {
-        border-radius: .5rem;
-        padding: .75rem 1.25rem;
-        font-weight: 600;
-        font-size: 1rem;
-        letter-spacing: .025em;
-        transition: background-color .2s ease, box-shadow .2s ease;
-    }
-
-        .btn-login:hover {
-            box-shadow: 0 .25rem .75rem rgba(13, 110, 253, .35);
-        }
-
-    .login-divider {
+    /* ---- Full-Page Wrapper ---- */
+    .lin-page {
+        position: relative;
+        width: 100%;
+        height: 100vh;
         display: flex;
         align-items: center;
-        gap: .75rem;
-        color: #adb5bd;
-        font-size: .8125rem;
-        margin: 1.5rem 0;
+        justify-content: center;
+        flex-direction: column;
+        overflow: hidden;
     }
 
-        .login-divider::before,
-        .login-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #dee2e6;
+    /* ---- Animated Mesh Gradient Background ---- */
+    .lin-gradient-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .lin-gradient-bg .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.6;
+        will-change: transform;
+    }
+
+    .blob-1 {
+        width: 55vw;
+        height: 55vw;
+        max-width: 700px;
+        max-height: 700px;
+        background: #5B2DA0;
+        top: -15%;
+        left: -10%;
+        animation: blobDrift1 25s ease-in-out infinite alternate;
+    }
+
+    .blob-2 {
+        width: 50vw;
+        height: 50vw;
+        max-width: 650px;
+        max-height: 650px;
+        background: #3B38E8;
+        top: 10%;
+        right: -15%;
+        animation: blobDrift2 28s ease-in-out infinite alternate;
+    }
+
+    .blob-3 {
+        width: 45vw;
+        height: 45vw;
+        max-width: 600px;
+        max-height: 600px;
+        background: #0EA5E9;
+        bottom: -20%;
+        left: 20%;
+        animation: blobDrift3 22s ease-in-out infinite alternate;
+    }
+
+    .blob-4 {
+        width: 40vw;
+        height: 40vw;
+        max-width: 550px;
+        max-height: 550px;
+        background: #A855F7;
+        bottom: 5%;
+        right: 10%;
+        animation: blobDrift4 26s ease-in-out infinite alternate;
+    }
+
+    .blob-5 {
+        width: 60vw;
+        height: 60vw;
+        max-width: 750px;
+        max-height: 750px;
+        background: #1E1B4B;
+        top: 30%;
+        left: 30%;
+        animation: blobDrift5 30s ease-in-out infinite alternate;
+    }
+
+    @@keyframes blobDrift1 {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(15vw, 12vh) scale(1.15); }
+    }
+    @@keyframes blobDrift2 {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(-12vw, 18vh) scale(1.1); }
+    }
+    @@keyframes blobDrift3 {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(10vw, -14vh) scale(1.2); }
+    }
+    @@keyframes blobDrift4 {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(-18vw, -10vh) scale(1.08); }
+    }
+    @@keyframes blobDrift5 {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(8vw, 8vh) scale(0.9); }
+    }
+
+    /* ---- Noise / Grain Overlay ---- */
+    .lin-page::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        background-size: 128px 128px;
+    }
+
+    /* ---- Login Card ---- */
+    .lin-card {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 400px;
+        background: var(--lin-card-bg);
+        border: 1px solid var(--lin-card-border);
+        border-radius: 16px;
+        backdrop-filter: blur(40px) saturate(150%);
+        -webkit-backdrop-filter: blur(40px) saturate(150%);
+        padding: 40px;
+        box-shadow:
+            0 0 0 1px rgba(255, 255, 255, 0.03),
+            0 8px 40px rgba(0, 0, 0, 0.4);
+
+        /* Fade-in animation */
+        animation: cardFadeIn 0.5s ease-out 0.1s both;
+    }
+
+    @@keyframes cardFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
         }
-
-    .login-links a {
-        color: #6c757d;
-        text-decoration: none;
-        font-size: .8125rem;
-        transition: color .2s ease;
-    }
-
-        .login-links a:hover {
-            color: #0d6efd;
-            text-decoration: underline;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-
-    .form-check-input:checked {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
     }
 
-    .external-btn {
-        border-radius: .5rem;
-        padding: .5rem 1.25rem;
+    /* ---- Logo ---- */
+    .lin-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 32px;
+    }
+
+    .lin-logo-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #6C5CE7, #3B38E8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+
+    .lin-logo-icon svg {
+        width: 22px;
+        height: 22px;
+        fill: #ffffff;
+    }
+
+    .lin-logo-text {
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: -0.3px;
+    }
+
+    /* ---- Typography ---- */
+    .lin-heading {
+        color: var(--lin-text-primary);
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.4px;
+        text-align: center;
+        margin: 0 0 8px 0;
+    }
+
+    .lin-subtitle {
+        color: var(--lin-text-secondary);
+        font-size: 14px;
+        font-weight: 400;
+        text-align: center;
+        margin: 0 0 32px 0;
+    }
+
+    /* ---- Form Elements ---- */
+    .lin-form-group {
+        margin-bottom: 20px;
+    }
+
+    .lin-label {
+        display: block;
+        font-size: 13px;
         font-weight: 500;
-        font-size: .875rem;
+        color: var(--lin-label);
+        margin-bottom: 6px;
+    }
+
+    .lin-input {
+        width: 100%;
+        padding: 10px 14px;
+        background: var(--lin-input-bg);
+        border: 1px solid var(--lin-input-border);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #FFFFFF;
+        outline: none;
+        transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+        box-sizing: border-box;
+    }
+
+    .lin-input::placeholder {
+        color: var(--lin-placeholder);
+    }
+
+    .lin-input:focus {
+        border-color: var(--lin-input-focus);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    /* ---- Primary Button ---- */
+    .lin-btn-primary {
+        display: block;
+        width: 100%;
+        padding: 10px 16px;
+        background: linear-gradient(135deg, #5B4CDB, #6C5CE7);
+        color: #FFFFFF;
+        font-size: 14px;
+        font-weight: 500;
+        font-family: inherit;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: opacity 0.15s ease, transform 0.1s ease;
+        margin-bottom: 24px;
+    }
+
+    .lin-btn-primary:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .lin-btn-primary:active {
+        transform: translateY(0px);
+        opacity: 0.8;
+    }
+
+    .lin-btn-primary:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    /* ---- Divider ---- */
+    .lin-divider {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin-bottom: 24px;
+    }
+
+    .lin-divider::before,
+    .lin-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--lin-divider);
+    }
+
+    .lin-divider-text {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--lin-text-muted);
+        padding: 0 12px;
+        flex-shrink: 0;
+    }
+
+    /* ---- Social Login Buttons ---- */
+    .lin-social-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .lin-btn-social {
+        width: 100%;
+        padding: 10px 16px;
+        background: var(--lin-social-bg);
+        border: 1px solid var(--lin-social-border);
+        border-radius: 8px;
+        color: var(--lin-social-text);
+        font-size: 14px;
+        font-weight: 400;
+        font-family: inherit;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .lin-btn-social:hover {
+        background: var(--lin-social-hover-bg);
+        border-color: var(--lin-social-hover-border);
+    }
+
+    .lin-btn-social:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    .lin-btn-social svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    /* ---- Footer ---- */
+    .lin-footer {
+        position: relative;
+        z-index: 2;
+        margin-top: 24px;
+        text-align: center;
+        font-size: 13px;
+        animation: cardFadeIn 0.5s ease-out 0.25s both;
+    }
+
+    .lin-footer-text {
+        color: rgba(255, 255, 255, 0.35);
+    }
+
+    .lin-footer-link {
+        color: var(--lin-link);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.15s ease;
+    }
+
+    .lin-footer-link:hover {
+        color: var(--lin-link-hover);
+        text-decoration: underline;
+    }
+
+    /* ---- Validation Errors ---- */
+    .lin-validation-error {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-bottom: 20px;
+        color: #fca5a5;
+        font-size: 13px;
+    }
+
+    .lin-field-error {
+        color: #f87171;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    /* ---- Remember Me ---- */
+    .lin-remember-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .lin-checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .lin-checkbox {
+        width: 16px;
+        height: 16px;
+        accent-color: var(--lin-primary);
+        cursor: pointer;
+    }
+
+    .lin-checkbox-label {
+        font-size: 13px;
+        color: var(--lin-text-secondary);
+        cursor: pointer;
+    }
+
+    .lin-forgot-link {
+        font-size: 13px;
+        color: var(--lin-link);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.15s ease;
+    }
+
+    .lin-forgot-link:hover {
+        color: var(--lin-link-hover);
+        text-decoration: underline;
+    }
+
+    /* ---- Focus Rings for Keyboard Nav ---- */
+    *:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        border-radius: 4px;
+    }
+
+    a:focus-visible {
+        border-radius: 4px;
+    }
+
+    /* ---- Responsive Design ---- */
+    @@media (max-width: 480px) {
+        .lin-card {
+            max-width: 100%;
+            margin: 0 16px;
+            padding: 32px 24px;
+            border-radius: 12px;
+        }
+
+        .blob {
+            transform: scale(0.7) !important;
+        }
+    }
+
+    @@media (max-width: 360px) {
+        .lin-card {
+            padding: 24px 20px;
+        }
+
+        .lin-heading {
+            font-size: 21px;
+        }
+
+        .lin-subtitle {
+            font-size: 13px;
+        }
+
+        .lin-input,
+        .lin-btn-primary,
+        .lin-btn-social {
+            font-size: 13px;
+        }
+
+        .lin-label {
+            font-size: 12px;
+        }
     }
 </style>
 
-<div class="login-wrapper d-flex align-items-center justify-content-center py-4">
-    <div class="w-100" style="max-width: 440px;">
+<div class="lin-page">
 
-        <div class="login-card">
+    <!-- Animated Mesh Gradient Background -->
+    <div class="lin-gradient-bg" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+        <div class="blob blob-5"></div>
+    </div>
 
-            <!-- Brand Header -->
-            <div class="login-brand-bar">
-                <div class="login-brand-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48
-                                 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93
-                                 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54
-                                 c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2
-                                 c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41
-                                 c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-                    </svg>
-                </div>
-                <h1>MobileOps Connect</h1>
-                <p>Sign in to your account</p>
+    <!-- Login Card -->
+    <div class="lin-card">
+
+        <!-- Logo -->
+        <div class="lin-logo">
+            <div class="lin-logo-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48
+                             10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93
+                             0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54
+                             c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2
+                             c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41
+                             c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+            </div>
+            <span class="lin-logo-text">MobileOps Connect</span>
+        </div>
+
+        <!-- Heading -->
+        <h1 class="lin-heading">Log in to MobileOps</h1>
+        <p class="lin-subtitle">Build software better, together</p>
+
+        <!-- Login Form -->
+        <form id="account" method="post">
+
+            <!-- Validation Summary -->
+            <div asp-validation-summary="ModelOnly" class="lin-validation-error" role="alert"></div>
+
+            <!-- Email Field -->
+            <div class="lin-form-group">
+                <label asp-for="Input.Email" class="lin-label">Email address</label>
+                <input asp-for="Input.Email"
+                       class="lin-input"
+                       autocomplete="username"
+                       aria-required="true"
+                       aria-label="Email address"
+                       placeholder="you@example.com" />
+                <span asp-validation-for="Input.Email" class="lin-field-error"></span>
             </div>
 
-            <!-- Form Body -->
-            <div class="login-body">
-                <form id="account" method="post">
-
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2" role="alert"></div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.Email" class="form-control" autocomplete="username"
-                               aria-required="true" placeholder="name@example.com" />
-                        <label asp-for="Input.Email" class="form-label">Email address</label>
-                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.Password" class="form-control" autocomplete="current-password"
-                               aria-required="true" placeholder="password" />
-                        <label asp-for="Input.Password" class="form-label">Password</label>
-                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
-                    </div>
-
-                    <div class="d-flex align-items-center justify-content-between mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" asp-for="Input.RememberMe" />
-                            <label asp-for="Input.RememberMe" class="form-check-label small text-muted">
-                                @Html.DisplayNameFor(m => m.Input.RememberMe)
-                            </label>
-                        </div>
-                        <a id="forgot-password" asp-page="./ForgotPassword"
-                           class="small text-decoration-none fw-semibold" style="color:#0d6efd;">
-                            Forgot password?
-                        </a>
-                    </div>
-
-                    <div class="d-grid mb-3">
-                        <button id="login-submit" type="submit" class="btn btn-primary btn-lg btn-login">
-                            Sign in
-                        </button>
-                    </div>
-
-                </form>
-
-                <!-- External Logins -->
-                @if ((Model.ExternalLogins?.Count ?? 0) > 0)
-                {
-                    <div class="login-divider">or continue with</div>
-
-                    <form id="external-account" asp-page="./ExternalLogin"
-                          asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                        <div class="d-grid gap-2">
-                            @foreach (var provider in Model.ExternalLogins!)
-                            {
-                                <button type="submit" class="btn btn-outline-secondary external-btn"
-                                        name="provider" value="@provider.Name"
-                                        title="Log in using your @provider.DisplayName account">
-                                    @provider.DisplayName
-                                </button>
-                            }
-                        </div>
-                    </form>
-                }
-
-                <!-- Bottom Links -->
-                <div class="login-links text-center mt-4 pt-3 border-top">
-                    <p class="mb-1">
-                        <span class="text-muted small">Don't have an account?</span>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl"
-                           class="fw-semibold" style="color:#0d6efd;">
-                            Create one
-                        </a>
-                    </p>
-                    <p class="mb-0">
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">
-                            Resend email confirmation
-                        </a>
-                    </p>
-                </div>
+            <!-- Password Field -->
+            <div class="lin-form-group">
+                <label asp-for="Input.Password" class="lin-label">Password</label>
+                <input asp-for="Input.Password"
+                       class="lin-input"
+                       autocomplete="current-password"
+                       aria-required="true"
+                       aria-label="Password"
+                       placeholder="••••••••" />
+                <span asp-validation-for="Input.Password" class="lin-field-error"></span>
             </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="lin-remember-row">
+                <div class="lin-checkbox-group">
+                    <input class="lin-checkbox" asp-for="Input.RememberMe" id="rememberMe" />
+                    <label class="lin-checkbox-label" for="rememberMe">
+                        @Html.DisplayNameFor(m => m.Input.RememberMe)
+                    </label>
+                </div>
+                <a asp-page="./ForgotPassword" class="lin-forgot-link">Forgot password?</a>
+            </div>
+
+            <!-- Submit Button -->
+            <button id="login-submit" type="submit" class="lin-btn-primary">
+                Continue with Email
+            </button>
+
+        </form>
+
+        <!-- Divider -->
+        <div class="lin-divider" role="separator">
+            <span class="lin-divider-text">OR</span>
+        </div>
+
+        <!-- Social Login Buttons -->
+        <div class="lin-social-buttons">
+            <!-- Google -->
+            <button type="button" class="lin-btn-social" aria-label="Continue with Google">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                Continue with Google
+            </button>
+
+            <!-- GitHub -->
+            <button type="button" class="lin-btn-social" aria-label="Continue with GitHub">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                </svg>
+                Continue with GitHub
+            </button>
+
+            <!-- SAML SSO -->
+            <button type="button" class="lin-btn-social" aria-label="Continue with SAML SSO">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                    <path d="M2 17l10 5 10-5"/>
+                    <path d="M2 12l10 5 10-5"/>
+                </svg>
+                Continue with SAML SSO
+            </button>
         </div>
 
     </div>
+
+    <!-- Footer -->
+    <div class="lin-footer">
+        <span class="lin-footer-text">Don't have an account? </span>
+        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="lin-footer-link">Sign up</a>
+    </div>
+
 </div>
 
 @section Scripts {
