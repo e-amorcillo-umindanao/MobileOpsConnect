@@ -7,210 +7,608 @@
 }
 
 <style>
-    .register-wrapper {
-        min-height: 100vh;
-        background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
+    /* ============================================================
+       LINEAR-STYLE REGISTER PAGE — Premium Dark Aesthetic
+       (Matches Login Page Design)
+       ============================================================ */
+
+    /* ---- CSS Custom Properties ---- */
+    :root {
+        --lin-bg:             #0A0A0B;
+        --lin-card-bg:        rgba(255, 255, 255, 0.03);
+        --lin-card-border:    rgba(255, 255, 255, 0.06);
+        --lin-text-primary:   #F5F5F5;
+        --lin-text-secondary: rgba(255, 255, 255, 0.45);
+        --lin-text-muted:     rgba(255, 255, 255, 0.3);
+        --lin-input-bg:       rgba(255, 255, 255, 0.04);
+        --lin-input-border:   rgba(255, 255, 255, 0.08);
+        --lin-input-focus:    rgba(255, 255, 255, 0.15);
+        --lin-primary:        #5E5ADB;
+        --lin-focus-ring:     rgba(99, 102, 241, 0.2);
+        --lin-divider:        rgba(255, 255, 255, 0.06);
+        --lin-link:           rgba(255, 255, 255, 0.7);
+        --lin-link-hover:     #FFFFFF;
+        --lin-label:          rgba(255, 255, 255, 0.55);
+        --lin-placeholder:    rgba(255, 255, 255, 0.2);
+        --lin-social-bg:      rgba(255, 255, 255, 0.04);
+        --lin-social-border:  rgba(255, 255, 255, 0.08);
+        --lin-social-hover-bg:    rgba(255, 255, 255, 0.07);
+        --lin-social-hover-border: rgba(255, 255, 255, 0.12);
+        --lin-social-text:    rgba(255, 255, 255, 0.8);
     }
 
-    .register-card {
-        border: none;
-        border-radius: 1rem;
-        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08), 0 0.125rem 0.5rem rgba(0, 0, 0, 0.04);
+    /* ---- Reset & Base ---- */
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: var(--lin-bg) !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
         overflow: hidden;
     }
 
-    .register-brand-bar {
-        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-        padding: 2rem 2rem 1.75rem;
-        text-align: center;
-    }
-
-        .register-brand-bar h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: .025em;
-            margin: 0;
-            color: #fff;
-        }
-
-        .register-brand-bar p {
-            margin: .5rem 0 0;
-            font-size: .875rem;
-            color: rgba(255, 255, 255, .8);
-        }
-
-    .register-brand-icon {
-        width: 56px;
-        height: 56px;
-        background: rgba(255, 255, 255, .15);
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: .75rem;
-    }
-
-        .register-brand-icon svg {
-            width: 28px;
-            height: 28px;
-            fill: #fff;
-        }
-
-    .register-body {
-        padding: 2rem 2rem 1.5rem;
-    }
-
-    .form-floating > .form-control {
-        border-radius: .5rem;
-        border: 1px solid #dee2e6;
-        transition: border-color .2s ease, box-shadow .2s ease;
-    }
-
-        .form-floating > .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 .2rem rgba(13, 110, 253, .15);
-        }
-
-    .btn-register {
-        border-radius: .5rem;
-        padding: .75rem 1.25rem;
-        font-weight: 600;
-        font-size: 1rem;
-        letter-spacing: .025em;
-        transition: background-color .2s ease, box-shadow .2s ease;
-    }
-
-        .btn-register:hover {
-            box-shadow: 0 .25rem .75rem rgba(13, 110, 253, .35);
-        }
-
-    .register-divider {
+    /* ---- Full-Page Wrapper ---- */
+    .lin-page {
+        position: relative;
+        width: 100%;
+        height: 100vh;
         display: flex;
         align-items: center;
-        gap: .75rem;
-        color: #adb5bd;
-        font-size: .8125rem;
-        margin: 1.5rem 0;
+        justify-content: center;
+        flex-direction: column;
+        overflow: hidden;
     }
 
-        .register-divider::before,
-        .register-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #dee2e6;
-        }
-
-    .register-links a {
-        color: #6c757d;
-        text-decoration: none;
-        font-size: .8125rem;
-        transition: color .2s ease;
+    /* ---- Animated Mesh Gradient Background ---- */
+    .lin-gradient-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
     }
 
-        .register-links a:hover {
-            color: #0d6efd;
-            text-decoration: underline;
-        }
+    .lin-gradient-bg .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.6;
+        will-change: transform;
+    }
 
-    .external-btn {
-        border-radius: .5rem;
-        padding: .5rem 1.25rem;
+    .blob-1 {
+        width: 55vw;
+        height: 55vw;
+        max-width: 700px;
+        max-height: 700px;
+        background: #5B2DA0;
+        top: -15%;
+        left: -10%;
+        animation: blobDrift1 25s ease-in-out infinite alternate;
+    }
+
+    .blob-2 {
+        width: 50vw;
+        height: 50vw;
+        max-width: 650px;
+        max-height: 650px;
+        background: #3B38E8;
+        top: 10%;
+        right: -15%;
+        animation: blobDrift2 28s ease-in-out infinite alternate;
+    }
+
+    .blob-3 {
+        width: 45vw;
+        height: 45vw;
+        max-width: 600px;
+        max-height: 600px;
+        background: #0EA5E9;
+        bottom: -20%;
+        left: 20%;
+        animation: blobDrift3 22s ease-in-out infinite alternate;
+    }
+
+    .blob-4 {
+        width: 40vw;
+        height: 40vw;
+        max-width: 550px;
+        max-height: 550px;
+        background: #A855F7;
+        bottom: 5%;
+        right: 10%;
+        animation: blobDrift4 26s ease-in-out infinite alternate;
+    }
+
+    .blob-5 {
+        width: 60vw;
+        height: 60vw;
+        max-width: 750px;
+        max-height: 750px;
+        background: #1E1B4B;
+        top: 30%;
+        left: 30%;
+        animation: blobDrift5 30s ease-in-out infinite alternate;
+    }
+
+    @@keyframes blobDrift1 {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(15vw, 12vh) scale(1.15); }
+    }
+    @@keyframes blobDrift2 {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(-12vw, 18vh) scale(1.1); }
+    }
+    @@keyframes blobDrift3 {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(10vw, -14vh) scale(1.2); }
+    }
+    @@keyframes blobDrift4 {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(-18vw, -10vh) scale(1.08); }
+    }
+    @@keyframes blobDrift5 {
+        0%   { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(8vw, 8vh) scale(0.9); }
+    }
+
+    /* ---- Noise / Grain Overlay ---- */
+    .lin-page::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-repeat: repeat;
+        background-size: 128px 128px;
+    }
+
+    /* ---- Register Card ---- */
+    .lin-card {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 400px;
+        background: var(--lin-card-bg);
+        border: 1px solid var(--lin-card-border);
+        border-radius: 16px;
+        backdrop-filter: blur(40px) saturate(150%);
+        -webkit-backdrop-filter: blur(40px) saturate(150%);
+        padding: 40px;
+        box-shadow:
+            0 0 0 1px rgba(255, 255, 255, 0.03),
+            0 8px 40px rgba(0, 0, 0, 0.4);
+
+        /* Fade-in animation */
+        animation: cardFadeIn 0.5s ease-out 0.1s both;
+    }
+
+    @@keyframes cardFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* ---- Logo ---- */
+    .lin-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 32px;
+    }
+
+    .lin-logo img {
+        height: 70px;
+        width: auto;
+        object-fit: contain;
+    }
+
+    /* ---- Typography ---- */
+    .lin-heading {
+        color: var(--lin-text-primary);
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.4px;
+        text-align: center;
+        margin: 0 0 8px 0;
+    }
+
+    .lin-subtitle {
+        color: var(--lin-text-secondary);
+        font-size: 14px;
+        font-weight: 400;
+        text-align: center;
+        margin: 0 0 32px 0;
+    }
+
+    /* ---- Form Elements ---- */
+    .lin-form-group {
+        margin-bottom: 20px;
+    }
+
+    .lin-label {
+        display: block;
+        font-size: 13px;
         font-weight: 500;
-        font-size: .875rem;
+        color: var(--lin-label);
+        margin-bottom: 6px;
+    }
+
+    .lin-input {
+        width: 100%;
+        padding: 10px 14px;
+        background: var(--lin-input-bg);
+        border: 1px solid var(--lin-input-border);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #FFFFFF;
+        outline: none;
+        transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+        box-sizing: border-box;
+    }
+
+    .lin-input::placeholder {
+        color: var(--lin-placeholder);
+    }
+
+    .lin-input:focus {
+        border-color: var(--lin-input-focus);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+
+    /* ---- Primary Button ---- */
+    .lin-btn-primary {
+        display: block;
+        width: 100%;
+        padding: 10px 16px;
+        background: linear-gradient(135deg, #5B4CDB, #6C5CE7);
+        color: #FFFFFF;
+        font-size: 14px;
+        font-weight: 500;
+        font-family: inherit;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: opacity 0.15s ease, transform 0.1s ease;
+        margin-bottom: 24px;
+    }
+
+    .lin-btn-primary:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .lin-btn-primary:active {
+        transform: translateY(0px);
+        opacity: 0.8;
+    }
+
+    .lin-btn-primary:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    /* ---- Divider ---- */
+    .lin-divider {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        margin-bottom: 24px;
+    }
+
+    .lin-divider::before,
+    .lin-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--lin-divider);
+    }
+
+    .lin-divider-text {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--lin-text-muted);
+        padding: 0 12px;
+        flex-shrink: 0;
+    }
+
+    /* ---- Social Login Buttons ---- */
+    .lin-social-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .lin-btn-social {
+        width: 100%;
+        padding: 10px 16px;
+        background: var(--lin-social-bg);
+        border: 1px solid var(--lin-social-border);
+        border-radius: 8px;
+        color: var(--lin-social-text);
+        font-size: 14px;
+        font-weight: 400;
+        font-family: inherit;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .lin-btn-social:hover {
+        background: var(--lin-social-hover-bg);
+        border-color: var(--lin-social-hover-border);
+    }
+
+    .lin-btn-social:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    .lin-btn-social svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    /* ---- Footer ---- */
+    .lin-footer {
+        position: relative;
+        z-index: 2;
+        margin-top: 24px;
+        text-align: center;
+        font-size: 13px;
+        animation: cardFadeIn 0.5s ease-out 0.25s both;
+    }
+
+    .lin-footer-text {
+        color: rgba(255, 255, 255, 0.35);
+    }
+
+    .lin-footer-link {
+        color: var(--lin-link);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.15s ease;
+    }
+
+    .lin-footer-link:hover {
+        color: var(--lin-link-hover);
+        text-decoration: underline;
+    }
+
+    /* ---- Validation Errors ---- */
+    .lin-validation-error {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-bottom: 20px;
+        color: #fca5a5;
+        font-size: 13px;
+    }
+
+    .lin-field-error {
+        color: #f87171;
+        font-size: 12px;
+        margin-top: 4px;
+    }
+
+    /* ---- Password Requirements ---- */
+    .lin-password-hint {
+        margin-top: 8px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        background: rgba(99, 102, 241, 0.06);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+
+    .lin-password-hint p {
+        margin: 0 0 6px 0;
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.45);
+    }
+
+    .lin-password-hint ul {
+        margin: 0;
+        padding-left: 16px;
+        list-style: none;
+    }
+
+    .lin-password-hint ul li {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 2px;
+        position: relative;
+        padding-left: 4px;
+    }
+
+    .lin-password-hint ul li::before {
+        content: '•';
+        position: absolute;
+        left: -12px;
+        color: rgba(99, 102, 241, 0.5);
+    }
+
+    /* ---- Focus Rings for Keyboard Nav ---- */
+    *:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        border-radius: 4px;
+    }
+
+    a:focus-visible {
+        border-radius: 4px;
+    }
+
+    /* ---- Responsive Design ---- */
+    @@media (max-width: 480px) {
+        .lin-card {
+            max-width: 100%;
+            margin: 0 16px;
+            padding: 32px 24px;
+            border-radius: 12px;
+        }
+
+        .blob {
+            transform: scale(0.7) !important;
+        }
+    }
+
+    @@media (max-width: 360px) {
+        .lin-card {
+            padding: 24px 20px;
+        }
+
+        .lin-heading {
+            font-size: 21px;
+        }
+
+        .lin-subtitle {
+            font-size: 13px;
+        }
+
+        .lin-input,
+        .lin-btn-primary,
+        .lin-btn-social {
+            font-size: 13px;
+        }
+
+        .lin-label {
+            font-size: 12px;
+        }
     }
 </style>
 
-<div class="register-wrapper d-flex align-items-center justify-content-center py-4">
-    <div class="w-100" style="max-width: 440px;">
+<div class="lin-page">
 
-        <div class="register-card">
+    <!-- Animated Mesh Gradient Background -->
+    <div class="lin-gradient-bg" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
+        <div class="blob blob-5"></div>
+    </div>
 
-            <!-- Brand Header -->
-            <div class="register-brand-bar">
-                <div class="register-brand-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48
-                                 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93
-                                 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54
-                                 c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2
-                                 c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41
-                                 c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
-                    </svg>
-                </div>
-                <h1>MobileOps Connect</h1>
-                <p>Create your account</p>
-            </div>
+    <!-- Register Card -->
+    <div class="lin-card">
 
-            <!-- Form Body -->
-            <div class="register-body">
-                <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger small py-2" role="alert"></div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.Email" class="form-control" autocomplete="username"
-                               aria-required="true" placeholder="name@example.com" />
-                        <label asp-for="Input.Email" class="form-label">Email address</label>
-                        <span asp-validation-for="Input.Email" class="text-danger small"></span>
-                    </div>
-
-                    <div class="form-floating mb-3">
-                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password"
-                               aria-required="true" placeholder="password" />
-                        <label asp-for="Input.Password" class="form-label">Password</label>
-                        <span asp-validation-for="Input.Password" class="text-danger small"></span>
-                    </div>
-
-                    <div class="form-floating mb-4">
-                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password"
-                               aria-required="true" placeholder="password" />
-                        <label asp-for="Input.ConfirmPassword" class="form-label">Confirm password</label>
-                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
-                    </div>
-
-                    <div class="d-grid mb-3">
-                        <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg btn-register">
-                            Create Account
-                        </button>
-                    </div>
-
-                </form>
-
-                <!-- External Logins -->
-                @if ((Model.ExternalLogins?.Count ?? 0) > 0)
-                {
-                    <div class="register-divider">or sign up with</div>
-
-                    <form id="external-account" asp-page="./ExternalLogin"
-                          asp-route-returnUrl="@Model.ReturnUrl" method="post">
-                        <div class="d-grid gap-2">
-                            @foreach (var provider in Model.ExternalLogins!)
-                            {
-                                <button type="submit" class="btn btn-outline-secondary external-btn"
-                                        name="provider" value="@provider.Name"
-                                        title="Register using your @provider.DisplayName account">
-                                    @provider.DisplayName
-                                </button>
-                            }
-                        </div>
-                    </form>
-                }
-
-                <!-- Bottom Links -->
-                <div class="register-links text-center mt-4 pt-3 border-top">
-                    <p class="mb-0">
-                        <span class="text-muted small">Already have an account?</span>
-                        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Model.ReturnUrl"
-                           class="fw-semibold" style="color:#0d6efd;">
-                            Sign in
-                        </a>
-                    </p>
-                </div>
-            </div>
+        <!-- Logo -->
+        <div class="lin-logo">
+            <img src="~/images/mobileops-logo.jpg" alt="MobileOps Connect Logo" />
         </div>
 
+        <!-- Heading -->
+        <h1 class="lin-heading">Create your account</h1>
+        <p class="lin-subtitle">Join MobileOps Connect to get started</p>
+
+        <!-- Register Form -->
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+
+            <!-- Validation Summary -->
+            <div asp-validation-summary="ModelOnly" class="lin-validation-error" role="alert"></div>
+
+            <!-- Email Field -->
+            <div class="lin-form-group">
+                <label asp-for="Input.Email" class="lin-label">Email address</label>
+                <input asp-for="Input.Email"
+                       class="lin-input"
+                       autocomplete="username"
+                       aria-required="true"
+                       aria-label="Email address"
+                       placeholder="you@example.com" />
+                <span asp-validation-for="Input.Email" class="lin-field-error"></span>
+            </div>
+
+            <!-- Password Field -->
+            <div class="lin-form-group">
+                <label asp-for="Input.Password" class="lin-label">Password</label>
+                <input asp-for="Input.Password"
+                       class="lin-input"
+                       autocomplete="new-password"
+                       aria-required="true"
+                       aria-label="Password"
+                       placeholder="••••••••" />
+                <span asp-validation-for="Input.Password" class="lin-field-error"></span>
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="lin-form-group">
+                <label asp-for="Input.ConfirmPassword" class="lin-label">Confirm password</label>
+                <input asp-for="Input.ConfirmPassword"
+                       class="lin-input"
+                       autocomplete="new-password"
+                       aria-required="true"
+                       aria-label="Confirm password"
+                       placeholder="••••••••" />
+                <span asp-validation-for="Input.ConfirmPassword" class="lin-field-error"></span>
+            </div>
+
+            <!-- Password Requirements Hint -->
+            <div class="lin-password-hint">
+                <p>Password requirements</p>
+                <ul>
+                    <li>At least 6 characters long</li>
+                    <li>At least one uppercase letter (A–Z)</li>
+                    <li>At least one lowercase letter (a–z)</li>
+                    <li>At least one digit (0–9)</li>
+                    <li>At least one special character (!@@#$%^&*)</li>
+                </ul>
+            </div>
+
+            <!-- Submit Button -->
+            <button id="registerSubmit" type="submit" class="lin-btn-primary" style="margin-top: 24px;">
+                Create Account
+            </button>
+
+        </form>
+
+        <!-- External Logins -->
+        @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+        {
+            <div class="lin-divider">
+                <span class="lin-divider-text">or sign up with</span>
+            </div>
+
+            <form id="external-account" asp-page="./ExternalLogin"
+                  asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div class="lin-social-buttons">
+                    @foreach (var provider in Model.ExternalLogins!)
+                    {
+                        <button type="submit" class="lin-btn-social"
+                                name="provider" value="@provider.Name"
+                                title="Sign up using your @provider.DisplayName account">
+                            @provider.DisplayName
+                        </button>
+                    }
+                </div>
+            </form>
+        }
+
     </div>
+
+    <!-- Footer -->
+    <div class="lin-footer">
+        <span class="lin-footer-text">Already have an account? </span>
+        <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Model.ReturnUrl" class="lin-footer-link">Sign in</a>
+    </div>
+
 </div>
 
 @section Scripts {
