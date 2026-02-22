@@ -46,7 +46,11 @@ else
 builder.Services.AddScoped<INotificationService, FcmNotificationService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
-// === END FIREBASE SETUP ===
+
+// === EXTERNAL API SERVICES ===
+builder.Services.AddHttpClient<ExchangeRateService>();
+builder.Services.AddHttpClient<HolidayService>();
+// === END EXTERNAL API SERVICES ===
 
 var app = builder.Build();
 

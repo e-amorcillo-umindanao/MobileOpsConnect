@@ -24,8 +24,9 @@ namespace MobileOpsConnect.Controllers
         private readonly IHubContext<InventoryHub> _hubContext;
         private readonly IEmailService _emailService;
         private readonly IAuditService _auditService;
+        private readonly HolidayService _holidayService;
 
-        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService)
+        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService, HolidayService holidayService)
         {
             _context = context;
             _userManager = userManager;
@@ -33,6 +34,7 @@ namespace MobileOpsConnect.Controllers
             _hubContext = hubContext;
             _emailService = emailService;
             _auditService = auditService;
+            _holidayService = holidayService;
         }
 
         // GET: LeaveRequests
@@ -109,8 +111,14 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: LeaveRequests/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            // Fetch Philippine public holidays from Nager.Date API
+            var holidays = await _holidayService.GetHolidaysAsync("PH");
+            ViewBag.Holidays = holidays;
+            // Serialize for client-side JavaScript usage
+            ViewBag.HolidaysJson = System.Text.Json.JsonSerializer.Serialize(
+                holidays.Select(h => new { date = h.Date.ToString("yyyy-MM-dd"), name = h.LocalName, nameEn = h.Name }));
             return View();
         }
 

@@ -14,12 +14,14 @@ namespace MobileOpsConnect.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IAuditService _auditService;
+        private readonly ExchangeRateService _exchangeRateService;
 
-        public AccountingController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IAuditService auditService)
+        public AccountingController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IAuditService auditService, ExchangeRateService exchangeRateService)
         {
             _context = context;
             _userManager = userManager;
             _auditService = auditService;
+            _exchangeRateService = exchangeRateService;
         }
 
         // GET: Accounting
@@ -56,6 +58,10 @@ namespace MobileOpsConnect.Controllers
             ViewBag.TotalIncome = entries.Where(a => a.Type == "Income").Sum(a => a.Amount);
             ViewBag.TotalExpense = entries.Where(a => a.Type == "Expense").Sum(a => a.Amount);
             ViewBag.NetResult = ViewBag.TotalIncome - ViewBag.TotalExpense;
+
+            // Fetch live exchange rates from ExchangeRate-API
+            var exchangeRates = await _exchangeRateService.GetRatesAsync("PHP");
+            ViewBag.ExchangeRates = exchangeRates;
 
             return View(entries);
         }

@@ -116,6 +116,104 @@
         </div>
     </div>
 </div>
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LIVE EXCHANGE RATES (ExchangeRate-API)          -->
+<!-- ═══════════════════════════════════════════════ -->
+@{
+    var exchangeRates = (MobileOpsConnect.Services.ExchangeRateResult?)ViewBag.ExchangeRates;
+    var targetCurrencies = new[] { "USD", "EUR", "GBP", "JPY", "SGD", "AUD" };
+    var currencyIcons = new Dictionary<string, string>
+    {
+        { "USD", "bi-currency-dollar" },
+        { "EUR", "bi-currency-euro" },
+        { "GBP", "bi-currency-pound" },
+        { "JPY", "bi-currency-yen" },
+        { "SGD", "bi-currency-dollar" },
+        { "AUD", "bi-currency-dollar" }
+    };
+    var currencyNames = new Dictionary<string, string>
+    {
+        { "USD", "US Dollar" },
+        { "EUR", "Euro" },
+        { "GBP", "British Pound" },
+        { "JPY", "Japanese Yen" },
+        { "SGD", "Singapore Dollar" },
+        { "AUD", "Australian Dollar" }
+    };
+}
+
+<div class="card moc-card border-0 shadow-sm mb-4 anim-fade-in anim-delay-2">
+    <div class="card-header bg-transparent border-0 p-4 pb-0">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <div class="moc-icon-box bg-secondary-50 rounded-3">
+                    <i class="bi bi-globe2 text-secondary-color fs-5"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0 letter-tight">
+                        <i class="bi bi-broadcast me-1"></i> Live Exchange Rates
+                    </h6>
+                    <span class="text-muted text-xs">
+                        Base: PHP (Philippine Peso) &bull;
+                        @if (exchangeRates != null && exchangeRates.IsSuccess)
+                        {
+                            <span>Updated: @exchangeRates.LastUpdated</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">API unavailable</span>
+                        }
+                    </span>
+                </div>
+            </div>
+            <span class="badge rounded-pill bg-indigo-50 text-indigo px-3 py-2 text-xs fw-semibold">
+                <i class="bi bi-lightning-charge-fill me-1"></i> ExchangeRate-API
+            </span>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        @if (exchangeRates != null && exchangeRates.IsSuccess && exchangeRates.Rates.Any())
+        {
+            <div class="row g-3">
+                @foreach (var code in targetCurrencies)
+                {
+                    if (exchangeRates.Rates.TryGetValue(code, out var rate))
+                    {
+                        var icon = currencyIcons.GetValueOrDefault(code, "bi-currency-exchange");
+                        var name = currencyNames.GetValueOrDefault(code, code);
+                        <div class="col-6 col-md-4 col-lg-2">
+                            <div class="rounded-3 p-3 text-center h-100" style="background:rgba(14,165,233,0.04);border:1px solid rgba(14,165,233,0.08);">
+                                <div class="mx-auto mb-2" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(14,165,233,0.08);border-radius:0.5rem;">
+                                    <i class="bi @icon text-secondary-color"></i>
+                                </div>
+                                <p class="fw-bold mb-0 letter-tight" style="font-size:0.95rem;">@rate.ToString("F4")</p>
+                                <span class="text-muted text-xs fw-semibold">@code</span>
+                                <br />
+                                <span class="text-muted" style="font-size:0.65rem;">@name</span>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            <div class="mt-3 pt-2 text-center">
+                <span class="text-muted text-xs">
+                    <i class="bi bi-info-circle me-1"></i>
+                    1 PHP = displayed rate in target currency &bull; Data from <strong>open.er-api.com</strong>
+                </span>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-4">
+                <div class="moc-icon-box-lg rounded-3 mx-auto mb-3" style="width:56px;height:56px;background:rgba(239,68,68,0.06);">
+                    <i class="bi bi-wifi-off fs-3" style="color:#ef4444;"></i>
+                </div>
+                <p class="fw-semibold text-sm mb-1 letter-tight">Exchange rates unavailable</p>
+                <span class="text-muted text-xs">Unable to fetch data from the Exchange Rate API. Please check your internet connection.</span>
+            </div>
+        }
+    </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════ -->
 <!-- FILTER PANEL                                    -->
