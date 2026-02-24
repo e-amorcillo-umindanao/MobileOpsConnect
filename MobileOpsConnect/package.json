@@ -14,5 +14,8 @@
   "type": "commonjs",
   "devDependencies": {
     "tailwindcss": "^3.4.19"
+  },
+  "dependencies": {
+    "preline": "^2.0.3"
   }
 }

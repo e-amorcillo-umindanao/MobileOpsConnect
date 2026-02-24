@@ -3,7 +3,8 @@ module.exports = {
   content: [
     './Views/**/*.cshtml',
     './Areas/Identity/Pages/**/*.cshtml',
-    './wwwroot/js/**/*.js'
+    './wwwroot/js/**/*.js',
+    './node_modules/preline/dist/*.js'
   ],
   theme: {
     extend: {
@@ -27,5 +28,7 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('preline/plugin')
+  ],
 }

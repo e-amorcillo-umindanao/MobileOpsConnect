@@ -164,22 +164,18 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- TAB PILLS — Active / Archived                   -->
+<!-- TAB PILLS — Active / Archived (Preline UI)      -->
 <!-- ═══════════════════════════════════════════════ -->
-<div class="flex gap-2 mb-6 anim-fade-in">
-    <button class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs px-6 py-2 font-semibold inv-tab-btn active"
-            data-tab="active"
-            style="background:var(--moc-primary);color:#fff;border:none;border-radius:0.5rem;">
-        <i class="bi bi-box-seam mr-1"></i> Active
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill ml-1" style="background:rgba(255,255,255,0.2);">@activeCount</span>
+<nav class="flex gap-2 mb-6" aria-label="Tabs" role="tablist">
+    <button type="button" class="hs-tab-active:bg-moc-primary hs-tab-active:text-white hs-tab-active:border-transparent py-2 px-4 inline-flex items-center gap-2 bg-white text-sm font-medium text-moc-text-muted rounded-lg shadow-sm hover:text-moc-text border border-moc-border active" id="inv-active-tab" data-hs-tab="#inv-active-section" aria-controls="inv-active-section" role="tab">
+        <i class="bi bi-box-seam"></i> Active
+        <span class="hs-tab-active:bg-white/20 hs-tab-active:text-white inline-flex items-center py-0.5 px-2.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">@activeCount</span>
     </button>
-    <button class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs px-6 py-2 font-semibold inv-tab-btn"
-            data-tab="archived"
-            style="background:var(--moc-surface);color:var(--moc-text-secondary);border:1px solid var(--moc-border);border-radius:0.5rem;">
-        <i class="bi bi-archive mr-1"></i> Archived
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-purple-50 text-purple ml-1">@outOfStockCount</span>
+    <button type="button" class="hs-tab-active:bg-moc-primary hs-tab-active:text-white hs-tab-active:border-transparent py-2 px-4 inline-flex items-center gap-2 bg-white text-sm font-medium text-moc-text-muted rounded-lg shadow-sm hover:text-moc-text border border-moc-border" id="inv-archived-tab" data-hs-tab="#inv-archived-section" aria-controls="inv-archived-section" role="tab">
+        <i class="bi bi-archive"></i> Archived
+        <span class="hs-tab-active:bg-white/20 hs-tab-active:text-white inline-flex items-center py-0.5 px-2.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-600">@outOfStockCount</span>
     </button>
-</div>
+</nav>
 
 <!-- ═══════════════════════════════════════════════ -->
 <!-- PRODUCT TABLE / CARDS                           -->
@@ -209,7 +205,7 @@
         <!-- ══════════════════════════════════════ -->
         <!-- ACTIVE PRODUCTS SECTION               -->
         <!-- ══════════════════════════════════════ -->
-        <div id="inv-active-section">
+        <div id="inv-active-section" role="tabpanel" aria-labelledby="inv-active-tab">
 
             @if (activeProducts.Count == 0)
             {
@@ -225,99 +221,115 @@
             {
                 <!-- Desktop Table (md+) -->
                 <div class="overflow-x-auto w-full hidden md:block">
-                    <table class="w-full text-left border-collapse align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
-                        <thead>
-                            <tr style="border:none;">
-                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 ps-3 py-6" style="letter-spacing:0.05em;">
-                                    <i class="bi bi-upc-scan mr-1"></i> SKU
-                                </th>
-                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
-                                    <i class="bi bi-box mr-1"></i> Product
-                                </th>
-                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
-                                    <i class="bi bi-tag mr-1"></i> Category
-                                </th>
-                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-center" style="letter-spacing:0.05em;">
-                                    <i class="bi bi-layers mr-1"></i> Stock
-                                </th>
-                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-right" style="letter-spacing:0.05em;">
-                                    <i class="bi bi-currency-exchange mr-1"></i> Price
-                                </th>
-                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 pe-3 py-6 text-right" style="letter-spacing:0.05em;">
-                                    <i class="bi bi-lightning mr-1"></i> Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in activeProducts)
-                            {
-                                <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-                                    <td class="border-0 ps-3 py-6" style="border-radius:0.75rem 0 0 0.75rem;">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-indigo-50 text-indigo px-2 py-1 font-semibold text-xs">
-                                            @item.SKU
-                                        </span>
-                                    </td>
-                                    <td class="border-0 py-6">
-                                        <div class="flex items-center gap-2">
-                                            <div class="moc-icon-box bg-purple-50 rounded-3" style="width:36px;height:36px;min-width:36px;">
-                                                <i class="bi bi-box-seam text-purple" style="font-size:0.85rem;"></i>
-                                            </div>
-                                            <span class="font-semibold text-sm letter-tight">@item.Name</span>
-                                        </div>
-                                    </td>
-                                    <td class="border-0 py-6">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-cyan-50 text-cyan px-2 py-1 font-semibold text-xs">
-                                            <i class="bi bi-tag-fill mr-1"></i>@item.Category
-                                        </span>
-                                    </td>
-                                    <td class="border-0 py-6 text-center">
-                                        @if (item.StockQuantity <= 10)
-                                        {
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-red-50 text-red px-6 py-2 font-semibold text-xs">
-                                                <i class="bi bi-exclamation-triangle-fill mr-1"></i> @item.StockQuantity
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-green-50 text-green px-6 py-2 font-semibold text-xs">
-                                                <i class="bi bi-check-circle-fill mr-1"></i> @item.StockQuantity
-                                            </span>
-                                        }
-                                    </td>
-                                    <td class="border-0 py-6 text-right">
-                                        <span class="font-bold text-sm letter-tight">₱@item.Price</span>
-                                    </td>
-                                    <td class="border-0 pe-3 py-6 text-right" style="border-radius:0 0.75rem 0.75rem 0;">
-                                        <div class="flex justify-end gap-1">
-                                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
+                    <div class="flex flex-col">
+                        <div class="-m-1.5 overflow-x-auto">
+                            <div class="p-1.5 min-w-full inline-block align-middle">
+                                <div class="border border-moc-border rounded-xl shadow-sm overflow-hidden bg-white">
+                                    <table class="min-w-full divide-y divide-moc-border">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-4 text-start text-xs font-semibold text-moc-text-muted uppercase">
+                                                    <div class="flex items-center gap-x-2">
+                                                        <i class="bi bi-upc-scan"></i> SKU
+                                                    </div>
+                                                </th>
+                                                <th scope="col" class="px-6 py-4 text-start text-xs font-semibold text-moc-text-muted uppercase">
+                                                    <div class="flex items-center gap-x-2">
+                                                        <i class="bi bi-box"></i> Product
+                                                    </div>
+                                                </th>
+                                                <th scope="col" class="px-6 py-4 text-start text-xs font-semibold text-moc-text-muted uppercase">
+                                                    <div class="flex items-center gap-x-2">
+                                                        <i class="bi bi-tag"></i> Category
+                                                    </div>
+                                                </th>
+                                                <th scope="col" class="px-6 py-4 text-start text-xs font-semibold text-moc-text-muted uppercase">
+                                                    <div class="flex items-center gap-x-2">
+                                                        <i class="bi bi-layers"></i> Stock
+                                                    </div>
+                                                </th>
+                                                <th scope="col" class="px-6 py-4 text-start text-xs font-semibold text-moc-text-muted uppercase">
+                                                    <div class="flex items-center gap-x-2">
+                                                        <i class="bi bi-currency-exchange"></i> Price
+                                                    </div>
+                                                </th>
+                                                <th scope="col" class="px-6 py-4 text-end text-xs font-semibold text-moc-text-muted uppercase">
+                                                    Actions
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-moc-border">
+                                            @foreach (var item in activeProducts)
                                             {
-                                                <a asp-action="Edit" asp-route-id="@item.ProductID"
-                                                   class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs px-2 py-1 font-semibold"
-                                                   style="background:rgba(245,158,11,0.08);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.2);"
-                                                   title="Edit">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </a>
+                                                <tr class="hover:bg-gray-50 transition-colors">
+                                                    <td class="whitespace-nowrap px-6 py-4">
+                                                        <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-indigo-50 text-indigo-800">
+                                                            @item.SKU
+                                                        </span>
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-6 py-4">
+                                                        <div class="flex items-center gap-x-3">
+                                                            <div class="inline-flex justify-center items-center size-[38px] rounded-lg bg-purple-100 text-purple-600">
+                                                                <i class="bi bi-box-seam"></i>
+                                                            </div>
+                                                            <div class="grow">
+                                                                <span class="block text-sm font-semibold text-gray-800">@item.Name</span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-6 py-4">
+                                                        <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">
+                                                            <i class="bi bi-tag-fill"></i> @item.Category
+                                                        </span>
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-6 py-4">
+                                                        @if (item.StockQuantity <= 10)
+                                                        {
+                                                            <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                                <i class="bi bi-exclamation-circle-fill"></i> @item.StockQuantity Low
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                                <i class="bi bi-check-circle-fill"></i> @item.StockQuantity
+                                                            </span>
+                                                        }
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-6 py-4">
+                                                        <span class="text-sm font-semibold text-gray-800">₱@item.Price</span>
+                                                    </td>
+                                                    <td class="whitespace-nowrap px-6 py-4 text-end">
+                                                        <div class="hs-dropdown [--placement:bottom-right] relative inline-block">
+                                                            <button id="hs-dropdown-@item.ProductID" type="button" class="hs-dropdown-toggle py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-moc-border bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+                                                                Options
+                                                                <i class="bi bi-chevron-down hs-dropdown-open:rotate-180 transition-transform duration-200"></i>
+                                                            </button>
+                                                            <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-40 bg-white shadow-md rounded-lg p-2 mt-2 after:h-4 after:absolute after:-bottom-4 after:start-0 after:w-full before:h-4 before:absolute before:-top-4 before:start-0 before:w-full z-10 border border-moc-border" role="menu" aria-orientation="vertical" aria-labelledby="hs-dropdown-@item.ProductID">
+                                                                <a asp-action="Details" asp-route-id="@item.ProductID" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100">
+                                                                    <i class="bi bi-eye"></i> View Details
+                                                                </a>
+                                                                @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
+                                                                {
+                                                                    <a asp-action="Edit" asp-route-id="@item.ProductID" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100">
+                                                                        <i class="bi bi-pencil-square"></i> Edit Product
+                                                                    </a>
+                                                                    <div class="my-2 border-t border-moc-border"></div>
+                                                                    <a asp-action="Delete" asp-route-id="@item.ProductID" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-red-600 hover:bg-gray-100 focus:outline-none focus:bg-gray-100">
+                                                                        <i class="bi bi-trash3"></i> Delete
+                                                                    </a>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                             }
-                                            <a asp-action="Details" asp-route-id="@item.ProductID"
-                                               class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs btn-moc-outline px-2 py-1"
-                                               title="Details">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
-                                            {
-                                                <a asp-action="Delete" asp-route-id="@item.ProductID"
-                                                   class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs px-2 py-1 font-semibold"
-                                                   style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);"
-                                                   title="Delete">
-                                                    <i class="bi bi-trash3"></i>
-                                                </a>
-                                            }
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Mobile Card List (below md) -->
@@ -395,7 +407,7 @@
         <!-- ══════════════════════════════════════ -->
         <!-- ARCHIVED PRODUCTS SECTION (hidden)    -->
         <!-- ══════════════════════════════════════ -->
-        <div id="inv-archived-section" style="display:none;">
+        <div id="inv-archived-section" class="hidden" role="tabpanel" aria-labelledby="inv-archived-tab">
 
             @if (archivedProducts.Count == 0)
             {
@@ -537,45 +549,28 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
-<!-- TAB TOGGLE SCRIPT                               -->
+<!-- DYNAMIC HEADER UPDATE SCRIPT                    -->
 <!-- ═══════════════════════════════════════════════ -->
 <script>
-(function () {
-    const btns = document.querySelectorAll('.inv-tab-btn');
-    const activeSection = document.getElementById('inv-active-section');
-    const archivedSection = document.getElementById('inv-archived-section');
-    const tabLabel = document.getElementById('inv-tab-label');
-    const tabCount = document.getElementById('inv-tab-count');
-    const cardTitle = document.getElementById('inv-card-title');
-    const cardSubtitle = document.getElementById('inv-card-subtitle');
-    const cardBadges = document.getElementById('inv-card-badges');
-    const footerText = document.getElementById('inv-footer-text');
-    const footerBadges = document.getElementById('inv-footer-badges');
+    document.addEventListener('DOMContentLoaded', function () {
+        const activeTab = document.getElementById('inv-active-tab');
+        const archivedTab = document.getElementById('inv-archived-tab');
+        
+        const tabLabel = document.getElementById('inv-tab-label');
+        const tabCount = document.getElementById('inv-tab-count');
+        const cardTitle = document.getElementById('inv-card-title');
+        const cardSubtitle = document.getElementById('inv-card-subtitle');
+        const cardBadges = document.getElementById('inv-card-badges');
+        const footerText = document.getElementById('inv-footer-text');
+        const footerBadges = document.getElementById('inv-footer-badges');
 
-    const activeCount = @activeCount;
-    const archivedCount = @outOfStockCount;
-    const healthyCount = @healthyCount;
-    const lowStockCount = @lowStockCount;
+        const activeCount = @activeCount;
+        const archivedCount = @outOfStockCount;
+        const healthyCount = @healthyCount;
+        const lowStockCount = @lowStockCount;
 
-    btns.forEach(btn => {
-        btn.addEventListener('click', function () {
-            const tab = this.dataset.tab;
-
-            // Toggle active class + styles
-            btns.forEach(b => {
-                b.classList.remove('active');
-                b.style.background = 'var(--moc-surface)';
-                b.style.color = 'var(--moc-text-secondary)';
-                b.style.border = '1px solid var(--moc-border)';
-            });
-            this.classList.add('active');
-            this.style.background = 'var(--moc-primary)';
-            this.style.color = '#fff';
-            this.style.border = 'none';
-
-            if (tab === 'active') {
-                activeSection.style.display = '';
-                archivedSection.style.display = 'none';
+        if (activeTab) {
+            activeTab.addEventListener('click', () => {
                 tabLabel.textContent = 'Active Products';
                 tabCount.textContent = 'Showing ' + activeCount + ' item' + (activeCount !== 1 ? 's' : '');
                 cardTitle.textContent = 'Inventory Catalog';
@@ -585,9 +580,11 @@
                 footerText.innerHTML = '<i class="bi bi-info-circle mr-1"></i> Showing ' + activeCount + ' active product' + (activeCount !== 1 ? 's' : '');
                 footerBadges.innerHTML = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-green-50 text-green text-xs px-2 py-1">' + healthyCount + ' Healthy</span>' +
                     '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-red-50 text-red text-xs px-2 py-1">' + lowStockCount + ' Low</span>';
-            } else {
-                activeSection.style.display = 'none';
-                archivedSection.style.display = '';
+            });
+        }
+
+        if (archivedTab) {
+            archivedTab.addEventListener('click', () => {
                 tabLabel.textContent = 'Archived Products';
                 tabCount.textContent = 'Showing ' + archivedCount + ' item' + (archivedCount !== 1 ? 's' : '');
                 cardTitle.textContent = 'Archived Inventory';
@@ -595,10 +592,9 @@
                 cardBadges.innerHTML = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill text-xs px-2 py-1" style="background:rgba(100,116,139,0.1);color:#64748b;">' + archivedCount + ' Archived</span>';
                 footerText.innerHTML = '<i class="bi bi-info-circle mr-1"></i> Showing ' + archivedCount + ' archived product' + (archivedCount !== 1 ? 's' : '');
                 footerBadges.innerHTML = '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill text-xs px-2 py-1" style="background:rgba(100,116,139,0.1);color:#64748b;"><i class="bi bi-archive-fill mr-1"></i> Out of Stock</span>';
-            }
-        });
+            });
+        }
     });
-})();
 </script>
 
 
