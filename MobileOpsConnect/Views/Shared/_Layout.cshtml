@@ -22,7 +22,7 @@
     @if (ViewData["HideLayout"] is not true)
     {
         <header class="bg-white border-b border-moc-border sticky top-0 z-50">
-            <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between" role="navigation" aria-label="Main navigation">
+            <nav class="container mx-auto px-6 sm:px-6 lg:px-8 h-16 flex items-center justify-between" role="navigation" aria-label="Main navigation">
                 <div class="flex items-center gap-8">
                     <a class="flex items-center gap-2 font-semibold text-lg text-moc-text hover:opacity-80 transition-opacity" asp-area="" asp-controller="Home" asp-action="Index">
                         <i class="bi bi-shield-lock-fill text-moc-primary"></i>
@@ -33,21 +33,21 @@
                             var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
                             var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
                         }
-                        <a class="text-sm font-medium transition-colors hover:text-moc-text @(currentController == "Home" && (currentAction == "Index" || currentAction == "ManagerDashboard" || currentAction == "EmployeeDashboard") ? "text-moc-text" : "text-moc-text-muted")" asp-area="" asp-controller="Home" asp-action="Index">
+                        <a class="text-sm font-medium transition-colors hover:text-moc-text @(currentController =="Home" && (currentAction == "Index" || currentAction == "ManagerDashboard" || currentAction == "EmployeeDashboard") ? "text-moc-text" : "text-moc-text-muted")" asp-area="" asp-controller="Home" asp-action="Index">
                             <i class="bi bi-grid-1x2-fill mr-1.5"></i> Dashboard
                         </a>
                         @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
                         {
-                            <a class="text-sm font-medium transition-colors hover:text-moc-text @(currentController == "Accounting" ? "text-moc-text" : "text-moc-text-muted")" asp-area="" asp-controller="Accounting" asp-action="Index">
+                            <a class="text-sm font-medium transition-colors hover:text-moc-text @(currentController =="Accounting" ? "text-moc-text" : "text-moc-text-muted")" asp-area="" asp-controller="Accounting" asp-action="Index">
                                 <i class="bi bi-journal-text mr-1.5"></i> Accounting
                             </a>
                         }
-                        <a class="text-sm font-medium transition-colors hover:text-moc-text @(currentAction == "Privacy" ? "text-moc-text" : "text-moc-text-muted")" asp-area="" asp-controller="Home" asp-action="Privacy">
+                        <a class="text-sm font-medium transition-colors hover:text-moc-text @(currentAction =="Privacy" ? "text-moc-text" : "text-moc-text-muted")" asp-area="" asp-controller="Home" asp-action="Privacy">
                             <i class="bi bi-shield-check mr-1.5"></i> Privacy
                         </a>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-6">
                     <partial name="_LoginPartial" />
                 </div>
             </nav>
@@ -56,7 +56,7 @@
 
     @if (ViewData["HideLayout"] is not true)
     {
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex-grow flex flex-col">
+        <div class="container mx-auto px-6 sm:px-6 lg:px-8 flex-grow flex flex-col">
             <main role="main" class="pb-8 pt-6 flex-grow flex flex-col">
                 @RenderBody()
             </main>
@@ -72,8 +72,8 @@
     @if (ViewData["HideLayout"] is not true)
     {
         <footer class="bg-white border-t border-moc-border mt-auto py-6">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-moc-text-muted">
+            <div class="container mx-auto px-6 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-moc-text-muted">
                     <span class="flex items-center gap-1.5">
                         <i class="bi bi-shield-lock-fill opacity-50"></i>
                         &copy; 2026 MobileOpsConnect &mdash; All rights reserved.
@@ -104,11 +104,11 @@
             const container = document.getElementById('signalrToastContainer');
             const toast = document.createElement('div');
             toast.className = 'signalr-toast';
-            toast.innerHTML = `<div class="d-flex align-items-start gap-2">
+            toast.innerHTML = `<div class="flex items-start gap-2">
                 <span style="font-size:1.3rem;">${icon}</span>
                 <div>
-                    <strong class="d-block text-sm mb-1">${title}</strong>
-                    <span class="text-muted text-xs">${message}</span>
+                    <strong class="block text-sm mb-1">${title}</strong>
+                    <span class="text-moc-text-muted text-xs">${message}</span>
                 </div>
             </div>`;
             container.appendChild(toast);

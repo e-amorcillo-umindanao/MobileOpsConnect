@@ -4,69 +4,69 @@
     ViewData["Title"] = "Adjust Stock";
 }
 
-<div class="container py-4 anim-fade-in">
-    <div class="row justify-content-center">
-        <div class="col-md-7 col-lg-6">
+<div class="container py-6 anim-fade-in">
+    <div class="flex flex-wrap -mx-3 justify-center">
+        <div class="col-md-7 w-full lg:w-1/2 px-6">
             
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <a asp-action="Index" class="btn btn-moc-outline px-3 py-2 text-sm">
-                    <i class="bi bi-arrow-left me-1"></i> Back to Warehouse
+            <div class="flex justify-between items-center mb-6">
+                <a asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline px-6 py-2 text-sm">
+                    <i class="bi bi-arrow-left mr-1"></i> Back to Warehouse
                 </a>
-                <span class="text-muted text-xs">SKU: <span class="fw-semibold">@Model.SKU</span></span>
+                <span class="text-moc-text-muted text-xs">SKU: <span class="font-semibold">@Model.SKU</span></span>
             </div>
 
-            <div class="card moc-card border-0 shadow-lg overflow-hidden">
+            <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-lg overflow-hidden">
                 <!-- Header with Product Info -->
-                <div class="card-header bg-transparent border-0 p-4 pb-0 text-center">
-                    <div class="d-inline-flex align-items-center justify-content-center p-3 rounded-circle bg-indigo-50 mb-3" style="width: 80px; height: 80px;">
+                <div class="px-6 py-4 border-b border-moc-border bg-gray-50 bg-transparent border-0 p-6 pb-0 text-center">
+                    <div class="inline-flex items-center justify-center p-6 rounded-full bg-indigo-50 mb-6" style="width: 80px; height: 80px;">
                         <i class="bi bi-box-seam text-indigo" style="font-size: 2.5rem;"></i>
                     </div>
-                    <h3 class="fw-bold mb-1 letter-tight">@Model.Name</h3>
-                    <p class="text-muted text-sm mb-0">Adjust inventory levels</p>
+                    <h3 class="font-bold mb-1 letter-tight">@Model.Name</h3>
+                    <p class="text-moc-text-muted text-sm mb-0">Adjust inventory levels</p>
                 </div>
 
-                <div class="card-body p-4">
+                <div class="p-6 p-6">
                     <!-- Current Stock Display -->
-                    <div class="text-center mb-4 p-3 rounded-4 bg-light border">
-                         <span class="d-block text-uppercase text-xs fw-bold text-muted mb-1">Current Quantity</span>
-                        <h1 class="display-3 fw-bold mb-0 @(Model.StockQuantity <= 10 ? "text-danger" : "text-primary")" style="letter-spacing: -2px;">
+                    <div class="text-center mb-6 p-6 rounded-4 bg-light border">
+                         <span class="block text-uppercase text-xs font-bold text-moc-text-muted mb-1">Current Quantity</span>
+                        <h1 class="display-3 font-bold mb-0 @(Model.StockQuantity <= 10 ?"text-danger" : "text-primary")" style="letter-spacing: -2px;">
                             @Model.StockQuantity
                         </h1>
                          @if (Model.StockQuantity <= 10) {
-                            <div class="mt-2"><span class="badge bg-red-50 text-red"><i class="bi bi-exclamation-triangle-fill me-1"></i> Low Stock Warning</span></div>
+                            <div class="mt-2"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red"><i class="bi bi-exclamation-triangle-fill mr-1"></i> Low Stock Warning</span></div>
                          }
                     </div>
 
                     @if (TempData["Error"] != null)
                     {
-                        <div class="alert alert-danger shadow-sm border-0 d-flex align-items-center gap-2 mb-4">
+                        <div class="alert alert-danger shadow-sm border-0 flex items-center gap-2 mb-6">
                             <i class="bi bi-x-circle-fill fs-5"></i> @TempData["Error"]
                         </div>
                     }
 
-                    <div class="row g-3">
+                    <div class="flex flex-wrap -mx-3 g-3">
                         <!-- Stock In Form -->
-                        <div class="col-12">
-                            <div class="p-3 border rounded-4 bg-white shadow-sm" style="border-left: 5px solid var(--bs-success) !important;">
-                                <h6 class="text-success fw-bold mb-3 d-flex align-items-center gap-2">
+                        <div class="w-full px-6">
+                            <div class="p-6 border rounded-4 bg-white shadow-sm" style="border-left: 5px solid var(--bs-success) !important;">
+                                <h6 class="text-green-500 font-bold mb-6 flex items-center gap-2">
                                     <i class="bi bi-box-arrow-in-down fs-5"></i> Stock In
                                 </h6>
                                 <form asp-action="StockIn">
                                     <input type="hidden" name="id" value="@Model.ProductID" />
-                                    <div class="row g-2">
-                                        <div class="col-md-4">
+                                    <div class="flex flex-wrap -mx-3 g-2">
+                                        <div class="w-full md:w-1/3 px-6">
                                             <div class="form-floating">
-                                                <input type="number" name="quantity" class="form-control" id="qtyIn" placeholder="0" required min="1">
+                                                <input type="number" name="quantity" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" id="qtyIn" placeholder="0" required min="1">
                                                 <label for="qtyIn">Quantity</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-8">
+                                        <div class="w-full md:w-2/3 px-6">
                                             <div class="input-group">
                                                 <div class="form-floating flex-grow-1">
-                                                    <input type="text" name="notes" class="form-control" id="noteIn" placeholder="Reason" required>
+                                                    <input type="text" name="notes" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" id="noteIn" placeholder="Reason" required>
                                                     <label for="noteIn">Reason / Notes</label>
                                                 </div>
-                                                <button type="submit" class="btn btn-success fw-bold px-4">
+                                                <button type="submit" class="rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 font-bold px-6">
                                                     <i class="bi bi-plus-lg"></i>
                                                 </button>
                                             </div>
@@ -77,27 +77,27 @@
                         </div>
 
                         <!-- Stock Out Form -->
-                        <div class="col-12">
-                            <div class="p-3 border rounded-4 bg-white shadow-sm" style="border-left: 5px solid var(--bs-danger) !important;">
-                                <h6 class="text-danger fw-bold mb-3 d-flex align-items-center gap-2">
+                        <div class="w-full px-6">
+                            <div class="p-6 border rounded-4 bg-white shadow-sm" style="border-left: 5px solid var(--bs-danger) !important;">
+                                <h6 class="text-red-500 font-bold mb-6 flex items-center gap-2">
                                     <i class="bi bi-box-arrow-up fs-5"></i> Stock Out
                                 </h6>
                                 <form asp-action="StockOut">
                                     <input type="hidden" name="id" value="@Model.ProductID" />
-                                    <div class="row g-2">
-                                        <div class="col-md-4">
+                                    <div class="flex flex-wrap -mx-3 g-2">
+                                        <div class="w-full md:w-1/3 px-6">
                                             <div class="form-floating">
-                                                <input type="number" name="quantity" class="form-control" id="qtyOut" placeholder="0" required min="1">
+                                                <input type="number" name="quantity" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" id="qtyOut" placeholder="0" required min="1">
                                                 <label for="qtyOut">Quantity</label>
                                             </div>
                                         </div>
-                                        <div class="col-md-8">
+                                        <div class="w-full md:w-2/3 px-6">
                                             <div class="input-group">
                                                  <div class="form-floating flex-grow-1">
-                                                    <input type="text" name="notes" class="form-control" id="noteOut" placeholder="Reason" required>
+                                                    <input type="text" name="notes" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" id="noteOut" placeholder="Reason" required>
                                                     <label for="noteOut">Reason / Notes</label>
                                                 </div>
-                                                <button type="submit" class="btn btn-danger fw-bold px-4">
+                                                <button type="submit" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 font-bold px-6">
                                                     <i class="bi bi-dash-lg"></i>
                                                 </button>
                                             </div>

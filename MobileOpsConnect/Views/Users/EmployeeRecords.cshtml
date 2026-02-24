@@ -1,51 +1,51 @@
-@model List<MobileOpsConnect.Models.EmployeeRecordViewModel>
+﻿@model List<MobileOpsConnect.Models.EmployeeRecordViewModel>
 @{
     ViewData["Title"] = "Employee Records";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<div class="flex justify-between items-center mb-6">
     <h2>👥 Employee Records</h2>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-moc-outline">Back to Dashboard</a>
+    <a asp-controller="Home" asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline">Back to Dashboard</a>
 </div>
 
-<div class="card moc-card border-0 shadow-sm">
-    <div class="card-header bg-transparent border-0 p-4 pb-0">
-        <div class="d-flex align-items-center gap-2">
+<div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm">
+    <div class="px-6 py-4 border-b border-moc-border bg-gray-50 bg-transparent border-0 p-6 pb-0">
+        <div class="flex items-center gap-2">
             <div class="moc-icon-box bg-indigo-50 rounded-3">
                 <i class="bi bi-people-fill text-indigo fs-5"></i>
             </div>
             <div>
-                <h6 class="fw-bold mb-0 letter-tight">Staff Directory</h6>
-                <span class="text-muted text-xs">@Model.Count team members</span>
+                <h6 class="font-bold mb-0 letter-tight">Staff Directory</h6>
+                <span class="text-moc-text-muted text-xs">@Model.Count team members</span>
             </div>
         </div>
     </div>
-    <div class="card-body p-4 pt-3">
+    <div class="p-6 p-6 pt-3">
         @if (Model.Count == 0)
         {
-            <div class="text-center py-5">
-                <i class="bi bi-person-x text-muted" style="font-size: 3rem;"></i>
-                <p class="text-muted mt-2">No employee records found.</p>
+            <div class="text-center py-8">
+                <i class="bi bi-person-x text-moc-text-muted" style="font-size: 3rem;"></i>
+                <p class="text-moc-text-muted mt-2">No employee records found.</p>
             </div>
         }
         else
         {
             <!-- Desktop Table -->
-            <div class="table-responsive d-none d-md-block">
-                <table class="table table-hover align-middle mb-0">
+            <div class="overflow-x-auto w-full hidden md:block">
+                <table class="w-full text-left border-collapse align-middle mb-0">
                     <thead>
                         <tr style="border: none;">
-                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 ps-3 py-3">
-                                <i class="bi bi-person me-1"></i> Email
+                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 ps-3 py-6">
+                                <i class="bi bi-person mr-1"></i> Email
                             </th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3">
-                                <i class="bi bi-shield me-1"></i> Role
+                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6">
+                                <i class="bi bi-shield mr-1"></i> Role
                             </th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3">
-                                <i class="bi bi-check-circle me-1"></i> Approved Leaves
+                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6">
+                                <i class="bi bi-check-circle mr-1"></i> Approved Leaves
                             </th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted border-0 py-3">
-                                <i class="bi bi-clock me-1"></i> Pending Leaves
+                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6">
+                                <i class="bi bi-clock mr-1"></i> Pending Leaves
                             </th>
                         </tr>
                     </thead>
@@ -53,15 +53,15 @@
                         @foreach (var emp in Model)
                         {
                             <tr style="background: var(--moc-surface); border-radius: 0.75rem;">
-                                <td class="border-0 ps-3 py-3">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <div class="moc-icon-box bg-purple-50 rounded-circle" style="width:32px;height:32px;min-width:32px;">
+                                <td class="border-0 ps-3 py-6">
+                                    <div class="flex items-center gap-2">
+                                        <div class="moc-icon-box bg-purple-50 rounded-full" style="width:32px;height:32px;min-width:32px;">
                                             <i class="bi bi-person-fill text-purple" style="font-size:0.75rem;"></i>
                                         </div>
-                                        <span class="fw-semibold text-sm">@emp.Email</span>
+                                        <span class="font-semibold text-sm">@emp.Email</span>
                                     </div>
                                 </td>
-                                <td class="border-0 py-3">
+                                <td class="border-0 py-6">
                                     @{
                                         var roleBadge = emp.Role switch
                                         {
@@ -76,23 +76,23 @@
                                             _ => "Employee"
                                         };
                                     }
-                                    <span class="badge rounded-pill @roleBadge px-3 py-2 fw-semibold text-xs">@roleLabel</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill @roleBadge px-6 py-2 font-semibold text-xs">@roleLabel</span>
                                 </td>
-                                <td class="border-0 py-3">
-                                    <span class="badge rounded-pill bg-green-50 text-green px-2 py-1 fw-semibold text-xs">
-                                        <i class="bi bi-check-circle-fill me-1"></i> @emp.ApprovedLeaves
+                                <td class="border-0 py-6">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-green-50 text-green px-2 py-1 font-semibold text-xs">
+                                        <i class="bi bi-check-circle-fill mr-1"></i> @emp.ApprovedLeaves
                                     </span>
                                 </td>
-                                <td class="border-0 py-3">
+                                <td class="border-0 py-6">
                                     @if (emp.PendingLeaves > 0)
                                     {
-                                        <span class="badge rounded-pill bg-amber-50 text-amber px-2 py-1 fw-semibold text-xs">
-                                            <i class="bi bi-clock-fill me-1"></i> @emp.PendingLeaves
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-amber-50 text-amber px-2 py-1 font-semibold text-xs">
+                                            <i class="bi bi-clock-fill mr-1"></i> @emp.PendingLeaves
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="text-muted text-xs">None</span>
+                                        <span class="text-moc-text-muted text-xs">None</span>
                                     }
                                 </td>
                             </tr>
@@ -102,30 +102,30 @@
             </div>
 
             <!-- Mobile Cards -->
-            <div class="d-md-none">
+            <div class="md:hidden">
                 @foreach (var emp in Model)
                 {
-                    <div class="moc-metric p-3 mb-3">
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <div class="moc-icon-box bg-purple-50 rounded-circle" style="width:32px;height:32px;min-width:32px;">
+                    <div class="moc-metric p-6 mb-6">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="moc-icon-box bg-purple-50 rounded-full" style="width:32px;height:32px;min-width:32px;">
                                 <i class="bi bi-person-fill text-purple" style="font-size:0.75rem;"></i>
                             </div>
                             <div>
-                                <span class="fw-semibold text-sm">@emp.Email</span>
-                                <span class="d-block text-muted text-xs">@emp.Role</span>
+                                <span class="font-semibold text-sm">@emp.Email</span>
+                                <span class="block text-moc-text-muted text-xs">@emp.Role</span>
                             </div>
                         </div>
-                        <div class="row g-2">
+                        <div class="flex flex-wrap -mx-3 g-2">
                             <div class="col-6">
                                 <div class="rounded-3 p-2 text-center" style="background:rgba(34,197,94,0.05);">
-                                    <p class="fw-bold text-sm mb-0 text-green">@emp.ApprovedLeaves</p>
-                                    <span class="text-muted text-xs">Approved</span>
+                                    <p class="font-bold text-sm mb-0 text-green">@emp.ApprovedLeaves</p>
+                                    <span class="text-moc-text-muted text-xs">Approved</span>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="rounded-3 p-2 text-center" style="background:rgba(245,158,11,0.05);">
-                                    <p class="fw-bold text-sm mb-0 @(emp.PendingLeaves > 0 ? "text-amber" : "")">@emp.PendingLeaves</p>
-                                    <span class="text-muted text-xs">Pending</span>
+                                    <p class="font-bold text-sm mb-0 @(emp.PendingLeaves > 0 ?"text-amber" : "")">@emp.PendingLeaves</p>
+                                    <span class="text-moc-text-muted text-xs">Pending</span>
                                 </div>
                             </div>
                         </div>
@@ -135,3 +135,4 @@
         }
     </div>
 </div>
+

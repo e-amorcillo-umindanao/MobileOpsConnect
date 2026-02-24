@@ -16,14 +16,14 @@
                border-radius: 1.25rem; padding: 3rem 2.5rem; margin-bottom: 2rem;
                position: relative; overflow: hidden;">
     <!-- Decorative overlay removed due to Razor parsing issue with inline SVG -->
-    <div class="row align-items-center position-relative" style="z-index:2;">
+    <div class="flex flex-wrap -mx-3 items-center position-relative" style="z-index:2;">
         <div class="col">
-            <div class="d-flex align-items-center gap-3 mb-2">
+            <div class="flex items-center gap-6 mb-2">
                 <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;">
                     <i class="bi bi-shield-lock-fill text-white fs-4"></i>
                 </div>
                 <div>
-                    <h2 class="fw-bold text-white mb-0 letter-tight" style="font-size:1.5rem;">
+                    <h2 class="font-bold text-white mb-0 letter-tight" style="font-size:1.5rem;">
                         @(isSuperAdmin ? "🔒 Global Audit Logs" : "📋 Standard Audit Logs")
                     </h2>
                     <span style="color:rgba(255,255,255,0.6);" class="text-sm">
@@ -33,8 +33,8 @@
             </div>
         </div>
         <div class="col-auto">
-            <a asp-controller="Home" asp-action="Index" class="btn" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px);border-radius:0.75rem;">
-                <i class="bi bi-arrow-left me-1"></i> Back to Dashboard
+            <a asp-controller="Home" asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px);border-radius:0.75rem;">
+                <i class="bi bi-arrow-left mr-1"></i> Back to Dashboard
             </a>
         </div>
     </div>
@@ -43,40 +43,40 @@
 <!-- ═══════════════════════════════════════════════ -->
 <!-- METRICS                                         -->
 <!-- ═══════════════════════════════════════════════ -->
-<div class="row g-3 mb-4">
-    <div class="col-6 col-md-3">
-        <div class="moc-metric p-3" style="border-left: 3px solid var(--moc-indigo);">
-            <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Total Events</p>
-            <h3 class="fw-bold mb-0" style="color:var(--moc-indigo);">@totalEvents</h3>
+<div class="flex flex-wrap -mx-3 g-3 mb-6">
+    <div class="col-6 w-full md:w-1/4 px-6">
+        <div class="moc-metric p-6" style="border-left: 3px solid var(--moc-indigo);">
+            <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Total Events</p>
+            <h3 class="font-bold mb-0" style="color:var(--moc-indigo);">@totalEvents</h3>
         </div>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="moc-metric p-3" style="border-left: 3px solid var(--moc-cyan);">
-            <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Data Changes</p>
-            <h3 class="fw-bold mb-0" style="color:var(--moc-cyan);">@dataCount</h3>
+    <div class="col-6 w-full md:w-1/4 px-6">
+        <div class="moc-metric p-6" style="border-left: 3px solid var(--moc-cyan);">
+            <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Data Changes</p>
+            <h3 class="font-bold mb-0" style="color:var(--moc-cyan);">@dataCount</h3>
         </div>
     </div>
-    <div class="col-6 col-md-3">
-        <div class="moc-metric p-3" style="border-left: 3px solid var(--moc-green);">
-            <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Stock Moves</p>
-            <h3 class="fw-bold mb-0" style="color:var(--moc-green);">@stockCount</h3>
+    <div class="col-6 w-full md:w-1/4 px-6">
+        <div class="moc-metric p-6" style="border-left: 3px solid var(--moc-green);">
+            <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Stock Moves</p>
+            <h3 class="font-bold mb-0" style="color:var(--moc-green);">@stockCount</h3>
         </div>
     </div>
     @if (isSuperAdmin)
     {
-        <div class="col-6 col-md-3">
-            <div class="moc-metric p-3" style="border-left: 3px solid var(--moc-red);">
-                <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Security Events</p>
-                <h3 class="fw-bold mb-0" style="color:var(--moc-red);">@securityCount</h3>
+        <div class="col-6 w-full md:w-1/4 px-6">
+            <div class="moc-metric p-6" style="border-left: 3px solid var(--moc-red);">
+                <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Security Events</p>
+                <h3 class="font-bold mb-0" style="color:var(--moc-red);">@securityCount</h3>
             </div>
         </div>
     }
     else
     {
-        <div class="col-6 col-md-3">
-            <div class="moc-metric p-3" style="border-left: 3px solid var(--moc-amber);">
-                <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Login Events</p>
-                <h3 class="fw-bold mb-0" style="color:var(--moc-amber);">@loginCount</h3>
+        <div class="col-6 w-full md:w-1/4 px-6">
+            <div class="moc-metric p-6" style="border-left: 3px solid var(--moc-amber);">
+                <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Login Events</p>
+                <h3 class="font-bold mb-0" style="color:var(--moc-amber);">@loginCount</h3>
             </div>
         </div>
     }
@@ -85,49 +85,49 @@
 <!-- ═══════════════════════════════════════════════ -->
 <!-- LOG TABLE                                       -->
 <!-- ═══════════════════════════════════════════════ -->
-<div class="card moc-card border-0 shadow-sm">
-    <div class="card-header bg-transparent border-0 p-4 pb-0">
-        <div class="d-flex align-items-center justify-content-between">
-            <div class="d-flex align-items-center gap-2">
+<div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm">
+    <div class="px-6 py-4 border-b border-moc-border bg-gray-50 bg-transparent border-0 p-6 pb-0">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
                 <i class="bi bi-journal-text text-indigo fs-5"></i>
-                <h6 class="fw-bold mb-0 letter-tight">
+                <h6 class="font-bold mb-0 letter-tight">
                     @(isSuperAdmin ? "All Activity" : "Activity Log")
                 </h6>
             </div>
             @if (isSuperAdmin)
             {
-                <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">
-                    <i class="bi bi-shield-fill-exclamation me-1"></i> Global Access
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-red-50 text-red px-6 py-2 font-semibold text-xs">
+                    <i class="bi bi-shield-fill-exclamation mr-1"></i> Global Access
                 </span>
             }
             else
             {
-                <span class="badge rounded-pill bg-indigo-50 text-indigo px-3 py-2 fw-semibold text-xs">
-                    <i class="bi bi-eye-fill me-1"></i> Standard View
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-indigo-50 text-indigo px-6 py-2 font-semibold text-xs">
+                    <i class="bi bi-eye-fill mr-1"></i> Standard View
                 </span>
             }
         </div>
     </div>
-    <div class="card-body p-0">
+    <div class="p-6 p-0">
         @if (Model.Count == 0)
         {
-            <div class="text-center py-5">
-                <i class="bi bi-shield-check text-muted" style="font-size: 3rem;"></i>
-                <p class="text-muted mt-2">No audit events recorded yet. Events will appear here as users interact with the system.</p>
+            <div class="text-center py-8">
+                <i class="bi bi-shield-check text-moc-text-muted" style="font-size: 3rem;"></i>
+                <p class="text-moc-text-muted mt-2">No audit events recorded yet. Events will appear here as users interact with the system.</p>
             </div>
         }
         else
         {
             <!-- ══════ DESKTOP TABLE (hidden on small screens) ══════ -->
-            <div class="table-responsive d-none d-md-block">
-                <table class="table table-hover align-middle mb-0">
+            <div class="overflow-x-auto w-full hidden md:block">
+                <table class="w-full text-left border-collapse align-middle mb-0">
                     <thead>
                         <tr style="background: var(--moc-surface);">
-                            <th class="text-uppercase text-xs fw-semibold text-muted ps-4 py-3">Timestamp</th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted py-3">User</th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted py-3">Action</th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted py-3">Details</th>
-                            <th class="text-uppercase text-xs fw-semibold text-muted pe-4 py-3">IP</th>
+                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted ps-4 py-6">Timestamp</th>
+                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted py-6">User</th>
+                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted py-6">Action</th>
+                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted py-6">Details</th>
+                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted pe-4 py-6">IP</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -164,23 +164,23 @@
                                 <td class="ps-4">
                                     <span class="text-sm">@log.Timestamp.ToString("MMM dd, yyyy")</span>
                                     <br />
-                                    <span class="text-xs text-muted">@log.Timestamp.ToString("hh:mm:ss tt")</span>
+                                    <span class="text-xs text-moc-text-muted">@log.Timestamp.ToString("hh:mm:ss tt")</span>
                                 </td>
                                 <td>
-                                    <span class="fw-semibold text-sm">@log.UserEmail</span>
+                                    <span class="font-semibold text-sm">@log.UserEmail</span>
                                     @if (!string.IsNullOrEmpty(log.UserRole))
                                     {
                                         <br />
-                                        <span class="text-xs text-muted">@log.UserRole</span>
+                                        <span class="text-xs text-moc-text-muted">@log.UserRole</span>
                                     }
                                 </td>
                                 <td>
-                                    <span class="badge rounded-pill @actionBadge px-3 py-2 fw-semibold text-xs">
-                                        <i class="bi @actionIcon me-1"></i> @log.Action.Replace("_", " ")
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill @actionBadge px-6 py-2 font-semibold text-xs">
+                                        <i class="bi @actionIcon mr-1"></i> @log.Action.Replace("_", " ")
                                     </span>
                                     @if (log.IsCritical)
                                     {
-                                        <i class="bi bi-exclamation-triangle-fill text-danger ms-1" title="Security Event"></i>
+                                        <i class="bi bi-exclamation-triangle-fill text-red-500 ml-1" title="Security Event"></i>
                                     }
                                 </td>
                                 <td>
@@ -189,7 +189,7 @@
                                     </span>
                                 </td>
                                 <td class="pe-4">
-                                    <span class="text-xs text-muted font-monospace">@log.IpAddress</span>
+                                    <span class="text-xs text-moc-text-muted font-monospace">@log.IpAddress</span>
                                 </td>
                             </tr>
                         }
@@ -198,7 +198,7 @@
             </div>
 
             <!-- ══════ MOBILE CARDS (visible only on small screens) ══════ -->
-            <div class="d-md-none p-3">
+            <div class="md:hidden p-6">
                 @foreach (var log in Model)
                 {
                     var actionBadge = log.Action switch
@@ -228,32 +228,32 @@
                         _ => "bi-activity"
                     };
                     var cardBorder = log.IsCritical ? "border-left: 3px solid var(--moc-red);" : "border-left: 3px solid var(--moc-indigo);";
-                    <div class="mb-3 p-3 rounded-3 shadow-sm" style="background: var(--moc-surface, #f8f9fa); @cardBorder">
+                    <div class="mb-6 p-6 rounded-3 shadow-sm" style="background: var(--moc-surface, #f8f9fa); @cardBorder">
                         <!-- Row 1: User + Action -->
-                        <div class="d-flex align-items-start justify-content-between mb-2">
+                        <div class="flex items-start justify-between mb-2">
                             <div style="min-width:0; flex:1;">
-                                <span class="fw-semibold text-sm d-block" style="word-break:break-all;">@log.UserEmail</span>
+                                <span class="font-semibold text-sm block" style="word-break:break-all;">@log.UserEmail</span>
                                 @if (!string.IsNullOrEmpty(log.UserRole))
                                 {
-                                    <span class="text-xs text-muted">@log.UserRole</span>
+                                    <span class="text-xs text-moc-text-muted">@log.UserRole</span>
                                 }
                             </div>
-                            <div class="ms-2 flex-shrink-0">
-                                <span class="badge rounded-pill @actionBadge px-2 py-1 fw-semibold text-xs">
-                                    <i class="bi @actionIcon me-1"></i> @log.Action.Replace("_", " ")
+                            <div class="ml-2 flex-shrink-0">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill @actionBadge px-2 py-1 font-semibold text-xs">
+                                    <i class="bi @actionIcon mr-1"></i> @log.Action.Replace("_", " ")
                                 </span>
                                 @if (log.IsCritical)
                                 {
-                                    <i class="bi bi-exclamation-triangle-fill text-danger ms-1" title="Security Event"></i>
+                                    <i class="bi bi-exclamation-triangle-fill text-red-500 ml-1" title="Security Event"></i>
                                 }
                             </div>
                         </div>
                         <!-- Row 2: Details (full text, wrapped) -->
                         <p class="text-sm mb-2" style="word-break:break-word;">@log.Details</p>
                         <!-- Row 3: Timestamp + IP -->
-                        <div class="d-flex align-items-center justify-content-between text-muted">
+                        <div class="flex items-center justify-between text-moc-text-muted">
                             <span class="text-xs">
-                                <i class="bi bi-clock me-1"></i>@log.Timestamp.ToString("MMM dd, yyyy hh:mm tt")
+                                <i class="bi bi-clock mr-1"></i>@log.Timestamp.ToString("MMM dd, yyyy hh:mm tt")
                             </span>
                             <span class="text-xs font-monospace">@log.IpAddress</span>
                         </div>
@@ -263,3 +263,4 @@
         }
     </div>
 </div>
+
