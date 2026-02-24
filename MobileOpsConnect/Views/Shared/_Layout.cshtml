@@ -16,25 +16,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <style>
-        /* ===== MobileOps Connect — Premium Theme ===== */
+        /* ===== MobileOps Connect — Minimalist ShadCN Theme ===== */
         :root {
-            --moc-primary: #6366f1;
-            --moc-primary-hover: #4f46e5;
-            --moc-secondary: #0ea5e9;
-            --moc-secondary-hover: #0284c7;
-            --moc-dark: #0f172a;
-            --moc-dark-light: #1e293b;
+            --moc-primary: #18181b; /* zinc-900 */
+            --moc-primary-hover: #27272a; /* zinc-800 */
+            --moc-secondary: #f4f4f5; /* zinc-100 */
+            --moc-secondary-hover: #e4e4e7; /* zinc-200 */
+            --moc-dark: #09090b; /* zinc-950 */
+            --moc-dark-light: #18181b;
             --moc-surface: #ffffff;
-            --moc-bg: #f1f5f9;
-            --moc-border: #e2e8f0;
-            --moc-text: #0f172a;
-            --moc-text-muted: #64748b;
-            --moc-gradient: linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%);
-            --moc-gradient-dark: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --moc-bg: #fafafa; /* zinc-50 */
+            --moc-border: #e4e4e7; /* zinc-200 */
+            --moc-text: #09090b; /* zinc-950 */
+            --moc-text-muted: #71717a; /* zinc-500 */
+            --moc-gradient: #ffffff;
+            --moc-gradient-dark: #ffffff;
         }
 
         html {
-            background-color: var(--moc-dark);
+            background-color: var(--moc-bg);
         }
 
         body {
@@ -50,228 +50,219 @@
 
         /* ---- Navbar ---- */
         .moc-navbar {
-            background: var(--moc-gradient-dark) !important;
-            border-bottom: 2px solid rgba(99, 102, 241, 0.25);
+            background: var(--moc-surface) !important;
+            border-bottom: 1px solid var(--moc-border);
+            box-shadow: none !important;
         }
 
             .moc-navbar .navbar-brand {
-                font-weight: 800;
-                font-size: 1.2rem;
-                letter-spacing: -0.5px;
-                color: #ffffff !important;
+                font-weight: 600;
+                font-size: 1.1rem;
+                letter-spacing: -0.025em;
+                color: var(--moc-text) !important;
             }
 
                 .moc-navbar .navbar-brand .brand-icon {
-                    color: var(--moc-primary);
+                    color: var(--moc-text);
                     margin-right: 0.45rem;
                 }
 
                 .moc-navbar .navbar-brand .brand-suffix {
                     font-weight: 400;
-                    opacity: 0.7;
+                    color: var(--moc-text-muted);
                 }
 
             .moc-navbar .nav-link,
             .moc-navbar .navbar-text,
             .moc-navbar .navbar-nav .btn-link {
-                color: rgba(255, 255, 255, 0.65) !important;
+                color: var(--moc-text-muted) !important;
                 font-weight: 500;
                 font-size: 0.875rem;
-                transition: color 0.2s ease;
+                transition: color 0.15s ease;
                 text-decoration: none;
             }
 
                 .moc-navbar .nav-link:hover,
                 .moc-navbar .nav-link:focus,
                 .moc-navbar .navbar-nav .btn-link:hover {
-                    color: #ffffff !important;
+                    color: var(--moc-text) !important;
                 }
 
                 .moc-navbar .nav-link.active {
-                    color: #ffffff !important;
-                    position: relative;
-                }
-
-                .moc-navbar .nav-link.active::after {
-                    content: '';
-                    position: absolute;
-                    bottom: 0;
-                    left: 0.5rem;
-                    right: 0.5rem;
-                    height: 2px;
-                    background: var(--moc-primary);
-                    border-radius: 2px;
+                    color: var(--moc-text) !important;
+                    font-weight: 600;
                 }
 
             .moc-navbar .navbar-toggler {
-                border: 1px solid rgba(255,255,255,0.15);
+                border: 1px solid var(--moc-border);
+                color: var(--moc-text);
             }
 
                 .moc-navbar .navbar-toggler:focus {
-                    box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.25);
+                    box-shadow: 0 0 0 2px rgba(24, 24, 27, 0.2);
+                }
+                
+                .navbar-toggler-icon {
+                    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%289, 9, 11, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
                 }
 
         /* ---- Card System ---- */
-        .moc-card {
+        .moc-card, .moc-card-static {
             border: 1px solid var(--moc-border);
-            border-radius: 0.875rem !important;
+            border-radius: 0.5rem !important; /* ShadCN radius */
             background: var(--moc-surface);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            overflow: hidden;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: none;
         }
 
             .moc-card:hover {
-                transform: translateY(-4px);
-                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+                transform: none;
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
             }
-
-        .moc-card-static {
-            border: 1px solid var(--moc-border);
-            border-radius: 0.875rem !important;
-            background: var(--moc-surface);
-            overflow: hidden;
-        }
 
         /* ---- Icon Box ---- */
         .moc-icon-box {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            background: var(--moc-secondary);
+            border: 1px solid var(--moc-border);
+        }
+
+        .moc-icon-box-lg {
             width: 48px;
             height: 48px;
             min-width: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 0.75rem;
+            border-radius: 0.5rem;
+            background: var(--moc-secondary);
+            border: 1px solid var(--moc-border);
         }
-
-        .moc-icon-box-lg {
-            width: 56px;
-            height: 56px;
-            min-width: 56px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 0.875rem;
+        
+        /* Drop icon colors to monochrome or very subtle */
+        .moc-icon-box i, .moc-icon-box-lg i {
+            color: var(--moc-text) !important;
+            font-size: 1.1rem !important;
         }
 
         /* ---- Hero Section ---- */
         .moc-hero {
-            background: var(--moc-gradient);
-            border-radius: 1rem;
+            background: var(--moc-surface);
+            border: 1px solid var(--moc-border);
+            border-radius: 0.5rem;
             position: relative;
-            overflow: hidden;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
-            .moc-hero::before {
-                content: '';
-                position: absolute;
-                top: -60%;
-                right: -15%;
-                width: 55%;
-                height: 220%;
-                background: rgba(255, 255, 255, 0.045);
-                border-radius: 50%;
-                pointer-events: none;
-            }
-
-            .moc-hero::after {
-                content: '';
-                position: absolute;
-                bottom: -40%;
-                left: -8%;
-                width: 35%;
-                height: 180%;
-                background: rgba(255, 255, 255, 0.025);
-                border-radius: 50%;
-                pointer-events: none;
+            .moc-hero::before, .moc-hero::after {
+                display: none;
             }
 
         /* ---- Metric Cards ---- */
         .moc-metric {
-            border-radius: 0.875rem;
+            border-radius: 0.5rem;
             border: 1px solid var(--moc-border);
             background: var(--moc-surface);
-            transition: box-shadow 0.25s ease;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
             .moc-metric:hover {
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
             }
 
         /* ---- Super Admin Zone ---- */
         .moc-superadmin-zone {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            border-radius: 1rem;
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            background: var(--moc-bg);
+            border-radius: 0.5rem;
+            border: 1px solid var(--moc-border);
         }
 
         .moc-sa-card {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 0.75rem;
-            transition: background 0.2s ease, border-color 0.2s ease;
+            background: var(--moc-surface);
+            border: 1px solid var(--moc-border);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
             .moc-sa-card:hover {
-                background: rgba(255,255,255,0.08);
-                border-color: rgba(255,255,255,0.14);
+                background: var(--moc-surface);
+                border-color: #d4d4d8;
             }
 
         /* ---- Buttons ---- */
-        .btn-moc-primary {
-            background: var(--moc-gradient);
-            border: none;
+        .btn-moc-primary, .btn-primary {
+            background-color: var(--moc-primary);
+            border: 1px solid var(--moc-primary);
             color: #fff;
-            font-weight: 600;
-            border-radius: 0.625rem;
-            padding: 0.6rem 1.5rem;
-            transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+            font-weight: 500;
+            font-size: 0.875rem;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: background-color 0.15s ease;
         }
 
-            .btn-moc-primary:hover {
-                opacity: 0.92;
+            .btn-moc-primary:hover, .btn-primary:hover {
+                background-color: var(--moc-primary-hover);
+                border-color: var(--moc-primary-hover);
                 color: #fff;
-                transform: translateY(-1px);
-                box-shadow: 0 4px 16px rgba(99, 102, 241, 0.35);
+                transform: none;
+                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
             }
 
-        .btn-moc-outline {
-            border: 1.5px solid var(--moc-border);
+        .btn-moc-outline, .btn-outline-primary {
+            border: 1px solid var(--moc-border);
             color: var(--moc-text);
-            font-weight: 600;
-            border-radius: 0.625rem;
-            padding: 0.6rem 1.5rem;
-            background: transparent;
-            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.875rem;
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            background: var(--moc-surface);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.15s ease;
         }
 
-            .btn-moc-outline:hover {
-                border-color: var(--moc-primary);
-                color: var(--moc-primary);
-                background: rgba(99, 102, 241, 0.04);
+            .btn-moc-outline:hover, .btn-outline-primary:hover {
+                background: var(--moc-secondary);
+                color: var(--moc-text);
+                border-color: var(--moc-border);
             }
 
         /* ---- Footer ---- */
         .moc-footer {
-            background: var(--moc-dark);
-            color: rgba(255, 255, 255, 0.45);
-            border-top: 2px solid rgba(99, 102, 241, 0.2);
+            background: var(--moc-surface);
+            color: var(--moc-text-muted);
+            border-top: 1px solid var(--moc-border);
         }
 
             .moc-footer a {
-                color: rgba(255, 255, 255, 0.6);
+                color: var(--moc-text-muted);
                 text-decoration: none;
-                transition: color 0.2s;
             }
 
                 .moc-footer a:hover {
-                    color: #ffffff;
+                    color: var(--moc-text);
+                    text-decoration: underline;
                 }
 
         /* ---- Form Enhancements ---- */
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--moc-primary);
-            box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.12);
+        .form-control, .form-select {
+            border: 1px solid var(--moc-border);
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            padding: 0.5rem 0.75rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--moc-text);
+            box-shadow: 0 0 0 2px rgba(24, 24, 27, 0.2);
         }
 
         /* ---- Section Divider ---- */
@@ -284,187 +275,91 @@
 
             .moc-section-header h5 {
                 margin: 0;
-                white-space: nowrap;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: var(--moc-text);
+            }
+            
+            .moc-section-header i {
+                color: var(--moc-text) !important;
             }
 
             .moc-section-header hr {
                 flex-grow: 1;
-                opacity: 0.15;
+                opacity: 1;
+                border-top: 1px solid var(--moc-border);
                 margin: 0;
             }
 
         /* ---- Utility Classes ---- */
-        .text-xs {
-            font-size: 0.75rem !important;
+        .text-xs { font-size: 0.75rem !important; }
+        .text-sm { font-size: 0.875rem !important; }
+        .fw-semibold { font-weight: 600 !important; }
+        .letter-tight { letter-spacing: -0.025em; }
+
+        /* Badge overrides to flat grayscale */
+        .badge {
+            background-color: var(--moc-secondary) !important;
+            color: var(--moc-text) !important;
+            border: 1px solid var(--moc-border);
+            font-weight: 500;
+            border-radius: 0.375rem !important;
+            padding: 0.25em 0.5em;
+        }
+        
+        .badge i {
+            color: var(--moc-text-muted) !important;
         }
 
-        .text-sm {
-            font-size: 0.875rem !important;
+        .bg-primary-50, .bg-indigo-50, .bg-secondary-50, .bg-red-50, .bg-green-50, .bg-amber-50, .bg-purple-50, .bg-cyan-50 {
+            background-color: transparent !important;
         }
 
-        .fw-semibold {
-            font-weight: 600 !important;
-        }
-
-        .letter-tight {
-            letter-spacing: -0.025em;
-        }
-
-        .bg-primary-50,
-        .bg-indigo-50 {
-            background-color: rgba(99, 102, 241, 0.08) !important;
-        }
-
-        .bg-secondary-50 {
-            background-color: rgba(14, 165, 233, 0.08) !important;
-        }
-
-        .bg-red-50 {
-            background-color: rgba(239, 68, 68, 0.08) !important;
-        }
-
-        .bg-green-50 {
-            background-color: rgba(34, 197, 94, 0.08) !important;
-        }
-
-        .bg-amber-50 {
-            background-color: rgba(245, 158, 11, 0.08) !important;
-        }
-
-        /* Legacy aliases — mapped to new palette */
-        .bg-purple-50 {
-            background-color: rgba(99, 102, 241, 0.08) !important;
-        }
-
-        .bg-cyan-50 {
-            background-color: rgba(14, 165, 233, 0.08) !important;
-        }
-
-        .text-primary-color,
-        .text-indigo {
-            color: #6366f1 !important;
-        }
-
-        .text-secondary-color {
-            color: #0ea5e9 !important;
-        }
-
-        .text-red {
-            color: #ef4444 !important;
-        }
-
-        .text-green {
-            color: #22c55e !important;
-        }
-
-        .text-amber {
-            color: #f59e0b !important;
-        }
-
-        /* Legacy aliases — mapped to new palette */
-        .text-purple {
-            color: #6366f1 !important;
-        }
-
-        .text-cyan {
-            color: #0ea5e9 !important;
+        .text-primary-color, .text-indigo, .text-secondary-color, .text-red, .text-green, .text-amber, .text-purple, .text-cyan {
+            color: var(--moc-text) !important;
         }
 
         /* ---- Animation ---- */
         @@keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(18px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .anim-fade-in {
-            animation: fadeInUp 0.45s ease-out both;
-        }
-
-        .anim-delay-1 {
-            animation-delay: 0.06s;
-        }
-
-        .anim-delay-2 {
-            animation-delay: 0.12s;
-        }
-
-        .anim-delay-3 {
-            animation-delay: 0.18s;
-        }
-
-        .anim-delay-4 {
-            animation-delay: 0.24s;
-        }
+        .anim-fade-in { animation: fadeInUp 0.4s ease-out both; }
+        .anim-delay-1 { animation-delay: 0.05s; }
+        .anim-delay-2 { animation-delay: 0.10s; }
+        .anim-delay-3 { animation-delay: 0.15s; }
+        .anim-delay-4 { animation-delay: 0.20s; }
 
         /* ---- Scrollbar ---- */
-        ::-webkit-scrollbar {
-            width: 7px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--moc-bg);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-
-            ::-webkit-scrollbar-thumb:hover {
-                background: #94a3b8;
-            }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--moc-bg); }
+        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
 
         /* ---- Responsive ---- */
         @@media (max-width: 767.98px) {
-            .moc-hero h1 {
-                font-size: 1.65rem;
-            }
-
-            .moc-hero .lead {
-                font-size: 0.9rem;
-            }
-
-            .moc-icon-box {
-                width: 40px;
-                height: 40px;
-                min-width: 40px;
-            }
+            .moc-hero h1 { font-size: 1.5rem; }
+            .moc-hero .lead { font-size: 0.875rem; }
         }
 
         /* ---- SignalR Toast ---- */
         .signalr-toast-container {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 380px;
+            position: fixed; top: 80px; right: 20px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 10px; max-width: 380px;
         }
 
         .signalr-toast {
             background: var(--moc-surface);
             border: 1px solid var(--moc-border);
-            border-left: 4px solid var(--moc-primary);
-            border-radius: 0.75rem;
+            border-radius: 0.5rem;
             padding: 1rem 1.25rem;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            animation: slideInRight 0.35s ease-out both;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            animation: slideInRight 0.3s ease-out both;
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
-        .signalr-toast.toast-hide {
-            opacity: 0;
-            transform: translateX(100%);
-        }
+        .signalr-toast.toast-hide { opacity: 0; transform: translateX(100%); }
 
         @@keyframes slideInRight {
             from { opacity: 0; transform: translateX(100%); }
@@ -477,7 +372,7 @@
     @if (ViewData["HideLayout"] is not true)
     {
         <header>
-            <nav class="navbar navbar-expand-lg navbar-dark moc-navbar shadow-sm" role="navigation" aria-label="Main navigation">
+            <nav class="navbar navbar-expand-lg navbar-light moc-navbar" role="navigation" aria-label="Main navigation">
                 <div class="container-fluid px-3 px-md-4">
                     <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
                         <i class="bi bi-shield-lock-fill brand-icon"></i>
