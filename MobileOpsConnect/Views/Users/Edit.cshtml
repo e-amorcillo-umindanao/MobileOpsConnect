@@ -84,16 +84,16 @@
                 <div class="moc-icon-box-lg bg-red-50 rounded-3">
                     <i class="bi bi-shield-lock-fill text-red fs-4"></i>
                 </div>
-                <div class="flex-grow-1">
+                <div class="flex-grow">
                     <h5 class="font-bold mb-1 letter-tight">SuperAdmin &bull; Alpha</h5>
                     <p class="text-moc-text-muted text-sm mb-0">You hold the highest role in the system</p>
                 </div>
             </div>
 
-            <div class="flex flex-wrap -mx-3 g-3 mt-6">
+            <div class="flex flex-wrap -mx-3 gap-6 mt-6">
                 <div class="w-full md:w-1/2 px-6">
                     <div class="moc-metric p-6 h-100">
-                        <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Email</p>
+                        <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Email</p>
                         <h6 class="font-bold mb-1 letter-tight text-break">@Model.Email</h6>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green text-xs font-semibold">
                             <i class="bi bi-check-circle-fill mr-1"></i> Verified
@@ -102,7 +102,7 @@
                 </div>
                 <div class="w-full md:w-1/2 px-6">
                     <div class="moc-metric p-6 h-100">
-                        <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Role</p>
+                        <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Role</p>
                         <h6 class="font-bold mb-1 letter-tight">SuperAdmin (Alpha)</h6>
                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red text-xs font-semibold">
                             <i class="bi bi-lock-fill mr-1"></i> Immutable
@@ -229,7 +229,7 @@ else
     </div>
 
     <div class="flex flex-wrap -mx-3 justify-center">
-        <div class="w-full lg:w-2/3 px-6 col-xl-6">
+        <div class="w-full lg:w-2/3 px-6 w-full xl:w-1/2 px-3">
             <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm mb-6 anim-fade-in anim-delay-1">
                 <div class="p-6 p-6">
                     <form asp-action="Edit">
@@ -259,7 +259,7 @@ else
                                     </div>
                                 }
                                 <div>
-                                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-0">Current Role</p>
+                                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-0">Current Role</p>
                                     <h6 class="font-bold mb-0 letter-tight">@Model.CurrentRole</h6>
                                 </div>
                             </div>
@@ -287,10 +287,10 @@ else
 
                         <!-- Action Buttons -->
                         <div class="flex gap-2">
-                            <button type="submit" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary flex-fill py-6">
+                            <button type="submit" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary flex-1 py-6">
                                 <i class="bi bi-check2-circle mr-1"></i> Save Changes
                             </button>
-                            <a asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline flex-fill py-6">
+                            <a asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline flex-1 py-6">
                                 <i class="bi bi-arrow-left mr-1"></i> Cancel
                             </a>
                         </div>
@@ -304,8 +304,9 @@ else
 <!-- ═══════════════════════════════════════════════ -->
 <!-- BACK TO DIRECTORY                               -->
 <!-- ═══════════════════════════════════════════════ -->
-<div class="flex justify-content-start mb-6 anim-fade-in">
+<div class="flex justify-start mb-6 anim-fade-in">
     <a asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline px-6 py-2">
         <i class="bi bi-arrow-left mr-1"></i> Back to User Directory
     </a>
 </div>
+

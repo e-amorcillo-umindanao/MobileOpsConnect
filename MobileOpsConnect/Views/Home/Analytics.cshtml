@@ -53,13 +53,13 @@
     <hr />
 </div>
 
-<div class="flex flex-wrap -mx-3 g-3 mb-6">
+<div class="flex flex-wrap -mx-3 gap-6 mb-6">
     <!-- Total Inventory Value -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-1">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Inventory Value</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Inventory Value</p>
                     <h3 class="font-bold mb-1 letter-tight">₱@totalValue.ToString("N0")</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo text-xs font-semibold">
                         <i class="bi bi-box-seam mr-1"></i> @totalProducts Products
@@ -73,11 +73,11 @@
     </div>
 
     <!-- Total Products -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-2">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Total Products</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Total Products</p>
                     <h3 class="font-bold mb-1 letter-tight">@totalProducts</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple text-xs font-semibold">
                         <i class="bi bi-grid-fill mr-1"></i> Catalog
@@ -91,11 +91,11 @@
     </div>
 
     <!-- Low Stock Items -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-3">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Low Stock</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Low Stock</p>
                     <h3 class="font-bold mb-1 letter-tight">@lowStockCount</h3>
                     @if (lowStockCount > 0)
                     {
@@ -118,11 +118,11 @@
     </div>
 
     <!-- Staff On Leave -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-4">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Staff On Leave</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Staff On Leave</p>
                     <h3 class="font-bold mb-1 letter-tight">@onLeaveCount</h3>
                     <div class="progress mt-1" style="height:4px;width:72px;">
                         <div class="progress-bar rounded-pill" role="progressbar"
@@ -142,7 +142,7 @@
 <!-- ═══════════════════════════════════════════════ -->
 <!-- CHARTS & ALERTS ROW                             -->
 <!-- ═══════════════════════════════════════════════ -->
-<div class="flex flex-wrap -mx-3 g-4 mb-6">
+<div class="flex flex-wrap -mx-3 gap-8 mb-6">
 
     <!-- Inventory Distribution Chart -->
     <div class="w-full lg:w-1/2 px-6 anim-fade-in anim-delay-1">
@@ -304,4 +304,5 @@
         <i class="bi bi-arrow-left mr-1"></i> Back to Dashboard
     </a>
 </div>
+
 

@@ -39,7 +39,7 @@
 </div>
 
 <div class="flex flex-wrap -mx-3 justify-center">
-    <div class="w-full lg:w-2/3 px-6 col-xl-7">
+    <div class="w-full lg:w-2/3 px-6 w-full xl:w-1/2 px-3">
 
         <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm mb-6 anim-fade-in anim-delay-1">
             <div class="p-6 p-6 p-md-5">
@@ -62,8 +62,8 @@
                         <label asp-for="SKU" class="block text-sm font-medium leading-6 text-gray-900 font-semibold text-sm mb-2">
                             <i class="bi bi-upc mr-1 text-indigo"></i> SKU / Barcode <span class="text-red-500">*</span>
                         </label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text rounded-start-3 border-end-0"
+                        <div class="flex w-full items-stretch">
+                            <span class="flex items-center px-4 py-2 bg-gray-50 border border-gray-300 text-gray-500 text-sm font-medium rounded-start-3 border-end-0"
                                   style="background:rgba(99,102,241,0.06);">
                                 <i class="bi bi-upc-scan text-indigo"></i>
                             </span>
@@ -78,8 +78,8 @@
                         <label asp-for="Name" class="block text-sm font-medium leading-6 text-gray-900 font-semibold text-sm mb-2">
                             <i class="bi bi-box mr-1 text-purple"></i> Product Name <span class="text-red-500">*</span>
                         </label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text rounded-start-3 border-end-0"
+                        <div class="flex w-full items-stretch">
+                            <span class="flex items-center px-4 py-2 bg-gray-50 border border-gray-300 text-gray-500 text-sm font-medium rounded-start-3 border-end-0"
                                   style="background:rgba(139,92,246,0.06);">
                                 <i class="bi bi-box-seam text-purple"></i>
                             </span>
@@ -107,8 +107,8 @@
                         <label asp-for="Category" class="block text-sm font-medium leading-6 text-gray-900 font-semibold text-sm mb-2">
                             <i class="bi bi-tag-fill mr-1 text-cyan"></i> Category <span class="text-red-500">*</span>
                         </label>
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text rounded-start-3 border-end-0"
+                        <div class="flex w-full items-stretch">
+                            <span class="flex items-center px-4 py-2 bg-gray-50 border border-gray-300 text-gray-500 text-sm font-medium rounded-start-3 border-end-0"
                                   style="background:rgba(6,182,212,0.06);">
                                 <i class="bi bi-tag text-cyan"></i>
                             </span>
@@ -132,13 +132,13 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-wrap -mx-3 g-3 mb-6">
-                        <div class="col-sm-6">
+                    <div class="flex flex-wrap -mx-3 gap-6 mb-6">
+                        <div class="w-full sm:w-1/2 px-3">
                             <label asp-for="StockQuantity" class="block text-sm font-medium leading-6 text-gray-900 font-semibold text-sm mb-2">
                                 <i class="bi bi-layers mr-1 text-green"></i> Initial Stock <span class="text-red-500">*</span>
                             </label>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text rounded-start-3 border-end-0"
+                            <div class="flex w-full items-stretch">
+                                <span class="flex items-center px-4 py-2 bg-gray-50 border border-gray-300 text-gray-500 text-sm font-medium rounded-start-3 border-end-0"
                                       style="background:rgba(34,197,94,0.06);">
                                     <i class="bi bi-plus-slash-minus text-green"></i>
                                 </span>
@@ -149,12 +149,12 @@
                             <span asp-validation-for="StockQuantity" class="text-red-500 text-xs"></span>
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="w-full sm:w-1/2 px-3">
                             <label asp-for="Price" class="block text-sm font-medium leading-6 text-gray-900 font-semibold text-sm mb-2">
                                 <i class="bi bi-cash mr-1 text-amber"></i> Unit Price (₱) <span class="text-red-500">*</span>
                             </label>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text rounded-start-3 border-end-0"
+                            <div class="flex w-full items-stretch">
+                                <span class="flex items-center px-4 py-2 bg-gray-50 border border-gray-300 text-gray-500 text-sm font-medium rounded-start-3 border-end-0"
                                       style="background:rgba(245,158,11,0.06);">
                                     <i class="bi bi-currency-exchange text-amber"></i>
                                 </span>
@@ -184,7 +184,7 @@
                     </div>
 
                     <!-- ── Action Buttons ── -->
-                    <div class="d-grid gap-2">
+                    <div class="grid gap-2">
                         <input type="submit" value="Create Product" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary px-4 py-2 text-base py-6" />
                         <a asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline px-4 py-2 text-base py-6">
                             <i class="bi bi-arrow-left mr-1"></i> Cancel &amp; Back to List
@@ -207,3 +207,4 @@
 
     </div>
 </div>
+

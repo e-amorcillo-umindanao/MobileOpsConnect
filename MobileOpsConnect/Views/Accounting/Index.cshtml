@@ -48,14 +48,14 @@
 <!-- ═══════════════════════════════════════════════ -->
 <!-- SUMMARY CARDS                                   -->
 <!-- ═══════════════════════════════════════════════ -->
-<div class="flex flex-wrap -mx-3 g-3 mb-6">
+<div class="flex flex-wrap -mx-3 gap-6 mb-6">
     <!-- Total Income -->
     <div class="w-full md:w-1/3 px-6 anim-fade-in anim-delay-1">
         <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm h-100">
             <div class="p-6 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-uppercase text-xs font-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-green,#22c55e);">Total Income</p>
+                        <p class="uppercase text-xs font-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-green,#22c55e);">Total Income</p>
                         <h3 class="font-bold mb-0 letter-tight">@(((decimal)ViewBag.TotalIncome).ToString("C"))</h3>
                     </div>
                     <div class="moc-icon-box rounded-3" style="width:48px;height:48px;background:rgba(34,197,94,0.08);">
@@ -75,7 +75,7 @@
             <div class="p-6 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-uppercase text-xs font-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-red,#ef4444);">Total Expenses</p>
+                        <p class="uppercase text-xs font-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-red,#ef4444);">Total Expenses</p>
                         <h3 class="font-bold mb-0 letter-tight">@(((decimal)ViewBag.TotalExpense).ToString("C"))</h3>
                     </div>
                     <div class="moc-icon-box rounded-3" style="width:48px;height:48px;background:rgba(239,68,68,0.08);">
@@ -99,7 +99,7 @@
             <div class="p-6 p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-uppercase text-xs font-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-indigo,#6366f1);">Net Result</p>
+                        <p class="uppercase text-xs font-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-indigo,#6366f1);">Net Result</p>
                         <h3 class="font-bold mb-0 letter-tight" style="color:@(isPositive ? "#22c55e" : "#ef4444");">@netResult.ToString("C")</h3>
                     </div>
                     <div class="moc-icon-box rounded-3" style="width:48px;height:48px;background:rgba(99,102,241,0.08);">
@@ -174,14 +174,14 @@
     <div class="p-6 p-6">
         @if (exchangeRates != null && exchangeRates.IsSuccess && exchangeRates.Rates.Any())
         {
-            <div class="flex flex-wrap -mx-3 g-3">
+            <div class="flex flex-wrap -mx-3 gap-6">
                 @foreach (var code in targetCurrencies)
                 {
                     if (exchangeRates.Rates.TryGetValue(code, out var rate))
                     {
                         var icon = currencyIcons.GetValueOrDefault(code, "bi-currency-exchange");
                         var name = currencyNames.GetValueOrDefault(code, code);
-                        <div class="col-6 w-full md:w-1/3 px-6 col-lg-2">
+                        <div class="w-full md:w-1/2 px-3 w-full md:w-1/3 px-6 w-full lg:w-1/2 px-3">
                             <div class="rounded-3 p-6 text-center h-100" style="background:rgba(14,165,233,0.04);border:1px solid rgba(14,165,233,0.08);">
                                 <div class="mx-auto mb-2" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(14,165,233,0.08);border-radius:0.5rem;">
                                     <i class="bi @icon text-secondary-color"></i>
@@ -231,9 +231,9 @@
         </div>
     </div>
     <div class="p-6 p-6">
-        <form method="get" class="flex flex-wrap -mx-3 g-3 items-end">
+        <form method="get" class="flex flex-wrap -mx-3 gap-6 items-end">
             <div class="w-full md:w-1/4 px-6">
-                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold text-uppercase text-moc-text-muted" style="letter-spacing:0.05em;">Type</label>
+                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;">Type</label>
                 <select name="filterType" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" style="border-radius:0.625rem;padding:0.625rem 1rem;">
                     <option value="">All Types</option>
                     <option value="Income">Income</option>
@@ -241,18 +241,18 @@
                 </select>
             </div>
             <div class="w-full md:w-1/4 px-6">
-                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold text-uppercase text-moc-text-muted" style="letter-spacing:0.05em;">Category</label>
+                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;">Category</label>
                 <input type="text" name="filterCategory" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Search category..." style="border-radius:0.625rem;padding:0.625rem 1rem;">
             </div>
-            <div class="col-md-2">
-                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold text-uppercase text-moc-text-muted" style="letter-spacing:0.05em;">Start Date</label>
+            <div class="w-full md:w-1/2 px-3">
+                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;">Start Date</label>
                 <input type="date" name="startDate" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" style="border-radius:0.625rem;padding:0.625rem 1rem;">
             </div>
-            <div class="col-md-2">
-                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold text-uppercase text-moc-text-muted" style="letter-spacing:0.05em;">End Date</label>
+            <div class="w-full md:w-1/2 px-3">
+                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;">End Date</label>
                 <input type="date" name="endDate" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" style="border-radius:0.625rem;padding:0.625rem 1rem;">
             </div>
-            <div class="col-md-2">
+            <div class="w-full md:w-1/2 px-3">
                 <button type="submit" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary w-100 py-2" style="border-radius:0.625rem;">
                     <i class="bi bi-search mr-1"></i> Filter
                 </button>
@@ -282,13 +282,13 @@
             <table class="w-full text-left border-collapse align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.25rem;">
                 <thead class="bg-light">
                     <tr>
-                        <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 ps-4 py-6" style="letter-spacing:0.05em;">Date</th>
-                        <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Type</th>
-                        <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Category</th>
-                        <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Description</th>
-                        <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-right" style="letter-spacing:0.05em;">Amount</th>
-                        <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Ref #</th>
-                        <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 pe-4 text-center" style="letter-spacing:0.05em;">Actions</th>
+                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 ps-4 py-6" style="letter-spacing:0.05em;">Date</th>
+                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Type</th>
+                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Category</th>
+                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Description</th>
+                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-right" style="letter-spacing:0.05em;">Amount</th>
+                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Ref #</th>
+                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 pe-4 text-center" style="letter-spacing:0.05em;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -353,4 +353,5 @@
         </div>
     </div>
 </div>
+
 

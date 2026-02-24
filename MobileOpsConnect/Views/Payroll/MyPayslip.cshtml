@@ -95,12 +95,12 @@
     <hr />
 </div>
 
-<div class="flex flex-wrap -mx-3 g-3 mb-6">
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+<div class="flex flex-wrap -mx-3 gap-6 mb-6">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-1">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Gross Pay</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Gross Pay</p>
                     <h3 class="font-bold mb-1 letter-tight" style="font-size:1.25rem;">₱@totalEarnings.ToString("N2")</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green text-xs font-semibold">
                         <i class="bi bi-arrow-up-short"></i> Earnings
@@ -113,11 +113,11 @@
         </div>
     </div>
 
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-2">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Deductions</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Deductions</p>
                     <h3 class="font-bold mb-1 letter-tight" style="font-size:1.25rem;">₱@totalDeductions.ToString("N2")</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red text-xs font-semibold">
                         <i class="bi bi-arrow-down-short"></i> Withheld
@@ -130,11 +130,11 @@
         </div>
     </div>
 
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-3">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Net Pay</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Net Pay</p>
                     <h3 class="font-bold mb-1 letter-tight text-green" style="font-size:1.25rem;">₱@netPay.ToString("N2")</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green text-xs font-semibold">
                         <i class="bi bi-check-circle-fill mr-1"></i> Final
@@ -147,11 +147,11 @@
         </div>
     </div>
 
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-4">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Status</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Status</p>
                     <h3 class="font-bold mb-1 letter-tight" style="font-size:1.25rem;">Paid</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green text-xs font-semibold">
                         <i class="bi bi-patch-check-fill mr-1"></i> Processed
@@ -176,7 +176,7 @@
 </div>
 
 <div class="flex flex-wrap -mx-3 justify-center">
-    <div class="col-lg-9 col-xl-8">
+    <div class="w-full lg:w-1/2 px-3 w-full xl:w-1/2 px-3">
 
         <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm mb-6 anim-fade-in anim-delay-1">
 
@@ -197,27 +197,27 @@
             <div class="p-6 p-md-5 pt-4">
 
                 <!-- ── Employee Info ── -->
-                <div class="flex flex-wrap -mx-3 g-3 mb-6">
-                    <div class="col-sm-6">
+                <div class="flex flex-wrap -mx-3 gap-6 mb-6">
+                    <div class="w-full sm:w-1/2 px-3">
                         <div class="rounded-3 p-6 h-100" style="background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.08);">
                             <div class="flex items-center gap-2 mb-2">
                                 <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:32px;height:32px;min-width:32px;">
                                     <i class="bi bi-person-fill text-indigo" style="font-size:0.8rem;"></i>
                                 </div>
-                                <span class="text-moc-text-muted text-xs text-uppercase font-semibold">Employee Details</span>
+                                <span class="text-moc-text-muted text-xs uppercase font-semibold">Employee Details</span>
                             </div>
                             <p class="font-semibold text-sm mb-1 letter-tight">@currentUser</p>
                             <p class="text-moc-text-muted text-xs mb-1">@jobTitle</p>
                             <p class="text-moc-text-muted text-xs mb-0">@department</p>
                         </div>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="w-full sm:w-1/2 px-3">
                         <div class="rounded-3 p-6 h-100" style="background:rgba(34,197,94,0.04);border:1px solid rgba(34,197,94,0.08);">
                             <div class="flex items-center gap-2 mb-2">
                                 <div class="moc-icon-box bg-green-50 rounded-3" style="width:32px;height:32px;min-width:32px;">
                                     <i class="bi bi-receipt text-green" style="font-size:0.8rem;"></i>
                                 </div>
-                                <span class="text-moc-text-muted text-xs text-uppercase font-semibold">Payment Info</span>
+                                <span class="text-moc-text-muted text-xs uppercase font-semibold">Payment Info</span>
                             </div>
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="font-semibold text-sm letter-tight">Status:</span>
@@ -356,7 +356,7 @@
                 <!-- ── NET PAY (Hero Amount) ── -->
                 <div class="rounded-3 p-6 text-center mb-6"
                      style="background:var(--moc-gradient);border-radius:1rem !important;">
-                    <p class="text-white-50 text-uppercase text-xs font-semibold mb-2 letter-tight">
+                    <p class="text-white-50 uppercase text-xs font-semibold mb-2 letter-tight">
                         <i class="bi bi-wallet2 mr-1"></i> Net Take-Home Pay
                     </p>
                     <h1 class="text-white font-bold mb-2 letter-tight" style="font-size:2.5rem;">
@@ -375,7 +375,7 @@
                 </div>
 
                 <!-- ── Actions ── -->
-                <div class="flex flex-wrap -mx-3 g-2">
+                <div class="flex flex-wrap -mx-3 gap-4">
                     <div class="w-full px-6">
                         <a asp-controller="Home" asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary px-4 py-2 text-base w-100 py-6">
                             <i class="bi bi-arrow-left mr-1"></i> Back to Dashboard
@@ -403,3 +403,4 @@
 
     </div>
 </div>
+

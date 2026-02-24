@@ -45,13 +45,13 @@
     <hr />
 </div>
 
-<div class="flex flex-wrap -mx-3 g-3 mb-6">
+<div class="flex flex-wrap -mx-3 gap-6 mb-6">
     <!-- Category -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-1">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Category</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Category</p>
                     <h4 class="font-bold mb-1 letter-tight">@Model.Category</h4>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-50 text-cyan text-xs font-semibold">
                         <i class="bi bi-tag-fill mr-1"></i> Classification
@@ -65,11 +65,11 @@
     </div>
 
     <!-- Stock Quantity -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-2">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">In Stock</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">In Stock</p>
                     <h3 class="font-bold mb-1 letter-tight">@Model.StockQuantity <span class="fs-6 font-semibold text-moc-text-muted">units</span></h3>
                     @if (isLowStock)
                     {
@@ -92,11 +92,11 @@
     </div>
 
     <!-- Price -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-3">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Unit Price</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Unit Price</p>
                     <h3 class="font-bold mb-1 letter-tight">₱@Model.Price.ToString("N2")</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo text-xs font-semibold">
                         <i class="bi bi-currency-exchange mr-1"></i> Per Unit
@@ -110,11 +110,11 @@
     </div>
 
     <!-- Last Updated -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-4">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Last Updated</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Last Updated</p>
                     <h4 class="font-bold mb-1 letter-tight">@Model.LastUpdated.ToString("MMM dd")</h4>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple text-xs font-semibold">
                         <i class="bi bi-clock-history mr-1"></i> @Model.LastUpdated.ToString("yyyy")
@@ -139,7 +139,7 @@
 </div>
 
 <div class="flex flex-wrap -mx-3 justify-center">
-    <div class="w-full lg:w-2/3 px-6 col-xl-7">
+    <div class="w-full lg:w-2/3 px-6 w-full xl:w-1/2 px-3">
         <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm mb-6 anim-fade-in anim-delay-1">
             <div class="p-6 p-6 p-md-5">
 
@@ -148,8 +148,8 @@
                     <div class="moc-icon-box bg-indigo-50 rounded-3 mr-4" style="width:40px;height:40px;min-width:40px;">
                         <i class="bi bi-upc-scan text-indigo"></i>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-0">SKU Code</p>
+                    <div class="flex-grow">
+                        <p class="text-moc-text-muted uppercase text-xs font-semibold mb-0">SKU Code</p>
                         <p class="font-bold text-sm mb-0 letter-tight">@Model.SKU</p>
                     </div>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-indigo-50 text-indigo px-2 py-1 font-semibold text-xs">Barcode</span>
@@ -160,8 +160,8 @@
                     <div class="moc-icon-box bg-purple-50 rounded-3 mr-4" style="width:40px;height:40px;min-width:40px;">
                         <i class="bi bi-box-seam text-purple"></i>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-0">Product Name</p>
+                    <div class="flex-grow">
+                        <p class="text-moc-text-muted uppercase text-xs font-semibold mb-0">Product Name</p>
                         <p class="font-bold text-sm mb-0 letter-tight">@Model.Name</p>
                     </div>
                 </div>
@@ -171,8 +171,8 @@
                     <div class="moc-icon-box bg-cyan-50 rounded-3 mr-4" style="width:40px;height:40px;min-width:40px;">
                         <i class="bi bi-bookmark-star-fill text-cyan"></i>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-0">Category</p>
+                    <div class="flex-grow">
+                        <p class="text-moc-text-muted uppercase text-xs font-semibold mb-0">Category</p>
                         <p class="font-bold text-sm mb-0 letter-tight">@Model.Category</p>
                     </div>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-cyan-50 text-cyan px-2 py-1 font-semibold text-xs">
@@ -185,8 +185,8 @@
                     <div class="moc-icon-box @(isLowStock ?"bg-red-50" : "bg-green-50") rounded-3 me-3" style="width:40px;height:40px;min-width:40px;">
                         <i class="bi @(isLowStock ?"bi-exclamation-triangle-fill text-red" : "bi-check-circle-fill text-green")"></i>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-0">Stock Quantity</p>
+                    <div class="flex-grow">
+                        <p class="text-moc-text-muted uppercase text-xs font-semibold mb-0">Stock Quantity</p>
                         <p class="font-bold text-sm mb-0 letter-tight">@Model.StockQuantity units</p>
                     </div>
                     @if (isLowStock)
@@ -208,8 +208,8 @@
                     <div class="moc-icon-box bg-amber-50 rounded-3 mr-4" style="width:40px;height:40px;min-width:40px;">
                         <i class="bi bi-cash-stack text-amber"></i>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-0">Price</p>
+                    <div class="flex-grow">
+                        <p class="text-moc-text-muted uppercase text-xs font-semibold mb-0">Price</p>
                         <p class="font-bold text-sm mb-0 letter-tight">₱@Model.Price.ToString("N2")</p>
                     </div>
                 </div>
@@ -219,8 +219,8 @@
                     <div class="moc-icon-box bg-purple-50 rounded-3 mr-4" style="width:40px;height:40px;min-width:40px;">
                         <i class="bi bi-clock-history text-purple"></i>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-0">Last Updated</p>
+                    <div class="flex-grow">
+                        <p class="text-moc-text-muted uppercase text-xs font-semibold mb-0">Last Updated</p>
                         <p class="font-bold text-sm mb-0 letter-tight">@Model.LastUpdated.ToString("MMMM dd, yyyy — h:mm tt")</p>
                     </div>
                 </div>
@@ -257,3 +257,4 @@
         </div>
     </div>
 </div>
+

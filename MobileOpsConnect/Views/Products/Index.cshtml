@@ -59,12 +59,12 @@
     <hr />
 </div>
 
-<div class="flex flex-wrap -mx-3 g-3 mb-6">
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+<div class="flex flex-wrap -mx-3 gap-6 mb-6">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-1">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Total SKUs</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Total SKUs</p>
                     <h3 class="font-bold mb-1 letter-tight">@totalProducts</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo text-xs font-semibold">
                         <i class="bi bi-box-seam mr-1"></i> Catalog
@@ -77,11 +77,11 @@
         </div>
     </div>
 
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-2">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Healthy</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Healthy</p>
                     <h3 class="font-bold mb-1 letter-tight">@healthyCount</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green text-xs font-semibold">
                         <i class="bi bi-check-circle-fill mr-1"></i> In Stock
@@ -94,11 +94,11 @@
         </div>
     </div>
 
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-3">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Low Stock</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Low Stock</p>
                     <h3 class="font-bold mb-1 letter-tight">@lowStockCount</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red text-xs font-semibold">
                         <i class="bi bi-exclamation-triangle-fill mr-1"></i> Alert
@@ -111,11 +111,11 @@
         </div>
     </div>
 
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-4">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Out of Stock</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Out of Stock</p>
                     <h3 class="font-bold mb-1 letter-tight">@outOfStockCount</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @(outOfStockCount > 0 ?"bg-red-50 text-red" : "bg-green-50 text-green") text-xs fw-semibold">
                         <i class="bi @(outOfStockCount > 0 ?"bi-archive-fill" : "bi-check-circle-fill") me-1"></i>
@@ -228,22 +228,22 @@
                     <table class="w-full text-left border-collapse align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
                         <thead>
                             <tr style="border:none;">
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 ps-3 py-6" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 ps-3 py-6" style="letter-spacing:0.05em;">
                                     <i class="bi bi-upc-scan mr-1"></i> SKU
                                 </th>
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
                                     <i class="bi bi-box mr-1"></i> Product
                                 </th>
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
                                     <i class="bi bi-tag mr-1"></i> Category
                                 </th>
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-center" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-center" style="letter-spacing:0.05em;">
                                     <i class="bi bi-layers mr-1"></i> Stock
                                 </th>
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-right" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-right" style="letter-spacing:0.05em;">
                                     <i class="bi bi-currency-exchange mr-1"></i> Price
                                 </th>
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 pe-3 py-6 text-right" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 pe-3 py-6 text-right" style="letter-spacing:0.05em;">
                                     <i class="bi bi-lightning mr-1"></i> Actions
                                 </th>
                             </tr>
@@ -326,7 +326,7 @@
                     {
                         <div class="moc-metric p-6 mb-6" style="@(item.StockQuantity <= 10 ? "border-left:4px solid #ef4444 !important;" : "")">
                             <div class="flex items-start justify-between mb-2">
-                                <div class="flex items-center gap-2 flex-grow-1 min-width-0">
+                                <div class="flex items-center gap-2 flex-grow min-w-0">
                                     @if (item.StockQuantity <= 10)
                                     {
                                         <div class="moc-icon-box bg-red-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
@@ -339,8 +339,8 @@
                                             <i class="bi bi-box-seam-fill text-indigo"></i>
                                         </div>
                                     }
-                                    <div class="min-width-0">
-                                        <p class="font-bold text-sm mb-0 letter-tight text-truncate">@item.Name</p>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-sm mb-0 letter-tight truncate">@item.Name</p>
                                         <span class="text-moc-text-muted text-xs">@item.SKU</span>
                                     </div>
                                 </div>
@@ -367,19 +367,19 @@
                                 @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
                                 {
                                     <a asp-action="Edit" asp-route-id="@item.ProductID"
-                                       class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs flex-fill py-2 font-semibold"
+                                       class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs flex-1 py-2 font-semibold"
                                        style="background:rgba(245,158,11,0.08);color:#f59e0b;border:1.5px solid rgba(245,158,11,0.2);">
                                         <i class="bi bi-pencil-square mr-1"></i> Edit
                                     </a>
                                 }
                                 <a asp-action="Details" asp-route-id="@item.ProductID"
-                                   class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs btn-moc-outline flex-fill py-2">
+                                   class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs btn-moc-outline flex-1 py-2">
                                     <i class="bi bi-eye mr-1"></i> Details
                                 </a>
                                 @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
                                 {
                                     <a asp-action="Delete" asp-route-id="@item.ProductID"
-                                       class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs flex-fill py-2 font-semibold"
+                                       class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs flex-1 py-2 font-semibold"
                                        style="background:rgba(239,68,68,0.08);color:#ef4444;border:1.5px solid rgba(239,68,68,0.2);">
                                         <i class="bi bi-trash3 mr-1"></i> Delete
                                     </a>
@@ -414,22 +414,22 @@
                     <table class="w-full text-left border-collapse align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
                         <thead>
                             <tr style="border:none;">
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 ps-3 py-6" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 ps-3 py-6" style="letter-spacing:0.05em;">
                                     <i class="bi bi-upc-scan mr-1"></i> SKU
                                 </th>
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
                                     <i class="bi bi-box mr-1"></i> Product
                                 </th>
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
                                     <i class="bi bi-tag mr-1"></i> Category
                                 </th>
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-center" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-center" style="letter-spacing:0.05em;">
                                     <i class="bi bi-layers mr-1"></i> Stock
                                 </th>
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-right" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-right" style="letter-spacing:0.05em;">
                                     <i class="bi bi-currency-exchange mr-1"></i> Price
                                 </th>
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 pe-3 py-6 text-right" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 pe-3 py-6 text-right" style="letter-spacing:0.05em;">
                                     <i class="bi bi-lightning mr-1"></i> Actions
                                 </th>
                             </tr>
@@ -485,12 +485,12 @@
                     {
                         <div class="moc-metric p-6 mb-6" style="opacity:0.5;border-left:4px solid #94a3b8 !important;">
                             <div class="flex items-start justify-between mb-2">
-                                <div class="flex items-center gap-2 flex-grow-1 min-width-0">
+                                <div class="flex items-center gap-2 flex-grow min-w-0">
                                     <div class="moc-icon-box bg-purple-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
                                         <i class="bi bi-archive-fill text-purple"></i>
                                     </div>
-                                    <div class="min-width-0">
-                                        <p class="font-bold text-sm mb-0 letter-tight text-truncate text-moc-text-muted">@item.Name</p>
+                                    <div class="min-w-0">
+                                        <p class="font-bold text-sm mb-0 letter-tight truncate text-moc-text-muted">@item.Name</p>
                                         <span class="text-moc-text-muted text-xs">@item.SKU</span>
                                     </div>
                                 </div>
@@ -506,7 +506,7 @@
                             </div>
                             <div class="flex gap-2">
                                 <a asp-action="Details" asp-route-id="@item.ProductID"
-                                   class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs btn-moc-outline flex-fill py-2">
+                                   class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs btn-moc-outline flex-1 py-2">
                                     <i class="bi bi-eye mr-1"></i> Details
                                 </a>
                             </div>
@@ -600,4 +600,5 @@
     });
 })();
 </script>
+
 

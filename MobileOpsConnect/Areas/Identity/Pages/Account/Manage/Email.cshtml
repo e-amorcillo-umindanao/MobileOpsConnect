@@ -59,8 +59,8 @@
                 </div>
             </div>
             <div class="mb-6">
-                <div class="input-group input-group-lg">
-                    <span class="input-group-text rounded-start-3 border-end-0" style="background:rgba(99,102,241,0.06);">
+                <div class="flex w-full items-stretch">
+                    <span class="flex items-center px-4 py-2 bg-gray-50 border border-gray-300 text-gray-500 text-sm font-medium rounded-start-3 border-end-0" style="background:rgba(99,102,241,0.06);">
                         <i class="bi bi-at text-indigo"></i>
                     </span>
                     <input asp-for="Input.NewEmail" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 rounded-end-3 border-start-0"
@@ -70,7 +70,7 @@
                 <span asp-validation-for="Input.NewEmail" class="text-red-500 text-xs"></span>
             </div>
 
-            <div class="d-grid">
+            <div class="grid">
                 <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary px-4 py-2 text-base py-6">
                     <i class="bi bi-check-circle mr-1"></i> Change Email
                 </button>
@@ -82,4 +82,5 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
 

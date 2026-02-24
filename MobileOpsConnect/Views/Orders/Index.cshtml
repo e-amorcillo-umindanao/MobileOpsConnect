@@ -48,13 +48,13 @@
     <hr />
 </div>
 
-<div class="flex flex-wrap -mx-3 g-3 mb-6">
+<div class="flex flex-wrap -mx-3 gap-6 mb-6">
     <!-- Total Orders -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-1">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Total POs</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Total POs</p>
                     <h3 class="font-bold mb-1 letter-tight">@totalOrders</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo text-xs font-semibold">
                         <i class="bi bi-clipboard2-data mr-1"></i> All Time
@@ -68,11 +68,11 @@
     </div>
 
     <!-- Pending -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-2">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Pending</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Pending</p>
                     <h3 class="font-bold mb-1 letter-tight">@pendingCount</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @(pendingCount > 0 ?"bg-amber-50 text-amber" : "bg-green-50 text-green") text-xs fw-semibold">
                         <i class="bi @(pendingCount > 0 ?"bi-hourglass-split" : "bi-check-circle-fill") me-1"></i>
@@ -87,11 +87,11 @@
     </div>
 
     <!-- Approved -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-3">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Approved</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Approved</p>
                     <h3 class="font-bold mb-1 letter-tight">@approvedCount</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green text-xs font-semibold">
                         <i class="bi bi-check-circle-fill mr-1"></i> Confirmed
@@ -105,11 +105,11 @@
     </div>
 
     <!-- Rejected -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
+    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-4">
         <div class="moc-metric p-6 p-md-4 h-100">
             <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-moc-text-muted text-uppercase text-xs font-semibold mb-1">Rejected</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Rejected</p>
                     <h3 class="font-bold mb-1 letter-tight">@rejectedCount</h3>
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium @(rejectedCount > 0 ?"bg-red-50 text-red" : "bg-green-50 text-green") text-xs fw-semibold">
                         <i class="bi @(rejectedCount > 0 ?"bi-x-circle-fill" : "bi-check-circle-fill") me-1"></i>
@@ -205,30 +205,30 @@
                 <table class="w-full text-left border-collapse align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.5rem;">
                     <thead>
                         <tr style="border:none;">
-                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 ps-4 py-6" style="letter-spacing:0.05em;">
+                            <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 ps-4 py-6" style="letter-spacing:0.05em;">
                                 <i class="bi bi-hash mr-1"></i> PO #
                             </th>
-                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
+                            <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
                                 <i class="bi bi-box mr-1"></i> Product
                             </th>
-                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-center" style="letter-spacing:0.05em;">
+                            <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-center" style="letter-spacing:0.05em;">
                                 <i class="bi bi-layers mr-1"></i> Qty
                             </th>
-                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-right" style="letter-spacing:0.05em;">
+                            <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-right" style="letter-spacing:0.05em;">
                                 <i class="bi bi-currency-exchange mr-1"></i> Cost
                             </th>
-                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
+                            <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
                                 <i class="bi bi-person mr-1"></i> Requested By
                             </th>
-                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
+                            <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
                                 <i class="bi bi-calendar mr-1"></i> Date
                             </th>
-                            <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-center" style="letter-spacing:0.05em;">
+                            <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-center" style="letter-spacing:0.05em;">
                                 <i class="bi bi-flag mr-1"></i> Status
                             </th>
                             @if ((bool)ViewBag.CanApprove)
                             {
-                                <th class="text-uppercase text-xs font-semibold text-moc-text-muted border-0 pe-4 py-6 text-right" style="letter-spacing:0.05em;">
+                                <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 pe-4 py-6 text-right" style="letter-spacing:0.05em;">
                                     <i class="bi bi-lightning mr-1"></i> Action
                                 </th>
                             }
@@ -330,7 +330,7 @@
                 {
                     <div class="moc-metric p-6 mb-6" style="border-left:4px solid @(po.Status == "Pending" ? "#f59e0b" : po.Status == "Approved" ? "#22c55e" : "#ef4444") !important;">
                         <div class="flex items-start justify-between mb-2">
-                            <div class="flex items-center gap-2 flex-grow-1">
+                            <div class="flex items-center gap-2 flex-grow">
                                 <div class="moc-icon-box bg-indigo-50 rounded-3" style="width:40px;height:40px;min-width:40px;">
                                     <i class="bi bi-clipboard2-data-fill text-indigo"></i>
                                 </div>
@@ -371,7 +371,7 @@
                         @if ((bool)ViewBag.CanApprove && po.Status == "Pending")
                         {
                             <div class="flex gap-2">
-                                <form asp-action="ProcessOrder" method="post" class="flex-fill">
+                                <form asp-action="ProcessOrder" method="post" class="flex-1">
                                     <input type="hidden" name="id" value="@po.Id" />
                                     <input type="hidden" name="actionType" value="Approve" />
                                     <button type="submit" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs w-100 py-2 font-semibold"
@@ -379,7 +379,7 @@
                                         <i class="bi bi-check-lg mr-1"></i> Approve
                                     </button>
                                 </form>
-                                <form asp-action="ProcessOrder" method="post" class="flex-fill">
+                                <form asp-action="ProcessOrder" method="post" class="flex-1">
                                     <input type="hidden" name="id" value="@po.Id" />
                                     <input type="hidden" name="actionType" value="Reject" />
                                     <button type="submit" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs w-100 py-2 font-semibold"
@@ -412,3 +412,4 @@
         </div>
     </div>
 </div>
+
