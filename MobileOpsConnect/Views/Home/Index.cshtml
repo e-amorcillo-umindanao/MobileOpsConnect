@@ -7,40 +7,39 @@
 <!-- ═══════════════════════════════════════════════ -->
 <!-- HERO BANNER                                     -->
 <!-- ═══════════════════════════════════════════════ -->
-<div class="moc-hero p-4 p-md-5 mb-4 anim-fade-in">
-    <div class="position-relative" style="z-index: 2;">
-        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-            <span class="badge rounded-pill px-3 py-2 text-sm">
-                <i class="bi bi-circle-fill text-success me-1" style="font-size:0.4rem;vertical-align:middle;"></i>
+<div class="bg-white border border-moc-border rounded-lg shadow-sm p-6 md:p-10 mb-6 relative overflow-hidden">
+    <div class="relative z-10">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium border border-moc-border bg-moc-secondary text-moc-text">
+                <i class="bi bi-circle-fill text-green-500 mr-1.5 text-[0.4rem]"></i>
                 All Systems Operational
             </span>
             @if (isSuperAdmin)
             {
-                <span class="badge rounded-pill px-3 py-2 text-sm">
-                    <i class="bi bi-shield-lock-fill me-1"></i> Super Admin &bull; Alpha
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium border border-moc-border bg-moc-secondary text-moc-text">
+                    <i class="bi bi-shield-lock-fill mr-1.5"></i> Super Admin &bull; Alpha
                 </span>
             }
             else if (isSystemAdmin)
             {
-                <span class="badge rounded-pill px-3 py-2 text-sm">
-                    <i class="bi bi-gear-fill me-1"></i> System Admin &bull; Beta
+                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium border border-moc-border bg-moc-secondary text-moc-text">
+                    <i class="bi bi-gear-fill mr-1.5"></i> System Admin &bull; Beta
                 </span>
             }
         </div>
         @if (isSuperAdmin)
         {
-            <h1 class="display-5 fw-bold mb-2 letter-tight">Alpha's Command Center</h1>
-            <p class="lead mb-0 text-muted">Super Admin Overview &amp; Control Panel &mdash; MobileOps Connect ERP</p>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Alpha's Command Center</h1>
+            <p class="text-lg text-moc-text-muted mb-0">Super Admin Overview &amp; Control Panel &mdash; MobileOps Connect ERP</p>
         }
         else if (isSystemAdmin)
         {
-            <h1 class="display-5 fw-bold mb-2 letter-tight">Beta's Dashboard</h1>
-            <p class="lead mb-0 text-muted">System Admin Overview &amp; Control Panel &mdash; MobileOps Connect ERP</p>
+            <h1 class="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Beta's Dashboard</h1>
+            <p class="text-lg text-moc-text-muted mb-0">System Admin Overview &amp; Control Panel &mdash; MobileOps Connect ERP</p>
         }
     </div>
     <!-- Decorative watermark -->
-    <div class="position-absolute top-50 end-0 translate-middle-y d-none d-lg-block pe-none"
-         style="z-index:1;opacity:0.02;font-size:15rem;line-height:1;margin-right:1.5rem;color:var(--moc-text);">
+    <div class="absolute top-1/2 right-0 -translate-y-1/2 hidden lg:block pointer-events-none text-moc-text opacity-5 text-9xl pr-6">
         <i class="bi bi-shield-lock-fill"></i>
     </div>
 </div>
@@ -48,100 +47,100 @@
 <!-- ═══════════════════════════════════════════════ -->
 <!-- SYSTEM HEALTH METRICS  (Placeholders)           -->
 <!-- ═══════════════════════════════════════════════ -->
-<div class="moc-section-header mt-2">
-    <h5 class="fw-bold letter-tight">
-        <i class="bi bi-heart-pulse-fill text-red me-1"></i> System Health
+<div class="flex items-center gap-3 mb-4 mt-2">
+    <h5 class="m-0 text-lg font-semibold text-moc-text tracking-tight">
+        <i class="bi bi-heart-pulse-fill text-red-500 mr-1.5"></i> System Health
     </h5>
-    <hr />
+    <hr class="flex-grow border-t border-moc-border opacity-100 m-0" />
 </div>
 
-<div class="row g-3 mb-4">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
     <!-- Active Users -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-1">
-        <div class="moc-metric p-3 p-md-4 h-100">
-            <div class="d-flex align-items-start justify-content-between">
+    <div>
+        <div class="bg-white border border-moc-border rounded-lg p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow h-full">
+            <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1 d-flex align-items-center gap-1">
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-2 flex items-center gap-1">
                         Registered Users
                     </p>
-                    <h3 class="fw-bold mb-1 letter-tight">@ViewBag.ActiveUsers</h3>
-                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
-                        <i class="bi bi-check-circle-fill me-1"></i> Total
+                    <h3 class="text-2xl font-bold mb-2 tracking-tight">@ViewBag.ActiveUsers</h3>
+                    <span class="inline-flex items-center text-xs font-semibold text-green-700 bg-green-50 px-2 py-1 rounded-md">
+                        <i class="bi bi-check-circle-fill mr-1.5"></i> Total
                     </span>
                 </div>
-                <div class="moc-icon-box bg-indigo-50 rounded-3">
-                    <i class="bi bi-people-fill text-indigo fs-5"></i>
+                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 shrink-0">
+                    <i class="bi bi-people-fill text-lg"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Pending Leaves -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-2">
-        <div class="moc-metric p-3 p-md-4 h-100">
-            <div class="d-flex align-items-start justify-content-between">
+    <div>
+        <div class="bg-white border border-moc-border rounded-lg p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow h-full">
+            <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Pending <span class="d-none d-md-inline">Leaves</span></p>
-                    <h3 class="fw-bold mb-1 letter-tight">@ViewBag.PendingLeaves</h3>
-                    <span class="badge @(ViewBag.PendingLeaves > 0 ? "bg-amber-50 text-amber" : "bg-green-50 text-green") text-xs fw-semibold">
-                        <i class="bi @(ViewBag.PendingLeaves > 0 ? "bi-hourglass-split" : "bi-check-circle-fill") me-1"></i>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-2">Pending <span class="hidden md:inline">Leaves</span></p>
+                    <h3 class="text-2xl font-bold mb-2 tracking-tight">@ViewBag.PendingLeaves</h3>
+                    <span class="inline-flex items-center text-xs font-semibold px-2 py-1 rounded-md @(ViewBag.PendingLeaves > 0 ? "bg-amber-50 text-amber-700" : "bg-green-50 text-green-700")">
+                        <i class="bi @(ViewBag.PendingLeaves > 0 ? "bi-hourglass-split" : "bi-check-circle-fill") mr-1.5"></i>
                         @(ViewBag.PendingLeaves > 0 ? "Needs Review" : "All Clear")
                     </span>
                 </div>
-                <div class="moc-icon-box bg-amber-50 rounded-3">
-                    <i class="bi bi-calendar-event text-amber fs-5"></i>
+                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-amber-50 text-amber-600 shrink-0">
+                    <i class="bi bi-calendar-event text-lg"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Database Size -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-3">
-        <div class="moc-metric p-3 p-md-4 h-100">
-            <div class="d-flex align-items-start justify-content-between">
+    <div>
+        <div class="bg-white border border-moc-border rounded-lg p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow h-full">
+            <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">DB Size</p>
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-2">DB Size</p>
                     @if (ViewBag.DbSizeMB != null)
                     {
                         var dbMb = (decimal)ViewBag.DbSizeMB;
                         if (dbMb >= 1024)
                         {
-                            <h3 class="fw-bold mb-1 letter-tight">@((dbMb / 1024).ToString("F1")) <span class="fs-6 fw-semibold text-muted">GB</span></h3>
+                            <h3 class="text-2xl font-bold mb-2 tracking-tight">@((dbMb / 1024).ToString("F1")) <span class="text-base font-semibold text-moc-text-muted">GB</span></h3>
                         }
                         else
                         {
-                            <h3 class="fw-bold mb-1 letter-tight">@dbMb.ToString("F0") <span class="fs-6 fw-semibold text-muted">MB</span></h3>
+                            <h3 class="text-2xl font-bold mb-2 tracking-tight">@dbMb.ToString("F0") <span class="text-base font-semibold text-moc-text-muted">MB</span></h3>
                         }
                     }
                     else
                     {
-                        <h3 class="fw-bold mb-1 letter-tight">N/A</h3>
+                        <h3 class="text-2xl font-bold mb-2 tracking-tight">N/A</h3>
                     }
-                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
-                        <i class="bi bi-check-circle-fill me-1"></i> Online
+                    <span class="inline-flex items-center text-xs font-semibold text-green-700 bg-green-50 px-2 py-1 rounded-md">
+                        <i class="bi bi-check-circle-fill mr-1.5"></i> Online
                     </span>
                 </div>
-                <div class="moc-icon-box bg-purple-50 rounded-3">
-                    <i class="bi bi-database-fill text-purple fs-5"></i>
+                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-purple-50 text-purple-600 shrink-0">
+                    <i class="bi bi-database-fill text-lg"></i>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- System Uptime -->
-    <div class="col-6 col-lg-3 anim-fade-in anim-delay-4">
-        <div class="moc-metric p-3 p-md-4 h-100">
-            <div class="d-flex align-items-start justify-content-between">
+    <div>
+        <div class="bg-white border border-moc-border rounded-lg p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow h-full">
+            <div class="flex items-start justify-between">
                 <div>
-                    <p class="text-muted text-uppercase text-xs fw-semibold mb-1">Uptime</p>
-                    <h3 id="uptimeCounter" class="fw-bold mb-1 letter-tight"
+                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-2">Uptime</p>
+                    <h3 id="uptimeCounter" class="text-2xl font-bold mb-2 tracking-tight"
                         data-start-utc="@ViewBag.AppStartTimeUtc">@ViewBag.UptimeDisplay</h3>
-                    <span class="badge bg-green-50 text-green text-xs fw-semibold">
-                        <i class="bi bi-check-circle-fill me-1"></i> Healthy
+                    <span class="inline-flex items-center text-xs font-semibold text-green-700 bg-green-50 px-2 py-1 rounded-md">
+                        <i class="bi bi-check-circle-fill mr-1.5"></i> Healthy
                     </span>
                 </div>
-                <div class="moc-icon-box bg-green-50 rounded-3">
-                    <i class="bi bi-activity text-green fs-5"></i>
+                <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-green-50 text-green-600 shrink-0">
+                    <i class="bi bi-activity text-lg"></i>
                 </div>
             </div>
         </div>
@@ -151,58 +150,58 @@
 <!-- ═══════════════════════════════════════════════ -->
 <!-- BUSINESS METRICS  (from backend ViewBag)        -->
 <!-- ═══════════════════════════════════════════════ -->
-<div class="moc-section-header mt-5">
-    <h5 class="fw-bold letter-tight">
-        <i class="bi bi-bar-chart-line-fill text-indigo me-1"></i> Business Overview
+<div class="flex items-center gap-3 mb-4 mt-12">
+    <h5 class="m-0 text-lg font-semibold text-moc-text tracking-tight">
+        <i class="bi bi-bar-chart-line-fill text-indigo-500 mr-1.5"></i> Business Overview
     </h5>
-    <hr />
+    <hr class="flex-grow border-t border-moc-border opacity-100 m-0" />
 </div>
 
-<div class="row g-3 mb-4">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
     <!-- Total Products -->
-    <div class="col-md-4 anim-fade-in anim-delay-1">
-        <div class="card moc-card border-0 shadow-sm h-100">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="moc-icon-box bg-indigo-50 rounded-3">
-                        <i class="bi bi-box-seam-fill text-indigo fs-5"></i>
+    <div>
+        <div class="bg-white border border-moc-border rounded-lg shadow-sm hover:shadow-md transition-shadow h-full">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                        <i class="bi bi-box-seam-fill text-lg"></i>
                     </div>
-                    <span class="badge rounded-pill bg-indigo-50 text-indigo px-3 py-2 fw-semibold text-xs">Products</span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700">Products</span>
                 </div>
-                <h2 class="fw-bold mb-1 letter-tight">@ViewBag.TotalProducts</h2>
-                <p class="text-muted text-sm mb-0">Total items in inventory</p>
+                <h2 class="text-3xl font-bold mb-1 tracking-tight">@ViewBag.TotalProducts</h2>
+                <p class="text-moc-text-muted text-sm mb-0">Total items in inventory</p>
             </div>
         </div>
     </div>
 
     <!-- Low Stock Alerts -->
-    <div class="col-md-4 anim-fade-in anim-delay-2">
-        <div class="card moc-card border-0 shadow-sm h-100">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="moc-icon-box bg-red-50 rounded-3">
-                        <i class="bi bi-exclamation-octagon-fill text-red fs-5"></i>
+    <div>
+        <div class="bg-white border border-moc-border rounded-lg shadow-sm hover:shadow-md transition-shadow h-full">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-red-50 text-red-600">
+                        <i class="bi bi-exclamation-octagon-fill text-lg"></i>
                     </div>
-                    <span class="badge rounded-pill bg-red-50 text-red px-3 py-2 fw-semibold text-xs">Alerts</span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700">Alerts</span>
                 </div>
-                <h2 class="fw-bold mb-1 letter-tight">@ViewBag.LowStockCount</h2>
-                <p class="text-muted text-sm mb-0">Low stock — reorder needed</p>
+                <h2 class="text-3xl font-bold mb-1 tracking-tight">@ViewBag.LowStockCount</h2>
+                <p class="text-moc-text-muted text-sm mb-0">Low stock — reorder needed</p>
             </div>
         </div>
     </div>
 
     <!-- Inventory Value -->
-    <div class="col-md-4 anim-fade-in anim-delay-3">
-        <div class="card moc-card border-0 shadow-sm h-100">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="moc-icon-box bg-green-50 rounded-3">
-                        <i class="bi bi-currency-exchange text-green fs-5"></i>
+    <div>
+        <div class="bg-white border border-moc-border rounded-lg shadow-sm hover:shadow-md transition-shadow h-full">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-green-50 text-green-600">
+                        <i class="bi bi-currency-exchange text-lg"></i>
                     </div>
-                    <span class="badge rounded-pill bg-green-50 text-green px-3 py-2 fw-semibold text-xs">Value</span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700">Value</span>
                 </div>
-                <h2 class="fw-bold mb-1 letter-tight">₱@Convert.ToDecimal(ViewBag.TotalValue).ToString("N2")</h2>
-                <p class="text-muted text-sm mb-0">Total inventory asset value</p>
+                <h2 class="text-3xl font-bold mb-1 tracking-tight">₱@Convert.ToDecimal(ViewBag.TotalValue).ToString("N2")</h2>
+                <p class="text-moc-text-muted text-sm mb-0">Total inventory asset value</p>
             </div>
         </div>
     </div>
@@ -211,77 +210,77 @@
 <!-- ═══════════════════════════════════════════════ -->
 <!-- QUICK ACCESS — CORE OPERATIONS                  -->
 <!-- ═══════════════════════════════════════════════ -->
-<div class="moc-section-header mt-5">
-    <h5 class="fw-bold letter-tight">
-        <i class="bi bi-lightning-charge-fill text-amber me-1"></i> Quick Access
+<div class="flex items-center gap-3 mb-4 mt-12">
+    <h5 class="m-0 text-lg font-semibold text-moc-text tracking-tight">
+        <i class="bi bi-lightning-charge-fill text-amber-500 mr-1.5"></i> Quick Access
     </h5>
-    <hr />
+    <hr class="flex-grow border-t border-moc-border opacity-100 m-0" />
 </div>
 
-<div class="row g-3 mb-4">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
     <!-- Inventory Management -->
-    <div class="col-md-6 anim-fade-in anim-delay-1">
-        <div class="card moc-card border-0 shadow-sm h-100">
-            <div class="card-body p-4 d-flex flex-column">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="moc-icon-box-lg bg-indigo-50 rounded-3 me-3">
-                        <i class="bi bi-box-seam-fill text-indigo fs-4"></i>
+    <div>
+        <div class="bg-white border border-moc-border rounded-lg shadow-sm hover:shadow-md transition-shadow h-full">
+            <div class="p-6 flex flex-col h-full">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 mr-4 shrink-0">
+                        <i class="bi bi-box-seam-fill text-xl"></i>
                     </div>
                     <div>
-                        <h5 class="fw-bold mb-0 letter-tight">Inventory Management</h5>
-                        <span class="text-muted text-sm">Products &amp; Stock Control</span>
+                        <h5 class="font-bold mb-0 text-lg tracking-tight">Inventory Management</h5>
+                        <span class="text-moc-text-muted text-sm">Products &amp; Stock Control</span>
                     </div>
                 </div>
-                <p class="text-muted text-sm flex-grow-1">
+                <p class="text-moc-text-muted text-sm grow mb-6">
                     View stock levels, adjust prices, and manage product details across all warehouses.
                 </p>
-                <a asp-controller="Products" asp-action="Index" class="btn btn-moc-primary w-100">
-                    <i class="bi bi-arrow-right-circle me-1"></i> Go to Inventory
+                <a asp-controller="Products" asp-action="Index" class="inline-flex justify-center items-center w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-moc-primary hover:bg-moc-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-moc-primary transition-colors">
+                    <i class="bi bi-arrow-right-circle mr-2"></i> Go to Inventory
                 </a>
             </div>
         </div>
     </div>
 
     <!-- User / Admin Management (conditional) -->
-    <div class="col-md-6 anim-fade-in anim-delay-2">
-        <div class="card moc-card border-0 shadow-sm h-100">
-            <div class="card-body p-4 d-flex flex-column">
-                <div class="d-flex align-items-center mb-3">
+    <div>
+        <div class="bg-white border border-moc-border rounded-lg shadow-sm hover:shadow-md transition-shadow h-full">
+            <div class="p-6 flex flex-col h-full">
+                <div class="flex items-center mb-4">
                     @if (isSuperAdmin)
                     {
-                        <div class="moc-icon-box-lg bg-red-50 rounded-3 me-3">
-                            <i class="bi bi-shield-lock-fill text-red fs-4"></i>
+                        <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-red-50 text-red-600 mr-4 shrink-0">
+                            <i class="bi bi-shield-lock-fill text-xl"></i>
                         </div>
                         <div>
-                            <h5 class="fw-bold mb-0 letter-tight text-danger">Manage System Admins</h5>
-                            <span class="text-muted text-sm">Beta-Level Accounts</span>
+                            <h5 class="font-bold mb-0 text-lg text-red-600 tracking-tight">Manage System Admins</h5>
+                            <span class="text-moc-text-muted text-sm">Beta-Level Accounts</span>
                         </div>
                     }
                     else
                     {
-                        <div class="moc-icon-box-lg bg-cyan-50 rounded-3 me-3">
-                            <i class="bi bi-people-fill text-cyan fs-4"></i>
+                        <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-cyan-50 text-cyan-600 mr-4 shrink-0">
+                            <i class="bi bi-people-fill text-xl"></i>
                         </div>
                         <div>
-                            <h5 class="fw-bold mb-0 letter-tight">Manage User Accounts</h5>
-                            <span class="text-muted text-sm">Staff &amp; Employees</span>
+                            <h5 class="font-bold mb-0 text-lg tracking-tight">Manage User Accounts</h5>
+                            <span class="text-moc-text-muted text-sm">Staff &amp; Employees</span>
                         </div>
                     }
                 </div>
                 @if (isSuperAdmin)
                 {
-                    <p class="text-muted text-sm flex-grow-1">
+                    <p class="text-moc-text-muted text-sm grow mb-6">
                         Create and manage System Administrator accounts (Beta) with elevated privileges.
                     </p>
                 }
                 else
                 {
-                    <p class="text-muted text-sm flex-grow-1">
+                    <p class="text-moc-text-muted text-sm grow mb-6">
                         Manage Managers, Warehouse Staff, and Employee accounts and their permissions.
                     </p>
                 }
-                <a asp-controller="Users" asp-action="Index" class="btn btn-moc-outline w-100">
-                    <i class="bi bi-arrow-right-circle me-1"></i> Manage Users
+                <a asp-controller="Users" asp-action="Index" class="inline-flex justify-center items-center w-full px-4 py-2 border border-moc-border text-sm font-medium rounded-md shadow-sm text-moc-text bg-white hover:bg-moc-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-moc-primary transition-colors">
+                    <i class="bi bi-arrow-right-circle mr-2"></i> Manage Users
                 </a>
             </div>
         </div>
@@ -293,61 +292,57 @@
 <!-- ═══════════════════════════════════════════════ -->
 @if (isSuperAdmin || isSystemAdmin)
 {
-    <div class="row g-3 mb-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <!-- System Configuration -->
-        <div class="col-md-6 anim-fade-in anim-delay-1">
-            <div class="card moc-card border-0 shadow-sm h-100">
-                <div class="card-body p-4 d-flex flex-column">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="moc-icon-box-lg bg-secondary-50 rounded-3 me-3">
-                            <i class="bi bi-gear-wide-connected text-secondary-color fs-4"></i>
+        <div>
+            <div class="bg-white border border-moc-border rounded-lg shadow-sm hover:shadow-md transition-shadow h-full">
+                <div class="p-6 flex flex-col h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 mr-4 shrink-0">
+                            <i class="bi bi-gear-wide-connected text-xl"></i>
                         </div>
                         <div>
-                            <h5 class="fw-bold mb-0 letter-tight">System Configuration</h5>
-                            <span class="text-muted text-sm">Settings &amp; Thresholds</span>
+                            <h5 class="font-bold mb-0 text-lg tracking-tight">System Configuration</h5>
+                            <span class="text-moc-text-muted text-sm">Settings &amp; Thresholds</span>
                         </div>
                     </div>
-                    <p class="text-muted text-sm flex-grow-1">
+                    <p class="text-moc-text-muted text-sm grow mb-6">
                         Manage global settings, tax rates, low stock thresholds, and company information.
                     </p>
-                    <a asp-controller="Settings" asp-action="Index" class="btn btn-moc-outline w-100">
-                        <i class="bi bi-sliders me-1"></i> Open Settings
+                    <a asp-controller="Settings" asp-action="Index" class="inline-flex justify-center items-center w-full px-4 py-2 border border-moc-border text-sm font-medium rounded-md shadow-sm text-moc-text bg-white hover:bg-moc-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-moc-primary transition-colors">
+                        <i class="bi bi-sliders mr-2"></i> Open Settings
                     </a>
                 </div>
             </div>
         </div>
 
         <!-- HR & Self Service -->
-        <div class="col-md-6 anim-fade-in anim-delay-2">
-            <div class="card moc-card border-0 shadow-sm h-100">
-                <div class="card-body p-4 d-flex flex-column">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="moc-icon-box-lg bg-secondary-50 rounded-3 me-3">
-                            <i class="bi bi-calendar2-week-fill text-secondary-color fs-4"></i>
+        <div>
+            <div class="bg-white border border-moc-border rounded-lg shadow-sm hover:shadow-md transition-shadow h-full">
+                <div class="p-6 flex flex-col h-full">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 mr-4 shrink-0">
+                            <i class="bi bi-calendar2-week-fill text-xl"></i>
                         </div>
                         <div>
-                            <h5 class="fw-bold mb-0 letter-tight">HR &amp; Self Service</h5>
-                            <span class="text-muted text-sm">Leave &amp; Payroll</span>
+                            <h5 class="font-bold mb-0 text-lg tracking-tight">HR &amp; Self Service</h5>
+                            <span class="text-moc-text-muted text-sm">Leave &amp; Payroll</span>
                         </div>
                     </div>
-                    <p class="text-muted text-sm flex-grow-1">
+                    <p class="text-moc-text-muted text-sm grow mb-6">
                         Manage staff leaves, file your own leave requests, and view payroll information.
                     </p>
-                    <div class="d-grid gap-2">
-                        <a asp-controller="LeaveRequests" asp-action="Index" class="btn btn-moc-outline w-100">
-                            <i class="bi bi-calendar-check me-1"></i> Manage Staff Leaves
+                    <div class="flex flex-col gap-2">
+                        <a asp-controller="LeaveRequests" asp-action="Index" class="inline-flex justify-center items-center w-full px-4 py-2 border border-moc-border text-sm font-medium rounded-md shadow-sm text-moc-text bg-white hover:bg-moc-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-moc-primary transition-colors">
+                            <i class="bi bi-calendar-check mr-2"></i> Manage Staff Leaves
                         </a>
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <a asp-controller="LeaveRequests" asp-action="Create" class="btn btn-moc-outline w-100 text-sm px-2">
-                                    <i class="bi bi-plus-circle me-1"></i> File Leave
-                                </a>
-                            </div>
-                            <div class="col-6">
-                                <a asp-controller="Payroll" asp-action="MyPayslip" class="btn btn-moc-outline w-100 text-sm px-2">
-                                    <i class="bi bi-file-earmark-text me-1"></i> Payslip
-                                </a>
-                            </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <a asp-controller="LeaveRequests" asp-action="Create" class="inline-flex justify-center items-center px-2 py-2 border border-moc-border text-sm font-medium rounded-md shadow-sm text-moc-text bg-white hover:bg-moc-secondary focus:outline-none transition-colors">
+                                <i class="bi bi-plus-circle mr-1.5"></i> File Leave
+                            </a>
+                            <a asp-controller="Payroll" asp-action="MyPayslip" class="inline-flex justify-center items-center px-2 py-2 border border-moc-border text-sm font-medium rounded-md shadow-sm text-moc-text bg-white hover:bg-moc-secondary focus:outline-none transition-colors">
+                                <i class="bi bi-file-earmark-text mr-1.5"></i> Payslip
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -361,43 +356,43 @@
 <!-- ═══════════════════════════════════════════════ -->
 @if (isSuperAdmin)
 {
-    <div class="moc-section-header mt-5">
-        <h5 class="fw-bold letter-tight">
-            <i class="bi bi-shield-exclamation text-danger me-1"></i> Super Admin Zone
+    <div class="flex items-center gap-3 mb-4 mt-12">
+        <h5 class="m-0 text-lg font-semibold text-moc-text tracking-tight">
+            <i class="bi bi-shield-exclamation text-red-600 mr-1.5"></i> Super Admin Zone
         </h5>
-        <hr />
+        <hr class="flex-grow border-t border-moc-border opacity-100 m-0" />
     </div>
 
-    <div class="moc-superadmin-zone p-4 mb-4 anim-fade-in">
+    <div class="bg-gray-50 border border-moc-border rounded-lg p-6 mb-8">
 
         <!-- Zone Header -->
-        <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
-            <span class="badge rounded-pill px-3 py-2 text-sm">
-                <i class="bi bi-lock-fill me-1"></i> Elevated Privileges
+        <div class="flex flex-wrap items-center gap-2 mb-6">
+            <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium border border-moc-border bg-white text-moc-text shadow-sm">
+                <i class="bi bi-lock-fill mr-1.5"></i> Elevated Privileges
             </span>
-            <span class="text-muted text-sm d-none d-md-inline">
+            <span class="text-moc-text-muted text-sm hidden md:inline">
                 Developer-level controls for system operations
             </span>
         </div>
 
-        <div class="row g-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
             <!-- Global Audit Logs -->
-            <div class="col-md-6 col-lg-3">
-                <div class="moc-sa-card p-3 h-100 d-flex flex-column">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="moc-icon-box rounded-3 me-3">
-                            <i class="bi bi-journal-text fs-4"></i>
+            <div>
+                <div class="bg-white border border-moc-border rounded-lg p-4 shadow-sm hover:border-gray-300 transition-colors h-full flex flex-col">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 mr-3">
+                            <i class="bi bi-journal-text text-lg"></i>
                         </div>
                         <div>
-                            <h6 class="fw-semibold mb-0">Audit Logs</h6>
-                            <span class="text-muted text-xs">Global Activity</span>
+                            <h6 class="font-semibold text-sm mb-0 text-moc-text">Audit Logs</h6>
+                            <span class="text-moc-text-muted text-xs">Global Activity</span>
                         </div>
                     </div>
                     <div class="mt-auto">
                         <a asp-controller="Settings" asp-action="AuditLogs"
-                           class="btn btn-moc-outline btn-sm w-100 fw-semibold">
-                            <i class="bi bi-arrow-right-circle me-1"></i> View Logs
+                           class="inline-flex justify-center items-center w-full px-3 py-1.5 border border-moc-border text-sm font-medium rounded-md text-moc-text bg-white hover:bg-moc-secondary transition-colors">
+                            <i class="bi bi-arrow-right-circle mr-1.5"></i> View Logs
                         </a>
                     </div>
                 </div>
@@ -405,40 +400,40 @@
 
 
             <!-- System Maintenance (placeholder) -->
-            <div class="col-md-6 col-lg-3">
-                <div class="moc-sa-card p-3 h-100 d-flex flex-column">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="moc-icon-box rounded-3 me-3">
-                            <i class="bi bi-wrench-adjustable-circle-fill fs-4"></i>
+            <div>
+                <div class="bg-white border border-moc-border rounded-lg p-4 shadow-sm hover:border-gray-300 transition-colors h-full flex flex-col">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 mr-3">
+                            <i class="bi bi-wrench-adjustable-circle-fill text-lg"></i>
                         </div>
                         <div>
-                            <h6 class="fw-semibold mb-0">Maintenance</h6>
-                            <span class="text-muted text-xs">System Health</span>
+                            <h6 class="font-semibold text-sm mb-0 text-moc-text">Maintenance</h6>
+                            <span class="text-moc-text-muted text-xs">System Health</span>
                         </div>
                     </div>
                     <div class="mt-auto">
-                        <button class="btn btn-moc-outline btn-sm w-100 fw-semibold" disabled>
-                            <i class="bi bi-clock me-1"></i> Coming Soon
+                        <button class="inline-flex justify-center items-center w-full px-3 py-1.5 border border-moc-border text-sm font-medium rounded-md text-gray-400 bg-gray-50 cursor-not-allowed" disabled>
+                            <i class="bi bi-clock mr-1.5"></i> Coming Soon
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- Database Backups (placeholder) -->
-            <div class="col-md-6 col-lg-3">
-                <div class="moc-sa-card p-3 h-100 d-flex flex-column">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="moc-icon-box rounded-3 me-3">
-                            <i class="bi bi-database-fill-down fs-4"></i>
+            <div>
+                <div class="bg-white border border-moc-border rounded-lg p-4 shadow-sm hover:border-gray-300 transition-colors h-full flex flex-col">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 flex items-center justify-center rounded-lg bg-gray-100 text-gray-700 mr-3">
+                            <i class="bi bi-database-fill-down text-lg"></i>
                         </div>
                         <div>
-                            <h6 class="fw-semibold mb-0">DB Backups</h6>
-                            <span class="text-muted text-xs">Data Safety</span>
+                            <h6 class="font-semibold text-sm mb-0 text-moc-text">DB Backups</h6>
+                            <span class="text-moc-text-muted text-xs">Data Safety</span>
                         </div>
                     </div>
                     <div class="mt-auto">
-                        <button class="btn btn-moc-outline btn-sm w-100 fw-semibold" disabled>
-                            <i class="bi bi-clock me-1"></i> Coming Soon
+                        <button class="inline-flex justify-center items-center w-full px-3 py-1.5 border border-moc-border text-sm font-medium rounded-md text-gray-400 bg-gray-50 cursor-not-allowed" disabled>
+                            <i class="bi bi-clock mr-1.5"></i> Coming Soon
                         </button>
                     </div>
                 </div>

@@ -8,407 +8,47 @@
     <title>@ViewData["Title"] - MobileOps Connect</title>
     <link rel="manifest" href="/manifest.json" />
     <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/tailwind.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MobileOpsConnect.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <style>
-        /* ===== MobileOps Connect — Minimalist ShadCN Theme ===== */
-        :root {
-            --moc-primary: #18181b; /* zinc-900 */
-            --moc-primary-hover: #27272a; /* zinc-800 */
-            --moc-secondary: #f4f4f5; /* zinc-100 */
-            --moc-secondary-hover: #e4e4e7; /* zinc-200 */
-            --moc-dark: #09090b; /* zinc-950 */
-            --moc-dark-light: #18181b;
-            --moc-surface: #ffffff;
-            --moc-bg: #fafafa; /* zinc-50 */
-            --moc-border: #e4e4e7; /* zinc-200 */
-            --moc-text: #09090b; /* zinc-950 */
-            --moc-text-muted: #71717a; /* zinc-500 */
-            --moc-gradient: #ffffff;
-            --moc-gradient-dark: #ffffff;
-        }
 
-        html {
-            background-color: var(--moc-bg);
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--moc-bg);
-            color: var(--moc-text);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ---- Navbar ---- */
-        .moc-navbar {
-            background: var(--moc-surface) !important;
-            border-bottom: 1px solid var(--moc-border);
-            box-shadow: none !important;
-        }
-
-            .moc-navbar .navbar-brand {
-                font-weight: 600;
-                font-size: 1.1rem;
-                letter-spacing: -0.025em;
-                color: var(--moc-text) !important;
-            }
-
-                .moc-navbar .navbar-brand .brand-icon {
-                    color: var(--moc-text);
-                    margin-right: 0.45rem;
-                }
-
-                .moc-navbar .navbar-brand .brand-suffix {
-                    font-weight: 400;
-                    color: var(--moc-text-muted);
-                }
-
-            .moc-navbar .nav-link,
-            .moc-navbar .navbar-text,
-            .moc-navbar .navbar-nav .btn-link {
-                color: var(--moc-text-muted) !important;
-                font-weight: 500;
-                font-size: 0.875rem;
-                transition: color 0.15s ease;
-                text-decoration: none;
-            }
-
-                .moc-navbar .nav-link:hover,
-                .moc-navbar .nav-link:focus,
-                .moc-navbar .navbar-nav .btn-link:hover {
-                    color: var(--moc-text) !important;
-                }
-
-                .moc-navbar .nav-link.active {
-                    color: var(--moc-text) !important;
-                    font-weight: 600;
-                }
-
-            .moc-navbar .navbar-toggler {
-                border: 1px solid var(--moc-border);
-                color: var(--moc-text);
-            }
-
-                .moc-navbar .navbar-toggler:focus {
-                    box-shadow: 0 0 0 2px rgba(24, 24, 27, 0.2);
-                }
-                
-                .navbar-toggler-icon {
-                    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%289, 9, 11, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-                }
-
-        /* ---- Card System ---- */
-        .moc-card, .moc-card-static {
-            border: 1px solid var(--moc-border);
-            border-radius: 0.5rem !important; /* ShadCN radius */
-            background: var(--moc-surface);
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            transition: none;
-        }
-
-            .moc-card:hover {
-                transform: none;
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-            }
-
-        /* ---- Icon Box ---- */
-        .moc-icon-box {
-            width: 40px;
-            height: 40px;
-            min-width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 0.5rem;
-            background: var(--moc-secondary);
-            border: 1px solid var(--moc-border);
-        }
-
-        .moc-icon-box-lg {
-            width: 48px;
-            height: 48px;
-            min-width: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 0.5rem;
-            background: var(--moc-secondary);
-            border: 1px solid var(--moc-border);
-        }
-        
-        /* Drop icon colors to monochrome or very subtle */
-        .moc-icon-box i, .moc-icon-box-lg i {
-            color: var(--moc-text) !important;
-            font-size: 1.1rem !important;
-        }
-
-        /* ---- Hero Section ---- */
-        .moc-hero {
-            background: var(--moc-surface);
-            border: 1px solid var(--moc-border);
-            border-radius: 0.5rem;
-            position: relative;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-
-            .moc-hero::before, .moc-hero::after {
-                display: none;
-            }
-
-        /* ---- Metric Cards ---- */
-        .moc-metric {
-            border-radius: 0.5rem;
-            border: 1px solid var(--moc-border);
-            background: var(--moc-surface);
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-
-            .moc-metric:hover {
-                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-            }
-
-        /* ---- Super Admin Zone ---- */
-        .moc-superadmin-zone {
-            background: var(--moc-bg);
-            border-radius: 0.5rem;
-            border: 1px solid var(--moc-border);
-        }
-
-        .moc-sa-card {
-            background: var(--moc-surface);
-            border: 1px solid var(--moc-border);
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-
-            .moc-sa-card:hover {
-                background: var(--moc-surface);
-                border-color: #d4d4d8;
-            }
-
-        /* ---- Buttons ---- */
-        .btn-moc-primary, .btn-primary {
-            background-color: var(--moc-primary);
-            border: 1px solid var(--moc-primary);
-            color: #fff;
-            font-weight: 500;
-            font-size: 0.875rem;
-            border-radius: 0.375rem;
-            padding: 0.5rem 1rem;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            transition: background-color 0.15s ease;
-        }
-
-            .btn-moc-primary:hover, .btn-primary:hover {
-                background-color: var(--moc-primary-hover);
-                border-color: var(--moc-primary-hover);
-                color: #fff;
-                transform: none;
-                box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            }
-
-        .btn-moc-outline, .btn-outline-primary {
-            border: 1px solid var(--moc-border);
-            color: var(--moc-text);
-            font-weight: 500;
-            font-size: 0.875rem;
-            border-radius: 0.375rem;
-            padding: 0.5rem 1rem;
-            background: var(--moc-surface);
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            transition: all 0.15s ease;
-        }
-
-            .btn-moc-outline:hover, .btn-outline-primary:hover {
-                background: var(--moc-secondary);
-                color: var(--moc-text);
-                border-color: var(--moc-border);
-            }
-
-        /* ---- Footer ---- */
-        .moc-footer {
-            background: var(--moc-surface);
-            color: var(--moc-text-muted);
-            border-top: 1px solid var(--moc-border);
-        }
-
-            .moc-footer a {
-                color: var(--moc-text-muted);
-                text-decoration: none;
-            }
-
-                .moc-footer a:hover {
-                    color: var(--moc-text);
-                    text-decoration: underline;
-                }
-
-        /* ---- Form Enhancements ---- */
-        .form-control, .form-select {
-            border: 1px solid var(--moc-border);
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            padding: 0.5rem 0.75rem;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--moc-text);
-            box-shadow: 0 0 0 2px rgba(24, 24, 27, 0.2);
-        }
-
-        /* ---- Section Divider ---- */
-        .moc-section-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-
-            .moc-section-header h5 {
-                margin: 0;
-                font-size: 1.1rem;
-                font-weight: 600;
-                color: var(--moc-text);
-            }
-            
-            .moc-section-header i {
-                color: var(--moc-text) !important;
-            }
-
-            .moc-section-header hr {
-                flex-grow: 1;
-                opacity: 1;
-                border-top: 1px solid var(--moc-border);
-                margin: 0;
-            }
-
-        /* ---- Utility Classes ---- */
-        .text-xs { font-size: 0.75rem !important; }
-        .text-sm { font-size: 0.875rem !important; }
-        .fw-semibold { font-weight: 600 !important; }
-        .letter-tight { letter-spacing: -0.025em; }
-
-        /* Badge overrides to flat grayscale */
-        .badge {
-            background-color: var(--moc-secondary) !important;
-            color: var(--moc-text) !important;
-            border: 1px solid var(--moc-border);
-            font-weight: 500;
-            border-radius: 0.375rem !important;
-            padding: 0.25em 0.5em;
-        }
-        
-        .badge i {
-            color: var(--moc-text-muted) !important;
-        }
-
-        .bg-primary-50, .bg-indigo-50, .bg-secondary-50, .bg-red-50, .bg-green-50, .bg-amber-50, .bg-purple-50, .bg-cyan-50 {
-            background-color: transparent !important;
-        }
-
-        .text-primary-color, .text-indigo, .text-secondary-color, .text-red, .text-green, .text-amber, .text-purple, .text-cyan {
-            color: var(--moc-text) !important;
-        }
-
-        /* ---- Animation ---- */
-        @@keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .anim-fade-in { animation: fadeInUp 0.4s ease-out both; }
-        .anim-delay-1 { animation-delay: 0.05s; }
-        .anim-delay-2 { animation-delay: 0.10s; }
-        .anim-delay-3 { animation-delay: 0.15s; }
-        .anim-delay-4 { animation-delay: 0.20s; }
-
-        /* ---- Scrollbar ---- */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--moc-bg); }
-        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
-
-        /* ---- Responsive ---- */
-        @@media (max-width: 767.98px) {
-            .moc-hero h1 { font-size: 1.5rem; }
-            .moc-hero .lead { font-size: 0.875rem; }
-        }
-
-        /* ---- SignalR Toast ---- */
-        .signalr-toast-container {
-            position: fixed; top: 80px; right: 20px; z-index: 9999;
-            display: flex; flex-direction: column; gap: 10px; max-width: 380px;
-        }
-
-        .signalr-toast {
-            background: var(--moc-surface);
-            border: 1px solid var(--moc-border);
-            border-radius: 0.5rem;
-            padding: 1rem 1.25rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-            animation: slideInRight 0.3s ease-out both;
-            transition: opacity 0.2s ease, transform 0.2s ease;
-        }
-
-        .signalr-toast.toast-hide { opacity: 0; transform: translateX(100%); }
-
-        @@keyframes slideInRight {
-            from { opacity: 0; transform: translateX(100%); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-    </style>
 </head>
 <body>
 
     @if (ViewData["HideLayout"] is not true)
     {
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-light moc-navbar" role="navigation" aria-label="Main navigation">
-                <div class="container-fluid px-3 px-md-4">
-                    <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
-                        <i class="bi bi-shield-lock-fill brand-icon"></i>
-                        <span>MobileOps<span class="brand-suffix">Connect</span></span>
+        <header class="bg-white border-b border-moc-border sticky top-0 z-50">
+            <nav class="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between" role="navigation" aria-label="Main navigation">
+                <div class="flex items-center gap-8">
+                    <a class="flex items-center gap-2 font-semibold text-lg text-moc-text hover:opacity-80 transition-opacity" asp-area="" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-shield-lock-fill text-moc-primary"></i>
+                        <span>MobileOps<span class="font-normal text-moc-text-muted">Connect</span></span>
                     </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
-                            aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between" id="mainNavbar">
+                    <div class="hidden lg:flex items-center gap-6">
                         @{
                             var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
                             var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
                         }
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link @(currentController == "Home" && (currentAction == "Index" || currentAction == "ManagerDashboard" || currentAction == "EmployeeDashboard") ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">
-                                    <i class="bi bi-grid-1x2-fill me-1"></i> Dashboard
-                                </a>
-                            </li>
-                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link @(currentController == "Accounting" ? "active" : "")" asp-area="" asp-controller="Accounting" asp-action="Index">
-                                        <i class="bi bi-journal-text me-1"></i> Accounting
-                                    </a>
-                                </li>
-                            }
-                            <li class="nav-item">
-                                <a class="nav-link @(currentAction == "Privacy" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Privacy">
-                                    <i class="bi bi-shield-check me-1"></i> Privacy
-                                </a>
-                            </li>
-                        </ul>
-                        <partial name="_LoginPartial" />
+                        <a class="text-sm font-medium transition-colors hover:text-moc-text @(currentController == "Home" && (currentAction == "Index" || currentAction == "ManagerDashboard" || currentAction == "EmployeeDashboard") ? "text-moc-text" : "text-moc-text-muted")" asp-area="" asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-grid-1x2-fill mr-1.5"></i> Dashboard
+                        </a>
+                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
+                        {
+                            <a class="text-sm font-medium transition-colors hover:text-moc-text @(currentController == "Accounting" ? "text-moc-text" : "text-moc-text-muted")" asp-area="" asp-controller="Accounting" asp-action="Index">
+                                <i class="bi bi-journal-text mr-1.5"></i> Accounting
+                            </a>
+                        }
+                        <a class="text-sm font-medium transition-colors hover:text-moc-text @(currentAction == "Privacy" ? "text-moc-text" : "text-moc-text-muted")" asp-area="" asp-controller="Home" asp-action="Privacy">
+                            <i class="bi bi-shield-check mr-1.5"></i> Privacy
+                        </a>
                     </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <partial name="_LoginPartial" />
                 </div>
             </nav>
         </header>
@@ -416,30 +56,30 @@
 
     @if (ViewData["HideLayout"] is not true)
     {
-        <div class="container-xxl px-3 px-md-4 px-lg-5" style="flex-grow:1;">
-            <main role="main" class="pb-3 pt-4">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex-grow flex flex-col">
+            <main role="main" class="pb-8 pt-6 flex-grow flex flex-col">
                 @RenderBody()
             </main>
         </div>
     }
     else
     {
-        <main role="main">
+        <main role="main" class="min-h-screen">
             @RenderBody()
         </main>
     }
 
     @if (ViewData["HideLayout"] is not true)
     {
-        <footer class="moc-footer mt-5 py-4">
-            <div class="container-xxl px-3 px-md-4 px-lg-5">
-                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-                    <span class="text-sm">
-                        <i class="bi bi-shield-lock-fill me-1 opacity-50"></i>
+        <footer class="bg-white border-t border-moc-border mt-auto py-6">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-moc-text-muted">
+                    <span class="flex items-center gap-1.5">
+                        <i class="bi bi-shield-lock-fill opacity-50"></i>
                         &copy; 2026 MobileOpsConnect &mdash; All rights reserved.
                     </span>
-                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-sm">
-                        <i class="bi bi-file-earmark-lock me-1"></i> Privacy Policy
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="hover:text-moc-text hover:underline transition-all flex items-center gap-1.5">
+                        <i class="bi bi-file-earmark-lock"></i> Privacy Policy
                     </a>
                 </div>
             </div>
@@ -447,7 +87,6 @@
     }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 

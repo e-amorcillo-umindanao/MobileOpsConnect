@@ -19,4 +19,8 @@
     <PackageReference Include="QuestPDF" Version="2026.2.0" />
   </ItemGroup>
 
+  <Target Name="Tailwind" BeforeTargets="Build">
+    <Exec Command="npm run build:css" />
+  </Target>
+
 </Project>

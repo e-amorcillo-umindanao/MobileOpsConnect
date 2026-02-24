@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-moc-bg;
+  }
+  body {
+    @apply bg-moc-bg text-moc-text min-h-screen flex flex-col font-sans antialiased;
+  }
+}
