@@ -6,6 +6,7 @@ module.exports = {
     './wwwroot/js/**/*.js',
     './node_modules/preline/dist/*.js'
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {

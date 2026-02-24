@@ -262,11 +262,13 @@
                                     @if (isSuperAdmin && item.Role == "SystemAdmin")
                                     {
                                         <button type="button"
-                                                class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs px-6 py-2 font-semibold"
+                                                class="inline-flex justify-center rounded-md font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 text-xs px-6 py-2"
                                                 style="background:rgba(239,68,68,0.08); color:#ef4444; border:1.5px solid rgba(239,68,68,0.2);"
                                                 title="Remove User"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteUserModal"
+                                                aria-haspopup="dialog"
+                                                aria-expanded="false"
+                                                aria-controls="deleteUserModal"
+                                                data-hs-overlay="#deleteUserModal"
                                                 onclick="setDeleteTarget('@item.Id', '@item.Email')">
                                             <i class="bi bi-trash3 mr-1"></i> Remove
                                         </button>
@@ -341,10 +343,12 @@
                         @if (isSuperAdmin && item.Role == "SystemAdmin")
                         {
                             <button type="button"
-                                    class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs py-2 font-semibold"
+                                    class="inline-flex justify-center rounded-md font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 text-xs px-2 py-2"
                                     style="background:rgba(239,68,68,0.08); color:#ef4444; border:1.5px solid rgba(239,68,68,0.2);"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#deleteUserModal"
+                                    aria-haspopup="dialog"
+                                    aria-expanded="false"
+                                    aria-controls="deleteUserModal"
+                                    data-hs-overlay="#deleteUserModal"
                                     onclick="setDeleteTarget('@item.Id', '@item.Email')">
                                 <i class="bi bi-trash3"></i>
                             </button>
@@ -385,31 +389,41 @@
 @if (isSuperAdmin)
 {
     <!-- Delete User Confirmation Modal -->
-    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
-                <div class="modal-header border-0 pb-0" style="background: rgba(239,68,68,0.04);">
+    <div id="deleteUserModal" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none" role="dialog" tabindex="-1" aria-labelledby="deleteUserModalLabel">
+        <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto min-h-[calc(100%-3.5rem)] flex items-center">
+            <div class="w-full flex flex-col bg-white border shadow-sm rounded-xl pointer-events-auto dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/70">
+                <div class="flex justify-between items-center py-3 px-4 border-b dark:border-neutral-700" style="background: rgba(239,68,68,0.04);">
                     <div class="flex items-center gap-2">
-                        <div class="moc-icon-box bg-red-50 rounded-3">
-                            <i class="bi bi-exclamation-triangle-fill text-red fs-5"></i>
+                        <div class="inline-flex justify-center items-center size-[38px] rounded-lg bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-500">
+                            <i class="bi bi-exclamation-triangle-fill text-lg"></i>
                         </div>
-                        <h5 class="modal-title font-bold" id="deleteUserModalLabel">Remove System Admin</h5>
+                        <h3 id="deleteUserModalLabel" class="font-bold text-gray-800 dark:text-white">
+                            Remove System Admin
+                        </h3>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600" aria-label="Close" data-hs-overlay="#deleteUserModal">
+                        <span class="sr-only">Close</span>
+                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
                 </div>
-                <div class="modal-body px-6 py-6">
-                    <p class="mb-2">Are you sure you want to permanently remove this System Admin?</p>
+                <div class="p-6 overflow-y-auto">
+                    <p class="text-gray-800 dark:text-neutral-400 mb-2">
+                        Are you sure you want to permanently remove this System Admin?
+                    </p>
                     <p class="font-semibold text-red-500 mb-0" id="deleteTargetEmail"></p>
                 </div>
-                <div class="modal-footer border-0 pt-0 px-6 pb-4">
-                    <button type="button" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline px-6 py-2" data-bs-dismiss="modal">
-                        <i class="bi bi-x-lg mr-1"></i> Cancel
+                <div class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-neutral-700">
+                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" data-hs-overlay="#deleteUserModal">
+                        <i class="bi bi-x-lg"></i> Cancel
                     </button>
                     <form id="deleteUserForm" asp-action="Delete" method="post" style="display:inline;">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" id="deleteUserIdInput" />
-                        <button type="submit" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 px-6 py-2">
-                            <i class="bi bi-trash3 mr-1"></i> Remove Permanently
+                        <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
+                            <i class="bi bi-trash3"></i> Remove Permanently
                         </button>
                     </form>
                 </div>
