@@ -683,10 +683,6 @@ body {
   top: 50%;
 }
 
-.top-6 {
-  top: 1.5rem;
-}
-
 .top-full {
   top: 100%;
 }
@@ -1163,6 +1159,12 @@ body {
 
 .list-disc {
   list-style-type: disc;
+}
+
+.appearance-none {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
 }
 
 .grid-cols-2 {
@@ -1955,6 +1957,10 @@ body {
 
 .pt-6 {
   padding-top: 1.5rem;
+}
+
+.text-left {
+  text-align: left;
 }
 
 .text-center {
@@ -3406,6 +3412,14 @@ body {
 }
 
 @media (min-width: 1024px) {
+  .lg\:sticky {
+    position: sticky;
+  }
+
+  .lg\:top-6 {
+    top: 1.5rem;
+  }
+
   .lg\:order-none {
     order: 0;
   }
