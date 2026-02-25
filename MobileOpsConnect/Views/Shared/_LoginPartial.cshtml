@@ -4,21 +4,21 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <div class="flex items-center gap-x-2">
-        <a class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-800" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+    <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-5 mt-5 sm:mt-0 pt-5 sm:pt-0 border-t border-gray-200 sm:border-0 dark:border-neutral-700">
+        <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
             Hello @User.Identity?.Name!
         </a>
-        <form class="m-0 p-0 flex items-center" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-800">
-                <i class="bi bi-box-arrow-right"></i> Logout
+        <form class="m-0 p-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button type="submit" class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 bg-transparent border-0 p-0 m-0 cursor-pointer">
+                <i class="bi bi-box-arrow-right mr-1.5"></i> Logout
             </button>
         </form>
     </div>
 }
 else
 {
-    <div class="flex items-center gap-x-2">
-        <a class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-neutral-800" asp-area="Identity" asp-page="/Account/Register">Register</a>
+    <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-5 mt-5 sm:mt-0 pt-5 sm:pt-0 border-t border-gray-200 sm:border-0 dark:border-neutral-700">
+        <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500" asp-area="Identity" asp-page="/Account/Register">Register</a>
         <a class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none" asp-area="Identity" asp-page="/Account/Login">Login</a>
     </div>
 }
