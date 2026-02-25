@@ -86,8 +86,8 @@ namespace MobileOpsConnect.Controllers
         }
 
         /// <summary>
-        /// Diagnostic: sends a test notification to the currently logged-in user.
-        /// Hit /Notification/TestSelf in the browser to test.
+        /// Diagnostic: sends a test directly via Firebase and returns per-token errors.
+        /// Hit /Notification/TestSelf in the browser.
         /// </summary>
         [HttpGet]
         public async Task<IActionResult> TestSelf()
@@ -95,19 +95,51 @@ namespace MobileOpsConnect.Controllers
             var userId = _userManager.GetUserId(User);
             if (userId == null) return Unauthorized("Not logged in");
 
-            var tokenCount = await _context.UserFcmTokens.CountAsync(t => t.UserId == userId);
-            if (tokenCount == 0) return Ok(new { success = false, message = "No FCM tokens registered for you. Hard-reload the page (Ctrl+Shift+R) and try again.", tokenCount });
+            var tokens = await _context.UserFcmTokens
+                .Where(t => t.UserId == userId)
+                .Select(t => t.Token)
+                .ToListAsync();
+
+            if (tokens.Count == 0)
+                return Ok(new { success = false, message = "No FCM tokens found. Hard-reload (Ctrl+Shift+R) and try again.", tokenCount = 0 });
 
             try
             {
-                var sent = await _notificationService.SendToUserAsync(userId,
-                    "🔔 Test Notification",
-                    "If you see this toast, FCM is working!");
-                return Ok(new { success = true, message = $"Sent to {sent}/{tokenCount} device(s).", tokenCount, sent });
+                var message = new FirebaseAdmin.Messaging.MulticastMessage
+                {
+                    Tokens = tokens,
+                    Notification = new FirebaseAdmin.Messaging.Notification
+                    {
+                        Title = "🔔 Test Notification",
+                        Body = "If you see this toast, FCM is working!"
+                    },
+                    Data = new Dictionary<string, string> { { "title", "Test" }, { "body", "Test" } }
+                };
+
+                var response = await FirebaseAdmin.Messaging.FirebaseMessaging.DefaultInstance
+                    .SendEachForMulticastAsync(message);
+
+                var errors = new List<string>();
+                for (int i = 0; i < response.Responses.Count; i++)
+                {
+                    if (!response.Responses[i].IsSuccess)
+                    {
+                        errors.Add($"Token #{i+1}: {response.Responses[i].Exception?.MessagingErrorCode} — {response.Responses[i].Exception?.Message}");
+                    }
+                }
+
+                return Ok(new
+                {
+                    success = response.SuccessCount > 0,
+                    sent = response.SuccessCount,
+                    failed = response.FailureCount,
+                    tokenCount = tokens.Count,
+                    errors = errors
+                });
             }
             catch (Exception ex)
             {
-                return Ok(new { success = false, message = $"Firebase error: {ex.Message}", tokenCount });
+                return Ok(new { success = false, message = $"Firebase SDK error: {ex.GetType().Name}: {ex.Message}", tokenCount = tokens.Count });
             }
         }
     }
