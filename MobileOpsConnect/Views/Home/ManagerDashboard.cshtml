@@ -12,7 +12,7 @@
                     All Systems Operational
                 </span>
                 <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-neutral-200">
-                    <i class="bi bi-briefcase-fill text-blue-600"></i> Department Manager &bull; Charlie
+                    Department Manager &bull; Charlie
                 </span>
             </div>
             <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Charlie's Dashboard</h1>
@@ -27,7 +27,7 @@
 <!-- Department Overview Title -->
 <div class="flex items-center gap-x-3 mb-4 mt-8">
     <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
-        <i class="bi bi-bar-chart-line-fill text-indigo-500"></i> Department Overview
+        Department Overview
     </h2>
     <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
 </div>
@@ -46,7 +46,6 @@
           <div class="mt-1 flex items-center gap-x-2">
             <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@ViewBag.PendingLeaves</h3>
             <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(ViewBag.PendingLeaves > 0 ? "bg-amber-100 text-amber-800 dark:bg-amber-800/20 dark:text-amber-400" : "bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400")">
-              <i class="bi @(ViewBag.PendingLeaves > 0 ? "bi-exclamation-circle-fill" : "bi-check-circle-fill")"></i>
               @(ViewBag.PendingLeaves > 0 ? "Action" : "Clear")
             </span>
           </div>
@@ -67,7 +66,7 @@
           <div class="mt-1 flex items-center gap-x-2">
             <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@ViewBag.TeamCount</h3>
             <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium dark:bg-indigo-800/20 dark:text-indigo-400">
-              <i class="bi bi-people-fill"></i> Active
+              Active
             </span>
           </div>
         </div>
@@ -108,7 +107,6 @@
           <div class="mt-1 flex items-center gap-x-2">
             <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@ViewBag.TotalProducts</h3>
             <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(ViewBag.LowStockCount > 0 ? "bg-amber-100 text-amber-800 dark:bg-amber-800/20 dark:text-amber-400" : "bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400")">
-              <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill")"></i>
               @(ViewBag.LowStockCount > 0 ? $"{ViewBag.LowStockCount} Low Stock" : "Healthy")
             </span>
           </div>
@@ -120,7 +118,7 @@
 <!-- Operational Approvals Title -->
 <div class="flex items-center gap-x-3 mb-4 mt-8">
     <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
-        <i class="bi bi-lightning-charge-fill text-amber-500"></i> Operational Approvals
+        Operational Approvals
     </h2>
     <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
 </div>
@@ -142,13 +140,13 @@
                 @if (ViewBag.PendingLeaves > 0)
                 {
                     <span class="inline-flex items-center gap-x-1 py-1 px-3 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border-amber-200 border dark:bg-amber-800/30 dark:text-amber-500 dark:border-amber-800">
-                        <i class="bi bi-exclamation-circle-fill"></i> Action Required
+                        Action Required
                     </span>
                 }
                 else
                 {
                     <span class="inline-flex items-center gap-x-1 py-1 px-3 rounded-full text-xs font-medium bg-green-100 text-green-800 border-green-200 border dark:bg-green-800/30 dark:text-green-500 dark:border-green-800">
-                        <i class="bi bi-check-circle-fill"></i> All Clear
+                        All Clear
                     </span>
                 }
             </div>
@@ -185,7 +183,7 @@
                     </div>
                 </div>
                 <span class="inline-flex items-center gap-x-1 py-1 px-3 rounded-full text-xs font-medium bg-green-100 text-green-800 border-green-200 border dark:bg-green-800/30 dark:text-green-500 dark:border-green-800">
-                    <i class="bi bi-check-circle"></i> Live
+                    Live
                 </span>
             </div>
             
@@ -211,7 +209,7 @@
 <!-- Reports & Analytics Title -->
 <div class="flex items-center gap-x-3 mb-4 mt-8">
     <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
-        <i class="bi bi-graph-up text-indigo-500"></i> Reports &amp; Analytics
+        Reports &amp; Analytics
     </h2>
     <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
 </div>
@@ -291,7 +289,7 @@
     <div>
         <div class="flex items-center gap-x-3 mb-4">
             <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
-                <i class="bi bi-person-gear text-gray-600 dark:text-neutral-400"></i> My Self-Service
+        My Self-Service
             </h2>
             <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
         </div>
@@ -347,7 +345,7 @@
     <div>
         <div class="flex items-center gap-x-3 mb-4">
             <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
-                <i class="bi bi-people-fill text-gray-600 dark:text-neutral-400"></i> Team Management
+        Team Management
             </h2>
             <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
         </div>

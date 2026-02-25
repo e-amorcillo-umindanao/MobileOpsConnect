@@ -7,7 +7,7 @@
 <div class="max-w-2xl mx-auto py-6">
     <div class="flex justify-between items-center mb-6">
         <a asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
-            <i class="bi bi-arrow-left"></i> Back to Warehouse
+            Back to Warehouse
         </a>
         <span class="text-xs text-gray-500 dark:text-neutral-500">SKU: <span class="font-semibold">@Model.SKU</span></span>
     </div>
@@ -33,7 +33,7 @@
                 {
                     <div class="mt-2">
                         <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            <i class="bi bi-exclamation-triangle-fill"></i> Low Stock Warning
+                            Low Stock Warning
                         </span>
                     </div>
                 }
@@ -51,7 +51,7 @@
                 <!-- Stock In -->
                 <div class="p-4 border rounded-xl bg-white shadow-sm" style="border-left: 5px solid #16a34a !important;">
                     <h6 class="text-green-600 font-bold mb-3 flex items-center gap-2">
-                        <i class="bi bi-box-arrow-in-down text-lg"></i> Stock In
+                        Stock In
                     </h6>
                     <form asp-action="StockIn">
                         <input type="hidden" name="id" value="@Model.ProductID" />
@@ -69,7 +69,7 @@
                                         <label for="noteIn">Reason / Notes</label>
                                     </div>
                                     <button type="submit" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-e-lg border border-transparent bg-green-600 text-white hover:bg-green-700">
-                                        <i class="bi bi-plus-lg"></i>
+                                        Submit In
                                     </button>
                                 </div>
                             </div>
@@ -80,7 +80,7 @@
                 <!-- Stock Out -->
                 <div class="p-4 border rounded-xl bg-white shadow-sm" style="border-left: 5px solid #dc2626 !important;">
                     <h6 class="text-red-600 font-bold mb-3 flex items-center gap-2">
-                        <i class="bi bi-box-arrow-up text-lg"></i> Stock Out
+                        Stock Out
                     </h6>
                     <form asp-action="StockOut">
                         <input type="hidden" name="id" value="@Model.ProductID" />
@@ -98,7 +98,7 @@
                                         <label for="noteOut">Reason / Notes</label>
                                     </div>
                                     <button type="submit" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-e-lg border border-transparent bg-red-600 text-white hover:bg-red-700">
-                                        <i class="bi bi-dash-lg"></i>
+                                        Submit Out
                                     </button>
                                 </div>
                             </div>
