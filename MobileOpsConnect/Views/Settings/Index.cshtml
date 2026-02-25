@@ -70,81 +70,92 @@
 </div>
 
 <!-- Configuration Form -->
-<div class="max-w-2xl mx-auto">
+<div class="max-w-6xl mx-auto">
     <form asp-action="Edit">
         <input type="hidden" asp-for="Id" />
 
-        <!-- General Information -->
-        <div class="flex items-center gap-x-3 mb-4">
-            <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-shop-window text-indigo-500"></i> General Information</h2>
-            <div class="grow border-t border-gray-200"></div>
-        </div>
-
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
-            <div class="p-6">
-                <div class="grid sm:grid-cols-2 gap-4">
-                    <div>
-                        <label asp-for="CompanyName" class="block text-sm font-medium mb-2"><i class="bi bi-shop-window me-1 text-indigo-500"></i> Company Name</label>
-                        <input asp-for="CompanyName" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Enter company name" />
-                        <span asp-validation-for="CompanyName" class="text-red-500 text-xs mt-1 block"></span>
-                    </div>
-                    <div>
-                        <label asp-for="SupportEmail" class="block text-sm font-medium mb-2"><i class="bi bi-envelope me-1 text-cyan-500"></i> Support Email</label>
-                        <div class="flex">
-                            <span class="py-3 px-4 inline-flex items-center min-w-fit rounded-s-lg border border-e-0 border-gray-200 bg-gray-50 text-sm text-gray-500"><i class="bi bi-at text-cyan-500"></i></span>
-                            <input asp-for="SupportEmail" class="py-3 px-4 block w-full border-gray-200 rounded-e-lg text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="support@company.com" />
+        <!-- 1. General Information Section -->
+        <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-8 pb-8 border-b border-gray-200">
+            <!-- Left Header -->
+            <div class="lg:col-span-4">
+                <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-shop-window text-indigo-500"></i> General Information</h2>
+                <p class="text-sm text-gray-500 mt-1">Update your primary company identity and primary support contact details displayed across the platform.</p>
+            </div>
+            
+            <!-- Right Form Card -->
+            <div class="lg:col-span-8 flex flex-col bg-white border shadow-sm rounded-xl">
+                <div class="p-6">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label asp-for="CompanyName" class="block text-sm font-medium mb-2"><i class="bi bi-shop-window me-1 text-indigo-500"></i> Company Name</label>
+                            <input asp-for="CompanyName" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors" placeholder="Enter company name" />
+                            <span asp-validation-for="CompanyName" class="text-red-500 text-xs mt-1 block"></span>
+                        </div>
+                        <div>
+                            <label asp-for="SupportEmail" class="block text-sm font-medium mb-2"><i class="bi bi-envelope me-1 text-cyan-500"></i> Support Email</label>
+                            <div class="flex">
+                                <span class="py-3 px-4 inline-flex items-center min-w-fit rounded-s-lg border border-e-0 border-gray-200 bg-gray-50 text-sm text-gray-500"><i class="bi bi-at text-cyan-500"></i></span>
+                                <input asp-for="SupportEmail" class="py-3 px-4 block w-full border-gray-200 rounded-e-lg text-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors" placeholder="support@company.com" />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Inventory Logic -->
-        <div class="flex items-center gap-x-3 mb-4">
-            <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-box-seam-fill text-amber-500"></i> Inventory Logic</h2>
-            <div class="grow border-t border-gray-200"></div>
-        </div>
-
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
-            <div class="p-6">
-                <div class="grid sm:grid-cols-2 gap-4">
-                    <div>
-                        <label asp-for="LowStockThreshold" class="block text-sm font-medium mb-2"><i class="bi bi-exclamation-triangle me-1 text-red-500"></i> Low Stock Threshold</label>
-                        <div class="flex">
-                            <input asp-for="LowStockThreshold" class="py-3 px-4 block w-full border-gray-200 rounded-s-lg text-sm focus:border-blue-500 focus:ring-blue-500" type="number" placeholder="e.g., 10" />
-                            <span class="py-3 px-4 inline-flex items-center min-w-fit rounded-e-lg border border-s-0 border-gray-200 bg-red-50 text-sm font-semibold text-red-600"><i class="bi bi-box me-1"></i> Units</span>
+        <!-- 2. Inventory Logic Section -->
+        <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-8">
+            <!-- Left Header -->
+            <div class="lg:col-span-4">
+                <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-box-seam-fill text-amber-500"></i> Inventory Logic</h2>
+                <p class="text-sm text-gray-500 mt-1">Configure automated stock warnings and the default active tax calculation rate across your inventory.</p>
+            </div>
+            
+            <!-- Right Form Card -->
+            <div class="lg:col-span-8 flex flex-col bg-white border shadow-sm rounded-xl">
+                <div class="p-6">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label asp-for="LowStockThreshold" class="block text-sm font-medium mb-2"><i class="bi bi-exclamation-triangle me-1 text-red-500"></i> Low Stock Threshold</label>
+                            <div class="flex">
+                                <input asp-for="LowStockThreshold" class="py-3 px-4 block w-full border-gray-200 rounded-s-lg text-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors" type="number" placeholder="e.g., 10" />
+                                <span class="py-3 px-4 inline-flex items-center min-w-fit rounded-e-lg border border-s-0 border-gray-200 bg-red-50 text-sm font-semibold text-red-600"><i class="bi bi-box me-1"></i> Units</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2 flex items-center gap-1"><i class="bi bi-info-circle text-indigo-500"></i> Products below this count trigger reorder alerts.</p>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2 flex items-center gap-1"><i class="bi bi-info-circle text-indigo-500"></i> Products below this count trigger reorder alerts.</p>
-                    </div>
-                    <div>
-                        <label asp-for="TaxRate" class="block text-sm font-medium mb-2"><i class="bi bi-receipt me-1 text-amber-500"></i> Tax Rate</label>
-                        <div class="flex">
-                            <input asp-for="TaxRate" class="py-3 px-4 block w-full border-gray-200 rounded-s-lg text-sm focus:border-blue-500 focus:ring-blue-500" type="number" step="0.01" placeholder="e.g., 12.00" />
-                            <span class="py-3 px-4 inline-flex items-center min-w-fit rounded-e-lg border border-s-0 border-gray-200 bg-amber-50 text-sm font-semibold text-amber-600"><i class="bi bi-percent me-1"></i> Rate</span>
+                        <div>
+                            <label asp-for="TaxRate" class="block text-sm font-medium mb-2"><i class="bi bi-receipt me-1 text-amber-500"></i> Tax Rate</label>
+                            <div class="flex">
+                                <input asp-for="TaxRate" class="py-3 px-4 block w-full border-gray-200 rounded-s-lg text-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors" type="number" step="0.01" placeholder="e.g., 12.00" />
+                                <span class="py-3 px-4 inline-flex items-center min-w-fit rounded-e-lg border border-s-0 border-gray-200 bg-amber-50 text-sm font-semibold text-amber-600"><i class="bi bi-percent me-1"></i> Rate</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2 flex items-center gap-1"><i class="bi bi-info-circle text-indigo-500"></i> Applied to all taxable transactions.</p>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2 flex items-center gap-1"><i class="bi bi-info-circle text-indigo-500"></i> Applied to all taxable transactions.</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
-            <div class="p-6">
-                <div class="grid sm:grid-cols-3 gap-4">
-                    <div class="sm:col-span-2">
-                        <button type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
-                            <i class="bi bi-check2-circle"></i> Save Configuration
-                        </button>
+        <div class="grid lg:grid-cols-12 gap-6 lg:gap-8">
+            <div class="lg:col-span-4"></div> <!-- Spacer for alignment -->
+            <div class="lg:col-span-8 flex flex-col bg-white border shadow-sm rounded-xl overflow-hidden">
+                <div class="p-6 bg-gray-50/50">
+                    <div class="grid sm:grid-cols-3 gap-4">
+                        <div class="sm:col-span-2">
+                            <button type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 shadow-sm shadow-blue-500/30 transition-all">
+                                <i class="bi bi-check2-circle text-lg"></i> Save Configuration
+                            </button>
+                        </div>
+                        <div>
+                            <a asp-controller="Home" asp-action="Index" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 transition-colors">
+                                <i class="bi bi-arrow-left"></i> Dashboard
+                            </a>
+                        </div>
                     </div>
-                    <div>
-                        <a asp-controller="Home" asp-action="Index" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
-                            <i class="bi bi-arrow-left"></i> Dashboard
-                        </a>
+                    <div class="text-center mt-4">
+                        <span class="text-xs text-gray-500"><i class="bi bi-clock-history me-1"></i> Configuration last modified: @Model.LastUpdated.ToString("g")</span>
                     </div>
-                </div>
-                <div class="text-center mt-4">
-                    <span class="text-xs text-gray-500"><i class="bi bi-clock-history me-1"></i> Configuration last modified: @Model.LastUpdated.ToString("g")</span>
                 </div>
             </div>
         </div>

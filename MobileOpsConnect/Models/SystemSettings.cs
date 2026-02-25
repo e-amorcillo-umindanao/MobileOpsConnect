@@ -19,6 +19,7 @@ namespace MobileOpsConnect.Models
         public int LowStockThreshold { get; set; } = 10;
 
         [Display(Name = "Tax Rate (%)")]
+        [System.ComponentModel.DataAnnotations.Schema.Column(TypeName = "decimal(18,2)")]
         public decimal TaxRate { get; set; } = 12.00m; // Default VAT
 
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;

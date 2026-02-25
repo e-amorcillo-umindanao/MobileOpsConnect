@@ -29,9 +29,6 @@
                     }
                 </span>
             </div>
-            <a asp-action="Index" class="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-transparent bg-white/20 text-white hover:bg-white/30 transition shadow-sm relative z-20">
-                <i class="bi bi-arrow-left"></i> Back to Directory
-            </a>
         </div>
         <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">@(isOwnAccount ? "My Account" : "Edit User")</h1>
         <p class="text-blue-100 text-lg">@(isOwnAccount ? "Manage your SuperAdmin (Alpha) account settings" : $"Editing account: {Model.Email}")</p>
@@ -100,42 +97,49 @@
                     <p class="text-xs text-gray-500 mb-0">Permanently remove your SuperAdmin account. This action is <strong>irreversible</strong> and you will lose all administrative privileges immediately.</p>
                 </div>
             </div>
-            <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+            <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700" data-hs-overlay="#deleteAccountModal">
                 <i class="bi bi-trash3"></i> Delete My Account
             </button>
         </div>
     </div>
 
-    <!-- Delete Account Modal -->
-    <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
-                <div class="modal-header border-0 pb-0" style="background: rgba(239,68,68,0.04);">
+    <!-- Delete Account Modal (Preline UI) -->
+    <div id="deleteAccountModal" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none" role="dialog" tabindex="-1" aria-labelledby="deleteAccountModalLabel">
+        <div class="hs-overlay-animation-target hs-overlay-open:scale-100 hs-overlay-open:opacity-100 scale-95 opacity-0 ease-in-out transition-all duration-200 sm:max-w-lg sm:w-full m-3 sm:mx-auto min-h-[calc(100%-3.5rem)] flex items-center">
+            <div class="w-full flex flex-col bg-white border border-gray-200 shadow-lg rounded-2xl pointer-events-auto shadow-[0_10px_40px_10px_rgba(0,0,0,0.08)]">
+                <div class="flex justify-between items-center py-3 px-6 border-b border-gray-100" style="background: rgba(239,68,68,0.04);">
                     <div class="flex items-center gap-2">
-                        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-red-100 text-red-800"><i class="bi bi-exclamation-triangle-fill text-lg"></i></span>
-                        <h5 class="modal-title font-bold" id="deleteAccountModalLabel">Confirm Account Deletion</h5>
+                        <span class="inline-flex justify-center items-center size-[32px] rounded-lg bg-red-100 text-red-800"><i class="bi bi-exclamation-triangle-fill"></i></span>
+                        <h5 class="font-bold text-gray-800" id="deleteAccountModalLabel">Confirm Account Deletion</h5>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-white text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none" data-hs-overlay="#deleteAccountModal" aria-label="Close">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
                 </div>
-                <div class="modal-body px-6 py-6">
-                    <div class="bg-red-50 rounded-lg p-4 mb-4">
-                        <div class="flex items-start gap-2">
-                            <i class="bi bi-shield-exclamation text-red-600 text-lg mt-1"></i>
-                            <div class="text-sm text-red-800"><strong>Warning:</strong> You are about to permanently delete your SuperAdmin account (<strong>@Model.Email</strong>). This cannot be undone.</div>
+                <div class="p-6">
+                    <div class="bg-red-50 rounded-xl p-4 mb-5 border border-red-100">
+                        <div class="flex items-start gap-3">
+                            <i class="bi bi-shield-exclamation text-red-600 text-xl mt-0.5"></i>
+                            <div class="text-sm text-red-800 leading-relaxed"><strong>Warning:</strong> You are about to permanently delete your SuperAdmin account (<strong>@Model.Email</strong>). This cannot be undone.</div>
                         </div>
                     </div>
-                    <p class="text-sm text-gray-500 mb-4">To confirm this action, please enter your current password:</p>
+                    
                     <form asp-action="DeleteSelf" method="post" id="deleteAccountForm">
                         @Html.AntiForgeryToken()
-                        <div class="mb-4">
-                            <label for="confirmPassword" class="block text-sm font-medium mb-2"><i class="bi bi-lock-fill text-red-500 me-1"></i> Your Password</label>
-                            <input type="password" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" id="confirmPassword" name="password" required placeholder="Enter your password to confirm" autocomplete="current-password" />
+                        <div>
+                            <label for="confirmPassword" class="block text-sm font-semibold text-gray-800 mb-2"><i class="bi bi-lock-fill text-red-500 me-1"></i> Verify Password</label>
+                            <input type="password" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-red-500 focus:ring-red-500 bg-gray-50 focus:bg-white transition-colors" id="confirmPassword" name="password" required placeholder="Enter your current password to confirm" autocomplete="current-password" />
+                            <p class="text-xs text-gray-500 mt-2 text-right">Required for final deletion.</p>
                         </div>
                     </form>
                 </div>
-                <div class="modal-footer border-0 pt-0 px-6 pb-4">
-                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i> Cancel</button>
-                    <button type="submit" form="deleteAccountForm" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700" id="confirmDeleteBtn" disabled><i class="bi bi-trash3"></i> Permanently Delete</button>
+                <div class="flex justify-end items-center gap-x-3 py-4 px-6 border-t border-gray-100 bg-gray-50 rounded-b-2xl">
+                    <button type="button" class="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 transition-colors" data-hs-overlay="#deleteAccountModal">
+                        Cancel
+                    </button>
+                    <button type="submit" form="deleteAccountForm" class="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 shadow-sm shadow-red-500/30 transition-all disabled:opacity-50 disabled:pointer-events-none disabled:shadow-none" id="confirmDeleteBtn" disabled>
+                        <i class="bi bi-trash3"></i> Permanently Delete
+                    </button>
                 </div>
             </div>
         </div>
@@ -159,59 +163,76 @@ else
         <div class="grow border-t border-gray-200"></div>
     </div>
 
-    <div class="max-w-3xl mx-auto">
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
-            <div class="p-6">
-                <form asp-action="Edit">
-                    <input type="hidden" asp-for="Id" />
-                    <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4"></div>
+    <div class="max-w-5xl mx-auto">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4"></div>
 
-                    <!-- Current Role -->
-                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 mb-5 flex items-center gap-4">
-                        @if (Model.CurrentRole == "SuperAdmin")
-                        {
-                            <span class="inline-flex justify-center items-center size-[40px] rounded-full bg-red-100 text-red-800"><i class="bi bi-shield-lock-fill"></i></span>
-                        }
-                        else if (Model.CurrentRole == "SystemAdmin")
-                        {
-                            <span class="inline-flex justify-center items-center size-[40px] rounded-full bg-amber-100 text-amber-800"><i class="bi bi-gear-fill"></i></span>
-                        }
-                        else
-                        {
-                            <span class="inline-flex justify-center items-center size-[40px] rounded-full bg-indigo-100 text-indigo-800"><i class="bi bi-person-fill"></i></span>
-                        }
-                        <div><p class="text-xs uppercase text-gray-500 font-medium mb-0">Current Role</p><h3 class="text-sm font-bold text-gray-800 mb-0">@Model.CurrentRole</h3></div>
-                    </div>
-
-                    <!-- New Role -->
-                    <div class="mb-5">
-                        <label asp-for="NewRole" class="block text-sm font-medium mb-2"><i class="bi bi-arrow-repeat me-1 text-indigo-500"></i> Assign New Role</label>
-                        <select asp-for="NewRole" asp-items="ViewBag.Roles" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"></select>
-                        <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
-                            <i class="bi bi-info-circle text-indigo-500"></i>
-                            @if (isAlpha)
+            <div class="grid md:grid-cols-12 gap-6 lg:gap-8 lg:items-start mb-6">
+                
+                <!-- Left Column: Current Role Card -->
+                <div class="md:col-span-5 flex flex-col bg-white border shadow-sm rounded-xl">
+                    <div class="p-5">
+                        <h3 class="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2"><i class="bi bi-person-badge text-indigo-500"></i> Current Status</h3>
+                        <div class="flex items-center gap-4">
+                            @if (Model.CurrentRole == "SuperAdmin")
                             {
-                                <text>Select </text><strong>SuperAdmin</strong><text> to promote this user to Alpha.</text>
+                                <span class="shrink-0 inline-flex justify-center items-center size-[48px] rounded-full bg-red-100 text-red-800"><i class="bi bi-shield-lock-fill text-xl"></i></span>
+                            }
+                            else if (Model.CurrentRole == "SystemAdmin")
+                            {
+                                <span class="shrink-0 inline-flex justify-center items-center size-[48px] rounded-full bg-amber-100 text-amber-800"><i class="bi bi-gear-fill text-xl"></i></span>
                             }
                             else
                             {
-                                <text>Changing the role will update this user's permissions immediately.</text>
+                                <span class="shrink-0 inline-flex justify-center items-center size-[48px] rounded-full bg-indigo-100 text-indigo-800"><i class="bi bi-person-fill text-xl"></i></span>
                             }
-                        </p>
+                            <div>
+                                <p class="text-xs uppercase tracking-wide text-gray-500 font-medium mb-0.5">Role Name</p>
+                                <h4 class="text-base font-bold text-gray-800 mb-0">@Model.CurrentRole</h4>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    <!-- Action Buttons -->
-                    <div class="flex gap-2">
-                        <button type="submit" class="flex-1 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
-                            <i class="bi bi-check2-circle"></i> Save Changes
-                        </button>
-                        <a asp-action="Index" class="flex-1 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
-                            <i class="bi bi-arrow-left"></i> Cancel
-                        </a>
+                <!-- Right Column: New Role Form -->
+                <div class="md:col-span-7 flex flex-col bg-white border shadow-sm rounded-xl">
+                    <div class="p-6">
+                        <div class="mb-5">
+                            <label asp-for="NewRole" class="block text-sm font-medium mb-2"><i class="bi bi-arrow-repeat me-1 text-indigo-500"></i> Assign New Role</label>
+                            <select asp-for="NewRole" asp-items="ViewBag.Roles" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors"></select>
+                            
+                            <div class="mt-4 bg-indigo-50/50 rounded-lg p-3">
+                                <p class="text-xs text-indigo-800 flex items-start gap-1.5">
+                                    <i class="bi bi-info-circle-fill text-indigo-500 mt-0.5"></i>
+                                    <span>
+                                        @if (isAlpha)
+                                        {
+                                            <text>Select </text><strong>SuperAdmin</strong><text> to promote this user to Alpha.</text>
+                                        }
+                                        else
+                                        {
+                                            <text>Changing the role will update this user's permissions immediately.</text>
+                                        }
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex gap-3 pt-2 border-t border-gray-100 mt-6">
+                            <button type="submit" class="flex-1 py-2.5 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 shadow-sm shadow-blue-500/30 transition-all">
+                                <i class="bi bi-check2-circle"></i> Save Changes
+                            </button>
+                            <a asp-action="Index" class="flex-1 py-2.5 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 transition-colors">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                        </div>
                     </div>
-                </form>
+                </div>
+
             </div>
-        </div>
+        </form>
     </div>
 }
 

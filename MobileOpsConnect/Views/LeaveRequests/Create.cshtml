@@ -65,80 +65,86 @@
     </div>
 </div>
 
-<!-- Public Holidays Card -->
-<div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-8">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-neutral-700">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center gap-x-3">
-                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-gray-100 text-gray-800"><i class="bi bi-calendar-event text-lg"></i></span>
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-800"><i class="bi bi-broadcast me-1"></i> Philippine Public Holidays @DateTime.Now.Year</h3>
-                    <span class="text-xs text-gray-500">Upcoming holidays &bull; Data from <strong>Nager.Date API</strong></span>
+<!-- Two-Column Asymmetric Layout -->
+<div class="grid lg:grid-cols-12 gap-6 lg:gap-8 items-start relative pb-10">
+
+    <!-- Left Column: Holidays & Info (Span 8) -->
+    <div class="lg:col-span-8 space-y-8">
+        <!-- Public Holidays Card -->
+        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-neutral-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-x-3">
+                        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-gray-100 text-gray-800"><i class="bi bi-calendar-event text-lg"></i></span>
+                        <div>
+                            <h3 class="text-sm font-semibold text-gray-800"><i class="bi bi-broadcast me-1"></i> Philippine Public Holidays @DateTime.Now.Year</h3>
+                            <span class="text-xs text-gray-500">Upcoming holidays &bull; Data from <strong>Nager.Date API</strong></span>
+                        </div>
+                    </div>
+                    <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 shadow-sm"><i class="bi bi-lightning-charge-fill text-amber-500"></i> Live Data</span>
                 </div>
             </div>
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"><i class="bi bi-lightning-charge-fill"></i> Live API</span>
+            <div class="p-6">
+                @if (upcomingHolidays.Any())
+                {
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+                            <thead class="bg-gray-50 dark:bg-neutral-800">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Date</th>
+                                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Holiday</th>
+                                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">English Name</th>
+                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                                @foreach (var h in upcomingHolidays)
+                                {
+                                    var daysUntil = h.Date.DayNumber - DateOnly.FromDateTime(DateTime.Today).DayNumber;
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="whitespace-nowrap px-6 py-3">
+                                            <span class="text-sm font-semibold text-gray-800">@h.Date.ToString("MMM dd, yyyy")</span><br />
+                                            <span class="text-xs text-gray-500">@h.Date.DayOfWeek</span>
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-3"><span class="text-sm font-semibold text-gray-800">@h.LocalName</span></td>
+                                        <td class="whitespace-nowrap px-6 py-3"><span class="text-sm text-gray-500">@h.Name</span></td>
+                                        <td class="whitespace-nowrap px-6 py-3 text-center">
+                                            @if (daysUntil == 0)
+                                            { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium shadow-sm"><i class="bi bi-star-fill text-amber-500"></i> Today</span> }
+                                            else if (daysUntil <= 7)
+                                            { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">In @daysUntil day@(daysUntil != 1 ? "s" : "")</span> }
+                                            else
+                                            { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-blue-50 text-blue-800 text-xs font-medium border border-blue-100">In @daysUntil days</span> }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-4 flex items-center gap-1.5"><i class="bi bi-info-circle text-indigo-500"></i> Compare your selected dates with these public holidays.</p>
+                }
+                else
+                {
+                    <div class="text-center py-8">
+                        <span class="inline-flex justify-center items-center size-[56px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-800 mx-auto mb-3"><i class="bi bi-calendar-x text-xl"></i></span>
+                        <p class="text-sm font-semibold text-gray-800 mb-1">Holiday data unavailable</p>
+                        <span class="text-xs text-gray-500">Unable to fetch upcoming holidays from the API right now.</span>
+                    </div>
+                }
+            </div>
         </div>
     </div>
-    <div class="p-6">
-        @if (upcomingHolidays.Any())
-        {
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-                    <thead class="bg-gray-50 dark:bg-neutral-800">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Date</th>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Holiday</th>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">English Name</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
-                        @foreach (var h in upcomingHolidays)
-                        {
-                            var daysUntil = h.Date.DayNumber - DateOnly.FromDateTime(DateTime.Today).DayNumber;
-                            <tr class="holiday-row hover:bg-gray-50 transition-colors" data-date="@h.Date.ToString("yyyy-MM-dd")">
-                                <td class="whitespace-nowrap px-6 py-3">
-                                    <span class="text-sm font-semibold text-gray-800">@h.Date.ToString("MMM dd, yyyy")</span><br />
-                                    <span class="text-xs text-gray-500">@h.Date.DayOfWeek</span>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-3"><span class="text-sm font-semibold text-gray-800">@h.LocalName</span></td>
-                                <td class="whitespace-nowrap px-6 py-3"><span class="text-sm text-gray-500">@h.Name</span></td>
-                                <td class="whitespace-nowrap px-6 py-3 text-center">
-                                    @if (daysUntil == 0)
-                                    { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-star-fill"></i> Today</span> }
-                                    else if (daysUntil <= 7)
-                                    { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">In @daysUntil day@(daysUntil != 1 ? "s" : "")</span> }
-                                    else
-                                    { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium">In @daysUntil days</span> }
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-            <p class="text-xs text-gray-500 mt-3 text-center"><i class="bi bi-info-circle me-1"></i> Holidays that overlap with your leave dates will be highlighted &bull; Source: <strong>date.nager.at</strong></p>
-        }
-        else
-        {
-            <div class="text-center py-6">
-                <span class="inline-flex justify-center items-center size-[56px] rounded-full border-4 border-red-50 bg-red-100 text-red-800 mx-auto mb-3"><i class="bi bi-wifi-off text-xl"></i></span>
-                <p class="text-sm font-semibold text-gray-800 mb-1">Holiday data unavailable</p>
-                <span class="text-xs text-gray-500">Unable to fetch holidays from the API.</span>
-            </div>
-        }
-    </div>
-</div>
 
-<!-- Application Form -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-pencil-square text-green-500"></i> Application Form</h2>
-    <div class="grow border-t border-gray-200"></div>
-</div>
+    <!-- Right Column: Sticky Application Form (Span 4) -->
+    <div class="lg:col-span-4 sticky top-6">
+        <div class="flex items-center gap-x-3 mb-4">
+            <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-pencil-square text-green-500"></i> Application Form</h2>
+            <div class="grow border-t border-gray-200"></div>
+        </div>
 
-<div class="max-w-2xl mx-auto">
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
-        <div class="p-6">
-            <form asp-action="Create">
+        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
+            <div class="p-6">
+                <form asp-action="Create">
                 <div class="grid gap-y-5">
                     <!-- Leave Type -->
                     <div>
@@ -170,29 +176,30 @@
                     </div>
 
                     <!-- Policy -->
-                    <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-start gap-3">
-                        <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-shield-check"></i></span>
+                    <div class="bg-blue-50/50 border border-blue-100 rounded-lg p-3 flex items-start gap-2.5">
+                        <i class="bi bi-shield-check text-blue-600 mt-0.5"></i>
                         <div>
-                            <p class="text-sm font-semibold text-gray-800 mb-1">Leave Policy Reminder</p>
-                            <p class="text-xs text-gray-500 mb-0">Leave requests should be filed at least 3 working days in advance (except emergencies). Your manager will be notified and must approve before the leave becomes effective.</p>
+                            <p class="text-[13px] text-gray-600 leading-snug">File at least 3 days in advance (except emergencies). Must be approved prior to leave.</p>
                         </div>
                     </div>
 
                     <!-- Actions -->
-                    <div class="flex gap-3 pt-2">
-                        <input type="submit" value="Submit Request" class="py-3 px-4 flex-1 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 cursor-pointer" />
-                        <a asp-controller="Home" asp-action="Index" class="py-3 px-4 flex-1 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
-                            <i class="bi bi-arrow-left"></i> Cancel &amp; Go Back
+                    <div class="flex gap-2 pt-2 border-t border-gray-100 mt-2">
+                        <input type="submit" value="Submit Request" class="py-2.5 px-3 flex-1 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 cursor-pointer shadow-sm shadow-blue-500/30 transition-all" />
+                        <a asp-controller="Home" asp-action="Index" class="py-2.5 px-3 flex-[0.5] inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 transition-colors">
+                            Cancel
                         </a>
                     </div>
                 </div>
             </form>
         </div>
-        <div class="px-6 py-4 border-t border-gray-200 text-center">
-            <span class="text-xs text-gray-500"><i class="bi bi-lock-fill me-1"></i> Your request is securely submitted and visible only to authorized approvers.</span>
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 text-center rounded-b-xl mb-0">
+            <span class="text-xs text-gray-500"><i class="bi bi-lock-fill me-1"></i> Securely submitted to authorized approvers.</span>
         </div>
     </div>
 </div>
+
+</div> <!-- End Asymmetric Layout Grid -->
 
 @section Scripts {
     <script>
