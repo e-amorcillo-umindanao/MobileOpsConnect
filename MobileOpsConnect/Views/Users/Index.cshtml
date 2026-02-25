@@ -106,13 +106,26 @@
                                 { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800"><i class="bi bi-person-badge"></i> @item.Role</span> }
                             </td>
                             <td class="px-6 py-4 text-end">
-                                <div class="flex justify-end gap-2">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50" title="Edit Role"><i class="bi bi-pencil-square"></i> Edit</a>
-                                    <a asp-action="ResetPassword" asp-route-id="@item.Id" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100" title="Reset Password"><i class="bi bi-key-fill"></i> Reset</a>
-                                    @if (isSuperAdmin && item.Role == "SystemAdmin")
-                                    {
-                                        <button type="button" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100" title="Remove User" aria-haspopup="dialog" aria-expanded="false" aria-controls="deleteUserModal" data-hs-overlay="#deleteUserModal" onclick="setDeleteTarget('@item.Id', '@item.Email')"><i class="bi bi-trash3"></i> Remove</button>
-                                    }
+                                <div class="hs-dropdown [--placement:bottom-right] relative inline-block">
+                                    <button id="hs-user-dropdown-@item.Id.Substring(0, 8)" type="button" class="hs-dropdown-toggle py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+                                        Options
+                                        <i class="bi bi-chevron-down hs-dropdown-open:rotate-180 transition-transform duration-200"></i>
+                                    </button>
+                                    <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-40 bg-white shadow-md rounded-lg p-2 mt-2 z-10 border border-gray-200 dark:bg-neutral-900 dark:border-neutral-700" role="menu" aria-orientation="vertical" aria-labelledby="hs-user-dropdown-@item.Id.Substring(0, 8)">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-800">
+                                            <i class="bi bi-pencil-square"></i> Edit Role
+                                        </a>
+                                        <a asp-action="ResetPassword" asp-route-id="@item.Id" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-amber-700 hover:bg-gray-100 dark:text-amber-400 dark:hover:bg-neutral-800">
+                                            <i class="bi bi-key-fill"></i> Reset Password
+                                        </a>
+                                        @if (isSuperAdmin && item.Role == "SystemAdmin")
+                                        {
+                                            <div class="my-1 border-t border-gray-200 dark:border-neutral-700"></div>
+                                            <button type="button" class="w-full flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-red-600 hover:bg-gray-100 dark:text-red-400 dark:hover:bg-neutral-800" aria-haspopup="dialog" aria-expanded="false" aria-controls="deleteUserModal" data-hs-overlay="#deleteUserModal" onclick="setDeleteTarget('@item.Id', '@item.Email')">
+                                                <i class="bi bi-trash3"></i> Remove User
+                                            </button>
+                                        }
+                                    </div>
                                 </div>
                             </td>
                         </tr>
