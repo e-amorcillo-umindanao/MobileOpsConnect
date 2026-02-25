@@ -16,6 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
+    <style>body{opacity:0}body.ready{opacity:1;transition:opacity .15s ease-in}</style>
 </head>
 <body>
 
@@ -174,5 +175,6 @@
                 .catch(err => console.error('[PWA] SW registration failed:', err));
         }
     </script>
+    <script>document.body.classList.add('ready');</script>
 </body>
 </html>
