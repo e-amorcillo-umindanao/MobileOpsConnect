@@ -5,28 +5,20 @@
     ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
-<div class="moc-section-header">
-    <h5 class="font-bold letter-tight">
-        <i class="bi bi-download text-indigo mr-1"></i> Download Your Data
-    </h5>
-    <hr />
+<div class="flex items-center gap-x-3 mb-4">
+    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-download text-indigo-500"></i> Download Your Data</h2>
+    <div class="grow border-t border-gray-200"></div>
 </div>
 
-<div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm">
-    <div class="p-6 p-6 p-md-5 text-center">
-        <div class="moc-icon-box-lg bg-indigo-50 rounded-3 mx-auto mb-6" style="width:64px;height:64px;">
-            <i class="bi bi-file-earmark-arrow-down text-indigo fs-2"></i>
-        </div>
-        <h5 class="font-bold mb-2 letter-tight">Your Data is Ready</h5>
-        <p class="text-moc-text-muted text-sm mb-6">
-            Click the button below to download a JSON file containing your personal data.
-        </p>
-
+<div class="flex flex-col bg-white border shadow-sm rounded-xl">
+    <div class="p-6 text-center">
+        <span class="inline-flex justify-center items-center size-[64px] rounded-xl bg-indigo-100 text-indigo-800 mx-auto mb-4"><i class="bi bi-file-earmark-arrow-down text-2xl"></i></span>
+        <h3 class="text-lg font-bold text-gray-800 mb-2">Your Data is Ready</h3>
+        <p class="text-sm text-gray-500 mb-5">Click the button below to download a JSON file containing your personal data.</p>
         <form method="post">
-            <button class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary px-4 py-2 text-base px-8 py-6" type="submit">
-                <i class="bi bi-cloud-download mr-2"></i> Download Data
+            <button class="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700" type="submit">
+                <i class="bi bi-cloud-download"></i> Download Data
             </button>
         </form>
     </div>
 </div>
-

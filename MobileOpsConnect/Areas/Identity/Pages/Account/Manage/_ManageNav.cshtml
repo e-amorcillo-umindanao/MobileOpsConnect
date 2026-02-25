@@ -4,53 +4,38 @@
     var hasPassword = await SignInManager.UserManager.HasPasswordAsync(await SignInManager.UserManager.GetUserAsync(User));
 }
 
-<div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm">
-    <div class="p-6 p-6">
-        <p class="uppercase text-xs font-bold text-moc-text-muted letter-tight mb-6 px-2">
-            <i class="bi bi-gear-fill mr-1"></i> Account Settings
+<div class="flex flex-col bg-white border shadow-sm rounded-xl overflow-hidden">
+    <div class="p-6">
+        <p class="uppercase text-xs font-bold text-gray-500 tracking-wide mb-4 px-2">
+            <i class="bi bi-gear-fill me-1"></i> Account Settings
         </p>
-        <nav class="nav flex-col gap-1" id="manage-nav">
-            <a class="nav-link rounded-3 px-6 py-2 flex items-center gap-2 text-sm font-semibold @ManageNavPages.IndexNavClass(ViewContext)"
+        <nav class="flex flex-col gap-1" id="manage-nav">
+            <a class="nav-link rounded-lg px-4 py-2.5 flex items-center gap-2 text-sm font-semibold @ManageNavPages.IndexNavClass(ViewContext)"
                id="profile" asp-page="./Index">
-                <div class="flex items-center justify-center rounded-2" 
-                     style="width:28px;height:28px;min-width:28px;background:rgba(99,102,241,0.08);">
-                    <i class="bi bi-person-fill text-indigo" style="font-size:0.8rem;"></i>
-                </div>
+                <span class="inline-flex justify-center items-center size-[28px] rounded-md bg-indigo-100 text-indigo-800"><i class="bi bi-person-fill text-xs"></i></span>
                 Profile
             </a>
-            <a class="nav-link rounded-3 px-6 py-2 flex items-center gap-2 text-sm font-semibold @ManageNavPages.EmailNavClass(ViewContext)"
+            <a class="nav-link rounded-lg px-4 py-2.5 flex items-center gap-2 text-sm font-semibold @ManageNavPages.EmailNavClass(ViewContext)"
                id="email" asp-page="./Email">
-                <div class="flex items-center justify-center rounded-2"
-                     style="width:28px;height:28px;min-width:28px;background:rgba(6,182,212,0.08);">
-                    <i class="bi bi-envelope-fill text-cyan" style="font-size:0.8rem;"></i>
-                </div>
+                <span class="inline-flex justify-center items-center size-[28px] rounded-md bg-cyan-100 text-cyan-800"><i class="bi bi-envelope-fill text-xs"></i></span>
                 Email
             </a>
             @if (hasPassword)
             {
-                <a class="nav-link rounded-3 px-6 py-2 flex items-center gap-2 text-sm font-semibold @ManageNavPages.ChangePasswordNavClass(ViewContext)"
+                <a class="nav-link rounded-lg px-4 py-2.5 flex items-center gap-2 text-sm font-semibold @ManageNavPages.ChangePasswordNavClass(ViewContext)"
                    id="change-password" asp-page="./ChangePassword">
-                    <div class="flex items-center justify-center rounded-2"
-                         style="width:28px;height:28px;min-width:28px;background:rgba(245,158,11,0.08);">
-                        <i class="bi bi-key-fill text-amber" style="font-size:0.8rem;"></i>
-                    </div>
+                    <span class="inline-flex justify-center items-center size-[28px] rounded-md bg-amber-100 text-amber-800"><i class="bi bi-key-fill text-xs"></i></span>
                     Password
                 </a>
             }
-            <a class="nav-link rounded-3 px-6 py-2 flex items-center gap-2 text-sm font-semibold @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"
+            <a class="nav-link rounded-lg px-4 py-2.5 flex items-center gap-2 text-sm font-semibold @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"
                id="two-factor" asp-page="./TwoFactorAuthentication">
-                <div class="flex items-center justify-center rounded-2"
-                     style="width:28px;height:28px;min-width:28px;background:rgba(34,197,94,0.08);">
-                    <i class="bi bi-shield-lock-fill text-green" style="font-size:0.8rem;"></i>
-                </div>
+                <span class="inline-flex justify-center items-center size-[28px] rounded-md bg-green-100 text-green-800"><i class="bi bi-shield-lock-fill text-xs"></i></span>
                 Two-Factor Auth
             </a>
-            <a class="nav-link rounded-3 px-6 py-2 flex items-center gap-2 text-sm font-semibold @ManageNavPages.PersonalDataNavClass(ViewContext)"
+            <a class="nav-link rounded-lg px-4 py-2.5 flex items-center gap-2 text-sm font-semibold @ManageNavPages.PersonalDataNavClass(ViewContext)"
                id="personal-data" asp-page="./PersonalData">
-                <div class="flex items-center justify-center rounded-2"
-                     style="width:28px;height:28px;min-width:28px;background:rgba(239,68,68,0.08);">
-                    <i class="bi bi-database-fill text-red" style="font-size:0.8rem;"></i>
-                </div>
+                <span class="inline-flex justify-center items-center size-[28px] rounded-md bg-red-100 text-red-800"><i class="bi bi-database-fill text-xs"></i></span>
                 Personal Data
             </a>
         </nav>
@@ -58,11 +43,9 @@
 </div>
 
 <style>
-    #manage-nav .nav-link { color: var(--moc-text); transition: all 0.2s ease; }
-    #manage-nav .nav-link:hover { background: rgba(99,102,241,0.06); color: var(--moc-primary); }
-    #manage-nav .nav-link.active { background: var(--moc-primary); color: #fff !important; }
-    #manage-nav .nav-link.active div { background: rgba(255,255,255,0.2) !important; }
+    #manage-nav .nav-link { color: #374151; transition: all 0.2s ease; }
+    #manage-nav .nav-link:hover { background: rgba(99,102,241,0.06); color: #4f46e5; }
+    #manage-nav .nav-link.active { background: #3b82f6; color: #fff !important; }
+    #manage-nav .nav-link.active span { background: rgba(255,255,255,0.2) !important; }
     #manage-nav .nav-link.active i { color: #fff !important; }
 </style>
-
-

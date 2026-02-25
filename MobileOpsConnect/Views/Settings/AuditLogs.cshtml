@@ -9,253 +9,121 @@
     int securityCount = ViewBag.SecurityCount;
 }
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- HERO BANNER                                     -->
-<!-- ═══════════════════════════════════════════════ -->
-<section style="background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 50%, #6366f1 100%);
-               border-radius: 1.25rem; padding: 3rem 2.5rem; margin-bottom: 2rem;
-               position: relative; overflow: hidden;">
-    <!-- Decorative overlay removed due to Razor parsing issue with inline SVG -->
-    <div class="flex flex-wrap -mx-3 items-center position-relative" style="z-index:2;">
-        <div class="col">
-            <div class="flex items-center gap-6 mb-2">
-                <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;">
-                    <i class="bi bi-shield-lock-fill text-white fs-4"></i>
-                </div>
-                <div>
-                    <h2 class="font-bold text-white mb-0 letter-tight" style="font-size:1.5rem;">
-                        @(isSuperAdmin ? "🔒 Global Audit Logs" : "📋 Standard Audit Logs")
-                    </h2>
-                    <span style="color:rgba(255,255,255,0.6);" class="text-sm">
-                        @(isSuperAdmin ? "Complete system activity — including security events" : "General system activity log")
-                    </span>
-                </div>
+<!-- Hero Banner -->
+<div class="rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden" style="background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 50%, #6366f1 100%);">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+        <div class="flex items-center gap-4">
+            <span class="inline-flex justify-center items-center size-[48px] rounded-xl bg-white/15 backdrop-blur-sm text-white">
+                <i class="bi bi-shield-lock-fill text-2xl"></i>
+            </span>
+            <div>
+                <h2 class="text-xl font-bold text-white mb-0">@(isSuperAdmin ? "🔒 Global Audit Logs" : "📋 Standard Audit Logs")</h2>
+                <span class="text-sm text-white/60">@(isSuperAdmin ? "Complete system activity — including security events" : "General system activity log")</span>
             </div>
         </div>
-        <div class="col-auto">
-            <a asp-controller="Home" asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.2);backdrop-filter:blur(10px);border-radius:0.75rem;">
-                <i class="bi bi-arrow-left mr-1"></i> Back to Dashboard
-            </a>
-        </div>
+        <a asp-controller="Home" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-white/15 text-white border border-white/20 backdrop-blur-sm hover:bg-white/25">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
     </div>
-</section>
+</div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- METRICS                                         -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="flex flex-wrap -mx-3 gap-6 mb-6">
-    <div class="w-full md:w-1/2 px-3 w-full md:w-1/4 px-6">
-        <div class="moc-metric p-6" style="border-left: 3px solid var(--moc-indigo);">
-            <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Total Events</p>
-            <h3 class="font-bold mb-0" style="color:var(--moc-indigo);">@totalEvents</h3>
-        </div>
+<!-- Metrics -->
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl" style="border-left: 3px solid #6366f1;">
+        <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Total Events</p><h3 class="text-xl font-bold text-indigo-600 mt-1">@totalEvents</h3></div>
     </div>
-    <div class="w-full md:w-1/2 px-3 w-full md:w-1/4 px-6">
-        <div class="moc-metric p-6" style="border-left: 3px solid var(--moc-cyan);">
-            <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Data Changes</p>
-            <h3 class="font-bold mb-0" style="color:var(--moc-cyan);">@dataCount</h3>
-        </div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl" style="border-left: 3px solid #06b6d4;">
+        <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Data Changes</p><h3 class="text-xl font-bold text-cyan-600 mt-1">@dataCount</h3></div>
     </div>
-    <div class="w-full md:w-1/2 px-3 w-full md:w-1/4 px-6">
-        <div class="moc-metric p-6" style="border-left: 3px solid var(--moc-green);">
-            <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Stock Moves</p>
-            <h3 class="font-bold mb-0" style="color:var(--moc-green);">@stockCount</h3>
-        </div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl" style="border-left: 3px solid #22c55e;">
+        <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Stock Moves</p><h3 class="text-xl font-bold text-green-600 mt-1">@stockCount</h3></div>
     </div>
     @if (isSuperAdmin)
     {
-        <div class="w-full md:w-1/2 px-3 w-full md:w-1/4 px-6">
-            <div class="moc-metric p-6" style="border-left: 3px solid var(--moc-red);">
-                <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Security Events</p>
-                <h3 class="font-bold mb-0" style="color:var(--moc-red);">@securityCount</h3>
-            </div>
+        <div class="flex flex-col bg-white border shadow-sm rounded-xl" style="border-left: 3px solid #ef4444;">
+            <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Security Events</p><h3 class="text-xl font-bold text-red-600 mt-1">@securityCount</h3></div>
         </div>
     }
     else
     {
-        <div class="w-full md:w-1/2 px-3 w-full md:w-1/4 px-6">
-            <div class="moc-metric p-6" style="border-left: 3px solid var(--moc-amber);">
-                <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Login Events</p>
-                <h3 class="font-bold mb-0" style="color:var(--moc-amber);">@loginCount</h3>
-            </div>
+        <div class="flex flex-col bg-white border shadow-sm rounded-xl" style="border-left: 3px solid #f59e0b;">
+            <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Login Events</p><h3 class="text-xl font-bold text-amber-600 mt-1">@loginCount</h3></div>
         </div>
     }
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- LOG TABLE                                       -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm">
-    <div class="px-6 py-4 border-b border-moc-border bg-gray-50 bg-transparent border-0 p-6 pb-0">
+<!-- Log Table -->
+<div class="flex flex-col bg-white border shadow-sm rounded-xl">
+    <div class="px-6 py-4 border-b border-gray-200">
         <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <i class="bi bi-journal-text text-indigo fs-5"></i>
-                <h6 class="font-bold mb-0 letter-tight">
-                    @(isSuperAdmin ? "All Activity" : "Activity Log")
-                </h6>
+            <div class="flex items-center gap-x-3">
+                <i class="bi bi-journal-text text-indigo-500 text-lg"></i>
+                <h3 class="text-sm font-semibold text-gray-800">@(isSuperAdmin ? "All Activity" : "Activity Log")</h3>
             </div>
             @if (isSuperAdmin)
-            {
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-red-50 text-red px-6 py-2 font-semibold text-xs">
-                    <i class="bi bi-shield-fill-exclamation mr-1"></i> Global Access
-                </span>
-            }
+            { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="bi bi-shield-fill-exclamation"></i> Global Access</span> }
             else
-            {
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-indigo-50 text-indigo px-6 py-2 font-semibold text-xs">
-                    <i class="bi bi-eye-fill mr-1"></i> Standard View
-                </span>
-            }
+            { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"><i class="bi bi-eye-fill"></i> Standard View</span> }
         </div>
     </div>
-    <div class="p-6 p-0">
+    <div class="p-0">
         @if (Model.Count == 0)
         {
-            <div class="text-center py-8">
-                <i class="bi bi-shield-check text-moc-text-muted" style="font-size: 3rem;"></i>
-                <p class="text-moc-text-muted mt-2">No audit events recorded yet. Events will appear here as users interact with the system.</p>
+            <div class="text-center py-10">
+                <i class="bi bi-shield-check text-gray-400" style="font-size: 3rem;"></i>
+                <p class="text-gray-500 mt-2">No audit events recorded yet. Events will appear here as users interact with the system.</p>
             </div>
         }
         else
         {
-            <!-- ══════ DESKTOP TABLE (hidden on small screens) ══════ -->
-            <div class="overflow-x-auto w-full hidden md:block">
-                <table class="w-full text-left border-collapse align-middle mb-0">
-                    <thead>
-                        <tr style="background: var(--moc-surface);">
-                            <th class="uppercase text-xs font-semibold text-moc-text-muted ps-4 py-6">Timestamp</th>
-                            <th class="uppercase text-xs font-semibold text-moc-text-muted py-6">User</th>
-                            <th class="uppercase text-xs font-semibold text-moc-text-muted py-6">Action</th>
-                            <th class="uppercase text-xs font-semibold text-moc-text-muted py-6">Details</th>
-                            <th class="uppercase text-xs font-semibold text-moc-text-muted pe-4 py-6">IP</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <!-- Desktop Table -->
+            <div class="overflow-x-auto hidden md:block">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50"><tr>
+                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Timestamp</th>
+                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">User</th>
+                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Action</th>
+                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Details</th>
+                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">IP</th>
+                    </tr></thead>
+                    <tbody class="divide-y divide-gray-200">
                         @foreach (var log in Model)
                         {
-                            var actionBadge = log.Action switch
-                            {
-                                "LOGIN" => "bg-green-50 text-green",
-                                "CREATE" => "bg-cyan-50 text-cyan",
-                                "UPDATE" => "bg-indigo-50 text-indigo",
-                                "DELETE" => "bg-red-50 text-red",
-                                "STOCK_IN" => "bg-green-50 text-green",
-                                "STOCK_OUT" => "bg-amber-50 text-amber",
-                                "APPROVE" => "bg-green-50 text-green",
-                                "REJECT" => "bg-red-50 text-red",
-                                "SECURITY" => "bg-red-50 text-red",
-                                _ => "bg-purple-50 text-purple"
-                            };
-                            var actionIcon = log.Action switch
-                            {
-                                "LOGIN" => "bi-box-arrow-in-right",
-                                "CREATE" => "bi-plus-circle-fill",
-                                "UPDATE" => "bi-pencil-fill",
-                                "DELETE" => "bi-trash-fill",
-                                "STOCK_IN" => "bi-arrow-down-circle-fill",
-                                "STOCK_OUT" => "bi-arrow-up-circle-fill",
-                                "APPROVE" => "bi-check-circle-fill",
-                                "REJECT" => "bi-x-circle-fill",
-                                "SECURITY" => "bi-shield-fill-exclamation",
-                                _ => "bi-activity"
-                            };
-                            var rowStyle = log.IsCritical ? "background: rgba(239,68,68,0.03);" : "";
-                            <tr style="@rowStyle">
-                                <td class="ps-4">
-                                    <span class="text-sm">@log.Timestamp.ToString("MMM dd, yyyy")</span>
-                                    <br />
-                                    <span class="text-xs text-moc-text-muted">@log.Timestamp.ToString("hh:mm:ss tt")</span>
+                            var actionBadge = log.Action switch { "LOGIN" => "bg-green-100 text-green-800", "CREATE" => "bg-cyan-100 text-cyan-800", "UPDATE" => "bg-indigo-100 text-indigo-800", "DELETE" => "bg-red-100 text-red-800", "STOCK_IN" => "bg-green-100 text-green-800", "STOCK_OUT" => "bg-amber-100 text-amber-800", "APPROVE" => "bg-green-100 text-green-800", "REJECT" => "bg-red-100 text-red-800", "SECURITY" => "bg-red-100 text-red-800", _ => "bg-purple-100 text-purple-800" };
+                            var actionIcon = log.Action switch { "LOGIN" => "bi-box-arrow-in-right", "CREATE" => "bi-plus-circle-fill", "UPDATE" => "bi-pencil-fill", "DELETE" => "bi-trash-fill", "STOCK_IN" => "bi-arrow-down-circle-fill", "STOCK_OUT" => "bi-arrow-up-circle-fill", "APPROVE" => "bi-check-circle-fill", "REJECT" => "bi-x-circle-fill", "SECURITY" => "bi-shield-fill-exclamation", _ => "bi-activity" };
+                            <tr class="hover:bg-gray-50 transition-colors" style="@(log.IsCritical ? "background: rgba(239,68,68,0.03);" : "")">
+                                <td class="px-6 py-4"><span class="text-sm text-gray-800">@log.Timestamp.ToString("MMM dd, yyyy")</span><br/><span class="text-xs text-gray-500">@log.Timestamp.ToString("hh:mm:ss tt")</span></td>
+                                <td class="px-6 py-4"><span class="text-sm font-semibold text-gray-800">@log.UserEmail</span>@if (!string.IsNullOrEmpty(log.UserRole)){<br/><span class="text-xs text-gray-500">@log.UserRole</span>}</td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium @actionBadge"><i class="bi @actionIcon"></i> @log.Action.Replace("_", " ")</span>
+                                    @if (log.IsCritical){ <i class="bi bi-exclamation-triangle-fill text-red-500 ms-1" title="Security Event"></i> }
                                 </td>
-                                <td>
-                                    <span class="font-semibold text-sm">@log.UserEmail</span>
-                                    @if (!string.IsNullOrEmpty(log.UserRole))
-                                    {
-                                        <br />
-                                        <span class="text-xs text-moc-text-muted">@log.UserRole</span>
-                                    }
-                                </td>
-                                <td>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill @actionBadge px-6 py-2 font-semibold text-xs">
-                                        <i class="bi @actionIcon mr-1"></i> @log.Action.Replace("_", " ")
-                                    </span>
-                                    @if (log.IsCritical)
-                                    {
-                                        <i class="bi bi-exclamation-triangle-fill text-red-500 ml-1" title="Security Event"></i>
-                                    }
-                                </td>
-                                <td>
-                                    <span class="text-sm" style="max-width:300px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="@log.Details">
-                                        @log.Details
-                                    </span>
-                                </td>
-                                <td class="pe-4">
-                                    <span class="text-xs text-moc-text-muted font-monospace">@log.IpAddress</span>
-                                </td>
+                                <td class="px-6 py-4"><span class="text-sm text-gray-500" style="max-width:300px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="@log.Details">@log.Details</span></td>
+                                <td class="px-6 py-4"><span class="text-xs text-gray-500 font-mono">@log.IpAddress</span></td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
 
-            <!-- ══════ MOBILE CARDS (visible only on small screens) ══════ -->
-            <div class="md:hidden p-6">
+            <!-- Mobile Cards -->
+            <div class="md:hidden p-4 space-y-4">
                 @foreach (var log in Model)
                 {
-                    var actionBadge = log.Action switch
-                    {
-                        "LOGIN" => "bg-green-50 text-green",
-                        "CREATE" => "bg-cyan-50 text-cyan",
-                        "UPDATE" => "bg-indigo-50 text-indigo",
-                        "DELETE" => "bg-red-50 text-red",
-                        "STOCK_IN" => "bg-green-50 text-green",
-                        "STOCK_OUT" => "bg-amber-50 text-amber",
-                        "APPROVE" => "bg-green-50 text-green",
-                        "REJECT" => "bg-red-50 text-red",
-                        "SECURITY" => "bg-red-50 text-red",
-                        _ => "bg-purple-50 text-purple"
-                    };
-                    var actionIcon = log.Action switch
-                    {
-                        "LOGIN" => "bi-box-arrow-in-right",
-                        "CREATE" => "bi-plus-circle-fill",
-                        "UPDATE" => "bi-pencil-fill",
-                        "DELETE" => "bi-trash-fill",
-                        "STOCK_IN" => "bi-arrow-down-circle-fill",
-                        "STOCK_OUT" => "bi-arrow-up-circle-fill",
-                        "APPROVE" => "bi-check-circle-fill",
-                        "REJECT" => "bi-x-circle-fill",
-                        "SECURITY" => "bi-shield-fill-exclamation",
-                        _ => "bi-activity"
-                    };
-                    var cardBorder = log.IsCritical ? "border-left: 3px solid var(--moc-red);" : "border-left: 3px solid var(--moc-indigo);";
-                    <div class="mb-6 p-6 rounded-3 shadow-sm" style="background: var(--moc-surface, #f8f9fa); @cardBorder">
-                        <!-- Row 1: User + Action -->
+                    var actionBadge = log.Action switch { "LOGIN" => "bg-green-100 text-green-800", "CREATE" => "bg-cyan-100 text-cyan-800", "UPDATE" => "bg-indigo-100 text-indigo-800", "DELETE" => "bg-red-100 text-red-800", "STOCK_IN" => "bg-green-100 text-green-800", "STOCK_OUT" => "bg-amber-100 text-amber-800", "APPROVE" => "bg-green-100 text-green-800", "REJECT" => "bg-red-100 text-red-800", "SECURITY" => "bg-red-100 text-red-800", _ => "bg-purple-100 text-purple-800" };
+                    var actionIcon = log.Action switch { "LOGIN" => "bi-box-arrow-in-right", "CREATE" => "bi-plus-circle-fill", "UPDATE" => "bi-pencil-fill", "DELETE" => "bi-trash-fill", "STOCK_IN" => "bi-arrow-down-circle-fill", "STOCK_OUT" => "bi-arrow-up-circle-fill", "APPROVE" => "bi-check-circle-fill", "REJECT" => "bi-x-circle-fill", "SECURITY" => "bi-shield-fill-exclamation", _ => "bi-activity" };
+                    <div class="p-4 rounded-xl bg-gray-50 border" style="border-left: 3px solid @(log.IsCritical ? "#ef4444" : "#6366f1") !important;">
                         <div class="flex items-start justify-between mb-2">
-                            <div style="min-width:0; flex:1;">
-                                <span class="font-semibold text-sm block" style="word-break:break-all;">@log.UserEmail</span>
-                                @if (!string.IsNullOrEmpty(log.UserRole))
-                                {
-                                    <span class="text-xs text-moc-text-muted">@log.UserRole</span>
-                                }
-                            </div>
-                            <div class="ml-2 flex-shrink-0">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill @actionBadge px-2 py-1 font-semibold text-xs">
-                                    <i class="bi @actionIcon mr-1"></i> @log.Action.Replace("_", " ")
-                                </span>
-                                @if (log.IsCritical)
-                                {
-                                    <i class="bi bi-exclamation-triangle-fill text-red-500 ml-1" title="Security Event"></i>
-                                }
+                            <div class="min-w-0 flex-1"><span class="text-sm font-semibold text-gray-800 block break-all">@log.UserEmail</span>@if (!string.IsNullOrEmpty(log.UserRole)){<span class="text-xs text-gray-500">@log.UserRole</span>}</div>
+                            <div class="ms-2 shrink-0">
+                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full text-xs font-medium @actionBadge"><i class="bi @actionIcon"></i> @log.Action.Replace("_", " ")</span>
+                                @if (log.IsCritical){ <i class="bi bi-exclamation-triangle-fill text-red-500 ms-1" title="Security Event"></i> }
                             </div>
                         </div>
-                        <!-- Row 2: Details (full text, wrapped) -->
-                        <p class="text-sm mb-2" style="word-break:break-word;">@log.Details</p>
-                        <!-- Row 3: Timestamp + IP -->
-                        <div class="flex items-center justify-between text-moc-text-muted">
-                            <span class="text-xs">
-                                <i class="bi bi-clock mr-1"></i>@log.Timestamp.ToString("MMM dd, yyyy hh:mm tt")
-                            </span>
-                            <span class="text-xs font-monospace">@log.IpAddress</span>
+                        <p class="text-sm text-gray-600 mb-2" style="word-break:break-word;">@log.Details</p>
+                        <div class="flex items-center justify-between text-gray-500">
+                            <span class="text-xs"><i class="bi bi-clock me-1"></i>@log.Timestamp.ToString("MMM dd, yyyy hh:mm tt")</span>
+                            <span class="text-xs font-mono">@log.IpAddress</span>
                         </div>
                     </div>
                 }
@@ -263,5 +131,3 @@
         }
     </div>
 </div>
-
-

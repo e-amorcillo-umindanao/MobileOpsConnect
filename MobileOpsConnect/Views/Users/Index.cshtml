@@ -3,275 +3,108 @@
 @{
     ViewData["Title"] = "User Management";
     bool isSuperAdmin = User.IsInRole("SuperAdmin");
-
     int totalUsers = Model.Count();
     int superAdminCount = Model.Count(u => u.Role == "SuperAdmin");
     int systemAdminCount = Model.Count(u => u.Role == "SystemAdmin");
     int otherCount = totalUsers - superAdminCount - systemAdminCount;
 }
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- PAGE HEADER                                     -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="moc-hero p-6 p-md-5 mb-6 text-white anim-fade-in">
-    <div class="position-relative" style="z-index: 2;">
-        <div class="flex flex-wrap items-center gap-2 mb-6">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill px-6 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
-                <i class="bi bi-circle-fill text-green-500 mr-1" style="font-size:0.4rem;vertical-align:middle;"></i>
-                Directory Online
+<!-- Hero Banner -->
+<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
+    <div class="relative z-10">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm">
+                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> Directory Online
             </span>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill px-6 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
-                <i class="bi bi-people-fill mr-1"></i> @totalUsers Registered Account@(totalUsers != 1 ? "s" : "")
+            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
+                <i class="bi bi-people-fill"></i> @totalUsers Registered Account@(totalUsers != 1 ? "s" : "")
             </span>
         </div>
         @if (isSuperAdmin)
         {
-            <h1 class="display-5 font-bold mb-2 letter-tight">System Admin Management</h1>
-            <p class="lead mb-0 opacity-75">
-                Create &amp; manage Beta-level System Administrator accounts
-            </p>
+            <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">System Admin Management</h1>
+            <p class="text-blue-100 text-lg">Create &amp; manage Beta-level System Administrator accounts</p>
         }
         else
         {
-            <h1 class="display-5 font-bold mb-2 letter-tight">User Management</h1>
-            <p class="lead mb-0 opacity-75">
-                Manage staff accounts, roles &amp; access permissions
-            </p>
+            <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">User Management</h1>
+            <p class="text-blue-100 text-lg">Manage staff accounts, roles &amp; access permissions</p>
         }
     </div>
-    <div class="position-absolute top-50 end-0 translate-middle-y hidden lg:block pe-none"
-         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
-        <i class="bi bi-people-fill"></i>
+    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
+        <i class="bi bi-people-fill text-9xl text-white"></i>
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- USER STATS METRICS                              -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="moc-section-header mt-2">
-    <h5 class="font-bold letter-tight">
-        <i class="bi bi-bar-chart-line-fill text-indigo mr-1"></i> Account Overview
-    </h5>
-    <hr />
+<!-- Account Overview -->
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-person-lines-fill text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Total Users</p><h3 class="text-xl font-medium text-gray-800 mt-1">@totalUsers</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium"><i class="bi bi-people-fill"></i> All Roles</span></div></div></div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-red-100 text-red-800 rounded-lg"><i class="bi bi-shield-lock-fill text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Super Admins</p><h3 class="text-xl font-medium text-gray-800 mt-1">@superAdminCount</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium"><i class="bi bi-shield-lock-fill"></i> Alpha</span></div></div></div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg"><i class="bi bi-gear-wide-connected text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Sys Admins</p><h3 class="text-xl font-medium text-gray-800 mt-1">@systemAdminCount</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium"><i class="bi bi-gear-fill"></i> Beta</span></div></div></div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-cyan-100 text-cyan-800 rounded-lg"><i class="bi bi-person-workspace text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Staff &amp; Others</p><h3 class="text-xl font-medium text-gray-800 mt-1">@otherCount</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-cyan-100 text-cyan-800 text-xs font-medium"><i class="bi bi-person-badge"></i> Standard</span></div></div></div>
 </div>
 
-<div class="flex flex-wrap -mx-3 gap-6 mb-6">
-    <!-- Total Users -->
-    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-1">
-        <div class="moc-metric p-6 p-md-4 h-100">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Total Users</p>
-                    <h3 class="font-bold mb-1 letter-tight">@totalUsers</h3>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo text-xs font-semibold">
-                        <i class="bi bi-people-fill mr-1"></i> All Roles
-                    </span>
-                </div>
-                <div class="moc-icon-box bg-indigo-50 rounded-3">
-                    <i class="bi bi-person-lines-fill text-indigo fs-5"></i>
-                </div>
-            </div>
-        </div>
+<!-- Action Bar -->
+<div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+    <div class="flex items-center gap-x-3">
+        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-green-100 text-green-800"><i class="bi bi-person-plus-fill text-lg"></i></span>
+        <div><p class="text-sm font-semibold text-gray-800 mb-0">Add New Account</p><span class="text-xs text-gray-500">Register a new user to the system</span></div>
     </div>
-
-    <!-- Super Admins -->
-    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-2">
-        <div class="moc-metric p-6 p-md-4 h-100">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Super Admins</p>
-                    <h3 class="font-bold mb-1 letter-tight">@superAdminCount</h3>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red text-xs font-semibold">
-                        <i class="bi bi-shield-lock-fill mr-1"></i> Alpha
-                    </span>
-                </div>
-                <div class="moc-icon-box bg-red-50 rounded-3">
-                    <i class="bi bi-shield-lock-fill text-red fs-5"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- System Admins -->
-    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-3">
-        <div class="moc-metric p-6 p-md-4 h-100">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Sys Admins</p>
-                    <h3 class="font-bold mb-1 letter-tight">@systemAdminCount</h3>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber text-xs font-semibold">
-                        <i class="bi bi-gear-fill mr-1"></i> Beta
-                    </span>
-                </div>
-                <div class="moc-icon-box bg-amber-50 rounded-3">
-                    <i class="bi bi-gear-wide-connected text-amber fs-5"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Other Roles -->
-    <div class="w-full md:w-1/2 px-3 w-full lg:w-1/2 px-3 anim-fade-in anim-delay-4">
-        <div class="moc-metric p-6 p-md-4 h-100">
-            <div class="flex items-start justify-between">
-                <div>
-                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Staff &amp; Others</p>
-                    <h3 class="font-bold mb-1 letter-tight">@otherCount</h3>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cyan-50 text-cyan text-xs font-semibold">
-                        <i class="bi bi-person-badge mr-1"></i> Standard
-                    </span>
-                </div>
-                <div class="moc-icon-box bg-cyan-50 rounded-3">
-                    <i class="bi bi-person-workspace text-cyan fs-5"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════ -->
-<!-- ACTION BAR                                      -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="moc-section-header mt-8">
-    <h5 class="font-bold letter-tight">
-        <i class="bi bi-person-lines-fill text-amber mr-1"></i> User Directory
-    </h5>
-    <hr />
-</div>
-
-<div class="flex flex-wrap justify-between items-center gap-6 mb-6 anim-fade-in">
-    <div class="flex items-center gap-2">
-        <div class="moc-icon-box bg-green-50 rounded-3">
-            <i class="bi bi-person-plus-fill text-green fs-5"></i>
-        </div>
-        <div>
-            <p class="font-semibold mb-0 text-sm letter-tight">Add New Account</p>
-            <p class="text-moc-text-muted text-xs mb-0">Register a new user to the system</p>
-        </div>
-    </div>
-    <a asp-action="Create" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary px-6">
-        <i class="bi bi-plus-circle mr-1"></i> Create New User
+    <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
+        <i class="bi bi-plus-circle"></i> Create New User
     </a>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- USER TABLE                                      -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm mb-6 anim-fade-in anim-delay-1">
-
-    <!-- Table Header Bar -->
-    <div class="px-6 py-4 border-b border-moc-border bg-gray-50 bg-transparent border-0 p-6 pb-0">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-                <div class="moc-icon-box bg-indigo-50 rounded-3">
-                    <i class="bi bi-table text-indigo fs-5"></i>
-                </div>
-                <div>
-                    <h6 class="font-bold mb-0 letter-tight">All Accounts</h6>
-                    <span class="text-moc-text-muted text-xs">@totalUsers user@(totalUsers != 1 ? "s" : "") registered</span>
-                </div>
+<!-- User Table -->
+<div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-table text-lg"></i></span>
+                <div><h3 class="text-sm font-semibold text-gray-800">All Accounts</h3><span class="text-xs text-gray-500">@totalUsers user@(totalUsers != 1 ? "s" : "") registered</span></div>
             </div>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-indigo-50 text-indigo px-6 py-2 font-semibold text-xs">
-                <i class="bi bi-filter mr-1"></i> Showing All
-            </span>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"><i class="bi bi-filter"></i> Showing All</span>
         </div>
     </div>
-
-    <div class="p-6 p-6 pt-3">
-
-        <!-- ── Desktop Table (md+) ── -->
-        <div class="overflow-x-auto w-full hidden md:block">
-            <table class="w-full text-left border-collapse align-middle mb-0" style="border-collapse: separate; border-spacing: 0 0.5rem;">
-                <thead>
-                    <tr style="border:none;">
-                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 ps-3 py-6" style="letter-spacing:0.05em;">
-                            <i class="bi bi-person mr-1"></i> User
-                        </th>
-                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">
-                            <i class="bi bi-shield mr-1"></i> Role
-                        </th>
-                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 text-right pe-3 py-6" style="letter-spacing:0.05em;">
-                            <i class="bi bi-lightning mr-1"></i> Actions
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
+    <div class="p-6">
+        <!-- Desktop Table -->
+        <div class="overflow-x-auto hidden md:block">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50"><tr>
+                    <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"><i class="bi bi-person me-1"></i> User</th>
+                    <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"><i class="bi bi-shield me-1"></i> Role</th>
+                    <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase"><i class="bi bi-lightning me-1"></i> Actions</th>
+                </tr></thead>
+                <tbody class="divide-y divide-gray-200">
                     @foreach (var item in Model)
                     {
-                        <tr style="background:var(--moc-surface);border-radius:0.75rem;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-                            <td class="border-0 ps-3 py-6" style="border-radius:0.75rem 0 0 0.75rem;">
-                                <div class="flex items-center gap-6">
-                                    <!-- Avatar -->
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-x-3">
                                     @if (item.Role == "SuperAdmin")
-                                    {
-                                        <div class="moc-icon-box bg-red-50 rounded-full">
-                                            <i class="bi bi-shield-lock-fill text-red"></i>
-                                        </div>
-                                    }
+                                    { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-red-100 text-red-800"><i class="bi bi-shield-lock-fill"></i></span> }
                                     else if (item.Role == "SystemAdmin")
-                                    {
-                                        <div class="moc-icon-box bg-amber-50 rounded-full">
-                                            <i class="bi bi-gear-fill text-amber"></i>
-                                        </div>
-                                    }
+                                    { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-amber-100 text-amber-800"><i class="bi bi-gear-fill"></i></span> }
                                     else
-                                    {
-                                        <div class="moc-icon-box bg-indigo-50 rounded-full">
-                                            <i class="bi bi-person-fill text-indigo"></i>
-                                        </div>
-                                    }
-                                    <div>
-                                        <p class="font-semibold mb-0 text-sm letter-tight">@item.Email</p>
-                                        <span class="text-moc-text-muted text-xs">ID: @item.Id.Substring(0, Math.Min(8, item.Id.Length))…</span>
-                                    </div>
+                                    { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-indigo-100 text-indigo-800"><i class="bi bi-person-fill"></i></span> }
+                                    <div><span class="text-sm font-semibold text-gray-800">@item.Email</span><br/><span class="text-xs text-gray-500">ID: @item.Id.Substring(0, Math.Min(8, item.Id.Length))…</span></div>
                                 </div>
                             </td>
-                            <td class="border-0 py-6">
+                            <td class="px-6 py-4">
                                 @if (item.Role == "SuperAdmin")
-                                {
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-red-50 text-red px-6 py-2 font-semibold text-xs">
-                                        <i class="bi bi-shield-lock-fill mr-1"></i> Super Admin
-                                    </span>
-                                }
+                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="bi bi-shield-lock-fill"></i> Super Admin</span> }
                                 else if (item.Role == "SystemAdmin")
-                                {
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-amber-50 text-amber px-6 py-2 font-semibold text-xs">
-                                        <i class="bi bi-gear-fill mr-1"></i> System Admin
-                                    </span>
-                                }
+                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800"><i class="bi bi-gear-fill"></i> System Admin</span> }
                                 else
-                                {
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-cyan-50 text-cyan px-6 py-2 font-semibold text-xs">
-                                        <i class="bi bi-person-badge mr-1"></i> @item.Role
-                                    </span>
-                                }
+                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800"><i class="bi bi-person-badge"></i> @item.Role</span> }
                             </td>
-                            <td class="border-0 text-right pe-3 py-6" style="border-radius:0 0.75rem 0.75rem 0;">
+                            <td class="px-6 py-4 text-end">
                                 <div class="flex justify-end gap-2">
-                                    <a asp-action="Edit" asp-route-id="@item.Id"
-                                       class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs btn-moc-outline px-6 py-2"
-                                       title="Edit Role">
-                                        <i class="bi bi-pencil-square mr-1"></i> Edit
-                                    </a>
-                                    <a asp-action="ResetPassword" asp-route-id="@item.Id"
-                                       class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs px-6 py-2 font-semibold"
-                                       style="background:rgba(245,158,11,0.08); color:#f59e0b; border:1.5px solid rgba(245,158,11,0.2);"
-                                       title="Reset Password">
-                                        <i class="bi bi-key-fill mr-1"></i> Reset
-                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50" title="Edit Role"><i class="bi bi-pencil-square"></i> Edit</a>
+                                    <a asp-action="ResetPassword" asp-route-id="@item.Id" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100" title="Reset Password"><i class="bi bi-key-fill"></i> Reset</a>
                                     @if (isSuperAdmin && item.Role == "SystemAdmin")
                                     {
-                                        <button type="button"
-                                                class="inline-flex justify-center rounded-md font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 text-xs px-6 py-2"
-                                                style="background:rgba(239,68,68,0.08); color:#ef4444; border:1.5px solid rgba(239,68,68,0.2);"
-                                                title="Remove User"
-                                                aria-haspopup="dialog"
-                                                aria-expanded="false"
-                                                aria-controls="deleteUserModal"
-                                                data-hs-overlay="#deleteUserModal"
-                                                onclick="setDeleteTarget('@item.Id', '@item.Email')">
-                                            <i class="bi bi-trash3 mr-1"></i> Remove
-                                        </button>
+                                        <button type="button" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100" title="Remove User" aria-haspopup="dialog" aria-expanded="false" aria-controls="deleteUserModal" data-hs-overlay="#deleteUserModal" onclick="setDeleteTarget('@item.Id', '@item.Email')"><i class="bi bi-trash3"></i> Remove</button>
                                     }
                                 </div>
                             </td>
@@ -281,108 +114,59 @@
             </table>
         </div>
 
-        <!-- ── Mobile Cards (sm & below) ── -->
-        <div class="md:hidden">
+        <!-- Mobile Cards -->
+        <div class="md:hidden space-y-4">
             @foreach (var item in Model)
             {
-                <div class="moc-metric p-6 mb-6" style="overflow: hidden;">
-                    <div class="flex items-center gap-6 mb-6">
-                        <!-- Avatar -->
+                <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                    <div class="flex items-center gap-3 mb-3">
                         @if (item.Role == "SuperAdmin")
-                        {
-                            <div class="moc-icon-box bg-red-50 rounded-full">
-                                <i class="bi bi-shield-lock-fill text-red"></i>
-                            </div>
-                        }
+                        { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-red-100 text-red-800"><i class="bi bi-shield-lock-fill"></i></span> }
                         else if (item.Role == "SystemAdmin")
-                        {
-                            <div class="moc-icon-box bg-amber-50 rounded-full">
-                                <i class="bi bi-gear-fill text-amber"></i>
-                            </div>
-                        }
+                        { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-amber-100 text-amber-800"><i class="bi bi-gear-fill"></i></span> }
                         else
-                        {
-                            <div class="moc-icon-box bg-indigo-50 rounded-full">
-                                <i class="bi bi-person-fill text-indigo"></i>
-                            </div>
-                        }
-                        <div class="flex-grow min-w-0">
-                            <p class="font-semibold mb-0 text-sm letter-tight truncate">@item.Email</p>
-                            <span class="text-moc-text-muted text-xs">ID: @item.Id.Substring(0, Math.Min(8, item.Id.Length))…</span>
+                        { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-indigo-100 text-indigo-800"><i class="bi bi-person-fill"></i></span> }
+                        <div class="grow min-w-0">
+                            <p class="text-sm font-semibold text-gray-800 mb-0 truncate">@item.Email</p>
+                            <span class="text-xs text-gray-500">ID: @item.Id.Substring(0, Math.Min(8, item.Id.Length))…</span>
                         </div>
                         @if (item.Role == "SuperAdmin")
-                        {
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-red-50 text-red px-2 py-1 font-semibold text-xs">
-                                <i class="bi bi-shield-lock-fill"></i> Alpha
-                            </span>
-                        }
+                        { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-red-100 text-red-800 text-xs font-medium"><i class="bi bi-shield-lock-fill"></i> Alpha</span> }
                         else if (item.Role == "SystemAdmin")
-                        {
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-amber-50 text-amber px-2 py-1 font-semibold text-xs">
-                                <i class="bi bi-gear-fill"></i> Beta
-                            </span>
-                        }
+                        { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-amber-100 text-amber-800 text-xs font-medium"><i class="bi bi-gear-fill"></i> Beta</span> }
                         else
-                        {
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-cyan-50 text-cyan px-2 py-1 font-semibold text-xs"
-                                  style="max-width: 7.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                <i class="bi bi-person-badge"></i>
-                                @(item.Role == "DepartmentManager" ? "Dept Mgr" : item.Role)
-                            </span>
-                        }
+                        { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-cyan-100 text-cyan-800 text-xs font-medium" style="max-width:7.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><i class="bi bi-person-badge"></i> @(item.Role == "DepartmentManager" ? "Dept Mgr" : item.Role)</span> }
                     </div>
                     <div class="flex gap-2">
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs btn-moc-outline flex-1 py-2">
-                            <i class="bi bi-pencil-square mr-1"></i> Edit Role
-                        </a>
-                        <a asp-action="ResetPassword" asp-route-id="@item.Id"
-                           class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs flex-1 py-2 font-semibold"
-                           style="background:rgba(245,158,11,0.08); color:#f59e0b; border:1.5px solid rgba(245,158,11,0.2);">
-                            <i class="bi bi-key-fill mr-1"></i> Reset PW
-                        </a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="flex-1 py-2 px-3 inline-flex justify-center items-center gap-x-1 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50"><i class="bi bi-pencil-square"></i> Edit Role</a>
+                        <a asp-action="ResetPassword" asp-route-id="@item.Id" class="flex-1 py-2 px-3 inline-flex justify-center items-center gap-x-1 text-xs font-medium rounded-lg border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100"><i class="bi bi-key-fill"></i> Reset PW</a>
                         @if (isSuperAdmin && item.Role == "SystemAdmin")
                         {
-                            <button type="button"
-                                    class="inline-flex justify-center rounded-md font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 text-xs px-2 py-2"
-                                    style="background:rgba(239,68,68,0.08); color:#ef4444; border:1.5px solid rgba(239,68,68,0.2);"
-                                    aria-haspopup="dialog"
-                                    aria-expanded="false"
-                                    aria-controls="deleteUserModal"
-                                    data-hs-overlay="#deleteUserModal"
-                                    onclick="setDeleteTarget('@item.Id', '@item.Email')">
-                                <i class="bi bi-trash3"></i>
-                            </button>
+                            <button type="button" class="py-2 px-3 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100" aria-haspopup="dialog" aria-expanded="false" aria-controls="deleteUserModal" data-hs-overlay="#deleteUserModal" onclick="setDeleteTarget('@item.Id', '@item.Email')"><i class="bi bi-trash3"></i></button>
                         }
                     </div>
                 </div>
             }
         </div>
-
     </div>
 
-    <!-- Table Footer -->
-    <div class="px-6 py-4 border-t border-moc-border bg-gray-50 bg-transparent border-0 px-6 py-6"
-         style="border-top:1px solid var(--moc-border); border-radius: 0 0 0.875rem 0.875rem;">
+    <!-- Footer -->
+    <div class="px-6 py-4 border-t border-gray-200">
         <div class="flex flex-wrap justify-between items-center gap-2">
-            <span class="text-moc-text-muted text-xs">
-                <i class="bi bi-info-circle mr-1"></i>
-                Showing all @totalUsers account@(totalUsers != 1 ? "s" : "")
-            </span>
+            <span class="text-xs text-gray-500"><i class="bi bi-info-circle me-1"></i> Showing all @totalUsers account@(totalUsers != 1 ? "s" : "")</span>
             <div class="flex gap-1">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-red-50 text-red text-xs px-2 py-1">@superAdminCount Alpha</span>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-amber-50 text-amber text-xs px-2 py-1">@systemAdminCount Beta</span>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-cyan-50 text-cyan text-xs px-2 py-1">@otherCount Staff</span>
+                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-red-100 text-red-800 text-xs">@superAdminCount Alpha</span>
+                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-amber-100 text-amber-800 text-xs">@systemAdminCount Beta</span>
+                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-cyan-100 text-cyan-800 text-xs">@otherCount Staff</span>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- BACK TO DASHBOARD                               -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="flex justify-start mb-6 anim-fade-in">
-    <a asp-controller="Home" asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline px-6 py-2">
-        <i class="bi bi-arrow-left mr-1"></i> Back to Dashboard
+<!-- Back to Dashboard -->
+<div class="flex justify-start mb-6">
+    <a asp-controller="Home" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
     </a>
 </div>
 
@@ -391,40 +175,26 @@
     <!-- Delete User Confirmation Modal -->
     <div id="deleteUserModal" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none" role="dialog" tabindex="-1" aria-labelledby="deleteUserModalLabel">
         <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto min-h-[calc(100%-3.5rem)] flex items-center">
-            <div class="w-full flex flex-col bg-white border shadow-sm rounded-xl pointer-events-auto dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/70">
-                <div class="flex justify-between items-center py-3 px-4 border-b dark:border-neutral-700" style="background: rgba(239,68,68,0.04);">
+            <div class="w-full flex flex-col bg-white border shadow-sm rounded-xl pointer-events-auto">
+                <div class="flex justify-between items-center py-3 px-4 border-b" style="background: rgba(239,68,68,0.04);">
                     <div class="flex items-center gap-2">
-                        <div class="inline-flex justify-center items-center size-[38px] rounded-lg bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-500">
-                            <i class="bi bi-exclamation-triangle-fill text-lg"></i>
-                        </div>
-                        <h3 id="deleteUserModalLabel" class="font-bold text-gray-800 dark:text-white">
-                            Remove System Admin
-                        </h3>
+                        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-red-100 text-red-800"><i class="bi bi-exclamation-triangle-fill text-lg"></i></span>
+                        <h3 id="deleteUserModalLabel" class="font-bold text-gray-800">Remove System Admin</h3>
                     </div>
-                    <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600" aria-label="Close" data-hs-overlay="#deleteUserModal">
-                        <span class="sr-only">Close</span>
-                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 6 6 18"></path>
-                            <path d="m6 6 12 12"></path>
-                        </svg>
+                    <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200" aria-label="Close" data-hs-overlay="#deleteUserModal">
+                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
                     </button>
                 </div>
-                <div class="p-6 overflow-y-auto">
-                    <p class="text-gray-800 dark:text-neutral-400 mb-2">
-                        Are you sure you want to permanently remove this System Admin?
-                    </p>
+                <div class="p-6">
+                    <p class="text-gray-800 mb-2">Are you sure you want to permanently remove this System Admin?</p>
                     <p class="font-semibold text-red-500 mb-0" id="deleteTargetEmail"></p>
                 </div>
-                <div class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-neutral-700">
-                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" data-hs-overlay="#deleteUserModal">
-                        <i class="bi bi-x-lg"></i> Cancel
-                    </button>
+                <div class="flex justify-end items-center gap-x-2 py-3 px-4 border-t">
+                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50" data-hs-overlay="#deleteUserModal"><i class="bi bi-x-lg"></i> Cancel</button>
                     <form id="deleteUserForm" asp-action="Delete" method="post" style="display:inline;">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="id" id="deleteUserIdInput" />
-                        <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
-                            <i class="bi bi-trash3"></i> Remove Permanently
-                        </button>
+                        <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700"><i class="bi bi-trash3"></i> Remove Permanently</button>
                     </form>
                 </div>
             </div>
@@ -438,4 +208,3 @@
         }
     </script>
 }
-

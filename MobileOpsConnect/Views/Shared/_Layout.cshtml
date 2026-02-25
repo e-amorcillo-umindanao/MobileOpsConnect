@@ -80,14 +80,14 @@
 
     @if (ViewData["HideLayout"] is not true)
     {
-        <footer class="bg-white border-t border-moc-border mt-auto py-6">
+        <footer class="bg-white border-t border-gray-200 mt-auto py-6">
             <div class="container mx-auto px-6 sm:px-6 lg:px-8">
-                <div class="flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-moc-text-muted">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-gray-500">
                     <span class="flex items-center gap-1.5">
                         <i class="bi bi-shield-lock-fill opacity-50"></i>
                         &copy; 2026 MobileOpsConnect &mdash; All rights reserved.
                     </span>
-                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="hover:text-moc-text hover:underline transition-all flex items-center gap-1.5">
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="hover:text-gray-800 hover:underline transition-all flex items-center gap-1.5">
                         <i class="bi bi-file-earmark-lock"></i> Privacy Policy
                     </a>
                 </div>
@@ -118,7 +118,7 @@
                 <span style="font-size:1.3rem;">${icon}</span>
                 <div>
                     <strong class="block text-sm mb-1">${title}</strong>
-                    <span class="text-moc-text-muted text-xs">${message}</span>
+                    <span class="text-gray-500 text-xs">${message}</span>
                 </div>
             </div>`;
             container.appendChild(toast);

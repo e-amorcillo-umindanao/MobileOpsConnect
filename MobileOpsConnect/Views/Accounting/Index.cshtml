@@ -7,326 +7,202 @@
     int expenseCount = Model.Count(e => e.Type == "Expense");
 }
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- HERO BANNER                                     -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="moc-hero p-6 p-md-5 mb-6 text-white anim-fade-in">
-    <div class="position-relative" style="z-index: 2;">
-        <div class="flex flex-wrap items-center gap-2 mb-6">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill px-6 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
-                <i class="bi bi-journal-text text-green-500 mr-1" style="font-size:0.8rem;vertical-align:text-top;"></i>
-                Financial Records
-            </span>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill px-6 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
-                <i class="bi bi-receipt mr-1"></i> @totalEntries Entries
-            </span>
-        </div>
-        <h1 class="display-5 font-bold mb-2 letter-tight">Accounting Ledger</h1>
-        <p class="lead mb-0 opacity-75">
-            Track all financial transactions, income, and expenses.
-        </p>
-    </div>
-    <!-- Decorative Icon -->
-    <div class="position-absolute top-50 end-0 translate-middle-y hidden lg:block pe-none"
-         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
-        <i class="bi bi-calculator"></i>
-    </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════ -->
-<!-- ACTION BAR                                      -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="flex flex-wrap justify-between items-center gap-6 mb-6 anim-fade-in anim-delay-1">
-    <a asp-controller="Home" asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline px-6">
-        <i class="bi bi-arrow-left mr-1"></i> Dashboard
-    </a>
-    <a asp-action="Create" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary px-6 py-2 shadow-sm">
-        <i class="bi bi-plus-lg mr-1"></i> New Entry
-    </a>
-</div>
-
-<!-- ═══════════════════════════════════════════════ -->
-<!-- SUMMARY CARDS                                   -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="flex flex-wrap -mx-3 gap-6 mb-6">
-    <!-- Total Income -->
-    <div class="w-full md:w-1/3 px-6 anim-fade-in anim-delay-1">
-        <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm h-100">
-            <div class="p-6 p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="uppercase text-xs font-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-green,#22c55e);">Total Income</p>
-                        <h3 class="font-bold mb-0 letter-tight">@(((decimal)ViewBag.TotalIncome).ToString("C"))</h3>
-                    </div>
-                    <div class="moc-icon-box rounded-3" style="width:48px;height:48px;background:rgba(34,197,94,0.08);">
-                        <i class="bi bi-arrow-up-circle-fill fs-4" style="color:#22c55e;"></i>
-                    </div>
-                </div>
-                <div class="mt-6 pt-3" style="border-top:1px solid rgba(0,0,0,0.05);">
-                    <span class="text-moc-text-muted text-xs"><i class="bi bi-receipt mr-1"></i>@incomeCount transactions</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Total Expenses -->
-    <div class="w-full md:w-1/3 px-6 anim-fade-in anim-delay-2">
-        <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm h-100">
-            <div class="p-6 p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="uppercase text-xs font-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-red,#ef4444);">Total Expenses</p>
-                        <h3 class="font-bold mb-0 letter-tight">@(((decimal)ViewBag.TotalExpense).ToString("C"))</h3>
-                    </div>
-                    <div class="moc-icon-box rounded-3" style="width:48px;height:48px;background:rgba(239,68,68,0.08);">
-                        <i class="bi bi-arrow-down-circle-fill fs-4" style="color:#ef4444;"></i>
-                    </div>
-                </div>
-                <div class="mt-6 pt-3" style="border-top:1px solid rgba(0,0,0,0.05);">
-                    <span class="text-moc-text-muted text-xs"><i class="bi bi-receipt mr-1"></i>@expenseCount transactions</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Net Result -->
-    <div class="w-full md:w-1/3 px-6 anim-fade-in anim-delay-3">
-        @{
-            decimal netResult = (decimal)ViewBag.NetResult;
-            bool isPositive = netResult >= 0;
-        }
-        <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm h-100">
-            <div class="p-6 p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="uppercase text-xs font-semibold mb-2 letter-tight" style="letter-spacing:0.05em;color:var(--moc-indigo,#6366f1);">Net Result</p>
-                        <h3 class="font-bold mb-0 letter-tight" style="color:@(isPositive ? "#22c55e" : "#ef4444");">@netResult.ToString("C")</h3>
-                    </div>
-                    <div class="moc-icon-box rounded-3" style="width:48px;height:48px;background:rgba(99,102,241,0.08);">
-                        <i class="bi bi-wallet2 fs-4" style="color:#6366f1;"></i>
-                    </div>
-                </div>
-                <div class="mt-6 pt-3" style="border-top:1px solid rgba(0,0,0,0.05);">
-                    <span class="text-moc-text-muted text-xs">
-                        <i class="bi bi-@(isPositive ?"graph-up-arrow text-success" : "graph-down-arrow text-danger") me-1"></i>
-                        @(isPositive ? "Profit" : "Loss")
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- ═══════════════════════════════════════════════ -->
-<!-- LIVE EXCHANGE RATES (ExchangeRate-API)          -->
-<!-- ═══════════════════════════════════════════════ -->
 @{
     var exchangeRates = (MobileOpsConnect.Services.ExchangeRateResult?)ViewBag.ExchangeRates;
     var targetCurrencies = new[] { "USD", "EUR", "GBP", "JPY", "SGD", "AUD" };
     var currencyIcons = new Dictionary<string, string>
     {
-        { "USD", "bi-currency-dollar" },
-        { "EUR", "bi-currency-euro" },
-        { "GBP", "bi-currency-pound" },
-        { "JPY", "bi-currency-yen" },
-        { "SGD", "bi-currency-dollar" },
-        { "AUD", "bi-currency-dollar" }
+        { "USD", "bi-currency-dollar" }, { "EUR", "bi-currency-euro" },
+        { "GBP", "bi-currency-pound" }, { "JPY", "bi-currency-yen" },
+        { "SGD", "bi-currency-dollar" }, { "AUD", "bi-currency-dollar" }
     };
     var currencyNames = new Dictionary<string, string>
     {
-        { "USD", "US Dollar" },
-        { "EUR", "Euro" },
-        { "GBP", "British Pound" },
-        { "JPY", "Japanese Yen" },
-        { "SGD", "Singapore Dollar" },
-        { "AUD", "Australian Dollar" }
+        { "USD", "US Dollar" }, { "EUR", "Euro" }, { "GBP", "British Pound" },
+        { "JPY", "Japanese Yen" }, { "SGD", "Singapore Dollar" }, { "AUD", "Australian Dollar" }
     };
 }
 
-<div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm mb-6 anim-fade-in anim-delay-2">
-    <div class="px-6 py-4 border-b border-moc-border bg-gray-50 bg-transparent border-0 p-6 pb-0">
+<!-- Hero Banner -->
+<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
+    <div class="relative z-10">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm">
+                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> Financial Records
+            </span>
+            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
+                <i class="bi bi-receipt"></i> @totalEntries Entries
+            </span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Accounting Ledger</h1>
+        <p class="text-blue-100 text-lg">Track all financial transactions, income, and expenses.</p>
+    </div>
+    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
+        <i class="bi bi-calculator text-9xl text-white"></i>
+    </div>
+</div>
+
+<!-- Action Bar -->
+<div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+    <a asp-controller="Home" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
+        <i class="bi bi-arrow-left"></i> Dashboard
+    </a>
+    <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
+        <i class="bi bi-plus-lg"></i> New Entry
+    </a>
+</div>
+
+<!-- Summary Cards -->
+<div class="grid sm:grid-cols-3 gap-4 sm:gap-6 mb-8">
+    @{
+        decimal netResult = (decimal)ViewBag.NetResult;
+        bool isPositive = netResult >= 0;
+    }
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg"><i class="bi bi-arrow-up-circle-fill text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Total Income</p><h3 class="text-xl font-medium text-gray-800 mt-1">@(((decimal)ViewBag.TotalIncome).ToString("C"))</h3><span class="text-xs text-gray-500"><i class="bi bi-receipt me-1"></i>@incomeCount transactions</span></div></div></div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-red-100 text-red-800 rounded-lg"><i class="bi bi-arrow-down-circle-fill text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Total Expenses</p><h3 class="text-xl font-medium text-gray-800 mt-1">@(((decimal)ViewBag.TotalExpense).ToString("C"))</h3><span class="text-xs text-gray-500"><i class="bi bi-receipt me-1"></i>@expenseCount transactions</span></div></div></div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-wallet2 text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Net Result</p><h3 class="text-xl font-medium mt-1" style="color:@(isPositive ? "#16a34a" : "#dc2626");">@netResult.ToString("C")</h3><span class="text-xs text-gray-500"><i class="bi bi-@(isPositive ? "graph-up-arrow" : "graph-down-arrow") me-1"></i>@(isPositive ? "Profit" : "Loss")</span></div></div></div>
+</div>
+
+<!-- Live Exchange Rates -->
+<div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-8">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-neutral-700">
         <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <div class="moc-icon-box bg-secondary-50 rounded-3">
-                    <i class="bi bi-globe2 text-secondary-color fs-5"></i>
-                </div>
+            <div class="flex items-center gap-x-3">
+                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-gray-100 text-gray-800"><i class="bi bi-globe2 text-lg"></i></span>
                 <div>
-                    <h6 class="font-bold mb-0 letter-tight">
-                        <i class="bi bi-broadcast mr-1"></i> Live Exchange Rates
-                    </h6>
-                    <span class="text-moc-text-muted text-xs">
-                        Base: PHP (Philippine Peso) &bull;
+                    <h3 class="text-sm font-semibold text-gray-800"><i class="bi bi-broadcast me-1"></i> Live Exchange Rates</h3>
+                    <span class="text-xs text-gray-500">Base: PHP &bull;
                         @if (exchangeRates != null && exchangeRates.IsSuccess)
-                        {
-                            <span>Updated: @exchangeRates.LastUpdated</span>
-                        }
+                        { <span>Updated: @exchangeRates.LastUpdated</span> }
                         else
-                        {
-                            <span class="text-red-500">API unavailable</span>
-                        }
+                        { <span class="text-red-500">API unavailable</span> }
                     </span>
                 </div>
             </div>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-indigo-50 text-indigo px-6 py-2 text-xs font-semibold">
-                <i class="bi bi-lightning-charge-fill mr-1"></i> ExchangeRate-API
-            </span>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"><i class="bi bi-lightning-charge-fill"></i> ExchangeRate-API</span>
         </div>
     </div>
-    <div class="p-6 p-6">
+    <div class="p-6">
         @if (exchangeRates != null && exchangeRates.IsSuccess && exchangeRates.Rates.Any())
         {
-            <div class="flex flex-wrap -mx-3 gap-6">
+            <div class="grid sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 @foreach (var code in targetCurrencies)
                 {
                     if (exchangeRates.Rates.TryGetValue(code, out var rate))
                     {
                         var icon = currencyIcons.GetValueOrDefault(code, "bi-currency-exchange");
                         var name = currencyNames.GetValueOrDefault(code, code);
-                        <div class="w-full md:w-1/2 px-3 w-full md:w-1/3 px-6 w-full lg:w-1/2 px-3">
-                            <div class="rounded-3 p-6 text-center h-100" style="background:rgba(14,165,233,0.04);border:1px solid rgba(14,165,233,0.08);">
-                                <div class="mx-auto mb-2" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(14,165,233,0.08);border-radius:0.5rem;">
-                                    <i class="bi @icon text-secondary-color"></i>
-                                </div>
-                                <p class="font-bold mb-0 letter-tight" style="font-size:0.95rem;">@rate.ToString("F4")</p>
-                                <span class="text-moc-text-muted text-xs font-semibold">@code</span>
-                                <br />
-                                <span class="text-moc-text-muted" style="font-size:0.65rem;">@name</span>
-                            </div>
+                        <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                            <span class="inline-flex justify-center items-center size-[36px] rounded-lg bg-blue-100 text-blue-800 mx-auto mb-2"><i class="bi @icon text-sm"></i></span>
+                            <p class="text-sm font-bold text-gray-800 mb-0">@rate.ToString("F4")</p>
+                            <span class="text-xs font-semibold text-gray-500">@code</span><br />
+                            <span class="text-xs text-gray-400">@name</span>
                         </div>
                     }
                 }
             </div>
-            <div class="mt-6 pt-2 text-center">
-                <span class="text-moc-text-muted text-xs">
-                    <i class="bi bi-info-circle mr-1"></i>
-                    1 PHP = displayed rate in target currency &bull; Data from <strong>open.er-api.com</strong>
-                </span>
-            </div>
+            <p class="text-xs text-gray-500 mt-3 text-center"><i class="bi bi-info-circle me-1"></i> 1 PHP = displayed rate &bull; Data from <strong>open.er-api.com</strong></p>
         }
         else
         {
             <div class="text-center py-6">
-                <div class="moc-icon-box-lg rounded-3 mx-auto mb-6" style="width:56px;height:56px;background:rgba(239,68,68,0.06);">
-                    <i class="bi bi-wifi-off fs-3" style="color:#ef4444;"></i>
-                </div>
-                <p class="font-semibold text-sm mb-1 letter-tight">Exchange rates unavailable</p>
-                <span class="text-moc-text-muted text-xs">Unable to fetch data from the Exchange Rate API. Please check your internet connection.</span>
+                <span class="inline-flex justify-center items-center size-[56px] rounded-full border-4 border-red-50 bg-red-100 text-red-800 mx-auto mb-3"><i class="bi bi-wifi-off text-xl"></i></span>
+                <p class="text-sm font-semibold text-gray-800 mb-1">Exchange rates unavailable</p>
+                <span class="text-xs text-gray-500">Unable to fetch data. Check your connection.</span>
             </div>
         }
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- FILTER PANEL                                    -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm mb-6 anim-fade-in anim-delay-2">
-    <div class="px-6 py-4 border-b border-moc-border bg-gray-50 bg-transparent border-0 p-6 pb-0">
-        <div class="flex items-center gap-2">
-            <div class="moc-icon-box bg-amber-50 rounded-3">
-                <i class="bi bi-funnel text-amber fs-5"></i>
-            </div>
+<!-- Filter Panel -->
+<div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-8">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-neutral-700">
+        <div class="flex items-center gap-x-3">
+            <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-amber-100 text-amber-800"><i class="bi bi-funnel text-lg"></i></span>
             <div>
-                <h6 class="font-bold mb-0 letter-tight">Filter Transactions</h6>
-                <span class="text-moc-text-muted text-xs">Narrow down results by type, category, or date range</span>
+                <h3 class="text-sm font-semibold text-gray-800">Filter Transactions</h3>
+                <span class="text-xs text-gray-500">Narrow down results by type, category, or date range</span>
             </div>
         </div>
     </div>
-    <div class="p-6 p-6">
-        <form method="get" class="flex flex-wrap -mx-3 gap-6 items-end">
-            <div class="w-full md:w-1/4 px-6">
-                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;">Type</label>
-                <select name="filterType" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" style="border-radius:0.625rem;padding:0.625rem 1rem;">
+    <div class="p-6">
+        <form method="get" class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+            <div>
+                <label class="block text-sm font-medium mb-2 dark:text-white">Type</label>
+                <select name="filterType" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500">
                     <option value="">All Types</option>
                     <option value="Income">Income</option>
                     <option value="Expense">Expense</option>
                 </select>
             </div>
-            <div class="w-full md:w-1/4 px-6">
-                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;">Category</label>
-                <input type="text" name="filterCategory" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Search category..." style="border-radius:0.625rem;padding:0.625rem 1rem;">
+            <div>
+                <label class="block text-sm font-medium mb-2 dark:text-white">Category</label>
+                <input type="text" name="filterCategory" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Search category..." />
             </div>
-            <div class="w-full md:w-1/2 px-3">
-                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;">Start Date</label>
-                <input type="date" name="startDate" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" style="border-radius:0.625rem;padding:0.625rem 1rem;">
+            <div>
+                <label class="block text-sm font-medium mb-2 dark:text-white">Start Date</label>
+                <input type="date" name="startDate" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" />
             </div>
-            <div class="w-full md:w-1/2 px-3">
-                <label class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;">End Date</label>
-                <input type="date" name="endDate" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" style="border-radius:0.625rem;padding:0.625rem 1rem;">
+            <div>
+                <label class="block text-sm font-medium mb-2 dark:text-white">End Date</label>
+                <input type="date" name="endDate" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" />
             </div>
-            <div class="w-full md:w-1/2 px-3">
-                <button type="submit" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary w-100 py-2" style="border-radius:0.625rem;">
-                    <i class="bi bi-search mr-1"></i> Filter
+            <div>
+                <button type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
+                    <i class="bi bi-search"></i> Filter
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- TRANSACTIONS TABLE                              -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm mb-6 anim-fade-in anim-delay-3">
-    <div class="px-6 py-4 border-b border-moc-border bg-gray-50 bg-transparent border-0 p-6 pb-0">
-        <div class="flex items-center gap-2">
-            <div class="moc-icon-box bg-indigo-50 rounded-3">
-                <i class="bi bi-list-ul text-indigo fs-5"></i>
-            </div>
+<!-- Transactions Table -->
+<div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-neutral-700">
+        <div class="flex items-center gap-x-3">
+            <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-list-ul text-lg"></i></span>
             <div>
-                <h6 class="font-bold mb-0 letter-tight">Transaction History</h6>
-                <span class="text-moc-text-muted text-xs">@totalEntries record@(totalEntries != 1 ? "s" : "") found</span>
+                <h3 class="text-sm font-semibold text-gray-800">Transaction History</h3>
+                <span class="text-xs text-gray-500">@totalEntries record@(totalEntries != 1 ? "s" : "") found</span>
             </div>
         </div>
     </div>
-
-    <div class="p-6 p-0">
-        <div class="overflow-x-auto w-full">
-            <table class="w-full text-left border-collapse align-middle mb-0" style="border-collapse:separate;border-spacing:0 0.25rem;">
-                <thead class="bg-light">
+    <div class="p-6">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+                <thead class="bg-gray-50 dark:bg-neutral-800">
                     <tr>
-                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 ps-4 py-6" style="letter-spacing:0.05em;">Date</th>
-                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Type</th>
-                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Category</th>
-                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Description</th>
-                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 text-right" style="letter-spacing:0.05em;">Amount</th>
-                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6" style="letter-spacing:0.05em;">Ref #</th>
-                        <th class="uppercase text-xs font-semibold text-moc-text-muted border-0 py-6 pe-4 text-center" style="letter-spacing:0.05em;">Actions</th>
+                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Date</th>
+                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Type</th>
+                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Category</th>
+                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Description</th>
+                        <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Amount</th>
+                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Ref #</th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
                     @foreach (var item in Model)
                     {
-                        <tr style="transition: transform 0.2s;">
-                            <td class="border-0 ps-4 py-6">
-                                <span class="font-semibold text-sm">@item.TransactionDate.ToString("MMM dd, yyyy")</span>
-                            </td>
-                            <td class="border-0 py-6">
+                        <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                            <td class="whitespace-nowrap px-6 py-4"><span class="text-sm font-semibold text-gray-800">@item.TransactionDate.ToString("MMM dd, yyyy")</span></td>
+                            <td class="whitespace-nowrap px-6 py-4">
                                 @if (item.Type == "Income")
-                                {
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill px-6 py-1" style="background:rgba(34,197,94,0.1);color:#16a34a;">
-                                        <i class="bi bi-arrow-up-short"></i> Income
-                                    </span>
-                                }
+                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-800"><i class="bi bi-arrow-up-short"></i> Income</span> }
                                 else
-                                {
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill px-6 py-1" style="background:rgba(239,68,68,0.1);color:#dc2626;">
-                                        <i class="bi bi-arrow-down-short"></i> Expense
-                                    </span>
-                                }
+                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="bi bi-arrow-down-short"></i> Expense</span> }
                             </td>
-                            <td class="border-0 py-6">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill bg-indigo-50 text-indigo px-2 py-1 font-semibold text-xs">@item.Category</span>
-                            </td>
-                            <td class="border-0 py-6 text-sm text-moc-text-muted">@item.Description</td>
-                            <td class="border-0 py-6 text-right">
-                                <span class="font-bold text-sm" style="color:@(item.Type == "Income" ? "#22c55e" : "#ef4444");">
+                            <td class="whitespace-nowrap px-6 py-4"><span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">@item.Category</span></td>
+                            <td class="px-6 py-4"><span class="text-sm text-gray-500">@item.Description</span></td>
+                            <td class="whitespace-nowrap px-6 py-4 text-end">
+                                <span class="text-sm font-bold" style="color:@(item.Type == "Income" ? "#16a34a" : "#dc2626");">
                                     @(item.Type == "Income" ? "+" : "−")@item.Amount.ToString("C")
                                 </span>
                             </td>
-                            <td class="border-0 py-6">
-                                <span class="text-moc-text-muted text-xs">@(item.ReferenceNumber ?? "—")</span>
-                            </td>
-                            <td class="border-0 py-6 pe-4 text-center">
-                                <a asp-action="Details" asp-route-id="@item.Id" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 px-2 py-1 text-xs px-6 py-1" style="background:rgba(99,102,241,0.08);color:#6366f1;border-radius:0.5rem;">
-                                    <i class="bi bi-eye mr-1"></i> View
+                            <td class="whitespace-nowrap px-6 py-4"><span class="text-xs text-gray-500">@(item.ReferenceNumber ?? "—")</span></td>
+                            <td class="whitespace-nowrap px-6 py-4 text-center">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
+                                    <i class="bi bi-eye"></i> View
                                 </a>
                             </td>
                         </tr>
@@ -334,17 +210,13 @@
                     @if (!Model.Any())
                     {
                         <tr>
-                            <td colspan="7" class="text-center py-8 border-0">
-                                <div class="py-6">
-                                    <div class="moc-icon-box-lg rounded-3 mx-auto mb-6" style="width:64px;height:64px;background:rgba(99,102,241,0.06);">
-                                        <i class="bi bi-journal-x fs-2" style="color:#6366f1;"></i>
-                                    </div>
-                                    <h6 class="font-bold mb-1 letter-tight">No Transactions Found</h6>
-                                    <p class="text-moc-text-muted text-sm mb-6">Start by recording your first transaction.</p>
-                                    <a asp-action="Create" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary px-6">
-                                        <i class="bi bi-plus-lg mr-1"></i> New Entry
-                                    </a>
-                                </div>
+                            <td colspan="7" class="text-center py-10">
+                                <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-500 mx-auto mb-4"><i class="bi bi-journal-x text-2xl"></i></span>
+                                <h3 class="text-lg font-semibold text-gray-800 mb-1">No Transactions Found</h3>
+                                <p class="text-sm text-gray-500 mb-4">Start by recording your first transaction.</p>
+                                <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
+                                    <i class="bi bi-plus-lg"></i> New Entry
+                                </a>
                             </td>
                         </tr>
                     }
@@ -353,5 +225,3 @@
         </div>
     </div>
 </div>
-
-

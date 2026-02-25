@@ -4,77 +4,63 @@
     ViewData["Title"] = "New Transaction";
 }
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- HERO BANNER                                     -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="moc-hero p-6 p-md-5 mb-6 text-white anim-fade-in">
-    <div class="position-relative" style="z-index: 2;">
-        <div class="flex flex-wrap items-center gap-2 mb-6">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill px-6 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
-                <i class="bi bi-plus-circle text-green-500 mr-1" style="font-size:0.8rem;vertical-align:text-top;"></i>
-                New Record
+<!-- Hero Banner -->
+<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
+    <div class="relative z-10">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm">
+                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> New Record
             </span>
         </div>
-        <h1 class="display-5 font-bold mb-2 letter-tight">Record Transaction</h1>
-        <p class="lead mb-0 opacity-75">
-            Add a new income or expense entry to the accounting ledger.
-        </p>
+        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Record Transaction</h1>
+        <p class="text-blue-100 text-lg">Add a new income or expense entry to the accounting ledger.</p>
     </div>
-    <div class="position-absolute top-50 end-0 translate-middle-y hidden lg:block pe-none"
-         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
-        <i class="bi bi-receipt-cutoff"></i>
+    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
+        <i class="bi bi-receipt-cutoff text-9xl text-white"></i>
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- ACTION BAR                                      -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="flex flex-wrap justify-between items-center gap-6 mb-6 anim-fade-in anim-delay-1">
-    <a asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline px-6">
-        <i class="bi bi-arrow-left mr-1"></i> Back to Ledger
+<!-- Action Bar -->
+<div class="flex justify-start mb-6">
+    <a asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
+        <i class="bi bi-arrow-left"></i> Back to Ledger
     </a>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- FORM CARD                                       -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="flex flex-wrap -mx-3 justify-center anim-fade-in anim-delay-2">
-    <div class="w-full lg:w-2/3 px-6">
-        <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm">
-            <div class="px-6 py-4 border-b border-moc-border bg-gray-50 bg-transparent border-0 p-6 pb-0">
-                <div class="flex items-center gap-2">
-                    <div class="moc-icon-box bg-indigo-50 rounded-3">
-                        <i class="bi bi-pencil-square text-indigo fs-5"></i>
-                    </div>
-                    <div>
-                        <h6 class="font-bold mb-0 letter-tight">Transaction Details</h6>
-                        <span class="text-moc-text-muted text-xs">Fill in all required fields below</span>
-                    </div>
+<!-- Form Card -->
+<div class="max-w-2xl mx-auto">
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-neutral-700">
+            <div class="flex items-center gap-x-3">
+                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-pencil-square text-lg"></i></span>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-800">Transaction Details</h3>
+                    <span class="text-xs text-gray-500">Fill in all required fields below</span>
                 </div>
             </div>
-            <div class="p-6 p-6">
-                <form asp-action="Create">
-                    <div asp-validation-summary="ModelOnly" class="text-red-500 mb-6"></div>
-
-                    <div class="flex flex-wrap -mx-3 gap-6 mb-6">
-                        <div class="w-full md:w-1/2 px-6">
-                            <label asp-for="TransactionDate" class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;"></label>
-                            <input asp-for="TransactionDate" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" style="border-radius:0.625rem;padding:0.625rem 1rem;" />
+        </div>
+        <div class="p-6">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4"></div>
+                <div class="grid gap-y-5">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label asp-for="TransactionDate" class="block text-sm font-medium mb-2 dark:text-white"><i class="bi bi-calendar3 me-1 text-indigo-500"></i> Date</label>
+                            <input asp-for="TransactionDate" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" />
                             <span asp-validation-for="TransactionDate" class="text-red-500 text-xs"></span>
                         </div>
-                        <div class="w-full md:w-1/2 px-6">
-                            <label asp-for="Type" class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;"></label>
-                            <select asp-for="Type" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" style="border-radius:0.625rem;padding:0.625rem 1rem;">
+                        <div>
+                            <label asp-for="Type" class="block text-sm font-medium mb-2 dark:text-white"><i class="bi bi-tag me-1 text-cyan-500"></i> Type</label>
+                            <select asp-for="Type" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500">
                                 <option value="Expense">Expense</option>
                                 <option value="Income">Income</option>
                             </select>
                             <span asp-validation-for="Type" class="text-red-500 text-xs"></span>
                         </div>
                     </div>
-
-                    <div class="mb-6">
-                        <label asp-for="Category" class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;"></label>
-                        <input asp-for="Category" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" list="categoryList" placeholder="Select or type a category..." style="border-radius:0.625rem;padding:0.625rem 1rem;" />
+                    <div>
+                        <label asp-for="Category" class="block text-sm font-medium mb-2 dark:text-white"><i class="bi bi-bookmark me-1 text-purple-500"></i> Category</label>
+                        <input asp-for="Category" list="categoryList" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Select or type a category..." />
                         <datalist id="categoryList">
                             <option value="Purchase Order"></option>
                             <option value="Payroll"></option>
@@ -85,42 +71,36 @@
                         </datalist>
                         <span asp-validation-for="Category" class="text-red-500 text-xs"></span>
                     </div>
-
-                    <div class="mb-6">
-                        <label asp-for="Description" class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;"></label>
-                        <input asp-for="Description" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Short description of the transaction" style="border-radius:0.625rem;padding:0.625rem 1rem;" />
+                    <div>
+                        <label asp-for="Description" class="block text-sm font-medium mb-2 dark:text-white"><i class="bi bi-card-text me-1 text-amber-500"></i> Description</label>
+                        <input asp-for="Description" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Short description of the transaction" />
                         <span asp-validation-for="Description" class="text-red-500 text-xs"></span>
                     </div>
-
-                    <div class="flex flex-wrap -mx-3 gap-6 mb-6">
-                        <div class="w-full md:w-1/2 px-6">
-                            <label asp-for="Amount" class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;"></label>
-                            <div class="flex w-full items-stretch" style="border-radius:0.625rem;overflow:hidden;">
-                                <span class="flex items-center px-4 py-2 bg-gray-50 border border-gray-300 text-gray-500 text-sm font-medium border-end-0" style="background:rgba(99,102,241,0.06);color:#6366f1;font-weight:600;">₱</span>
-                                <input asp-for="Amount" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 border-start-0" type="number" step="0.01" min="0" style="padding:0.625rem 1rem;" />
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label asp-for="Amount" class="block text-sm font-medium mb-2 dark:text-white"><i class="bi bi-cash me-1 text-green-500"></i> Amount</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-4"><span class="text-sm text-gray-500 font-semibold">₱</span></div>
+                                <input asp-for="Amount" type="number" step="0.01" min="0" class="py-3 px-4 ps-8 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" />
                             </div>
                             <span asp-validation-for="Amount" class="text-red-500 text-xs"></span>
                         </div>
-                        <div class="w-full md:w-1/2 px-6">
-                            <label asp-for="ReferenceNumber" class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;"></label>
-                            <input asp-for="ReferenceNumber" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Invoice #, Receipt #, etc." style="border-radius:0.625rem;padding:0.625rem 1rem;" />
+                        <div>
+                            <label asp-for="ReferenceNumber" class="block text-sm font-medium mb-2 dark:text-white"><i class="bi bi-hash me-1 text-gray-500"></i> Reference #</label>
+                            <input asp-for="ReferenceNumber" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Invoice #, Receipt #, etc." />
                             <span asp-validation-for="ReferenceNumber" class="text-red-500 text-xs"></span>
                         </div>
                     </div>
-
-                    <div class="mb-6">
-                        <label asp-for="Notes" class="block text-sm font-medium leading-6 text-gray-900 text-xs font-semibold uppercase text-moc-text-muted" style="letter-spacing:0.05em;"></label>
-                        <textarea asp-for="Notes" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" rows="3" style="border-radius:0.625rem;padding:0.625rem 1rem;"></textarea>
+                    <div>
+                        <label asp-for="Notes" class="block text-sm font-medium mb-2 dark:text-white"><i class="bi bi-sticky me-1 text-amber-500"></i> Notes</label>
+                        <textarea asp-for="Notes" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" rows="3"></textarea>
                         <span asp-validation-for="Notes" class="text-red-500 text-xs"></span>
                     </div>
-
-                    <div class="grid">
-                        <button type="submit" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary px-4 py-2 text-base py-6">
-                            <i class="bi bi-save mr-2"></i> Save Transaction
-                        </button>
-                    </div>
-                </form>
-            </div>
+                    <button type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
+                        <i class="bi bi-save"></i> Save Transaction
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -128,5 +108,3 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-
-

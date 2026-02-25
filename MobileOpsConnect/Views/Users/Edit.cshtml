@@ -6,205 +6,136 @@
     bool isOwnAccount = Model.IsOwnAccount;
 }
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- PAGE HEADER                                     -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="moc-hero p-6 p-md-5 mb-6 text-white anim-fade-in">
-    <div class="position-relative" style="z-index: 2;">
-        <div class="flex flex-wrap items-center gap-2 mb-6">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill px-6 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
-                <i class="bi bi-circle-fill text-green-500 mr-1" style="font-size:0.4rem;vertical-align:middle;"></i>
-                @(isOwnAccount ? "Your Account" : "User Management")
+<!-- Hero Banner -->
+<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
+    <div class="relative z-10">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm">
+                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> @(isOwnAccount ? "Your Account" : "User Management")
             </span>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium rounded-pill px-6 py-2 text-sm" style="background:rgba(255,255,255,0.14);">
+            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
                 @if (Model.CurrentRole == "SuperAdmin")
                 {
-                    <i class="bi bi-shield-lock-fill mr-1"></i> @:Alpha
+                    <i class="bi bi-shield-lock-fill"></i> <text>Alpha</text>
                 }
                 else if (Model.CurrentRole == "SystemAdmin")
                 {
-                    <i class="bi bi-gear-fill mr-1"></i> @:Beta
+                    <i class="bi bi-gear-fill"></i> <text>Beta</text>
                 }
                 else
                 {
-                    <i class="bi bi-person-badge mr-1"></i> @Model.CurrentRole
+                    <i class="bi bi-person-badge"></i> @Model.CurrentRole
                 }
             </span>
         </div>
-        <h1 class="display-5 font-bold mb-2 letter-tight">
-            @(isOwnAccount ? "My Account" : "Edit User")
-        </h1>
-        <p class="lead mb-0 opacity-75">
-            @(isOwnAccount ? "Manage your SuperAdmin (Alpha) account settings" : $"Editing account: {Model.Email}")
-        </p>
+        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">@(isOwnAccount ? "My Account" : "Edit User")</h1>
+        <p class="text-blue-100 text-lg">@(isOwnAccount ? "Manage your SuperAdmin (Alpha) account settings" : $"Editing account: {Model.Email}")</p>
     </div>
-    <div class="position-absolute top-50 end-0 translate-middle-y hidden lg:block pe-none"
-         style="z-index:1;opacity:0.05;font-size:15rem;line-height:1;margin-right:1.5rem;">
-        <i class="bi bi-@(isOwnAccount ?"shield-lock-fill" : "pencil-square")"></i>
+    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
+        <i class="bi bi-@(isOwnAccount ? "shield-lock-fill" : "pencil-square") text-9xl text-white"></i>
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- ERROR / DELETE-ERROR ALERTS                     -->
-<!-- ═══════════════════════════════════════════════ -->
+<!-- Error Alerts -->
 @if (TempData["DeleteError"] != null)
 {
-    <div class="alert border-0 shadow-sm rounded-3 mb-6 anim-fade-in"
-         role="alert"
-         style="background: rgba(239,68,68,0.08); color: #dc2626; border-left: 4px solid #ef4444 !important;">
-        <div class="flex items-center">
-            <div class="moc-icon-box bg-red-50 rounded-3 mr-4">
-                <i class="bi bi-x-circle-fill text-red fs-5"></i>
-            </div>
-            <div>
-                <span class="font-semibold">Error!</span>
-                <span class="text-sm ml-1">@TempData["DeleteError"]</span>
-            </div>
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6" role="alert">
+        <div class="flex items-center gap-3">
+            <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-red-100 text-red-800"><i class="bi bi-x-circle-fill text-lg"></i></span>
+            <div><span class="font-semibold text-red-800">Error!</span> <span class="text-sm text-red-800 ms-1">@TempData["DeleteError"]</span></div>
         </div>
     </div>
 }
 
 @if (isOwnAccount && isAlpha)
 {
-    <!-- ═══════════════════════════════════════════════ -->
-    <!-- ALPHA'S OWN ACCOUNT VIEW                       -->
-    <!-- ═══════════════════════════════════════════════ -->
-
-    <!-- Highest Role Banner -->
-    <div class="moc-section-header mt-2">
-        <h5 class="font-bold letter-tight">
-            <i class="bi bi-shield-lock-fill text-red mr-1"></i> Account Status
-        </h5>
-        <hr />
+    <!-- Account Status -->
+    <div class="flex items-center gap-x-3 mb-4">
+        <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-shield-lock-fill text-red-500"></i> Account Status</h2>
+        <div class="grow border-t border-gray-200"></div>
     </div>
 
-    <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm mb-6 anim-fade-in anim-delay-1">
-        <div class="p-6 p-6">
-            <div class="flex items-center gap-6 mb-6">
-                <div class="moc-icon-box-lg bg-red-50 rounded-3">
-                    <i class="bi bi-shield-lock-fill text-red fs-4"></i>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
+        <div class="p-6">
+            <div class="flex items-center gap-4 mb-6">
+                <span class="inline-flex justify-center items-center size-[56px] rounded-lg bg-red-100 text-red-800"><i class="bi bi-shield-lock-fill text-2xl"></i></span>
+                <div><h3 class="text-lg font-bold text-gray-800 mb-0">SuperAdmin &bull; Alpha</h3><p class="text-sm text-gray-500 mb-0">You hold the highest role in the system</p></div>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4 mb-6">
+                <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                    <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">Email</p>
+                    <h3 class="text-sm font-bold text-gray-800 mb-1 break-all">@Model.Email</h3>
+                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check-circle-fill"></i> Verified</span>
                 </div>
-                <div class="flex-grow">
-                    <h5 class="font-bold mb-1 letter-tight">SuperAdmin &bull; Alpha</h5>
-                    <p class="text-moc-text-muted text-sm mb-0">You hold the highest role in the system</p>
+                <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                    <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">Role</p>
+                    <h3 class="text-sm font-bold text-gray-800 mb-1">SuperAdmin (Alpha)</h3>
+                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium"><i class="bi bi-lock-fill"></i> Immutable</span>
                 </div>
             </div>
-
-            <div class="flex flex-wrap -mx-3 gap-6 mt-6">
-                <div class="w-full md:w-1/2 px-6">
-                    <div class="moc-metric p-6 h-100">
-                        <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Email</p>
-                        <h6 class="font-bold mb-1 letter-tight text-break">@Model.Email</h6>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green text-xs font-semibold">
-                            <i class="bi bi-check-circle-fill mr-1"></i> Verified
-                        </span>
-                    </div>
-                </div>
-                <div class="w-full md:w-1/2 px-6">
-                    <div class="moc-metric p-6 h-100">
-                        <p class="text-moc-text-muted uppercase text-xs font-semibold mb-1">Role</p>
-                        <h6 class="font-bold mb-1 letter-tight">SuperAdmin (Alpha)</h6>
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red text-xs font-semibold">
-                            <i class="bi bi-lock-fill mr-1"></i> Immutable
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="alert border-0 rounded-3 mt-6 mb-0 py-6"
-                 style="background: rgba(99,102,241,0.06); color: #6366f1; border-left: 4px solid #6366f1 !important;">
-                <div class="flex items-center">
-                    <i class="bi bi-info-circle-fill mr-2 fs-5"></i>
-                    <div class="text-sm">
-                        <strong>No role changes available.</strong>
-                        You already hold the highest role. This role cannot be demoted or promoted.
-                    </div>
-                </div>
+            <div class="bg-indigo-50 rounded-lg p-4 flex items-center gap-3">
+                <i class="bi bi-info-circle-fill text-indigo-500 text-lg"></i>
+                <div class="text-sm text-indigo-800"><strong>No role changes available.</strong> You already hold the highest role. This role cannot be demoted or promoted.</div>
             </div>
         </div>
     </div>
 
-    <!-- Danger Zone — Delete Account -->
-    <div class="moc-section-header mt-8">
-        <h5 class="font-bold letter-tight">
-            <i class="bi bi-exclamation-triangle-fill text-red-500 mr-1"></i> Danger Zone
-        </h5>
-        <hr />
+    <!-- Danger Zone -->
+    <div class="flex items-center gap-x-3 mb-4">
+        <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-exclamation-triangle-fill text-red-500"></i> Danger Zone</h2>
+        <div class="grow border-t border-gray-200"></div>
     </div>
 
-    <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden border-0 shadow-sm mb-6 anim-fade-in anim-delay-2"
-         style="border-left: 4px solid #ef4444 !important; background: var(--moc-surface);">
-        <div class="p-6 p-6">
-            <div class="flex items-start gap-6 mb-6">
-                <div class="moc-icon-box bg-red-50 rounded-3">
-                    <i class="bi bi-trash3-fill text-red fs-5"></i>
-                </div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6" style="border-left: 4px solid #ef4444 !important;">
+        <div class="p-6">
+            <div class="flex items-start gap-4 mb-4">
+                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-red-100 text-red-800"><i class="bi bi-trash3-fill text-lg"></i></span>
                 <div>
-                    <h6 class="font-bold mb-1 letter-tight text-red-500">Delete My Account</h6>
-                    <p class="text-moc-text-muted text-sm mb-0">
-                        Permanently remove your SuperAdmin account. This action is <strong>irreversible</strong>
-                        and you will lose all administrative privileges immediately.
-                    </p>
+                    <h3 class="text-sm font-bold text-red-600 mb-1">Delete My Account</h3>
+                    <p class="text-xs text-gray-500 mb-0">Permanently remove your SuperAdmin account. This action is <strong>irreversible</strong> and you will lose all administrative privileges immediately.</p>
                 </div>
             </div>
-            <button type="button" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 px-6 py-2" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                <i class="bi bi-trash3 mr-1"></i> Delete My Account
+            <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                <i class="bi bi-trash3"></i> Delete My Account
             </button>
         </div>
     </div>
 
-    <!-- Delete Account Modal (Double Confirmation) -->
+    <!-- Delete Account Modal -->
     <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
                 <div class="modal-header border-0 pb-0" style="background: rgba(239,68,68,0.04);">
                     <div class="flex items-center gap-2">
-                        <div class="moc-icon-box bg-red-50 rounded-3">
-                            <i class="bi bi-exclamation-triangle-fill text-red fs-5"></i>
-                        </div>
+                        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-red-100 text-red-800"><i class="bi bi-exclamation-triangle-fill text-lg"></i></span>
                         <h5 class="modal-title font-bold" id="deleteAccountModalLabel">Confirm Account Deletion</h5>
                     </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body px-6 py-6">
-                    <div class="alert border-0 rounded-3 mb-6 py-6"
-                         style="background: rgba(239,68,68,0.06); color: #dc2626;">
-                        <div class="flex items-start">
-                            <i class="bi bi-shield-exclamation mr-2 fs-5 mt-1"></i>
-                            <div class="text-sm">
-                                <strong>Warning:</strong> You are about to permanently delete your SuperAdmin account
-                                (<strong>@Model.Email</strong>). This cannot be undone.
-                            </div>
+                    <div class="bg-red-50 rounded-lg p-4 mb-4">
+                        <div class="flex items-start gap-2">
+                            <i class="bi bi-shield-exclamation text-red-600 text-lg mt-1"></i>
+                            <div class="text-sm text-red-800"><strong>Warning:</strong> You are about to permanently delete your SuperAdmin account (<strong>@Model.Email</strong>). This cannot be undone.</div>
                         </div>
                     </div>
-                    <p class="text-moc-text-muted text-sm mb-6">
-                        To confirm this action, please enter your current password:
-                    </p>
+                    <p class="text-sm text-gray-500 mb-4">To confirm this action, please enter your current password:</p>
                     <form asp-action="DeleteSelf" method="post" id="deleteAccountForm">
                         @Html.AntiForgeryToken()
-                        <div class="mb-6">
-                            <label for="confirmPassword" class="block text-sm font-medium leading-6 text-gray-900 font-semibold text-sm">
-                                <i class="bi bi-lock-fill mr-1 text-red"></i> Your Password
-                            </label>
-                            <input type="password" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-control-lg rounded-3" id="confirmPassword"
-                                   name="password" required placeholder="Enter your password to confirm"
-                                   autocomplete="current-password" />
+                        <div class="mb-4">
+                            <label for="confirmPassword" class="block text-sm font-medium mb-2"><i class="bi bi-lock-fill text-red-500 me-1"></i> Your Password</label>
+                            <input type="password" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" id="confirmPassword" name="password" required placeholder="Enter your password to confirm" autocomplete="current-password" />
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer border-0 pt-0 px-6 pb-4">
-                    <button type="button" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline px-6 py-2" data-bs-dismiss="modal">
-                        <i class="bi bi-x-lg mr-1"></i> Cancel
-                    </button>
-                    <button type="submit" form="deleteAccountForm" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 px-6 py-2" id="confirmDeleteBtn" disabled>
-                        <i class="bi bi-trash3 mr-1"></i> Permanently Delete
-                    </button>
+                    <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i> Cancel</button>
+                    <button type="submit" form="deleteAccountForm" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700" id="confirmDeleteBtn" disabled><i class="bi bi-trash3"></i> Permanently Delete</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Enable delete button only when password is typed -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var pwd = document.getElementById('confirmPassword');
@@ -217,96 +148,71 @@
 }
 else
 {
-    <!-- ═══════════════════════════════════════════════ -->
-    <!-- STANDARD EDIT VIEW (Editing another user)      -->
-    <!-- ═══════════════════════════════════════════════ -->
-
-    <div class="moc-section-header mt-2">
-        <h5 class="font-bold letter-tight">
-            <i class="bi bi-pencil-square text-indigo mr-1"></i> Role Assignment
-        </h5>
-        <hr />
+    <!-- Standard Edit View -->
+    <div class="flex items-center gap-x-3 mb-4">
+        <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-pencil-square text-indigo-500"></i> Role Assignment</h2>
+        <div class="grow border-t border-gray-200"></div>
     </div>
 
-    <div class="flex flex-wrap -mx-3 justify-center">
-        <div class="w-full lg:w-2/3 px-6 w-full xl:w-1/2 px-3">
-            <div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm mb-6 anim-fade-in anim-delay-1">
-                <div class="p-6 p-6">
-                    <form asp-action="Edit">
-                        <input type="hidden" asp-for="Id" />
+    <div class="max-w-xl mx-auto">
+        <div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
+            <div class="p-6">
+                <form asp-action="Edit">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4"></div>
 
-                        <div asp-validation-summary="ModelOnly" class="text-red-500 mb-6"></div>
+                    <!-- Current Role -->
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 mb-5 flex items-center gap-4">
+                        @if (Model.CurrentRole == "SuperAdmin")
+                        {
+                            <span class="inline-flex justify-center items-center size-[40px] rounded-full bg-red-100 text-red-800"><i class="bi bi-shield-lock-fill"></i></span>
+                        }
+                        else if (Model.CurrentRole == "SystemAdmin")
+                        {
+                            <span class="inline-flex justify-center items-center size-[40px] rounded-full bg-amber-100 text-amber-800"><i class="bi bi-gear-fill"></i></span>
+                        }
+                        else
+                        {
+                            <span class="inline-flex justify-center items-center size-[40px] rounded-full bg-indigo-100 text-indigo-800"><i class="bi bi-person-fill"></i></span>
+                        }
+                        <div><p class="text-xs uppercase text-gray-500 font-medium mb-0">Current Role</p><h3 class="text-sm font-bold text-gray-800 mb-0">@Model.CurrentRole</h3></div>
+                    </div>
 
-                        <!-- Current Role Display -->
-                        <div class="moc-metric p-6 mb-6">
-                            <div class="flex items-center gap-6">
-                                @if (Model.CurrentRole == "SuperAdmin")
-                                {
-                                    <div class="moc-icon-box bg-red-50 rounded-full">
-                                        <i class="bi bi-shield-lock-fill text-red"></i>
-                                    </div>
-                                }
-                                else if (Model.CurrentRole == "SystemAdmin")
-                                {
-                                    <div class="moc-icon-box bg-amber-50 rounded-full">
-                                        <i class="bi bi-gear-fill text-amber"></i>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="moc-icon-box bg-indigo-50 rounded-full">
-                                        <i class="bi bi-person-fill text-indigo"></i>
-                                    </div>
-                                }
-                                <div>
-                                    <p class="text-moc-text-muted uppercase text-xs font-semibold mb-0">Current Role</p>
-                                    <h6 class="font-bold mb-0 letter-tight">@Model.CurrentRole</h6>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- New Role -->
+                    <div class="mb-5">
+                        <label asp-for="NewRole" class="block text-sm font-medium mb-2"><i class="bi bi-arrow-repeat me-1 text-indigo-500"></i> Assign New Role</label>
+                        <select asp-for="NewRole" asp-items="ViewBag.Roles" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500"></select>
+                        <p class="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                            <i class="bi bi-info-circle text-indigo-500"></i>
+                            @if (isAlpha)
+                            {
+                                <text>Select </text><strong>SuperAdmin</strong><text> to promote this user to Alpha.</text>
+                            }
+                            else
+                            {
+                                <text>Changing the role will update this user's permissions immediately.</text>
+                            }
+                        </p>
+                    </div>
 
-                        <!-- New Role Selector -->
-                        <div class="mb-6">
-                            <label asp-for="NewRole" class="block text-sm font-medium leading-6 text-gray-900 font-semibold text-sm mb-2">
-                                <i class="bi bi-arrow-repeat mr-1 text-indigo"></i> Assign New Role
-                            </label>
-                            <select asp-for="NewRole" asp-items="ViewBag.Roles" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-select-lg rounded-3">
-                            </select>
-                            <small class="text-moc-text-muted text-xs mt-2 flex items-center">
-                                <i class="bi bi-info-circle mr-1 text-indigo"></i>
-                                @if (isAlpha)
-                                {
-                                    @:Select <strong>SuperAdmin</strong> to promote this user to Alpha.
-                                }
-                                else
-                                {
-                                    @:Changing the role will update this user's permissions immediately.
-                                }
-                            </small>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="flex gap-2">
-                            <button type="submit" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary flex-1 py-6">
-                                <i class="bi bi-check2-circle mr-1"></i> Save Changes
-                            </button>
-                            <a asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline flex-1 py-6">
-                                <i class="bi bi-arrow-left mr-1"></i> Cancel
-                            </a>
-                        </div>
-                    </form>
-                </div>
+                    <!-- Action Buttons -->
+                    <div class="flex gap-2">
+                        <button type="submit" class="flex-1 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
+                            <i class="bi bi-check2-circle"></i> Save Changes
+                        </button>
+                        <a asp-action="Index" class="flex-1 py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 }
 
-<!-- ═══════════════════════════════════════════════ -->
-<!-- BACK TO DIRECTORY                               -->
-<!-- ═══════════════════════════════════════════════ -->
-<div class="flex justify-start mb-6 anim-fade-in">
-    <a asp-action="Index" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-outline px-6 py-2">
-        <i class="bi bi-arrow-left mr-1"></i> Back to User Directory
+<!-- Back to Directory -->
+<div class="flex justify-start mb-6">
+    <a asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
+        <i class="bi bi-arrow-left"></i> Back to User Directory
     </a>
 </div>
-

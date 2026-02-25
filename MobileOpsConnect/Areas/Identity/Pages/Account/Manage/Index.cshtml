@@ -5,80 +5,53 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<div class="moc-section-header">
-    <h5 class="font-bold letter-tight">
-        <i class="bi bi-person-circle text-indigo mr-1"></i> Profile
-    </h5>
-    <hr />
+<div class="flex items-center gap-x-3 mb-4">
+    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-person-circle text-indigo-500"></i> Profile</h2>
+    <div class="grow border-t border-gray-200"></div>
 </div>
 
 <partial name="_StatusMessage" for="StatusMessage" />
 
-<div class="bg-white shadow-sm rounded-xl border border-moc-border overflow-hidden moc-card border-0 shadow-sm">
-    <div class="p-6 p-6 p-md-5">
+<div class="flex flex-col bg-white border shadow-sm rounded-xl">
+    <div class="p-6">
         <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-red-500 mb-6" role="alert"></div>
+            <div asp-validation-summary="ModelOnly" class="text-red-500 mb-4" role="alert"></div>
 
-            <!-- Username (read-only) -->
-            <div class="flex items-center mb-6">
-                <div class="moc-icon-box bg-indigo-50 rounded-3 mr-4" style="width:40px;height:40px;min-width:40px;">
-                    <i class="bi bi-person-fill text-indigo"></i>
-                </div>
-                <div>
-                    <h6 class="font-bold mb-0 letter-tight">Username</h6>
-                    <span class="text-moc-text-muted text-xs">Your login credential (read-only)</span>
-                </div>
+            <!-- Username -->
+            <div class="flex items-center gap-x-3 mb-3">
+                <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-person-fill"></i></span>
+                <div><h3 class="text-sm font-bold text-gray-800 mb-0">Username</h3><span class="text-xs text-gray-500">Your login credential (read-only)</span></div>
             </div>
-            <div class="mb-6">
-                <input asp-for="Username" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 form-control-lg rounded-3" disabled
-                       style="padding:0.875rem 1rem;font-size:1rem;background:var(--moc-surface);" />
+            <div class="mb-5">
+                <input asp-for="Username" class="py-3 px-4 block w-full bg-gray-100 border-gray-200 rounded-lg text-sm" disabled />
             </div>
 
-            <hr class="my-6 opacity-10" />
+            <hr class="my-5 border-gray-100" />
 
             <!-- Phone Number -->
-            <div class="flex items-center mb-6">
-                <div class="moc-icon-box bg-green-50 rounded-3 mr-4" style="width:40px;height:40px;min-width:40px;">
-                    <i class="bi bi-telephone-fill text-green"></i>
-                </div>
-                <div>
-                    <h6 class="font-bold mb-0 letter-tight">Phone Number</h6>
-                    <span class="text-moc-text-muted text-xs">Optional contact number</span>
-                </div>
+            <div class="flex items-center gap-x-3 mb-3">
+                <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-green-100 text-green-800"><i class="bi bi-telephone-fill"></i></span>
+                <div><h3 class="text-sm font-bold text-gray-800 mb-0">Phone Number</h3><span class="text-xs text-gray-500">Optional contact number</span></div>
             </div>
-            <div class="mb-6">
-                <div class="flex w-full items-stretch">
-                    <span class="flex items-center px-4 py-2 bg-gray-50 border border-gray-300 text-gray-500 text-sm font-medium rounded-start-3 border-end-0"
-                          style="background:rgba(34,197,94,0.06);">
-                        <i class="bi bi-phone text-green"></i>
-                    </span>
-                    <input asp-for="Input.PhoneNumber" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 rounded-end-3 border-start-0"
-                           placeholder="Enter your phone number"
-                           style="padding:0.875rem 1rem;font-size:1rem;" />
+            <div class="mb-5">
+                <div class="flex">
+                    <span class="py-3 px-4 inline-flex items-center min-w-fit rounded-s-lg border border-e-0 border-gray-200 bg-green-50 text-sm text-gray-500"><i class="bi bi-phone text-green-600"></i></span>
+                    <input asp-for="Input.PhoneNumber" class="py-3 px-4 block w-full border-gray-200 rounded-e-lg text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Enter your phone number" />
                 </div>
                 <span asp-validation-for="Input.PhoneNumber" class="text-red-500 text-xs"></span>
             </div>
 
-            <!-- Save Button -->
-            <div class="grid">
-                <button id="update-profile-button" type="submit" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 btn-moc-primary px-4 py-2 text-base py-6">
-                    <i class="bi bi-check-circle mr-1"></i> Save Changes
-                </button>
-            </div>
+            <button id="update-profile-button" type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
+                <i class="bi bi-check-circle"></i> Save Changes
+            </button>
         </form>
     </div>
 
-    <div class="px-6 py-4 border-t border-moc-border bg-gray-50 bg-transparent border-0 px-6 py-6 text-center"
-         style="border-top:1px solid var(--moc-border);border-radius:0 0 0.875rem 0.875rem;">
-        <span class="text-moc-text-muted text-xs">
-            <i class="bi bi-shield-check mr-1"></i>
-            Profile changes are saved securely and take effect immediately.
-        </span>
+    <div class="px-6 py-4 border-t border-gray-200 text-center">
+        <span class="text-xs text-gray-500"><i class="bi bi-shield-check me-1"></i> Profile changes are saved securely and take effect immediately.</span>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-
-
