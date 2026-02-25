@@ -9,24 +9,29 @@
 <!-- Hero Banner -->
 <div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
     <div class="relative z-10">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm">
-                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> @(isOwnAccount ? "Your Account" : "User Management")
-            </span>
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                @if (Model.CurrentRole == "SuperAdmin")
-                {
-                    <i class="bi bi-shield-lock-fill"></i> <text>Alpha</text>
-                }
-                else if (Model.CurrentRole == "SystemAdmin")
-                {
-                    <i class="bi bi-gear-fill"></i> <text>Beta</text>
-                }
-                else
-                {
-                    <i class="bi bi-person-badge"></i> @Model.CurrentRole
-                }
-            </span>
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm">
+                    <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> @(isOwnAccount ? "Your Account" : "User Management")
+                </span>
+                <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
+                    @if (Model.CurrentRole == "SuperAdmin")
+                    {
+                        <i class="bi bi-shield-lock-fill"></i> <text>Alpha</text>
+                    }
+                    else if (Model.CurrentRole == "SystemAdmin")
+                    {
+                        <i class="bi bi-gear-fill"></i> <text>Beta</text>
+                    }
+                    else
+                    {
+                        <i class="bi bi-person-badge"></i> @Model.CurrentRole
+                    }
+                </span>
+            </div>
+            <a asp-action="Index" class="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-transparent bg-white/20 text-white hover:bg-white/30 transition shadow-sm relative z-20">
+                <i class="bi bi-arrow-left"></i> Back to Directory
+            </a>
         </div>
         <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">@(isOwnAccount ? "My Account" : "Edit User")</h1>
         <p class="text-blue-100 text-lg">@(isOwnAccount ? "Manage your SuperAdmin (Alpha) account settings" : $"Editing account: {Model.Email}")</p>
@@ -154,7 +159,7 @@ else
         <div class="grow border-t border-gray-200"></div>
     </div>
 
-    <div class="max-w-xl mx-auto">
+    <div class="max-w-3xl mx-auto">
         <div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
             <div class="p-6">
                 <form asp-action="Edit">
@@ -210,9 +215,3 @@ else
     </div>
 }
 
-<!-- Back to Directory -->
-<div class="flex justify-start mb-6">
-    <a asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
-        <i class="bi bi-arrow-left"></i> Back to User Directory
-    </a>
-</div>
