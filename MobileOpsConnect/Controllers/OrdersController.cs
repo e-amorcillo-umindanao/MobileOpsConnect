@@ -104,11 +104,12 @@ namespace MobileOpsConnect.Controllers
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
             var action = actionType?.Trim() ?? "Approve";
             var isApproval = action.Equals("Approve", StringComparison.OrdinalIgnoreCase);
 
             order.Status = isApproval ? "Approved" : "Rejected";
-            order.ApprovedById = currentUser!.Id;
+            order.ApprovedById = currentUser.Id;
             order.DateProcessed = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();

@@ -321,8 +321,11 @@ namespace MobileOpsConnect.Controllers
         // ================= HELPER METHODS (Fixed Logic) =================
 
         // 1. THE SCOPE LOGIC (Restored Original Architecture)
-        private bool CanManageUser(IdentityUser me, string targetRole, string targetId)
+        private bool CanManageUser(IdentityUser? me, string targetRole, string targetId)
         {
+            // Null guard
+            if (me == null) return false;
+
             // I can always see myself
             if (me.Id == targetId) return true;
 

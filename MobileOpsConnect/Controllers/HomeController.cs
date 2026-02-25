@@ -182,7 +182,7 @@ namespace MobileOpsConnect.Controllers
             }
         }
 
-        [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
+        [Authorize(Roles = "SuperAdmin,DepartmentManager")]
         public async Task<IActionResult> Analytics()
         {
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();

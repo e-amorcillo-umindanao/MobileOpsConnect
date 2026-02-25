@@ -356,6 +356,9 @@ namespace MobileOpsConnect.Controllers
             var leaveRequest = await _context.LeaveRequests.FindAsync(id);
             if (leaveRequest == null) return NotFound();
 
+            // SECURITY: Only allow deletion of Pending requests
+            if (leaveRequest.Status != "Pending") return Forbid();
+
             // SECURITY: Only the owner or a boss can delete
             var user = await _userManager.GetUserAsync(User);
             bool isBoss = User.IsInRole("SuperAdmin") ||
@@ -364,6 +367,13 @@ namespace MobileOpsConnect.Controllers
             if (!isBoss && leaveRequest.UserID != user?.Id)
             {
                 return Forbid();
+            }
+
+            // Audit log
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                await _auditService.LogAsync(user.Id, user.Email!, roles.FirstOrDefault() ?? "", "DELETE", $"Deleted leave request #{leaveRequest.LeaveID} ({leaveRequest.LeaveType}, {leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).", HttpContext.Connection.RemoteIpAddress?.ToString());
             }
 
             _context.LeaveRequests.Remove(leaveRequest);

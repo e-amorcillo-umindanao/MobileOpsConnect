@@ -152,6 +152,8 @@
     <!-- End Card -->
 </div>
 
+@if (!isSystemAdmin)
+{
 <!-- Business Metrics Title -->
 <div class="flex items-center gap-x-3 mb-4 mt-8">
     <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
@@ -216,6 +218,7 @@
     </div>
     <!-- End Card -->
 </div>
+}
 
 <!-- Quick Access Title -->
 <div class="flex items-center gap-x-3 mb-4 mt-8">

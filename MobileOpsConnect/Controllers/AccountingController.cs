@@ -8,7 +8,7 @@ using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
+    [Authorize(Roles = "SuperAdmin")]
     public class AccountingController : Controller
     {
         private readonly ApplicationDbContext _context;

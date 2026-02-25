@@ -44,7 +44,7 @@
                         <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 @(currentController == "Home" && (currentAction == "Index" || currentAction == "ManagerDashboard" || currentAction == "EmployeeDashboard") ? "text-blue-500" : "")" asp-area="" asp-controller="Home" asp-action="Index">
                             <i class="bi bi-grid-1x2-fill mr-1.5"></i> Dashboard
                         </a>
-                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
+                        @if (User.IsInRole("SuperAdmin"))
                         {
                             <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 @(currentController == "Accounting" ? "text-blue-500" : "")" asp-area="" asp-controller="Accounting" asp-action="Index">
                                 <i class="bi bi-journal-text mr-1.5"></i> Accounting
