@@ -37,14 +37,14 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Products/Create
-        [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
+        [Authorize(Roles = "SuperAdmin,DepartmentManager")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Products/Create
-        [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
+        [Authorize(Roles = "SuperAdmin,DepartmentManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProductID,SKU,Name,Category,StockQuantity,Price")] Product product)
@@ -64,7 +64,7 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Products/Edit/5
-        [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
+        [Authorize(Roles = "SuperAdmin,DepartmentManager")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
@@ -75,7 +75,7 @@ namespace MobileOpsConnect.Controllers
         }
 
         // POST: Products/Edit/5
-        [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
+        [Authorize(Roles = "SuperAdmin,DepartmentManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ProductID,SKU,Name,Category,StockQuantity,Price")] Product product)
@@ -104,7 +104,7 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Products/Delete/5
-        [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
+        [Authorize(Roles = "SuperAdmin,DepartmentManager")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -116,7 +116,7 @@ namespace MobileOpsConnect.Controllers
         }
 
         // POST: Products/Delete/5 (Soft-delete: archives the product by setting stock to 0)
-        [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
+        [Authorize(Roles = "SuperAdmin,DepartmentManager")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

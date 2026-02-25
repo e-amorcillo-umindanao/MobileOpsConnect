@@ -84,7 +84,7 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Settings/AuditLogs
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = "SuperAdmin,SystemAdmin")]
         public async Task<IActionResult> AuditLogs()
         {
             bool isSuperAdmin = User.IsInRole("SuperAdmin");
