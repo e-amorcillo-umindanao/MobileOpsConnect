@@ -144,7 +144,7 @@ namespace MobileOpsConnect.Controllers
             {
                 var alertMessage = $"{product.Name} (SKU: {product.SKU}) is down to {product.StockQuantity} units after stock-out — below the {threshold}-unit threshold.";
 
-                await _notificationService.SendToAllAsync(
+                await _notificationService.SendToRoleAsync("DepartmentManager",
                     "⚠️ Low Stock Alert", alertMessage);
 
                 // Send email alert to support/admin

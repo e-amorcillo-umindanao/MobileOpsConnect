@@ -152,8 +152,17 @@ namespace MobileOpsConnect.Controllers
                 _context.Add(leaveRequest);
                 await _context.SaveChangesAsync();
 
-                // Notify admins about the new leave request
-                await _notificationService.SendToAllAsync(
+                // Notify the appropriate manager based on hierarchy
+                var roles = await _userManager.GetRolesAsync(user);
+                var filerRole = roles.FirstOrDefault() ?? "Employee";
+                string targetRole = filerRole switch
+                {
+                    "Employee" or "WarehouseStaff" => "DepartmentManager",
+                    "DepartmentManager" => "SystemAdmin",
+                    "SystemAdmin" => "SuperAdmin",
+                    _ => "SuperAdmin"
+                };
+                await _notificationService.SendToRoleAsync(targetRole,
                     "📋 New Leave Request",
                     $"{user.Email} submitted a {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
 
@@ -161,8 +170,7 @@ namespace MobileOpsConnect.Controllers
                 await _hubContext.Clients.All.SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Pending", leaveRequest.UserID);
 
                 // Audit log
-                var roles = await _userManager.GetRolesAsync(user);
-                await _auditService.LogAsync(user.Id, user.Email!, roles.FirstOrDefault() ?? "", "CREATE", $"Filed {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+                await _auditService.LogAsync(user.Id, user.Email!, filerRole, "CREATE", $"Filed {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).", HttpContext.Connection.RemoteIpAddress?.ToString());
 
                 return RedirectToAction(nameof(Index));
             }
@@ -369,11 +377,23 @@ namespace MobileOpsConnect.Controllers
                 return Forbid();
             }
 
-            // Audit log
+            // Audit log + notify up hierarchy
             if (user != null)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                await _auditService.LogAsync(user.Id, user.Email!, roles.FirstOrDefault() ?? "", "DELETE", $"Deleted leave request #{leaveRequest.LeaveID} ({leaveRequest.LeaveType}, {leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+                var userRole = roles.FirstOrDefault() ?? "Employee";
+                await _auditService.LogAsync(user.Id, user.Email!, userRole, "DELETE", $"Deleted leave request #{leaveRequest.LeaveID} ({leaveRequest.LeaveType}, {leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+
+                string targetRole = userRole switch
+                {
+                    "Employee" or "WarehouseStaff" => "DepartmentManager",
+                    "DepartmentManager" => "SystemAdmin",
+                    "SystemAdmin" => "SuperAdmin",
+                    _ => "SuperAdmin"
+                };
+                await _notificationService.SendToRoleAsync(targetRole,
+                    "🗑️ Leave Request Cancelled",
+                    $"{user.Email} cancelled their {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
             }
 
             _context.LeaveRequests.Remove(leaveRequest);

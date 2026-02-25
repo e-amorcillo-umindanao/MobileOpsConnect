@@ -58,6 +58,11 @@ namespace MobileOpsConnect.Controllers
                 // Check for low stock and notify
                 await CheckAndNotifyLowStock(product);
 
+                // Notify department managers about new product
+                await _notificationService.SendToRoleAsync("DepartmentManager",
+                    "📦 New Product Added",
+                    $"{product.Name} (SKU: {product.SKU}) has been added with {product.StockQuantity} units.");
+
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -92,6 +97,11 @@ namespace MobileOpsConnect.Controllers
 
                     // Check for low stock and notify
                     await CheckAndNotifyLowStock(product);
+
+                    // Notify department managers about product update
+                    await _notificationService.SendToRoleAsync("DepartmentManager",
+                        "✏️ Product Updated",
+                        $"{product.Name} (SKU: {product.SKU}) has been updated. Stock: {product.StockQuantity}.");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -127,8 +137,17 @@ namespace MobileOpsConnect.Controllers
                 product.StockQuantity = 0;
                 product.LastUpdated = DateTime.UtcNow;
                 _context.Products.Update(product);
+                await _context.SaveChangesAsync();
+
+                // Notify department managers about archived product
+                await _notificationService.SendToRoleAsync("DepartmentManager",
+                    "🗂️ Product Archived",
+                    $"{product.Name} (SKU: {product.SKU}) has been archived (stock set to 0).");
             }
-            await _context.SaveChangesAsync();
+            else
+            {
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -140,7 +159,7 @@ namespace MobileOpsConnect.Controllers
 
             if (product.StockQuantity <= threshold)
             {
-                await _notificationService.SendToAllAsync(
+                await _notificationService.SendToRoleAsync("DepartmentManager",
                     "⚠️ Low Stock Alert",
                     $"{product.Name} (SKU: {product.SKU}) has only {product.StockQuantity} units left — below the {threshold}-unit threshold.");
             }

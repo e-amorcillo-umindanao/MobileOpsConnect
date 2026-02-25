@@ -76,8 +76,8 @@ namespace MobileOpsConnect.Controllers
             _context.PurchaseOrders.Add(order);
             await _context.SaveChangesAsync();
 
-            // Notify managers about new PO
-            await _notificationService.SendToAllAsync(
+            // Notify department managers about new PO
+            await _notificationService.SendToRoleAsync("DepartmentManager",
                 "📦 New Purchase Order",
                 $"{currentUser.Email} submitted PO for {Quantity}x {product.Name} (₱{order.EstimatedCost:N0}).");
 
@@ -117,10 +117,10 @@ namespace MobileOpsConnect.Controllers
 
             var pastTense = isApproval ? "approved" : "rejected";
 
-            // Notify all users
-            await _notificationService.SendToAllAsync(
-                "📦 Order Update",
-                $"Purchase Order #{id} has been {pastTense} by {currentUser.Email}.");
+            // Notify the requester about the decision
+            await _notificationService.SendToUserAsync(order.RequestedById,
+                isApproval ? "✅ Order Approved" : "❌ Order Rejected",
+                $"Purchase Order #{id} ({order.Product?.Name}) has been {pastTense} by {currentUser.Email}.");
 
             // Audit log
             var roles = await _userManager.GetRolesAsync(currentUser);

@@ -47,6 +47,39 @@ namespace MobileOpsConnect.Services
             return await SendToTokensAsync(tokens, title, body, url);
         }
 
+        public async Task<int> SendToRoleAsync(string roleName, string title, string body, string? url = null)
+        {
+            // Get all user IDs that belong to the target role
+            var userIdsInRole = await _context.UserRoles
+                .Join(_context.Roles,
+                    ur => ur.RoleId,
+                    r => r.Id,
+                    (ur, r) => new { ur.UserId, RoleName = r.Name })
+                .Where(x => x.RoleName == roleName)
+                .Select(x => x.UserId)
+                .ToListAsync();
+
+            if (userIdsInRole.Count == 0)
+            {
+                _logger.LogWarning("No users found in role {Role} for notification", roleName);
+                return 0;
+            }
+
+            var tokens = await _context.UserFcmTokens
+                .Where(t => userIdsInRole.Contains(t.UserId))
+                .Select(t => t.Token)
+                .Distinct()
+                .ToListAsync();
+
+            if (tokens.Count == 0)
+            {
+                _logger.LogWarning("No FCM tokens found for users in role {Role}", roleName);
+                return 0;
+            }
+
+            return await SendToTokensAsync(tokens, title, body, url);
+        }
+
         private async Task<int> SendToTokensAsync(List<string> tokens, string title, string body, string? url)
         {
             var notification = new Notification

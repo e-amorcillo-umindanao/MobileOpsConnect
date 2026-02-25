@@ -11,5 +11,10 @@ namespace MobileOpsConnect.Services
         /// Send a push notification to all registered users.
         /// </summary>
         Task<int> SendToAllAsync(string title, string body, string? url = null);
+
+        /// <summary>
+        /// Send a push notification to all users in a specific role.
+        /// </summary>
+        Task<int> SendToRoleAsync(string roleName, string title, string body, string? url = null);
     }
 }
