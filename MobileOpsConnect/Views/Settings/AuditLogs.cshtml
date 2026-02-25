@@ -9,9 +9,16 @@
     int securityCount = ViewBag.SecurityCount;
 }
 
+<!-- Breadcrumb Navigation -->
+<div class="mb-6">
+    <a asp-controller="Home" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    </a>
+</div>
+
 <!-- Hero Banner -->
 <div class="rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden" style="background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 50%, #6366f1 100%);">
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+    <div class="relative z-10">
         <div class="flex items-center gap-4">
             <span class="inline-flex justify-center items-center size-[48px] rounded-xl bg-white/15 backdrop-blur-sm text-white">
                 <i class="bi bi-shield-lock-fill text-2xl"></i>
@@ -21,9 +28,6 @@
                 <span class="text-sm text-white/60">@(isSuperAdmin ? "Complete system activity — including security events" : "General system activity log")</span>
             </div>
         </div>
-        <a asp-controller="Home" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-white/15 text-white border border-white/20 backdrop-blur-sm hover:bg-white/25">
-            <i class="bi bi-arrow-left"></i> Back to Dashboard
-        </a>
     </div>
 </div>
 

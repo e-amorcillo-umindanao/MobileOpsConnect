@@ -6,10 +6,10 @@
 
 <div class="max-w-2xl mx-auto py-6">
     <div class="flex justify-between items-center mb-6">
-        <a asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
+        <a asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
             <i class="bi bi-arrow-left"></i> Back to Warehouse
         </a>
-        <span class="text-xs text-gray-500">SKU: <span class="font-semibold">@Model.SKU</span></span>
+        <span class="text-xs text-gray-500 dark:text-neutral-500">SKU: <span class="font-semibold">@Model.SKU</span></span>
     </div>
 
     <div class="flex flex-col bg-white border shadow-sm rounded-xl overflow-hidden">
