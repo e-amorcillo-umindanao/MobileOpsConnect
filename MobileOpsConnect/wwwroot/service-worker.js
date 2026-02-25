@@ -1,18 +1,64 @@
-// MobileOps Connect — Service Worker (PWA Offline Support)
-const CACHE_NAME = 'mobileops-v1';
+// MobileOps Connect — Unified Service Worker (PWA + Firebase Cloud Messaging)
+
+// ─── Firebase Cloud Messaging ───
+importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+    apiKey: "AIzaSyAL81jGL4I-RRdhk8K-niHwUMOYTQ91kkQ",
+    authDomain: "mobileops-connect.firebaseapp.com",
+    projectId: "mobileops-connect",
+    storageBucket: "mobileops-connect.firebasestorage.app",
+    messagingSenderId: "800744847836",
+    appId: "1:800744847836:web:bd9a01a4cc81740ef97719"
+});
+
+const messaging = firebase.messaging();
+
+// Handle background push notifications (tab NOT focused)
+messaging.onBackgroundMessage(function (payload) {
+    console.log('[SW] Background message received:', payload);
+
+    const notificationTitle = payload.notification?.title || 'MobileOps Connect';
+    const notificationOptions = {
+        body: payload.notification?.body || '',
+        icon: '/favicon.ico',
+        badge: '/favicon.ico',
+        data: payload.data,
+        tag: 'moc-notification',
+    };
+
+    self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+// Handle notification click — navigate to app
+self.addEventListener('notificationclick', function (event) {
+    event.notification.close();
+    const url = event.notification.data?.url || '/';
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+            for (const client of clientList) {
+                if (client.url.includes(self.location.origin) && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            return clients.openWindow(url);
+        })
+    );
+});
+
+// ─── PWA Offline Support ───
+const CACHE_NAME = 'mobileops-v2';
 const OFFLINE_URL = '/offline.html';
 
-// Assets to pre-cache on install
 const PRECACHE_ASSETS = [
     OFFLINE_URL,
     '/css/site.css',
     '/js/site.js',
-    '/lib/bootstrap/dist/css/bootstrap.min.css',
-    '/lib/bootstrap/dist/js/bootstrap.bundle.min.js',
     '/manifest.json'
 ];
 
-// Install event — pre-cache essential assets
+// Install — pre-cache essential assets
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
@@ -23,7 +69,7 @@ self.addEventListener('install', (event) => {
     self.skipWaiting();
 });
 
-// Activate event — clean old caches
+// Activate — clean old caches
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
@@ -37,14 +83,14 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
-// Fetch event — Network-first for pages, Cache-first for static assets
+// Fetch — network-first for pages, cache-first for static assets
 self.addEventListener('fetch', (event) => {
     const { request } = event;
 
     // Skip non-GET requests
     if (request.method !== 'GET') return;
 
-    // Skip SignalR, Firebase, and external requests 
+    // Skip SignalR, Firebase, and external requests
     if (request.url.includes('/hubs/') ||
         request.url.includes('firebaseio.com') ||
         request.url.includes('googleapis.com') ||
@@ -52,12 +98,11 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // For navigation requests (HTML pages) — network first, fallback to offline page
+    // Navigation requests — network first, fallback to offline page
     if (request.mode === 'navigate') {
         event.respondWith(
             fetch(request)
                 .then((response) => {
-                    // Cache the page for next time
                     const clone = response.clone();
                     caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
                     return response;
@@ -71,7 +116,7 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // For static assets — cache first, then network
+    // Static assets — cache first, then network
     if (request.url.match(/\.(css|js|png|jpg|jpeg|gif|svg|woff2?|ttf|eot|ico)$/)) {
         event.respondWith(
             caches.match(request).then((cached) => {

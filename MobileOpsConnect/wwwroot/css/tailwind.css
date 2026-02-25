@@ -735,6 +735,10 @@ body {
   z-index: 80;
 }
 
+.z-\[90\] {
+  z-index: 90;
+}
+
 .order-1 {
   order: 1;
 }

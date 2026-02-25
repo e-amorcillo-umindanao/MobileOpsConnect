@@ -30,7 +30,7 @@ namespace MobileOpsConnect.Controllers
         /// Called automatically from the client-side JavaScript.
         /// </summary>
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> RegisterToken([FromBody] RegisterTokenRequest request)
         {
             if (string.IsNullOrWhiteSpace(request?.Token))

@@ -39,9 +39,9 @@
     // Register the service worker, then request permission & get token
     async function initFcm() {
         try {
-            // 1. Register the service worker
-            const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-            console.log('[FCM] Service worker registered:', registration.scope);
+            // 1. Wait for the unified service worker (registered in _Layout)
+            const registration = await navigator.serviceWorker.ready;
+            console.log('[FCM] Service worker ready:', registration.scope);
 
             // 2. Request notification permission
             const permission = await Notification.requestPermission();
@@ -64,15 +64,9 @@
             console.log('[FCM] Token obtained:', token.substring(0, 20) + '...');
 
             // 4. Send the token to the server
-            const antiForgeryToken = getAntiForgeryToken();
-            const headers = { 'Content-Type': 'application/json' };
-            if (antiForgeryToken) {
-                headers['RequestVerificationToken'] = antiForgeryToken;
-            }
-
             const response = await fetch('/Notification/RegisterToken', {
                 method: 'POST',
-                headers: headers,
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ token: token }),
             });
 
