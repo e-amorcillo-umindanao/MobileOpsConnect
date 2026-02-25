@@ -9,7 +9,7 @@ using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Controllers
 {
-    [Authorize(Roles = "DepartmentManager")]
+    [Authorize(Roles = "DepartmentManager,WarehouseStaff")]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -34,12 +34,12 @@ namespace MobileOpsConnect.Controllers
                 .OrderByDescending(po => po.DateRequested)
                 .ToListAsync();
 
-            ViewBag.CanApprove = true;
+            ViewBag.CanApprove = User.IsInRole("DepartmentManager");
             return View(orders);
         }
 
         // GET: Orders/Create
-        [Authorize(Roles = "DepartmentManager")]
+        [Authorize(Roles = "DepartmentManager,WarehouseStaff")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Products = new SelectList(await _context.Products.OrderBy(p => p.Name).ToListAsync(), "ProductID", "Name");
@@ -49,7 +49,7 @@ namespace MobileOpsConnect.Controllers
         // POST: Orders/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "DepartmentManager")]
+        [Authorize(Roles = "DepartmentManager,WarehouseStaff")]
         public async Task<IActionResult> Create(int ProductId, int Quantity, string? Notes)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -82,7 +82,8 @@ namespace MobileOpsConnect.Controllers
                 $"{currentUser.Email} submitted PO for {Quantity}x {product.Name} (₱{order.EstimatedCost:N0}).");
 
             // Audit log
-            await _auditService.LogAsync(currentUser.Id, currentUser.Email!, "DepartmentManager", "CREATE", $"Submitted purchase order #{order.Id} for {Quantity}x {product.Name}.", HttpContext.Connection.RemoteIpAddress?.ToString());
+            var roles = await _userManager.GetRolesAsync(currentUser);
+            await _auditService.LogAsync(currentUser.Id, currentUser.Email!, roles.FirstOrDefault() ?? "", "CREATE", $"Submitted purchase order #{order.Id} for {Quantity}x {product.Name}.", HttpContext.Connection.RemoteIpAddress?.ToString());
 
             TempData["Message"] = $"Purchase Order #{order.Id} submitted successfully!";
             return RedirectToAction(nameof(Index));

@@ -237,7 +237,20 @@
         <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
     </div>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+        <!-- Purchase Order Card -->
+        <div class="flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
+            <div class="p-4 md:p-5 flex flex-col text-center h-full">
+                <div class="inline-flex justify-center items-center size-[62px] rounded-full mx-auto mb-4 bg-amber-100 text-amber-800 dark:bg-amber-800/30 dark:text-amber-400">
+                    <i class="bi bi-cart-plus-fill text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-1">Purchase Order</h3>
+                <p class="text-sm text-gray-500 dark:text-neutral-500 grow mb-4">Submit restock requests for manager approval</p>
+                <a asp-controller="Orders" asp-action="Create" class="mt-auto py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none w-full">
+                    <i class="bi bi-plus-circle"></i> New Order
+                </a>
+            </div>
+        </div>
         <!-- Card -->
         <div class="flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
             <div class="p-4 md:p-5 flex flex-col text-center h-full">
