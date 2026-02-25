@@ -84,6 +84,32 @@ namespace MobileOpsConnect.Controllers
 
             return Ok(new { success = true, message = $"Notification sent to {sent} device(s)." });
         }
+
+        /// <summary>
+        /// Diagnostic: sends a test notification to the currently logged-in user.
+        /// Hit /Notification/TestSelf in the browser to test.
+        /// </summary>
+        [HttpGet]
+        public async Task<IActionResult> TestSelf()
+        {
+            var userId = _userManager.GetUserId(User);
+            if (userId == null) return Unauthorized("Not logged in");
+
+            var tokenCount = await _context.UserFcmTokens.CountAsync(t => t.UserId == userId);
+            if (tokenCount == 0) return Ok(new { success = false, message = "No FCM tokens registered for you. Hard-reload the page (Ctrl+Shift+R) and try again.", tokenCount });
+
+            try
+            {
+                var sent = await _notificationService.SendToUserAsync(userId,
+                    "🔔 Test Notification",
+                    "If you see this toast, FCM is working!");
+                return Ok(new { success = true, message = $"Sent to {sent}/{tokenCount} device(s).", tokenCount, sent });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { success = false, message = $"Firebase error: {ex.Message}", tokenCount });
+            }
+        }
     }
 
     // -- Request DTOs --
