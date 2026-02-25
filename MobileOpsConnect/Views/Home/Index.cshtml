@@ -226,6 +226,8 @@
 </div>
 
 <div class="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
+    @if (!isSystemAdmin)
+    {
     <!-- Card -->
     <div class="flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
       <div class="p-4 md:p-5">
@@ -245,6 +247,7 @@
       </div>
     </div>
     <!-- End Card -->
+    }
 
     <!-- Card -->
     <div class="flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
@@ -341,12 +344,19 @@
     </div>
 }
 
-<!-- Super Admin Zone -->
-@if (isSuperAdmin)
+<!-- Admin Zone -->
+@if (isSuperAdmin || isSystemAdmin)
 {
     <div class="flex items-center gap-x-3 mb-4 mt-8">
         <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
+            @if (isSuperAdmin)
+        {
             <i class="bi bi-shield-exclamation text-red-600"></i> Super Admin Zone
+        }
+        else
+        {
+            <i class="bi bi-journal-text text-indigo-600"></i> Admin Tools
+        }
         </h2>
         <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
     </div>
