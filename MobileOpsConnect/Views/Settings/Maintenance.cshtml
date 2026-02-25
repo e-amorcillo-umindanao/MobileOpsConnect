@@ -1,0 +1,163 @@
+@{
+    ViewData["Title"] = "System Maintenance & Backup";
+}
+
+<!-- Hero Banner -->
+<div class="bg-gray-800 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-neutral-800">
+    <div class="relative z-10">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500/10 text-red-500 shadow-sm border border-red-500/20">
+                <i class="bi bi-shield-lock-fill"></i> Super Admin Only
+            </span>
+            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/10 text-gray-300">
+                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> System Healthy
+            </span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">System Maintenance</h1>
+        <p class="text-gray-400 text-lg">Perform database backups and critical system cleanup operations</p>
+    </div>
+    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-10 pointer-events-none">
+        <i class="bi bi-hdd-network-fill text-9xl text-white"></i>
+    </div>
+</div>
+
+<!-- Alerts -->
+@if (TempData["MaintenanceSuccess"] != null)
+{
+    <div class="bg-green-50 border border-green-200 text-sm text-green-800 rounded-lg p-4 mb-6" role="alert">
+        <div class="flex items-center">
+            <span class="inline-flex justify-center items-center size-[32px] rounded-lg bg-green-100 text-green-800 me-3"><i class="bi bi-check-circle-fill"></i></span>
+            <span class="font-medium">Success!</span> <span class="ms-1">@TempData["MaintenanceSuccess"]</span>
+        </div>
+    </div>
+}
+
+@if (TempData["MaintenanceInfo"] != null)
+{
+    <div class="bg-blue-50 border border-blue-200 text-sm text-blue-800 rounded-lg p-4 mb-6" role="alert">
+        <div class="flex items-center">
+            <span class="inline-flex justify-center items-center size-[32px] rounded-lg bg-blue-100 text-blue-800 me-3"><i class="bi bi-info-circle-fill"></i></span>
+            <span class="ms-1">@TempData["MaintenanceInfo"]</span>
+        </div>
+    </div>
+}
+
+<!-- Maintenance Grid -->
+<div class="grid lg:grid-cols-2 gap-6 mb-8">
+    
+    <!-- Database Backup Card -->
+    <div class="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700">
+        <div class="p-4 md:p-5 flex-grow">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="size-12 flex justify-center items-center bg-blue-100 text-blue-600 rounded-lg dark:bg-blue-800/30 dark:text-blue-500">
+                        <i class="bi bi-cloud-arrow-down-fill text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-white">Database JSON Backup</h3>
+                        <p class="text-sm text-gray-500 dark:text-neutral-400">Export structural Entity Framework records</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-sm text-gray-600 dark:text-neutral-400 mb-6">
+                Because this system utilizes a remote Azure SQL instance, standard <code>.bak</code> files cannot be written to the local disk. <br/><br/>
+                This tool safely extracts Users, Roles, Inventory, Settings, and Logs directly from the DbContext and compiles them into a serialized <strong>JSON data dump</strong> for offline security.
+            </p>
+
+            <ul class="text-sm text-gray-600 dark:text-neutral-400 space-y-2 mb-6">
+                <li class="flex gap-x-2"><i class="bi bi-check text-green-500 mt-0.5"></i> Includes relational foreign keys securely encoded</li>
+                <li class="flex gap-x-2"><i class="bi bi-check text-green-500 mt-0.5"></i> Caps System Audit Logs to 1,000 entries (prevent file bloat)</li>
+                <li class="flex gap-x-2"><i class="bi bi-check text-green-500 mt-0.5"></i> Skips recursive cycles during serialization</li>
+            </ul>
+        </div>
+        <div class="bg-gray-50 border-t border-gray-200 rounded-b-xl py-4 px-4 md:px-5 dark:bg-neutral-800 dark:border-neutral-700">
+            <form asp-action="ExportDatabase" method="post" class="m-0">
+                <button type="submit" class="w-full py-2.5 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none transition-colors">
+                    <i class="bi bi-download"></i> Generate JSON Backup
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- System Cleanup Card -->
+    <div class="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-700">
+        <div class="p-4 md:p-5 flex-grow">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="size-12 flex justify-center items-center bg-red-100 text-red-600 rounded-lg dark:bg-red-800/30 dark:text-red-500">
+                        <i class="bi bi-trash3-fill text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800 dark:text-white">Audit Log Vacuum</h3>
+                        <p class="text-sm text-gray-500 dark:text-neutral-400">Database cleanup &amp; optimization</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-sm text-gray-600 dark:text-neutral-400 mb-6">
+                System action events (Logins, Edits, Deletions) can bloat the remote cloud database over time. To maintain rapid query performance, you should periodically purge expired audit records.
+            </p>
+
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6 dark:bg-amber-900/30 dark:border-amber-800">
+                <div class="flex shrink-0">
+                    <span class="inline-flex justify-center items-center size-[32px] rounded-full bg-amber-100 text-amber-800 dark:bg-amber-800 dark:text-amber-200">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    </span>
+                    <div class="ms-3">
+                        <h3 class="text-sm text-amber-800 font-semibold dark:text-amber-200">Warning: Permanent Deletion</h3>
+                        <p class="text-sm text-amber-700 mt-1 dark:text-amber-300">This action permanently deletes all <code>AuditLogs</code> entries older than <b>90 days</b>. Please download a JSON Backup copy first.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-gray-50 border-t border-gray-200 rounded-b-xl py-4 px-4 md:px-5 dark:bg-neutral-800 dark:border-neutral-700">
+            <button type="button" data-hs-overlay="#hs-purge-logs-modal" class="w-full py-2.5 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:pointer-events-none transition-colors">
+                <i class="bi bi-stars"></i> Purge Expired Logs
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Purge Logs Modal -->
+<div id="hs-purge-logs-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none" role="dialog" tabindex="-1" aria-labelledby="hs-purge-logs-modal-label">
+  <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto min-h-[calc(100%-3.5rem)] flex items-center">
+    <div class="w-full flex flex-col bg-white border shadow-sm rounded-xl pointer-events-auto dark:bg-neutral-800 dark:border-neutral-700 dark:shadow-neutral-700/70">
+      <div class="flex justify-between items-center py-3 px-4 border-b dark:border-neutral-700">
+        <h3 id="hs-purge-logs-modal-label" class="font-bold text-gray-800 dark:text-white">
+          <i class="bi bi-exclamation-triangle-fill text-red-500 me-2"></i> Confirm Database Vacuum
+        </h3>
+        <button type="button" class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600" aria-label="Close" data-hs-overlay="#hs-purge-logs-modal">
+          <span class="sr-only">Close</span>
+          <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-4 overflow-y-auto">
+        <p class="text-gray-800 dark:text-neutral-400">
+          Are you sure you want to permanently delete all legacy audit logs older than 90 days?
+        </p>
+        <p class="mt-2 text-sm text-red-600 dark:text-red-500 font-medium">
+          This action cannot be undone. Please ensure you have generated a JSON backup first.
+        </p>
+      </div>
+      <div class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-neutral-700">
+        <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" data-hs-overlay="#hs-purge-logs-modal">
+          Cancel
+        </button>
+        <form asp-action="PurgeAuditLogs" method="post" class="m-0">
+            <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
+                Yes, Purge Logs
+            </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Navigation -->
+<div class="mt-8">
+    <a asp-action="Index" class="inline-flex items-center gap-x-2 text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400">
+        <i class="bi bi-arrow-left"></i> Back to System Configuration
+    </a>
+</div>

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -104,5 +107,89 @@ namespace MobileOpsConnect.Controllers
 
             return View(logs);
         }
+
+        // --- NEW: System Maintenance & Database Backups ---
+
+        // GET: Settings/Maintenance
+        [Authorize(Roles = "SuperAdmin")]
+        public IActionResult Maintenance()
+        {
+            return View();
+        }
+
+        // POST: Settings/ExportDatabase
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> ExportDatabaseAsync()
+        {
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                ReferenceHandler = ReferenceHandler.IgnoreCycles
+            };
+
+            var exportData = new
+            {
+                Timestamp = DateTime.UtcNow,
+                ExportedBy = User.Identity?.Name,
+                Users = await _userManager.Users.ToListAsync(),
+                Roles = await _context.Roles.ToListAsync(),
+                UserRoles = await _context.UserRoles.ToListAsync(),
+                Products = await _context.Products.ToListAsync(),
+                LeaveRequests = await _context.LeaveRequests.ToListAsync(),
+                SystemSettings = await _context.SystemSettings.ToListAsync(),
+                AccountingEntries = await _context.AccountingEntries.ToListAsync(),
+                PurchaseOrders = await _context.PurchaseOrders.ToListAsync(),
+                AuditLogs = await _context.AuditLogs.OrderByDescending(x => x.Timestamp).Take(1000).ToListAsync() // Limit to 1000 to prevent massive files
+            };
+
+            string json = JsonSerializer.Serialize(exportData, options);
+            byte[] fileBytes = Encoding.UTF8.GetBytes(json);
+            string fileName = $"MobileOps_Backup_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json";
+
+            // Log the backup action
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser != null)
+            {
+                await _auditService.LogAsync(currentUser.Id, currentUser.Email!, "SuperAdmin", "BACKUP", $"Generated full system JSON database backup ({fileBytes.Length / 1024} KB).", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
+            }
+
+            return File(fileBytes, "application/json", fileName);
+        }
+
+        // POST: Settings/PurgeAuditLogs
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> PurgeAuditLogsAsync()
+        {
+            var thresholdDate = DateTime.UtcNow.AddDays(-90); // Purge older than 90 days
+            
+            var oldLogs = await _context.AuditLogs.Where(l => l.Timestamp < thresholdDate).ToListAsync();
+            int count = oldLogs.Count;
+
+            if (count > 0)
+            {
+                _context.AuditLogs.RemoveRange(oldLogs);
+                await _context.SaveChangesAsync();
+                
+                // Log the purge action
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser != null)
+                {
+                    await _auditService.LogAsync(currentUser.Id, currentUser.Email!, "SuperAdmin", "MAINTENANCE", $"Purged {count} legacy audit logs older than 90 days.", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
+                }
+                
+                TempData["MaintenanceSuccess"] = $"Successfully purged {count} legacy audit logs.";
+            }
+            else
+            {
+                TempData["MaintenanceInfo"] = "No legacy audit logs found older than 90 days. System is clean.";
+            }
+
+            return RedirectToAction(nameof(Maintenance));
+        }
+
     }
 }
