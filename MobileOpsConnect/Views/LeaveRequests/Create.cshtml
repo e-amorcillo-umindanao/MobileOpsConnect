@@ -136,7 +136,7 @@
     </div>
 
     <!-- Right Column: Sticky Application Form (Span 4) -->
-    <div class="lg:col-span-4 order-1 lg:order-none sticky top-6 min-w-0">
+    <div class="lg:col-span-4 order-1 lg:order-none lg:sticky lg:top-6 min-w-0">
         <div class="flex items-center gap-x-3 mb-4">
             <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2">Application Form</h2>
             <div class="grow border-t border-gray-200"></div>
@@ -149,7 +149,7 @@
                     <!-- Leave Type -->
                     <div>
                         <label asp-for="LeaveType" class="block text-sm font-medium mb-2 dark:text-white">Type of Leave</label>
-                        <select asp-for="LeaveType" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-base sm:text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
+                        <select asp-for="LeaveType" class="py-3 px-4 block w-full bg-white border appearance-none text-left border-gray-200 rounded-lg text-base sm:text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
                             <option>Sick Leave</option>
                             <option>Vacation Leave</option>
                             <option>Emergency Leave</option>
@@ -160,18 +160,18 @@
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
                             <label asp-for="StartDate" class="block text-sm font-medium mb-2 dark:text-white">Start Date</label>
-                            <input asp-for="StartDate" type="date" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-base sm:text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" />
+                            <input asp-for="StartDate" type="date" class="py-3 px-4 block w-full bg-white border appearance-none text-left border-gray-200 rounded-lg text-base sm:text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" />
                         </div>
                         <div>
                             <label asp-for="EndDate" class="block text-sm font-medium mb-2 dark:text-white">End Date</label>
-                            <input asp-for="EndDate" type="date" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-base sm:text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" />
+                            <input asp-for="EndDate" type="date" class="py-3 px-4 block w-full bg-white border appearance-none text-left border-gray-200 rounded-lg text-base sm:text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" />
                         </div>
                     </div>
 
                     <!-- Reason -->
                     <div>
                         <label asp-for="Reason" class="block text-sm font-medium mb-2 dark:text-white">Reason for Leave</label>
-                        <textarea asp-for="Reason" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-base sm:text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" rows="4" placeholder="Why do you need this leave?" style="resize:vertical;min-height:120px;"></textarea>
+                        <textarea asp-for="Reason" class="py-3 px-4 block w-full bg-white border appearance-none text-left border-gray-200 rounded-lg text-base sm:text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" rows="4" placeholder="Why do you need this leave?" style="resize:vertical;min-height:120px;"></textarea>
                         <p class="text-xs text-gray-500 mt-1.5">Be clear and concise — this helps your manager process faster.</p>
                     </div>
 
