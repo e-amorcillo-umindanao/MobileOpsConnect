@@ -134,12 +134,12 @@
             setTimeout(() => location.reload(), 2000);
         });
 
-        connection.on("LeaveStatusChanged", (leaveId, status, userId) => {
+        connection.on("LeaveStatusChanged", (leaveId, status, userId, employeeName) => {
             const icon = status === "Approved" ? "✅" : status === "Rejected" ? "❌" : "📋";
             const label = status === "Pending" ? "New Leave Request" : `Leave ${status}`;
             const desc = status === "Pending"
-                ? `A new leave request (#${leaveId}) has been submitted.`
-                : `Leave request #${leaveId} has been ${status.toLowerCase()}.`;
+                ? `A new leave request from ${employeeName || 'an employee'} has been submitted.`
+                : `Your leave request has been ${status.toLowerCase()}.`;
             showSignalRToast(icon, label, desc);
             setTimeout(() => location.reload(), 2000);
         });

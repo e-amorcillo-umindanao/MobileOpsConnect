@@ -182,7 +182,8 @@ namespace MobileOpsConnect.Controllers
                         $"{user.Email} submitted a {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
 
                     // SignalR toast to the target role group only
-                    await _hubContext.Clients.Group($"role_{targetRole}").SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Pending", leaveRequest.UserID);
+                    var displayName = user.Email?.Split('@')[0] ?? "Someone";
+                    await _hubContext.Clients.Group($"role_{targetRole}").SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Pending", leaveRequest.UserID, displayName);
                 }
 
                 // Audit log
@@ -230,7 +231,7 @@ namespace MobileOpsConnect.Controllers
             }
 
             // Broadcast real-time update to the requester only
-            await _hubContext.Clients.User(leaveRequest.UserID).SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Approved", leaveRequest.UserID);
+            await _hubContext.Clients.User(leaveRequest.UserID).SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Approved", leaveRequest.UserID, "");
 
             // Audit log
             var approverRoles = await _userManager.GetRolesAsync(approver);
@@ -274,7 +275,7 @@ namespace MobileOpsConnect.Controllers
             }
 
             // Broadcast real-time update to the requester only
-            await _hubContext.Clients.User(leaveRequest.UserID).SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Rejected", leaveRequest.UserID);
+            await _hubContext.Clients.User(leaveRequest.UserID).SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Rejected", leaveRequest.UserID, "");
 
             // Audit log
             var rejectorRoles = await _userManager.GetRolesAsync(rejector);
