@@ -27,30 +27,49 @@
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
+    // ── Visible debug log (for mobile debugging without dev tools) ──
+    function debugLog(msg) {
+        console.log('[FCM] ' + msg);
+        let el = document.getElementById('fcm-debug');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'fcm-debug';
+            el.style.cssText = 'position:fixed;bottom:0;left:0;right:0;max-height:40vh;overflow-y:auto;background:rgba(0,0,0,0.85);color:#0f0;font:11px/1.4 monospace;padding:8px;z-index:99999;pointer-events:auto;';
+            document.body.appendChild(el);
+        }
+        el.innerHTML += msg + '<br>';
+        el.scrollTop = el.scrollHeight;
+    }
+
     // ── Core: request permission + register token ──
     async function requestAndRegister() {
         try {
+            debugLog('⏳ Waiting for service worker...');
             const registration = await navigator.serviceWorker.ready;
-            console.log('[FCM] Service worker ready:', registration.scope);
+            debugLog('✅ SW ready: ' + registration.scope);
 
+            debugLog('⏳ Requesting notification permission...');
             const permission = await Notification.requestPermission();
+            debugLog('Permission result: ' + permission);
             if (permission !== 'granted') {
-                console.warn('[FCM] Notification permission denied.');
+                debugLog('❌ Permission denied or dismissed');
                 return false;
             }
-            console.log('[FCM] Notification permission granted.');
+            debugLog('✅ Permission granted');
 
+            debugLog('⏳ Getting FCM token...');
             const token = await messaging.getToken({
                 vapidKey: VAPID_KEY,
                 serviceWorkerRegistration: registration,
             });
 
             if (!token) {
-                console.warn('[FCM] Failed to get FCM token.');
+                debugLog('❌ No token returned');
                 return false;
             }
-            console.log('[FCM] Token obtained:', token.substring(0, 20) + '...');
+            debugLog('✅ Token: ' + token.substring(0, 30) + '...');
 
+            debugLog('⏳ Registering token with server...');
             const response = await fetch('/Notification/RegisterToken', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -59,14 +78,14 @@
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('[FCM] Token registered with server:', data.message);
+                debugLog('✅ Server: ' + data.message);
             } else {
-                console.warn('[FCM] Failed to register token:', response.status);
+                debugLog('❌ Server error: HTTP ' + response.status);
             }
 
             return true;
         } catch (error) {
-            console.error('[FCM] Error during initialization:', error);
+            debugLog('❌ ERROR: ' + error.message);
             return false;
         }
     }
