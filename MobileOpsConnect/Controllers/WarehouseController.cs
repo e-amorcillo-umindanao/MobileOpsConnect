@@ -90,13 +90,12 @@ namespace MobileOpsConnect.Controllers
             await _hubContext.Clients.All.SendAsync("StockUpdated", product.ProductID, product.Name, product.StockQuantity, "Stock In");
 
             // Push notification to DeptManager
-            var stockInUser = await _userManager.GetUserAsync(User);
+            var currentUser = await _userManager.GetUserAsync(User);
             await _notificationService.SendToRoleAsync("DepartmentManager",
                 "📥 Stock In",
-                $"{stockInUser?.Email} added {quantity} units of {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.");
+                $"{currentUser?.Email} added {quantity} units of {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.");
 
             // Audit log
-            var currentUser = await _userManager.GetUserAsync(User);
             var userId = currentUser?.Id ?? "";
             var userEmail = currentUser?.Email ?? "";
             var userRoles = currentUser != null ? await _userManager.GetRolesAsync(currentUser) : new List<string>();
@@ -136,13 +135,12 @@ namespace MobileOpsConnect.Controllers
             await _hubContext.Clients.All.SendAsync("StockUpdated", product.ProductID, product.Name, product.StockQuantity, "Stock Out");
 
             // Push notification to DeptManager
-            var stockOutUser = await _userManager.GetUserAsync(User);
+            var currentUser = await _userManager.GetUserAsync(User);
             await _notificationService.SendToRoleAsync("DepartmentManager",
                 "📤 Stock Out",
-                $"{stockOutUser?.Email} removed {quantity} units of {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.");
+                $"{currentUser?.Email} removed {quantity} units of {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.");
 
             // Audit log
-            var currentUser = await _userManager.GetUserAsync(User);
             var userId = currentUser?.Id ?? "";
             var userEmail = currentUser?.Email ?? "";
             var userRoles = currentUser != null ? await _userManager.GetRolesAsync(currentUser) : new List<string>();

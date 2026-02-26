@@ -205,6 +205,13 @@ namespace MobileOpsConnect.Controllers
             var leaveRequest = await _context.LeaveRequests.FindAsync(id);
             if (leaveRequest == null) return NotFound();
 
+            // GUARD: Prevent double-approval
+            if (leaveRequest.Status != "Pending")
+            {
+                TempData["Error"] = $"Leave request #{id} has already been {leaveRequest.Status.ToLower()}.";
+                return RedirectToAction(nameof(Index));
+            }
+
             var approver = await _userManager.GetUserAsync(User);
             if (approver == null) return Challenge();
 
@@ -248,6 +255,13 @@ namespace MobileOpsConnect.Controllers
         {
             var leaveRequest = await _context.LeaveRequests.FindAsync(id);
             if (leaveRequest == null) return NotFound();
+
+            // GUARD: Prevent double-rejection
+            if (leaveRequest.Status != "Pending")
+            {
+                TempData["Error"] = $"Leave request #{id} has already been {leaveRequest.Status.ToLower()}.";
+                return RedirectToAction(nameof(Index));
+            }
 
             var rejector = await _userManager.GetUserAsync(User);
             if (rejector == null) return Challenge();
@@ -394,7 +408,11 @@ namespace MobileOpsConnect.Controllers
                 return Forbid();
             }
 
-            // Audit log + notify up hierarchy
+            // Delete FIRST, then notify (prevents race condition where notification fires but delete fails)
+            _context.LeaveRequests.Remove(leaveRequest);
+            await _context.SaveChangesAsync();
+
+            // Audit log + notify up hierarchy (only after successful delete)
             if (user != null)
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -413,8 +431,6 @@ namespace MobileOpsConnect.Controllers
                     $"{user.Email} cancelled their {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
             }
 
-            _context.LeaveRequests.Remove(leaveRequest);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

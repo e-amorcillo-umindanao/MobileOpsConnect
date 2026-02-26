@@ -193,6 +193,16 @@ namespace MobileOpsConnect.Controllers
             }
 
             await _context.SaveChangesAsync();
+
+            // Clean up stale FCM tokens for this user (we no longer use FCM)
+            var staleFcmTokens = await _context.UserFcmTokens
+                .Where(t => t.UserId == userId).ToListAsync();
+            if (staleFcmTokens.Count > 0)
+            {
+                _context.UserFcmTokens.RemoveRange(staleFcmTokens);
+                await _context.SaveChangesAsync();
+            }
+
             return Ok(new { success = true, message = "Push subscription registered" });
         }
     }

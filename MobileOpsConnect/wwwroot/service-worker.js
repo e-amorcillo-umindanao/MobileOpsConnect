@@ -1,50 +1,9 @@
-// ─── Firebase Cloud Messaging ───
-let _firebaseInitialized = false;
-let _pushHandledByFirebase = false;
+// ─── Standard Web Push Handler ───
+// Handles push notifications from the server via the standard Web Push protocol.
+// Works on ALL browsers: Chrome, Firefox, Safari iOS.
 
-try {
-    importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
-    importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
-
-    firebase.initializeApp({
-        apiKey: "AIzaSyAL81jGL4I-RRdhk8K-niHwUMOYTQ91kkQ",
-        authDomain: "mobileops-connect.firebaseapp.com",
-        projectId: "mobileops-connect",
-        storageBucket: "mobileops-connect.firebasestorage.app",
-        messagingSenderId: "800744847836",
-        appId: "1:800744847836:web:bd9a01a4cc81740ef97719"
-    });
-
-    const messaging = firebase.messaging();
-    _firebaseInitialized = true;
-
-    // Firebase background handler (works on Chrome/Android)
-    messaging.onBackgroundMessage(function (payload) {
-        console.log('[SW] Firebase background message:', payload);
-        _pushHandledByFirebase = true;
-
-        const title = payload.notification?.title || 'MobileOps Connect';
-        self.registration.showNotification(title, {
-            body: payload.notification?.body || '',
-            icon: '/icons/icon-192.png',
-            badge: '/icons/icon-192.png',
-            data: payload.data,
-            tag: 'moc-' + Date.now(),
-        });
-    });
-} catch (e) {
-    console.warn('[SW] Firebase SDK not available, using standard push only:', e.message);
-}
-
-// ─── Standard Web Push fallback (required for iOS Safari) ───
 self.addEventListener('push', function (event) {
-    // If Firebase already handled this push, skip
-    if (_pushHandledByFirebase) {
-        _pushHandledByFirebase = false;
-        return;
-    }
-
-    console.log('[SW] Standard push event received');
+    console.log('[SW] Push event received');
 
     let title = 'MobileOps Connect';
     let options = {
@@ -57,7 +16,6 @@ self.addEventListener('push', function (event) {
     try {
         const payload = event.data?.json();
         if (payload) {
-            // FCM sends { notification: { title, body }, data: { ... } }
             title = payload.notification?.title || payload.data?.title || title;
             options.body = payload.notification?.body || payload.data?.body || '';
             options.data = payload.data || {};
@@ -90,7 +48,7 @@ self.addEventListener('notificationclick', function (event) {
 });
 
 // ─── PWA Offline Support ───
-const CACHE_NAME = 'mobileops-v3';
+const CACHE_NAME = 'mobileops-v4';
 const OFFLINE_URL = '/offline.html';
 
 const PRECACHE_ASSETS = [
@@ -132,11 +90,9 @@ self.addEventListener('fetch', (event) => {
     // Skip non-GET requests
     if (request.method !== 'GET') return;
 
-    // Skip SignalR, Firebase, and external requests
+    // Skip SignalR and external requests
     if (request.url.includes('/hubs/') ||
-        request.url.includes('firebaseio.com') ||
-        request.url.includes('googleapis.com') ||
-        request.url.includes('fcm/send')) {
+        request.url.includes('googleapis.com')) {
         return;
     }
 

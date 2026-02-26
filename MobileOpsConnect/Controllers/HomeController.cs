@@ -35,7 +35,7 @@ namespace MobileOpsConnect.Controllers
             var pendingLeaves = await _context.LeaveRequests.CountAsync(l => l.Status == "Pending");
 
             // On leave today: approved leaves where today falls within start–end range
-            var today = DateTime.Today;
+            var today = DateTime.UtcNow.Date;
             var onLeaveToday = await _context.LeaveRequests
                 .CountAsync(l => l.Status == "Approved" && l.StartDate <= today && l.EndDate >= today);
 
@@ -116,7 +116,7 @@ namespace MobileOpsConnect.Controllers
 
                 if (oldestPending != default)
                 {
-                    var daysAgo = (DateTime.Now - oldestPending).Days;
+                    var daysAgo = (DateTime.UtcNow - oldestPending).Days;
                     ViewBag.OldestPendingDays = daysAgo == 0 ? "Today" : $"{daysAgo} day{(daysAgo == 1 ? "" : "s")} ago";
                 }
                 else
@@ -171,12 +171,12 @@ namespace MobileOpsConnect.Controllers
                 ViewBag.UserApproved = userApproved;
 
                 // Next pay date = end of current month
-                var nextPayDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 
-                    DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+                var nextPayDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 
+                    DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month));
                 ViewBag.NextPayDate = nextPayDate.ToString("MMM dd");
 
                 // Latest payslip period
-                ViewBag.LatestPayPeriod = $"{DateTime.Now:MMM} 1 – {DateTime.Now:MMM} 15, {DateTime.Now.Year}";
+                ViewBag.LatestPayPeriod = $"{DateTime.UtcNow:MMM} 1 – {DateTime.UtcNow:MMM} 15, {DateTime.UtcNow.Year}";
 
                 return View("EmployeeDashboard");
             }
@@ -198,7 +198,7 @@ namespace MobileOpsConnect.Controllers
             ViewBag.LowStockCount = lowStockCount;
 
             // Leave utilization
-            var today = DateTime.Today;
+            var today = DateTime.UtcNow.Date;
             var allUsers = await _userManager.Users.CountAsync();
             var onLeaveToday = await _context.LeaveRequests
                 .CountAsync(l => l.Status == "Approved" && l.StartDate <= today && l.EndDate >= today);

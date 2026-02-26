@@ -133,7 +133,7 @@ namespace MobileOpsConnect.Controllers
             {
                 Timestamp = DateTime.UtcNow,
                 ExportedBy = User.Identity?.Name,
-                Users = await _userManager.Users.ToListAsync(),
+                Users = await _userManager.Users.Select(u => new { u.Id, u.Email, u.UserName, u.EmailConfirmed }).ToListAsync(),
                 Roles = await _context.Roles.ToListAsync(),
                 UserRoles = await _context.UserRoles.ToListAsync(),
                 Products = await _context.Products.ToListAsync(),
