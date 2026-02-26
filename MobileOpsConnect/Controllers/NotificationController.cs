@@ -14,15 +14,29 @@ namespace MobileOpsConnect.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly INotificationService _notificationService;
+        private readonly IConfiguration _configuration;
 
         public NotificationController(
             ApplicationDbContext context,
             UserManager<IdentityUser> userManager,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
             _notificationService = notificationService;
+            _configuration = configuration;
+        }
+
+        /// <summary>
+        /// Returns the VAPID public key for standard Web Push subscriptions (iOS Safari).
+        /// </summary>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult GetVapidKey()
+        {
+            var key = _configuration["Vapid:PublicKey"] ?? "";
+            return Ok(new { publicKey = key });
         }
 
         /// <summary>
@@ -142,6 +156,45 @@ namespace MobileOpsConnect.Controllers
                 return Ok(new { success = false, message = $"Firebase SDK error: {ex.GetType().Name}: {ex.Message}", tokenCount = tokens.Count });
             }
         }
+        /// <summary>
+        /// Stores the raw Web Push subscription for standard push delivery (iOS Safari).
+        /// </summary>
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> RegisterSubscription([FromBody] RegisterSubscriptionRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request?.Endpoint))
+                return BadRequest(new { success = false, message = "Endpoint is required" });
+
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+                return Unauthorized(new { success = false, message = "Not authenticated" });
+
+            // Check if this subscription already exists
+            var existing = await _context.UserPushSubscriptions
+                .FirstOrDefaultAsync(s => s.UserId == userId && s.Endpoint == request.Endpoint);
+
+            if (existing != null)
+            {
+                existing.P256dh = request.P256dh;
+                existing.Auth = request.Auth;
+                existing.CreatedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                _context.UserPushSubscriptions.Add(new UserPushSubscription
+                {
+                    UserId = userId,
+                    Endpoint = request.Endpoint,
+                    P256dh = request.P256dh,
+                    Auth = request.Auth,
+                    CreatedAt = DateTime.UtcNow,
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true, message = "Push subscription registered" });
+        }
     }
 
     // -- Request DTOs --
@@ -155,5 +208,12 @@ namespace MobileOpsConnect.Controllers
     {
         public string? Title { get; set; }
         public string? Body { get; set; }
+    }
+
+    public class RegisterSubscriptionRequest
+    {
+        public string Endpoint { get; set; } = string.Empty;
+        public string P256dh { get; set; } = string.Empty;
+        public string Auth { get; set; } = string.Empty;
     }
 }

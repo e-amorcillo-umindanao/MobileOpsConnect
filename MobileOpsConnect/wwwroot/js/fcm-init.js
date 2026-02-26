@@ -1,12 +1,13 @@
 // ─────────────────────────────────────────────────────────
-// FCM Initialization — requests permission via user gesture,
-// gets token, and registers it with the MobileOpsConnect server.
+// FCM + Standard Web Push Initialization
 //
-// IMPORTANT (iOS fix): On iOS Safari, calling
-// Notification.requestPermission() without a user gesture
-// REVOKES an existing grant. So we split into two paths:
-//   - registerTokenOnly()  → for page loads (no permission re-request)
-//   - requestAndRegister() → for the Enable button (user gesture)
+// This script handles BOTH:
+// 1. FCM tokens (for Chrome/Android push via Firebase)
+// 2. Standard Web Push subscriptions (for iOS Safari PWA)
+//
+// iOS Safari requires:
+// - requestPermission() triggered by user gesture (button)
+// - Standard PushManager.subscribe() with VAPID key
 // ─────────────────────────────────────────────────────────
 (function () {
     'use strict';
@@ -27,7 +28,7 @@
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
-    // ── Visible debug log (for mobile debugging without dev tools) ──
+    // ── Visible debug log (temporary — remove after push is working) ──
     function debugLog(msg) {
         console.log('[FCM] ' + msg);
         let el = document.getElementById('fcm-debug');
@@ -41,38 +42,110 @@
         el.scrollTop = el.scrollHeight;
     }
 
-    // ── Register token ONLY — NO permission request (safe for page loads) ──
+    // Convert URL-safe base64 to Uint8Array (needed for PushManager.subscribe)
+    function urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
+
+    // ── Register FCM token (works on Chrome/Android) ──
+    async function registerFcmToken(registration) {
+        try {
+            debugLog('⏳ Getting FCM token...');
+            const token = await messaging.getToken({
+                vapidKey: VAPID_KEY,
+                serviceWorkerRegistration: registration,
+            });
+            if (!token) {
+                debugLog('⚠️ No FCM token returned');
+                return;
+            }
+            debugLog('✅ FCM Token: ' + token.substring(0, 25) + '...');
+
+            const response = await fetch('/Notification/RegisterToken', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ token: token }),
+            });
+            if (response.ok) {
+                debugLog('✅ FCM token registered');
+            } else {
+                debugLog('⚠️ FCM register failed: HTTP ' + response.status);
+            }
+        } catch (e) {
+            debugLog('⚠️ FCM token error: ' + e.message);
+        }
+    }
+
+    // ── Register standard Web Push subscription (works on iOS Safari) ──
+    async function registerWebPushSubscription(registration) {
+        try {
+            // Get the VAPID public key from the server
+            debugLog('⏳ Getting VAPID key...');
+            const vapidResponse = await fetch('/Notification/GetVapidKey');
+            if (!vapidResponse.ok) {
+                debugLog('⚠️ VAPID key fetch failed');
+                return;
+            }
+            const { publicKey } = await vapidResponse.json();
+            if (!publicKey) {
+                debugLog('⚠️ No VAPID public key configured');
+                return;
+            }
+            debugLog('✅ VAPID key: ' + publicKey.substring(0, 20) + '...');
+
+            // Subscribe using the standard Push API
+            debugLog('⏳ Creating Web Push subscription...');
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(publicKey),
+            });
+            debugLog('✅ Web Push subscribed');
+
+            // Extract the subscription details
+            const subJson = subscription.toJSON();
+            const payload = {
+                endpoint: subJson.endpoint,
+                p256dh: subJson.keys?.p256dh ?? '',
+                auth: subJson.keys?.auth ?? '',
+            };
+            debugLog('📡 Endpoint: ' + payload.endpoint.substring(0, 50) + '...');
+
+            // Send to server
+            debugLog('⏳ Registering subscription with server...');
+            const response = await fetch('/Notification/RegisterSubscription', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            if (response.ok) {
+                debugLog('✅ Web Push subscription registered!');
+            } else {
+                debugLog('❌ Subscription register failed: HTTP ' + response.status);
+            }
+        } catch (e) {
+            debugLog('❌ Web Push error: ' + e.message);
+        }
+    }
+
+    // ── Full registration (FCM + Web Push) — no permission request ──
     async function registerTokenOnly() {
         try {
             debugLog('⏳ Waiting for service worker...');
             const registration = await navigator.serviceWorker.ready;
             debugLog('✅ SW ready: ' + registration.scope);
 
-            debugLog('⏳ Getting FCM token...');
-            const token = await messaging.getToken({
-                vapidKey: VAPID_KEY,
-                serviceWorkerRegistration: registration,
-            });
-
-            if (!token) {
-                debugLog('❌ No token returned');
-                return false;
-            }
-            debugLog('✅ Token: ' + token.substring(0, 30) + '...');
-
-            debugLog('⏳ Registering token with server...');
-            const response = await fetch('/Notification/RegisterToken', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                debugLog('✅ Server: ' + data.message);
-            } else {
-                debugLog('❌ Server error: HTTP ' + response.status);
-            }
+            // Register BOTH FCM token and standard Web Push subscription
+            await Promise.all([
+                registerFcmToken(registration),
+                registerWebPushSubscription(registration),
+            ]);
 
             return true;
         } catch (error) {
@@ -81,7 +154,7 @@
         }
     }
 
-    // ── Request permission + register (ONLY from user gesture / Enable button) ──
+    // ── Request permission + register (ONLY from Enable button) ──
     async function requestAndRegister() {
         try {
             debugLog('⏳ Requesting notification permission...');
@@ -126,72 +199,16 @@
         }
     };
 
-    // ── Handle foreground messages ──
-    function listenForMessages() {
-        messaging.onMessage(function (payload) {
-            console.log('[FCM] Foreground message received:', payload);
-            showInAppToast(payload);
-        });
-    }
-
-    // ── In-app toast for foreground messages ──
-    function showInAppToast(payload) {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-
-        const title = payload.notification?.title || 'MobileOps Connect';
-        const body = payload.notification?.body || '';
-        const url = payload.data?.url || '';
-        const toastId = 'toast-' + Math.random().toString(36).substr(2, 9);
-
-        const toastHtml = `
-            <div id="${toastId}" class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700 pointer-events-auto transition-all duration-300 transform translate-x-full opacity-0" role="alert">
-                <div class="flex p-4">
-                    <div class="shrink-0">
-                        <svg class="shrink-0 size-5 text-blue-600 dark:text-blue-500 mt-0.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22c1.7 0 3-1.3 3-3h-6c0 1.7 1.3 3 3 3Z"></path>
-                            <path d="M19 17V11a7 7 0 0 0-14 0v6l-2 2h18l-2-2Z"></path>
-                        </svg>
-                    </div>
-                    <div class="ms-3 cursor-pointer" onclick="${url ? `window.location.href='${url}'` : ''}">
-                        <h3 class="text-sm font-semibold text-gray-800 dark:text-white">${title}</h3>
-                        <p class="text-sm text-gray-500 dark:text-neutral-400 mt-1">${body}</p>
-                    </div>
-                    <div class="ms-auto mt-0.5">
-                        <button type="button" class="inline-flex shrink-0 justify-center items-center size-5 rounded-lg text-gray-800 opacity-50 hover:opacity-100 focus:outline-none focus:opacity-100 dark:text-white" onclick="document.getElementById('${toastId}').remove()">
-                            <span class="sr-only">Close</span>
-                            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        const temp = document.createElement('div');
-        temp.innerHTML = toastHtml;
-        const toastElement = temp.firstElementChild;
-        container.appendChild(toastElement);
-
-        requestAnimationFrame(() => {
-            toastElement.classList.remove('translate-x-full', 'opacity-0');
-        });
-
-        setTimeout(() => {
-            if (document.getElementById(toastId)) {
-                toastElement.classList.add('translate-x-full', 'opacity-0');
-                setTimeout(() => toastElement.remove(), 300);
-            }
-        }, 6000);
-    }
+    // ── Handle foreground messages (FCM) ──
+    messaging.onMessage(function (payload) {
+        console.log('[FCM] Foreground message:', payload);
+    });
 
     // ── Startup ──
     function init() {
-        listenForMessages();
-
-        // If permission was already granted, ONLY register token
-        // DO NOT call requestPermission() again — iOS revokes it without user gesture!
+        // If permission was already granted, register tokens silently
         if (Notification.permission === 'granted') {
-            debugLog('Permission already granted, registering token...');
+            debugLog('Permission already granted, registering...');
             registerTokenOnly();
             return;
         }

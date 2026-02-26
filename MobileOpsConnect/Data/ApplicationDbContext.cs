@@ -15,6 +15,7 @@ namespace MobileOpsConnect.Data
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
         public DbSet<SystemSetting> SystemSettings { get; set; }
         public DbSet<UserFcmToken> UserFcmTokens { get; set; }
+        public DbSet<UserPushSubscription> UserPushSubscriptions { get; set; }
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<AccountingEntry> AccountingEntries { get; set; }

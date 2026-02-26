@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Data;
 using MobileOpsConnect.Hubs;
+using MobileOpsConnect.Models;
 using MobileOpsConnect.Services;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
@@ -53,6 +54,35 @@ builder.Services.AddHttpClient<HolidayService>();
 // === END EXTERNAL API SERVICES ===
 
 var app = builder.Build();
+
+// === AUTO-GENERATE VAPID KEYS (for standard Web Push / iOS) ===
+{
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate(); // ensure all migrations applied
+
+    var vapidFile = Path.Combine(AppContext.BaseDirectory, "vapid-keys.json");
+    string vapidPublic, vapidPrivate;
+
+    if (File.Exists(vapidFile))
+    {
+        var json = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(vapidFile))!;
+        vapidPublic = json["publicKey"];
+        vapidPrivate = json["privateKey"];
+        Console.WriteLine("🔑 VAPID keys loaded from vapid-keys.json");
+    }
+    else
+    {
+        var keys = WebPush.VapidHelper.GenerateVapidKeys();
+        vapidPublic = keys.PublicKey;
+        vapidPrivate = keys.PrivateKey;
+        File.WriteAllText(vapidFile, System.Text.Json.JsonSerializer.Serialize(new { publicKey = vapidPublic, privateKey = vapidPrivate }));
+        Console.WriteLine("🔑 VAPID keys generated and saved to vapid-keys.json");
+    }
+
+    app.Configuration["Vapid:PublicKey"] = vapidPublic;
+    app.Configuration["Vapid:PrivateKey"] = vapidPrivate;
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
