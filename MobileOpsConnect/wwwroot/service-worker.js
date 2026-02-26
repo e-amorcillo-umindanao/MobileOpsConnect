@@ -1,34 +1,76 @@
-// MobileOps Connect — Unified Service Worker (PWA + Firebase Cloud Messaging)
-
 // ─── Firebase Cloud Messaging ───
-importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
+let _firebaseInitialized = false;
+let _pushHandledByFirebase = false;
 
-firebase.initializeApp({
-    apiKey: "AIzaSyAL81jGL4I-RRdhk8K-niHwUMOYTQ91kkQ",
-    authDomain: "mobileops-connect.firebaseapp.com",
-    projectId: "mobileops-connect",
-    storageBucket: "mobileops-connect.firebasestorage.app",
-    messagingSenderId: "800744847836",
-    appId: "1:800744847836:web:bd9a01a4cc81740ef97719"
-});
+try {
+    importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
+    importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
 
-const messaging = firebase.messaging();
+    firebase.initializeApp({
+        apiKey: "AIzaSyAL81jGL4I-RRdhk8K-niHwUMOYTQ91kkQ",
+        authDomain: "mobileops-connect.firebaseapp.com",
+        projectId: "mobileops-connect",
+        storageBucket: "mobileops-connect.firebasestorage.app",
+        messagingSenderId: "800744847836",
+        appId: "1:800744847836:web:bd9a01a4cc81740ef97719"
+    });
 
-// Handle background push notifications (tab NOT focused)
-messaging.onBackgroundMessage(function (payload) {
-    console.log('[SW] Background message received:', payload);
+    const messaging = firebase.messaging();
+    _firebaseInitialized = true;
 
-    const notificationTitle = payload.notification?.title || 'MobileOps Connect';
-    const notificationOptions = {
-        body: payload.notification?.body || '',
-        icon: '/favicon.ico',
-        badge: '/favicon.ico',
-        data: payload.data,
-        tag: 'moc-notification',
+    // Firebase background handler (works on Chrome/Android)
+    messaging.onBackgroundMessage(function (payload) {
+        console.log('[SW] Firebase background message:', payload);
+        _pushHandledByFirebase = true;
+
+        const title = payload.notification?.title || 'MobileOps Connect';
+        self.registration.showNotification(title, {
+            body: payload.notification?.body || '',
+            icon: '/icons/icon-192.png',
+            badge: '/icons/icon-192.png',
+            data: payload.data,
+            tag: 'moc-' + Date.now(),
+        });
+    });
+} catch (e) {
+    console.warn('[SW] Firebase SDK not available, using standard push only:', e.message);
+}
+
+// ─── Standard Web Push fallback (required for iOS Safari) ───
+self.addEventListener('push', function (event) {
+    // If Firebase already handled this push, skip
+    if (_pushHandledByFirebase) {
+        _pushHandledByFirebase = false;
+        return;
+    }
+
+    console.log('[SW] Standard push event received');
+
+    let title = 'MobileOps Connect';
+    let options = {
+        body: '',
+        icon: '/icons/icon-192.png',
+        badge: '/icons/icon-192.png',
+        tag: 'moc-' + Date.now(),
     };
 
-    self.registration.showNotification(notificationTitle, notificationOptions);
+    try {
+        const payload = event.data?.json();
+        if (payload) {
+            // FCM sends { notification: { title, body }, data: { ... } }
+            title = payload.notification?.title || payload.data?.title || title;
+            options.body = payload.notification?.body || payload.data?.body || '';
+            options.data = payload.data || {};
+        }
+    } catch (e) {
+        // If not JSON, use the text directly
+        const text = event.data?.text();
+        if (text) options.body = text;
+    }
+
+    event.waitUntil(
+        self.registration.showNotification(title, options)
+    );
 });
 
 // Handle notification click — navigate to app
@@ -48,7 +90,7 @@ self.addEventListener('notificationclick', function (event) {
 });
 
 // ─── PWA Offline Support ───
-const CACHE_NAME = 'mobileops-v2';
+const CACHE_NAME = 'mobileops-v3';
 const OFFLINE_URL = '/offline.html';
 
 const PRECACHE_ASSETS = [
