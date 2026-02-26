@@ -1,36 +1,25 @@
 // ─────────────────────────────────────────────────────────
-// FCM + Standard Web Push Initialization
+// Push Notification Initialization (Standard Web Push)
 //
-// This script handles BOTH:
-// 1. FCM tokens (for Chrome/Android push via Firebase)
-// 2. Standard Web Push subscriptions (for iOS Safari PWA)
+// Uses the standard Web Push API (PushManager.subscribe)
+// which works on ALL browsers: Chrome, Firefox, Safari iOS.
 //
-// iOS Safari requires:
-// - requestPermission() triggered by user gesture (button)
-// - Standard PushManager.subscribe() with VAPID key
+// FCM is NOT used for push delivery — standard Web Push
+// with our own VAPID keys handles everything.
+//
+// In-app toasts are handled separately by SignalR.
 // ─────────────────────────────────────────────────────────
 (function () {
     'use strict';
 
-    const firebaseConfig = window.__FIREBASE_CONFIG__;
-    const VAPID_KEY = window.__FIREBASE_VAPID_KEY__;
-
-    if (!firebaseConfig || !VAPID_KEY) {
-        console.warn('[FCM] Firebase config not found.');
+    if (!('Notification' in window) || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.warn('[Push] This browser does not support push notifications.');
         return;
     }
 
-    if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-        console.warn('[FCM] This browser does not support push notifications.');
-        return;
-    }
-
-    firebase.initializeApp(firebaseConfig);
-    const messaging = firebase.messaging();
-
-    // ── Visible debug log (temporary — remove after push is working) ──
+    // ── Visible debug log (temporary — remove once push is confirmed working) ──
     function debugLog(msg) {
-        console.log('[FCM] ' + msg);
+        console.log('[Push] ' + msg);
         let el = document.getElementById('fcm-debug');
         if (!el) {
             el = document.createElement('div');
@@ -54,61 +43,44 @@
         return outputArray;
     }
 
-    // ── Register FCM token (works on Chrome/Android) ──
-    async function registerFcmToken(registration) {
+    // ── Register standard Web Push subscription ──
+    async function registerSubscription() {
         try {
-            debugLog('⏳ Getting FCM token...');
-            const token = await messaging.getToken({
-                vapidKey: VAPID_KEY,
-                serviceWorkerRegistration: registration,
-            });
-            if (!token) {
-                debugLog('⚠️ No FCM token returned');
-                return;
-            }
-            debugLog('✅ FCM Token: ' + token.substring(0, 25) + '...');
+            debugLog('⏳ Waiting for service worker...');
+            const registration = await navigator.serviceWorker.ready;
+            debugLog('✅ SW ready: ' + registration.scope);
 
-            const response = await fetch('/Notification/RegisterToken', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: token }),
-            });
-            if (response.ok) {
-                debugLog('✅ FCM token registered');
-            } else {
-                debugLog('⚠️ FCM register failed: HTTP ' + response.status);
-            }
-        } catch (e) {
-            debugLog('⚠️ FCM token error: ' + e.message);
-        }
-    }
-
-    // ── Register standard Web Push subscription (works on iOS Safari) ──
-    async function registerWebPushSubscription(registration) {
-        try {
-            // Get the VAPID public key from the server
+            // Get our VAPID public key from server
             debugLog('⏳ Getting VAPID key...');
             const vapidResponse = await fetch('/Notification/GetVapidKey');
             if (!vapidResponse.ok) {
-                debugLog('⚠️ VAPID key fetch failed');
-                return;
+                debugLog('❌ VAPID key fetch failed');
+                return false;
             }
             const { publicKey } = await vapidResponse.json();
             if (!publicKey) {
-                debugLog('⚠️ No VAPID public key configured');
-                return;
+                debugLog('❌ No VAPID key configured on server');
+                return false;
             }
             debugLog('✅ VAPID key: ' + publicKey.substring(0, 20) + '...');
 
-            // Subscribe using the standard Push API
+            // Check for existing subscription (might be from Firebase or old key)
+            const existingSub = await registration.pushManager.getSubscription();
+            if (existingSub) {
+                debugLog('⚠️ Existing subscription found, unsubscribing...');
+                await existingSub.unsubscribe();
+                debugLog('✅ Old subscription removed');
+            }
+
+            // Subscribe with our own VAPID key
             debugLog('⏳ Creating Web Push subscription...');
             const subscription = await registration.pushManager.subscribe({
                 userVisibleOnly: true,
                 applicationServerKey: urlBase64ToUint8Array(publicKey),
             });
-            debugLog('✅ Web Push subscribed');
+            debugLog('✅ Subscribed!');
 
-            // Extract the subscription details
+            // Extract subscription details
             const subJson = subscription.toJSON();
             const payload = {
                 endpoint: subJson.endpoint,
@@ -118,34 +90,18 @@
             debugLog('📡 Endpoint: ' + payload.endpoint.substring(0, 50) + '...');
 
             // Send to server
-            debugLog('⏳ Registering subscription with server...');
+            debugLog('⏳ Registering with server...');
             const response = await fetch('/Notification/RegisterSubscription', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
             if (response.ok) {
-                debugLog('✅ Web Push subscription registered!');
+                debugLog('✅ Push subscription registered!');
             } else {
-                debugLog('❌ Subscription register failed: HTTP ' + response.status);
+                debugLog('❌ Server error: HTTP ' + response.status);
+                return false;
             }
-        } catch (e) {
-            debugLog('❌ Web Push error: ' + e.message);
-        }
-    }
-
-    // ── Full registration (FCM + Web Push) — no permission request ──
-    async function registerTokenOnly() {
-        try {
-            debugLog('⏳ Waiting for service worker...');
-            const registration = await navigator.serviceWorker.ready;
-            debugLog('✅ SW ready: ' + registration.scope);
-
-            // Register BOTH FCM token and standard Web Push subscription
-            await Promise.all([
-                registerFcmToken(registration),
-                registerWebPushSubscription(registration),
-            ]);
 
             return true;
         } catch (error) {
@@ -154,25 +110,25 @@
         }
     }
 
-    // ── Request permission + register (ONLY from Enable button) ──
+    // ── Request permission + register (ONLY from Enable button with user gesture) ──
     async function requestAndRegister() {
         try {
             debugLog('⏳ Requesting notification permission...');
             const permission = await Notification.requestPermission();
             debugLog('Permission result: ' + permission);
             if (permission !== 'granted') {
-                debugLog('❌ Permission denied or dismissed');
+                debugLog('❌ Permission denied');
                 return false;
             }
             debugLog('✅ Permission granted');
-            return await registerTokenOnly();
+            return await registerSubscription();
         } catch (error) {
             debugLog('❌ ERROR: ' + error.message);
             return false;
         }
     }
 
-    // ── Public function for the "Enable Notifications" banner ──
+    // ── Public: Enable button handler ──
     window.enablePushNotifications = async function () {
         const success = await requestAndRegister();
         if (success) {
@@ -187,7 +143,7 @@
         }
     };
 
-    // ── Dismiss banner without enabling ──
+    // ── Public: Dismiss banner ──
     window.dismissPushBanner = function () {
         localStorage.setItem('moc_push_dismissed', 'true');
         const banner = document.getElementById('push-banner');
@@ -199,27 +155,22 @@
         }
     };
 
-    // ── Handle foreground messages (FCM) ──
-    messaging.onMessage(function (payload) {
-        console.log('[FCM] Foreground message:', payload);
-    });
-
     // ── Startup ──
     function init() {
-        // If permission was already granted, register tokens silently
+        // If permission already granted, silently re-register (no permission request)
         if (Notification.permission === 'granted') {
             debugLog('Permission already granted, registering...');
-            registerTokenOnly();
+            registerSubscription();
             return;
         }
 
-        // If user previously dismissed or enabled, don't show banner again
+        // Don't show banner if user already handled it
         if (localStorage.getItem('moc_push_enabled') === 'true' ||
             localStorage.getItem('moc_push_dismissed') === 'true') {
             return;
         }
 
-        // Show the banner after a slight delay
+        // Show banner after short delay
         setTimeout(() => {
             const banner = document.getElementById('push-banner');
             if (banner) {
