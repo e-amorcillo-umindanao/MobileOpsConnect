@@ -1,3 +1,10 @@
+/* Restore visible borders on form inputs (Tailwind Preflight resets border-width to 0) */
+input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+select,
+textarea {
+  border-width: 1px;
+}
+
 html {
   font-size: 14px;
 }
