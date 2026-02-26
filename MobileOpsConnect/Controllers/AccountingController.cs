@@ -15,13 +15,15 @@ namespace MobileOpsConnect.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IAuditService _auditService;
         private readonly ExchangeRateService _exchangeRateService;
+        private readonly INotificationService _notificationService;
 
-        public AccountingController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IAuditService auditService, ExchangeRateService exchangeRateService)
+        public AccountingController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IAuditService auditService, ExchangeRateService exchangeRateService, INotificationService notificationService)
         {
             _context = context;
             _userManager = userManager;
             _auditService = auditService;
             _exchangeRateService = exchangeRateService;
+            _notificationService = notificationService;
         }
 
         // GET: Accounting
@@ -107,6 +109,11 @@ namespace MobileOpsConnect.Controllers
                 await _auditService.LogAsync(user.Id, user.Email!, roles.FirstOrDefault() ?? "", "CREATE_ACCOUNTING", 
                     $"Recorded {entry.Type}: {entry.Description} ({entry.Amount:C})", 
                     HttpContext.Connection.RemoteIpAddress?.ToString());
+
+                // Push notification to SuperAdmin
+                await _notificationService.SendToRoleAsync("SuperAdmin",
+                    "💰 New Transaction",
+                    $"{entry.Type}: {entry.Description} (₱{entry.Amount:N2})");
 
                 TempData["Message"] = "Transaction recorded successfully!";
                 return RedirectToAction(nameof(Index));

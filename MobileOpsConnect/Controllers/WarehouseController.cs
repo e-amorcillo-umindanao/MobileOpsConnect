@@ -89,6 +89,12 @@ namespace MobileOpsConnect.Controllers
             // Broadcast real-time update via SignalR
             await _hubContext.Clients.All.SendAsync("StockUpdated", product.ProductID, product.Name, product.StockQuantity, "Stock In");
 
+            // Push notification to DeptManager
+            var stockInUser = await _userManager.GetUserAsync(User);
+            await _notificationService.SendToRoleAsync("DepartmentManager",
+                "📥 Stock In",
+                $"{stockInUser?.Email} added {quantity} units of {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.");
+
             // Audit log
             var currentUser = await _userManager.GetUserAsync(User);
             var userId = currentUser?.Id ?? "";
@@ -128,6 +134,12 @@ namespace MobileOpsConnect.Controllers
 
             // Broadcast real-time update via SignalR
             await _hubContext.Clients.All.SendAsync("StockUpdated", product.ProductID, product.Name, product.StockQuantity, "Stock Out");
+
+            // Push notification to DeptManager
+            var stockOutUser = await _userManager.GetUserAsync(User);
+            await _notificationService.SendToRoleAsync("DepartmentManager",
+                "📤 Stock Out",
+                $"{stockOutUser?.Email} removed {quantity} units of {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.");
 
             // Audit log
             var currentUser = await _userManager.GetUserAsync(User);

@@ -122,6 +122,14 @@ namespace MobileOpsConnect.Controllers
                 isApproval ? "✅ Order Approved" : "❌ Order Rejected",
                 $"Purchase Order #{id} ({order.Product?.Name}) has been {pastTense} by {currentUser.Email}.");
 
+            // If approved, notify warehouse staff about incoming stock
+            if (isApproval)
+            {
+                await _notificationService.SendToRoleAsync("WarehouseStaff",
+                    "📦 PO Approved — Incoming Stock",
+                    $"PO #{id}: {order.Quantity}x {order.Product?.Name} approved. Prepare for receiving.");
+            }
+
             // Audit log
             var roles = await _userManager.GetRolesAsync(currentUser);
             await _auditService.LogAsync(currentUser.Id, currentUser.Email!, roles.FirstOrDefault() ?? "", isApproval ? "APPROVE" : "REJECT", $"{(isApproval ? "Approved" : "Rejected")} purchase order #{id} ({order.Product?.Name}).", HttpContext.Connection.RemoteIpAddress?.ToString());

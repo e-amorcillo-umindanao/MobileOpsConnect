@@ -20,19 +20,22 @@ namespace MobileOpsConnect.Controllers
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IAuditService _auditService;
         private readonly ApplicationDbContext _context;
+        private readonly INotificationService _notificationService;
 
         public UsersController(
             UserManager<IdentityUser> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<IdentityUser> signInManager,
             IAuditService auditService,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            INotificationService notificationService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _auditService = auditService;
             _context = context;
+            _notificationService = notificationService;
         }
 
         // GET: Users
@@ -102,6 +105,12 @@ namespace MobileOpsConnect.Controllers
                 if (currentUser == null) return Challenge();
                 var currentRoles = await _userManager.GetRolesAsync(currentUser);
                 await _auditService.LogAsync(currentUser.Id, currentUser.Email!, currentRoles.FirstOrDefault() ?? "", "CREATE", $"Created user account: {email} with role {role}.", HttpContext.Connection.RemoteIpAddress?.ToString());
+
+                // Push notification to SuperAdmin
+                await _notificationService.SendToRoleAsync("SuperAdmin",
+                    "👤 New User Created",
+                    $"{email} has been added as {role} by {currentUser.Email}.");
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -286,6 +295,11 @@ namespace MobileOpsConnect.Controllers
             var deletedEmail = user.Email;
             await _userManager.DeleteAsync(user);
             await _auditService.LogAsync(currentUser.Id, currentUser.Email!, "SuperAdmin", "DELETE", $"Deleted user account: {deletedEmail} (role: {targetRole}).", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
+
+            // Push notification to SuperAdmin
+            await _notificationService.SendToRoleAsync("SuperAdmin",
+                "🗑️ User Deleted",
+                $"{deletedEmail} ({targetRole}) has been removed by {currentUser.Email}.");
             return RedirectToAction(nameof(Index));
         }
 
