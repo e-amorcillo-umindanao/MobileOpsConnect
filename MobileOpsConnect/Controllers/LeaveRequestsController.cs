@@ -146,28 +146,44 @@ namespace MobileOpsConnect.Controllers
 
                 // Auto-fill system fields
                 leaveRequest.UserID = user.Id;
-                leaveRequest.Status = "Pending";
                 leaveRequest.DateRequested = DateTime.UtcNow;
+
+                var roles = await _userManager.GetRolesAsync(user);
+                var filerRole = roles.FirstOrDefault() ?? "Employee";
+
+                // SuperAdmin leaves are auto-approved (no one above them)
+                if (filerRole == "SuperAdmin")
+                {
+                    leaveRequest.Status = "Approved";
+                    leaveRequest.ApprovedById = user.Id;
+                }
+                else
+                {
+                    leaveRequest.Status = "Pending";
+                }
 
                 _context.Add(leaveRequest);
                 await _context.SaveChangesAsync();
 
-                // Notify the appropriate manager based on hierarchy
-                var roles = await _userManager.GetRolesAsync(user);
-                var filerRole = roles.FirstOrDefault() ?? "Employee";
-                string targetRole = filerRole switch
+                // Notify + broadcast only for non-SuperAdmin (they don't need approval)
+                if (filerRole != "SuperAdmin")
                 {
-                    "Employee" or "WarehouseStaff" => "DepartmentManager",
-                    "DepartmentManager" => "SystemAdmin",
-                    "SystemAdmin" => "SuperAdmin",
-                    _ => "SuperAdmin"
-                };
-                await _notificationService.SendToRoleAsync(targetRole,
-                    "📋 New Leave Request",
-                    $"{user.Email} submitted a {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
+                    string targetRole = filerRole switch
+                    {
+                        "Employee" or "WarehouseStaff" => "DepartmentManager",
+                        "DepartmentManager" => "SystemAdmin",
+                        "SystemAdmin" => "SuperAdmin",
+                        _ => "SuperAdmin"
+                    };
 
-                // Broadcast real-time update via SignalR
-                await _hubContext.Clients.All.SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Pending", leaveRequest.UserID);
+                    // FCM push to the target role
+                    await _notificationService.SendToRoleAsync(targetRole,
+                        "📋 New Leave Request",
+                        $"{user.Email} submitted a {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
+
+                    // SignalR toast to the target role group only
+                    await _hubContext.Clients.Group($"role_{targetRole}").SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Pending", leaveRequest.UserID);
+                }
 
                 // Audit log
                 await _auditService.LogAsync(user.Id, user.Email!, filerRole, "CREATE", $"Filed {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).", HttpContext.Connection.RemoteIpAddress?.ToString());
@@ -213,8 +229,8 @@ namespace MobileOpsConnect.Controllers
                     $"<h2>Leave Approved</h2><p>{approveMsg}</p><hr><p><small>MobileOps Connect ERP</small></p>");
             }
 
-            // Broadcast real-time update via SignalR
-            await _hubContext.Clients.All.SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Approved", leaveRequest.UserID);
+            // Broadcast real-time update to the requester only
+            await _hubContext.Clients.User(leaveRequest.UserID).SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Approved", leaveRequest.UserID);
 
             // Audit log
             var approverRoles = await _userManager.GetRolesAsync(approver);
@@ -257,8 +273,8 @@ namespace MobileOpsConnect.Controllers
                     $"<h2>Leave Rejected</h2><p>{rejectMsg}</p><hr><p><small>MobileOps Connect ERP</small></p>");
             }
 
-            // Broadcast real-time update via SignalR
-            await _hubContext.Clients.All.SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Rejected", leaveRequest.UserID);
+            // Broadcast real-time update to the requester only
+            await _hubContext.Clients.User(leaveRequest.UserID).SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Rejected", leaveRequest.UserID);
 
             // Audit log
             var rejectorRoles = await _userManager.GetRolesAsync(rejector);
