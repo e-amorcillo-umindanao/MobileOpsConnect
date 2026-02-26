@@ -1,21 +1,23 @@
 // ─────────────────────────────────────────────────────────
-// FCM Initialization — requests permission, gets token,
-// and registers it with the MobileOpsConnect server.
+// FCM Initialization — requests permission via user gesture,
+// gets token, and registers it with the MobileOpsConnect server.
+//
+// iOS Safari requires Notification.requestPermission() to be
+// triggered by a user gesture (button click). This script
+// exposes window.enablePushNotifications() for the banner.
 // ─────────────────────────────────────────────────────────
 (function () {
     'use strict';
 
     // Firebase config — injected by the server via _Layout.cshtml
-    // (see window.__FIREBASE_CONFIG__ and window.__FIREBASE_VAPID_KEY__)
     const firebaseConfig = window.__FIREBASE_CONFIG__;
     const VAPID_KEY = window.__FIREBASE_VAPID_KEY__;
 
     if (!firebaseConfig || !VAPID_KEY) {
-        console.warn('[FCM] Firebase config not found. Ensure server-side injection is working.');
+        console.warn('[FCM] Firebase config not found.');
         return;
     }
 
-    // Only run if the browser supports notifications and service workers
     if (!('Notification' in window) || !('serviceWorker' in navigator)) {
         console.warn('[FCM] This browser does not support push notifications.');
         return;
@@ -25,33 +27,19 @@
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
-    // Get the anti-forgery token from the page (ASP.NET Core convention)
-    function getAntiForgeryToken() {
-        const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
-        if (tokenInput) return tokenInput.value;
-
-        const metaToken = document.querySelector('meta[name="csrf-token"]');
-        if (metaToken) return metaToken.getAttribute('content');
-
-        return null;
-    }
-
-    // Register the service worker, then request permission & get token
-    async function initFcm() {
+    // ── Core: request permission + register token ──
+    async function requestAndRegister() {
         try {
-            // 1. Wait for the unified service worker (registered in _Layout)
             const registration = await navigator.serviceWorker.ready;
             console.log('[FCM] Service worker ready:', registration.scope);
 
-            // 2. Request notification permission
             const permission = await Notification.requestPermission();
             if (permission !== 'granted') {
                 console.warn('[FCM] Notification permission denied.');
-                return;
+                return false;
             }
             console.log('[FCM] Notification permission granted.');
 
-            // 3. Get the FCM token
             const token = await messaging.getToken({
                 vapidKey: VAPID_KEY,
                 serviceWorkerRegistration: registration,
@@ -59,11 +47,10 @@
 
             if (!token) {
                 console.warn('[FCM] Failed to get FCM token.');
-                return;
+                return false;
             }
             console.log('[FCM] Token obtained:', token.substring(0, 20) + '...');
 
-            // 4. Send the token to the server
             const response = await fetch('/Notification/RegisterToken', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -76,12 +63,43 @@
             } else {
                 console.warn('[FCM] Failed to register token:', response.status);
             }
+
+            return true;
         } catch (error) {
             console.error('[FCM] Error during initialization:', error);
+            return false;
         }
     }
 
-    // Handle foreground messages (when the tab IS focused)
+    // ── Public function for the "Enable Notifications" banner ──
+    window.enablePushNotifications = async function () {
+        const success = await requestAndRegister();
+        if (success) {
+            // Hide the banner and remember the choice
+            localStorage.setItem('moc_push_enabled', 'true');
+            const banner = document.getElementById('push-banner');
+            if (banner) {
+                banner.style.transition = 'opacity 0.3s, transform 0.3s';
+                banner.style.opacity = '0';
+                banner.style.transform = 'translateY(-100%)';
+                setTimeout(() => banner.remove(), 300);
+            }
+        }
+    };
+
+    // ── Dismiss banner without enabling ──
+    window.dismissPushBanner = function () {
+        localStorage.setItem('moc_push_dismissed', 'true');
+        const banner = document.getElementById('push-banner');
+        if (banner) {
+            banner.style.transition = 'opacity 0.3s, transform 0.3s';
+            banner.style.opacity = '0';
+            banner.style.transform = 'translateY(-100%)';
+            setTimeout(() => banner.remove(), 300);
+        }
+    };
+
+    // ── Handle foreground messages ──
     function listenForMessages() {
         messaging.onMessage(function (payload) {
             console.log('[FCM] Foreground message received:', payload);
@@ -89,7 +107,7 @@
         });
     }
 
-    // Displays a beautiful Tailwind UI toast inside the app
+    // ── In-app toast for foreground messages ──
     function showInAppToast(payload) {
         const container = document.getElementById('toast-container');
         if (!container) return;
@@ -97,11 +115,8 @@
         const title = payload.notification?.title || 'MobileOps Connect';
         const body = payload.notification?.body || '';
         const url = payload.data?.url || '';
-
-        // Generate unique ID for this toast
         const toastId = 'toast-' + Math.random().toString(36).substr(2, 9);
 
-        // Build HTML string
         const toastHtml = `
             <div id="${toastId}" class="max-w-xs bg-white border border-gray-200 rounded-xl shadow-lg dark:bg-neutral-800 dark:border-neutral-700 pointer-events-auto transition-all duration-300 transform translate-x-full opacity-0" role="alert">
                 <div class="flex p-4">
@@ -125,34 +140,52 @@
             </div>
         `;
 
-        // Parse and append element
         const temp = document.createElement('div');
         temp.innerHTML = toastHtml;
         const toastElement = temp.firstElementChild;
         container.appendChild(toastElement);
 
-        // Trigger slide-in animation
         requestAnimationFrame(() => {
             toastElement.classList.remove('translate-x-full', 'opacity-0');
         });
 
-        // Auto remove after 6 seconds
         setTimeout(() => {
             if (document.getElementById(toastId)) {
                 toastElement.classList.add('translate-x-full', 'opacity-0');
-                setTimeout(() => toastElement.remove(), 300); // Wait for transition
+                setTimeout(() => toastElement.remove(), 300);
             }
         }, 6000);
     }
 
-    // Run when DOM is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () {
-            initFcm();
-            listenForMessages();
-        });
-    } else {
-        initFcm();
+    // ── Startup ──
+    function init() {
         listenForMessages();
+
+        // If permission was already granted, silently register token (no banner needed)
+        if (Notification.permission === 'granted') {
+            requestAndRegister();
+            return;
+        }
+
+        // If user previously dismissed or enabled, don't show banner again
+        if (localStorage.getItem('moc_push_enabled') === 'true' ||
+            localStorage.getItem('moc_push_dismissed') === 'true') {
+            return;
+        }
+
+        // Show the banner (it exists in _Layout.cshtml, hidden by default)
+        setTimeout(() => {
+            const banner = document.getElementById('push-banner');
+            if (banner) {
+                banner.classList.remove('hidden');
+                banner.classList.add('push-banner-show');
+            }
+        }, 2000); // slight delay so it doesn't compete with page load
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
 })();

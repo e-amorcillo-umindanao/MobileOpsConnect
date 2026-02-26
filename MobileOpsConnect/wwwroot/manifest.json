@@ -3,6 +3,7 @@
     "short_name": "MobileOps",
     "description": "Enterprise Resource Planning — Inventory, Leave, Payroll & Real-Time Operations",
     "start_url": "/",
+    "id": "/",
     "display": "standalone",
     "background_color": "#0f172a",
     "theme_color": "#0f172a",

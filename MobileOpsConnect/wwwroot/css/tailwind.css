@@ -1853,6 +1853,10 @@ body {
   padding: 0px;
 }
 
+.p-1 {
+  padding: 0.25rem;
+}
+
 .p-1\.5 {
   padding: 0.375rem;
 }
@@ -2576,6 +2580,11 @@ body {
   color: rgb(156 163 175 / var(--tw-text-opacity, 1));
 }
 
+.hover\:text-gray-600:hover {
+  --tw-text-opacity: 1;
+  color: rgb(75 85 99 / var(--tw-text-opacity, 1));
+}
+
 .hover\:text-gray-800:hover {
   --tw-text-opacity: 1;
   color: rgb(31 41 55 / var(--tw-text-opacity, 1));
@@ -3240,6 +3249,11 @@ body {
 
 .dark\:hover\:bg-white\/10:hover:is(.dark *) {
   background-color: rgb(255 255 255 / 0.1);
+}
+
+.dark\:hover\:text-gray-200:hover:is(.dark *) {
+  --tw-text-opacity: 1;
+  color: rgb(229 231 235 / var(--tw-text-opacity, 1));
 }
 
 .dark\:hover\:text-neutral-500:hover:is(.dark *) {
