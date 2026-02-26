@@ -2,14 +2,15 @@
 // FCM Initialization — requests permission via user gesture,
 // gets token, and registers it with the MobileOpsConnect server.
 //
-// iOS Safari requires Notification.requestPermission() to be
-// triggered by a user gesture (button click). This script
-// exposes window.enablePushNotifications() for the banner.
+// IMPORTANT (iOS fix): On iOS Safari, calling
+// Notification.requestPermission() without a user gesture
+// REVOKES an existing grant. So we split into two paths:
+//   - registerTokenOnly()  → for page loads (no permission re-request)
+//   - requestAndRegister() → for the Enable button (user gesture)
 // ─────────────────────────────────────────────────────────
 (function () {
     'use strict';
 
-    // Firebase config — injected by the server via _Layout.cshtml
     const firebaseConfig = window.__FIREBASE_CONFIG__;
     const VAPID_KEY = window.__FIREBASE_VAPID_KEY__;
 
@@ -23,7 +24,6 @@
         return;
     }
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const messaging = firebase.messaging();
 
@@ -41,21 +41,12 @@
         el.scrollTop = el.scrollHeight;
     }
 
-    // ── Core: request permission + register token ──
-    async function requestAndRegister() {
+    // ── Register token ONLY — NO permission request (safe for page loads) ──
+    async function registerTokenOnly() {
         try {
             debugLog('⏳ Waiting for service worker...');
             const registration = await navigator.serviceWorker.ready;
             debugLog('✅ SW ready: ' + registration.scope);
-
-            debugLog('⏳ Requesting notification permission...');
-            const permission = await Notification.requestPermission();
-            debugLog('Permission result: ' + permission);
-            if (permission !== 'granted') {
-                debugLog('❌ Permission denied or dismissed');
-                return false;
-            }
-            debugLog('✅ Permission granted');
 
             debugLog('⏳ Getting FCM token...');
             const token = await messaging.getToken({
@@ -90,11 +81,28 @@
         }
     }
 
+    // ── Request permission + register (ONLY from user gesture / Enable button) ──
+    async function requestAndRegister() {
+        try {
+            debugLog('⏳ Requesting notification permission...');
+            const permission = await Notification.requestPermission();
+            debugLog('Permission result: ' + permission);
+            if (permission !== 'granted') {
+                debugLog('❌ Permission denied or dismissed');
+                return false;
+            }
+            debugLog('✅ Permission granted');
+            return await registerTokenOnly();
+        } catch (error) {
+            debugLog('❌ ERROR: ' + error.message);
+            return false;
+        }
+    }
+
     // ── Public function for the "Enable Notifications" banner ──
     window.enablePushNotifications = async function () {
         const success = await requestAndRegister();
         if (success) {
-            // Hide the banner and remember the choice
             localStorage.setItem('moc_push_enabled', 'true');
             const banner = document.getElementById('push-banner');
             if (banner) {
@@ -180,9 +188,11 @@
     function init() {
         listenForMessages();
 
-        // If permission was already granted, silently register token (no banner needed)
+        // If permission was already granted, ONLY register token
+        // DO NOT call requestPermission() again — iOS revokes it without user gesture!
         if (Notification.permission === 'granted') {
-            requestAndRegister();
+            debugLog('Permission already granted, registering token...');
+            registerTokenOnly();
             return;
         }
 
@@ -192,14 +202,14 @@
             return;
         }
 
-        // Show the banner (it exists in _Layout.cshtml, hidden by default)
+        // Show the banner after a slight delay
         setTimeout(() => {
             const banner = document.getElementById('push-banner');
             if (banner) {
                 banner.classList.remove('hidden');
                 banner.classList.add('push-banner-show');
             }
-        }, 2000); // slight delay so it doesn't compete with page load
+        }, 2000);
     }
 
     if (document.readyState === 'loading') {
