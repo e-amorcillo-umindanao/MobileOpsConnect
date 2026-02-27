@@ -191,5 +191,37 @@ namespace MobileOpsConnect.Controllers
             return RedirectToAction(nameof(Maintenance));
         }
 
+        // POST: Settings/PurgeAllData
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> PurgeAllDataAsync()
+        {
+            // Ensure accurate deletion order to prevent Foreign Key conflicts
+            var purchaseOrders = await _context.PurchaseOrders.ToListAsync();
+            _context.PurchaseOrders.RemoveRange(purchaseOrders);
+
+            var accountingEntries = await _context.AccountingEntries.ToListAsync();
+            _context.AccountingEntries.RemoveRange(accountingEntries);
+
+            var leaveRequests = await _context.LeaveRequests.ToListAsync();
+            _context.LeaveRequests.RemoveRange(leaveRequests);
+
+            var products = await _context.Products.ToListAsync();
+            _context.Products.RemoveRange(products);
+
+            await _context.SaveChangesAsync();
+
+            // Log the purge action
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser != null)
+            {
+                await _auditService.LogAsync(currentUser.Id, currentUser.Email!, "SuperAdmin", "MAINTENANCE", "Purged ALL accumulated transactional data (Products, Leaves, Orders, Accounting).", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
+            }
+            
+            TempData["MaintenanceSuccess"] = "Successfully cleared all accumulated system data.";
+            return RedirectToAction(nameof(Maintenance));
+        }
+
     }
 }
