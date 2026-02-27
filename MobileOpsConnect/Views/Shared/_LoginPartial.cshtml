@@ -9,7 +9,7 @@
             Hello @User.Identity?.Name!
         </a>
         <form class="m-0 p-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 bg-transparent border-0 p-0 m-0 cursor-pointer">
+            <button type="submit" onclick="sessionStorage.clear();" class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 bg-transparent border-0 p-0 m-0 cursor-pointer">
                 <i class="bi bi-box-arrow-right mr-1.5"></i> Logout
             </button>
         </form>
