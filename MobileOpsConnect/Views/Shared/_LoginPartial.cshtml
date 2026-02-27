@@ -5,12 +5,13 @@
 @if (SignInManager.IsSignedIn(User))
 {
     <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-5 mt-5 sm:mt-0 pt-5 sm:pt-0 border-t border-gray-200 sm:border-0 dark:border-neutral-700">
-        <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+        <div class="hidden sm:block w-px h-5 bg-gray-300 dark:bg-neutral-600 ml-1"></div>
+        <a class="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
             Hello @User.Identity?.Name!
         </a>
         <form class="m-0 p-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" onclick="sessionStorage.clear();" class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 bg-transparent border-0 p-0 m-0 cursor-pointer">
-                <i class="bi bi-box-arrow-right mr-1.5"></i> Logout
+            <button type="submit" onclick="sessionStorage.clear();" class="flex items-center gap-x-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-neutral-300 bg-transparent border-0 p-0 m-0 cursor-pointer">
+                <i class="bi bi-box-arrow-right"></i> Logout
             </button>
         </form>
     </div>

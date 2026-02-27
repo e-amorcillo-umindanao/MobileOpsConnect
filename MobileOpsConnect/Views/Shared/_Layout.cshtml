@@ -30,9 +30,12 @@
         <!-- ========== HEADER ========== -->
         <header class="flex flex-wrap sm:justify-start sm:flex-nowrap w-full bg-white text-sm py-3 dark:bg-neutral-800">
             <nav class="max-w-[85rem] w-full mx-auto px-4 sm:flex sm:items-center sm:justify-between" aria-label="Global">
-                <div class="flex items-center justify-between">
-                    <a class="flex-none text-xl font-semibold dark:text-white" asp-area="" asp-controller="Home" asp-action="Index">
-                        <i class="bi bi-shield-lock-fill text-blue-600"></i> MobileOps Connect
+                <div class="flex items-center justify-between gap-x-3">
+                    <a class="flex-none flex items-center gap-x-2 text-lg font-bold text-gray-900 dark:text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                        <div class="flex justify-center items-center bg-gray-900 rounded-lg text-white dark:bg-white dark:text-gray-900 size-8">
+                            <i class="bi bi-command text-lg leading-none"></i>
+                        </div>
+                        MobileOps
                     </a>
                     <div class="sm:hidden">
                         <button type="button" class="hs-collapse-toggle p-2 inline-flex justify-center items-center gap-x-2 rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-transparent dark:border-neutral-700 dark:text-white dark:hover:bg-white/10" data-hs-collapse="#navbar-alignment" aria-controls="navbar-alignment" aria-label="Toggle navigation">
@@ -47,17 +50,17 @@
                             var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
                             var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
                         }
-                        <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 @(currentController == "Home" && (currentAction == "Index" || currentAction == "ManagerDashboard" || currentAction == "EmployeeDashboard") ? "text-blue-500" : "")" asp-area="" asp-controller="Home" asp-action="Index">
-                            <i class="bi bi-grid-1x2-fill mr-1.5"></i> Dashboard
+                        <a class="font-medium text-gray-600 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-white @(currentController == "Home" && (currentAction == "Index" || currentAction == "ManagerDashboard" || currentAction == "EmployeeDashboard") ? "text-gray-900 font-bold dark:text-white" : "")" asp-area="" asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-grid-1x2 mr-1"></i> Dashboard
                         </a>
                         @if (User.IsInRole("SuperAdmin"))
                         {
-                            <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 @(currentController == "Accounting" ? "text-blue-500" : "")" asp-area="" asp-controller="Accounting" asp-action="Index">
-                                <i class="bi bi-journal-text mr-1.5"></i> Accounting
+                            <a class="font-medium text-gray-600 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-white @(currentController == "Accounting" ? "text-gray-900 font-bold dark:text-white" : "")" asp-area="" asp-controller="Accounting" asp-action="Index">
+                                <i class="bi bi-journal-text mr-1"></i> Accounting
                             </a>
                         }
-                        <a class="font-medium text-gray-600 hover:text-gray-400 dark:text-neutral-400 dark:hover:text-neutral-500 @(currentAction == "Privacy" ? "text-blue-500" : "")" asp-area="" asp-controller="Home" asp-action="Privacy">
-                            <i class="bi bi-shield-check mr-1.5"></i> Privacy
+                        <a class="font-medium text-gray-600 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-white @(currentAction == "Privacy" ? "text-gray-900 font-bold dark:text-white" : "")" asp-area="" asp-controller="Home" asp-action="Privacy">
+                            <i class="bi bi-shield-check mr-1"></i> Privacy
                         </a>
                         
                         <!-- Login Partial -->
