@@ -57,14 +57,14 @@ namespace MobileOpsConnect.Areas.Identity.Pages.Account.Manage
             RequirePassword = await _userManager.HasPasswordAsync(user);
             if (RequirePassword)
             {
-                if (!await _userManager.CheckPasswordAsync(user, Input.Password))
+                if (!await _userManager.CheckPasswordAsync(user!, Input.Password))
                 {
                     ModelState.AddModelError(string.Empty, "Incorrect password.");
                     return Page();
                 }
             }
 
-            var result = await _userManager.DeleteAsync(user);
+            var result = await _userManager.DeleteAsync(user!);
             if (!result.Succeeded)
             {
                 throw new InvalidOperationException("Unexpected error occurred deleting user.");

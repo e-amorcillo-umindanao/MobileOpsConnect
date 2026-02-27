@@ -105,7 +105,7 @@ namespace MobileOpsConnect.Controllers
                 await _context.SaveChangesAsync();
 
                 // Audit Log
-                var roles = await _userManager.GetRolesAsync(user);
+                var roles = await _userManager.GetRolesAsync(user!);
                 await _auditService.LogAsync(user.Id, user.Email!, roles.FirstOrDefault() ?? "", "CREATE_ACCOUNTING", 
                     $"Recorded {entry.Type}: {entry.Description} ({entry.Amount:C})", 
                     HttpContext.Connection.RemoteIpAddress?.ToString());

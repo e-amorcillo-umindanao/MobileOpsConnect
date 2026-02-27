@@ -50,6 +50,7 @@ namespace MobileOpsConnect.Controllers
 
             foreach (var user in allUsers)
             {
+                if (user == null) continue;
                 var roles = await _userManager.GetRolesAsync(user);
                 var role = roles.FirstOrDefault() ?? "Employee";
 
@@ -134,7 +135,7 @@ namespace MobileOpsConnect.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return NotFound();
 
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user!);
             string currentRole = roles.FirstOrDefault() ?? "Employee";
 
             bool isOwnAccount = (user.Id == currentUser.Id);
@@ -178,7 +179,7 @@ namespace MobileOpsConnect.Controllers
             bool isOwnAccount = (user.Id == currentUser.Id);
 
             // 1. RE-CHECK PERMISSIONS (Security Fix)
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user!);
             string currentDbRole = roles.FirstOrDefault() ?? "Employee";
 
             if (!CanManageUser(currentUser, currentDbRole, user.Id)) return Forbid();
@@ -228,7 +229,7 @@ namespace MobileOpsConnect.Controllers
             if (user == null) return NotFound();
 
             // SECURITY
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user!);
             string userRole = roles.FirstOrDefault() ?? "Employee";
             if (!CanManageUser(currentUser, userRole, user.Id)) return Forbid();
 
@@ -247,7 +248,7 @@ namespace MobileOpsConnect.Controllers
             if (user == null) return NotFound();
 
             // SECURITY RE-CHECK
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user!);
             string userRole = roles.FirstOrDefault() ?? "Employee";
             if (!CanManageUser(currentUser, userRole, user.Id)) return Forbid();
 
@@ -288,12 +289,12 @@ namespace MobileOpsConnect.Controllers
             if (user.Id == currentUser.Id) return Forbid();
 
             // Can only delete SystemAdmins
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user!);
             string targetRole = roles.FirstOrDefault() ?? "Employee";
             if (targetRole != "SystemAdmin") return Forbid();
 
             var deletedEmail = user.Email;
-            await _userManager.DeleteAsync(user);
+            await _userManager.DeleteAsync(user!);
             await _auditService.LogAsync(currentUser.Id, currentUser.Email!, "SuperAdmin", "DELETE", $"Deleted user account: {deletedEmail} (role: {targetRole}).", HttpContext.Connection.RemoteIpAddress?.ToString(), isCritical: true);
 
             // Push notification to SuperAdmin
@@ -317,7 +318,7 @@ namespace MobileOpsConnect.Controllers
             if (!User.IsInRole("SuperAdmin")) return Forbid();
 
             // Verify password
-            var passwordValid = await _userManager.CheckPasswordAsync(currentUser, password);
+            var passwordValid = await _userManager.CheckPasswordAsync(currentUser!, password);
             if (!passwordValid)
             {
                 TempData["DeleteError"] = "Incorrect password. Account deletion cancelled.";
@@ -422,6 +423,7 @@ namespace MobileOpsConnect.Controllers
 
             foreach (var user in allUsers)
             {
+                if (user == null) continue;
                 var roles = await _userManager.GetRolesAsync(user);
                 var role = roles.FirstOrDefault() ?? "Employee";
 

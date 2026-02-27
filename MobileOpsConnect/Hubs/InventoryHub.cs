@@ -19,7 +19,7 @@ namespace MobileOpsConnect.Hubs
             var user = await _userManager.GetUserAsync(Context.User!);
             if (user != null)
             {
-                var roles = await _userManager.GetRolesAsync(user);
+                var roles = await _userManager.GetRolesAsync(user!);
                 foreach (var role in roles)
                 {
                     await Groups.AddToGroupAsync(Context.ConnectionId, $"role_{role}");
