@@ -4,76 +4,61 @@
 }
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <div class="flex flex-wrap items-center gap-2 mb-4">
-                <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-neutral-200">
-                    <span class="size-1.5 inline-block bg-green-500 rounded-full"></span>
-                    All Systems Operational
-                </span>
-                @if (isWarehouse)
-                {
-                    <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-neutral-200">
-                        Warehouse Staff &bull; Delta
-                    </span>
-                }
-                else
-                {
-                    <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-neutral-200">
-                        Employee &bull; Echo
-                    </span>
-                }
-            </div>
-            @if (isWarehouse)
-            {
-                <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Delta's Operations Hub</h1>
-                <p class="text-blue-100 text-lg sm:text-lg">Warehouse Operations &amp; Self-Service Portal &mdash; Welcome, @User.Identity?.Name</p>
-            }
-            else
-            {
-                <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Echo's Portal</h1>
-                <p class="text-blue-100 text-lg sm:text-lg">Employee Self-Service Portal &mdash; Welcome, @User.Identity?.Name</p>
-            }
-        </div>
-        <div class="hidden md:block opacity-20 pointer-events-none">
-            @if (isWarehouse)
-            {
-                <i class="bi bi-building-fill text-9xl text-white"></i>
-            }
-            else
-            {
-                <i class="bi bi-person-badge-fill text-9xl text-white"></i>
-            }
-        </div>
+<div class="mb-8">
+    <div class="flex flex-wrap items-center gap-2 mb-4">
+        <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200">
+            <span class="size-1.5 inline-block bg-green-500 rounded-full"></span>
+            All Systems Operational
+        </span>
+        @if (isWarehouse)
+        {
+            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200 dark:bg-neutral-800/50 dark:border-neutral-700 dark:text-neutral-400">
+                <i class="bi bi-shield-check"></i>
+                Warehouse Staff &bull; Delta
+            </span>
+        }
+        else
+        {
+            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200 dark:bg-neutral-800/50 dark:border-neutral-700 dark:text-neutral-400">
+                Employee &bull; Echo
+            </span>
+        }
     </div>
+    
+    @if (isWarehouse)
+    {
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Delta's Operations Hub</h1>
+        <p class="text-gray-500 dark:text-neutral-400 text-base">Warehouse Operations &amp; Self-Service Portal &mdash; Welcome, @User.Identity?.Name</p>
+    }
+    else
+    {
+        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Echo's Portal</h1>
+        <p class="text-gray-500 dark:text-neutral-400 text-base">Employee Self-Service Portal &mdash; Welcome, @User.Identity?.Name</p>
+    }
 </div>
 
 <!-- Snapshot Title -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
+<div class="mb-4">
+    <h2 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-x-2">
         @(isWarehouse ? "Warehouse Snapshot" : "My Snapshot")
     </h2>
-    <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
 </div>
 
-<div class="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
+<div class="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-10">
     @if (isWarehouse)
     {
         <!-- Card -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg dark:bg-indigo-800/30 dark:text-indigo-500">
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
+          <div class="p-5 flex items-center gap-x-5">
+            <div class="shrink-0 flex justify-center items-center size-[48px] bg-indigo-50/50 text-indigo-500 rounded-xl dark:bg-indigo-900/20 dark:text-indigo-400">
               <i class="bi bi-arrow-left-right text-xl"></i>
             </div>
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Movements</p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">0</h3>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-gray-100 text-gray-800 text-xs font-medium dark:bg-white/10 dark:text-white">
-                  <i class="bi bi-dash-lg"></i> Today
+            <div class="grow flex flex-col justify-center">
+              <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Movements</p>
+              <div class="flex items-baseline gap-x-3">
+                <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">0</h3>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md bg-gray-100/80 text-gray-600 text-xs font-semibold dark:bg-neutral-800/80 dark:text-neutral-400">
+                  Today
                 </span>
               </div>
             </div>
@@ -81,19 +66,17 @@
         </div>
         
         <!-- Card -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-cyan-100 text-cyan-800 rounded-lg dark:bg-cyan-800/30 dark:text-cyan-500">
-              <i class="bi bi-box-seam-fill text-xl"></i>
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
+          <div class="p-5 flex items-center gap-x-5">
+            <div class="shrink-0 flex justify-center items-center size-[48px] bg-cyan-50/50 text-cyan-500 rounded-xl dark:bg-cyan-900/20 dark:text-cyan-400">
+              <i class="bi bi-box-seam text-xl"></i>
             </div>
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">In Stock</p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@ViewBag.TotalProducts</h3>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium dark:bg-green-800/20 dark:text-green-400">
-                  <i class="bi bi-check-circle-fill"></i> Healthy
+            <div class="grow flex flex-col justify-center">
+              <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">In Stock</p>
+              <div class="flex items-baseline gap-x-3">
+                <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.TotalProducts</h3>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold dark:bg-emerald-900/20 dark:text-emerald-400">
+                  <i class="bi bi-check-circle"></i> Healthy
                 </span>
               </div>
             </div>
@@ -101,19 +84,17 @@
         </div>
 
         <!-- Card -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-red-100 text-red-800 rounded-lg dark:bg-red-800/30 dark:text-red-500">
-              <i class="bi bi-exclamation-octagon-fill text-xl"></i>
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
+          <div class="p-5 flex items-center gap-x-5">
+            <div class="shrink-0 flex justify-center items-center size-[48px] bg-red-50/50 text-red-500 rounded-xl dark:bg-red-900/20 dark:text-red-400">
+              <i class="bi bi-exclamation-octagon text-xl"></i>
             </div>
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Low Stock</p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@ViewBag.LowStockCount</h3>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(ViewBag.LowStockCount > 0 ? "bg-red-100 text-red-800 dark:bg-red-800/20 dark:text-red-400" : "bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400")">
-                  <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill")"></i> 
+            <div class="grow flex flex-col justify-center">
+              <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Low Stock</p>
+              <div class="flex items-baseline gap-x-3">
+                <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.LowStockCount</h3>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md text-xs font-semibold @(ViewBag.LowStockCount > 0 ? "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400" : "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400")">
+                  <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-exclamation-triangle" : "bi-check-circle")"></i> 
                   @(ViewBag.LowStockCount > 0 ? "Alert" : "All Good")
                 </span>
               </div>
@@ -122,18 +103,16 @@
         </div>
 
         <!-- Card -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg dark:bg-green-800/30 dark:text-green-500">
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
+          <div class="p-5 flex items-center gap-x-5">
+            <div class="shrink-0 flex justify-center items-center size-[48px] bg-emerald-50/50 text-emerald-500 rounded-xl dark:bg-emerald-900/20 dark:text-emerald-400">
               <i class="bi bi-calendar-check text-xl"></i>
             </div>
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Leave Bal.</p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@ViewBag.LeaveBalance <span class="text-sm font-medium text-gray-500">days</span></h3>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium dark:bg-green-800/20 dark:text-green-400">
+            <div class="grow flex flex-col justify-center">
+              <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Leave Bal.</p>
+              <div class="flex items-baseline gap-x-3">
+                <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.LeaveBalance <span class="text-lg font-medium text-gray-400 dark:text-neutral-500 ml-1">days</span></h3>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold dark:bg-emerald-900/20 dark:text-emerald-400">
                   Available
                 </span>
               </div>
@@ -144,18 +123,16 @@
     else
     {
         <!-- Leave Balance -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg dark:bg-green-800/30 dark:text-green-500">
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
+          <div class="p-5 flex items-center gap-x-5">
+            <div class="shrink-0 flex justify-center items-center size-[48px] bg-emerald-50/50 text-emerald-500 rounded-xl dark:bg-emerald-900/20 dark:text-emerald-400">
               <i class="bi bi-calendar-check text-xl"></i>
             </div>
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Leave Bal.</p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@ViewBag.LeaveBalance <span class="text-sm font-medium text-gray-500">days</span></h3>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium dark:bg-green-800/20 dark:text-green-400">
+            <div class="grow flex flex-col justify-center">
+              <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Leave Bal.</p>
+              <div class="flex items-baseline gap-x-3">
+                <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.LeaveBalance <span class="text-lg font-medium text-gray-400 ml-1">days</span></h3>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold dark:bg-emerald-900/20 dark:text-emerald-400">
                   Available
                 </span>
               </div>
@@ -164,40 +141,40 @@
         </div>
 
         <!-- Leaves Used -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg dark:bg-indigo-800/30 dark:text-indigo-500">
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
+          <div class="p-5 flex items-center gap-x-5">
+            <div class="shrink-0 flex justify-center items-center size-[48px] bg-indigo-50/50 text-indigo-500 rounded-xl dark:bg-indigo-900/20 dark:text-indigo-400">
               <i class="bi bi-calendar-minus text-xl"></i>
             </div>
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Used</p>
-              </div>
-              <div class="mt-1 flex flex-col gap-y-1">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@ViewBag.LeavesUsed <span class="text-sm font-medium text-gray-500">days</span></h3>
-                <div class="flex w-full h-1.5 bg-gray-200 rounded-full overflow-hidden dark:bg-neutral-700" role="progressbar" aria-valuenow="@ViewBag.LeaveUsedPercent" aria-valuemin="0" aria-valuemax="100">
-                  <div class="flex flex-col justify-center rounded-full overflow-hidden bg-blue-600 text-xs text-white text-center whitespace-nowrap transition duration-500 dark:bg-blue-500" style="width: @ViewBag.LeaveUsedPercent%"></div>
+            <div class="grow flex flex-col justify-center">
+              <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Used</p>
+              <div class="mt-1 flex flex-col gap-y-2">
+                <div class="flex items-baseline">
+                  <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.LeavesUsed <span class="text-lg font-medium text-gray-400 ml-1">days</span></h3>
                 </div>
-                <span class="text-xs text-gray-500 dark:text-neutral-500">of @ViewBag.LeaveAllowance total</span>
+                <div class="flex items-center gap-2">
+                  <div class="flex w-full h-1.5 bg-gray-100 rounded-full overflow-hidden dark:bg-neutral-800" role="progressbar" aria-valuenow="@ViewBag.LeaveUsedPercent" aria-valuemin="0" aria-valuemax="100">
+                    <div class="flex flex-col justify-center rounded-full overflow-hidden bg-gray-900 text-xs text-white text-center whitespace-nowrap transition duration-500 dark:bg-white" style="width: @ViewBag.LeaveUsedPercent%"></div>
+                  </div>
+                  <span class="text-xs text-gray-400 whitespace-nowrap font-medium">of @ViewBag.LeaveAllowance total</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Pending Requests -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg dark:bg-amber-800/30 dark:text-amber-500">
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
+          <div class="p-5 flex items-center gap-x-5">
+            <div class="shrink-0 flex justify-center items-center size-[48px] bg-amber-50/50 text-amber-500 rounded-xl dark:bg-amber-900/20 dark:text-amber-400">
               <i class="bi bi-clock-history text-xl"></i>
             </div>
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Pending</p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@ViewBag.UserPending</h3>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(ViewBag.UserPending > 0 ? "bg-amber-100 text-amber-800 dark:bg-amber-800/20 dark:text-amber-400" : "bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400")">
-                  <i class="bi @(ViewBag.UserPending > 0 ? "bi-hourglass-split" : "bi-check-circle-fill")"></i>
+            <div class="grow flex flex-col justify-center">
+              <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Pending</p>
+              <div class="flex items-baseline gap-x-3">
+                <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.UserPending</h3>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md text-xs font-semibold @(ViewBag.UserPending > 0 ? "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400" : "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400")">
+                  <i class="bi @(ViewBag.UserPending > 0 ? "bi-hourglass-split" : "bi-check-circle")"></i>
                   @(ViewBag.UserPending > 0 ? "Waiting" : "None")
                 </span>
               </div>
@@ -206,18 +183,16 @@
         </div>
 
         <!-- Next Payslip -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-          <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-cyan-100 text-cyan-800 rounded-lg dark:bg-cyan-800/30 dark:text-cyan-500">
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
+          <div class="p-5 flex items-center gap-x-5">
+            <div class="shrink-0 flex justify-center items-center size-[48px] bg-cyan-50/50 text-cyan-500 rounded-xl dark:bg-cyan-900/20 dark:text-cyan-400">
               <i class="bi bi-wallet2 text-xl"></i>
             </div>
-            <div class="grow">
-              <div class="flex items-center gap-x-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Next Pay</p>
-              </div>
-              <div class="mt-1 flex items-center gap-x-2">
-                <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@ViewBag.NextPayDate</h3>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-cyan-100 text-cyan-800 text-xs font-medium dark:bg-cyan-800/20 dark:text-cyan-400">
+            <div class="grow flex flex-col justify-center">
+              <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Next Pay</p>
+              <div class="flex items-baseline gap-x-3">
+                <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.NextPayDate</h3>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md bg-cyan-50 text-cyan-700 text-xs font-semibold dark:bg-cyan-900/20 dark:text-cyan-400">
                   Scheduled
                 </span>
               </div>
@@ -230,77 +205,77 @@
 @if (isWarehouse)
 {
     <!-- Warehouse Operations Title -->
-    <div class="flex items-center gap-x-3 mb-4 mt-8">
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
+    <div class="mb-4 mt-8">
+        <h2 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-x-2">
             Warehouse Operations
         </h2>
-        <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
     </div>
 
-    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
         <!-- Purchase Order Card -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
-            <div class="p-4 md:p-5 flex flex-col text-center h-full">
-                <div class="inline-flex justify-center items-center size-[62px] rounded-full mx-auto mb-4 bg-amber-100 text-amber-800 dark:bg-amber-800/30 dark:text-amber-400">
-                    <i class="bi bi-cart-plus-fill text-2xl"></i>
+        <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
+            <div class="p-6 md:p-8 flex flex-col text-center h-full">
+                <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-amber-50 text-amber-500 dark:bg-amber-900/20 dark:text-amber-400">
+                    <i class="bi bi-cart3 text-2xl"></i>
                 </div>
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-1">Purchase Order</h3>
-                <p class="text-sm text-gray-500 dark:text-neutral-500 grow mb-4">Submit restock requests for manager approval</p>
-                <a asp-controller="Orders" asp-action="Create" class="mt-auto py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none w-full">
-                    <i class="bi bi-plus-circle"></i> New Order
-                </a>
-            </div>
-        </div>
-        <!-- Card -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
-            <div class="p-4 md:p-5 flex flex-col text-center h-full">
-                <div class="inline-flex justify-center items-center size-[62px] rounded-full mx-auto mb-4 bg-indigo-100 text-indigo-800 dark:bg-indigo-800/30 dark:text-indigo-400">
-                    <i class="bi bi-arrow-left-right text-2xl"></i>
-                </div>
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-1">Stock In / Out</h3>
-                <p class="text-sm text-gray-500 dark:text-neutral-500 grow mb-4">Process incoming and outgoing stock movements</p>
-                <a asp-controller="Warehouse" asp-action="Index" class="mt-auto py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none w-full">
-                    <i class="bi bi-arrow-right-circle"></i> Open
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Purchase Order</h3>
+                <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">Submit restock requests for manager approval</p>
+                <a asp-controller="Orders" asp-action="Create" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                    <i class="bi bi-plus-lg"></i> New Order
                 </a>
             </div>
         </div>
         
         <!-- Card -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
-            <div class="p-4 md:p-5 flex flex-col text-center h-full">
-                <div class="inline-flex justify-center items-center size-[62px] rounded-full mx-auto mb-4 bg-cyan-100 text-cyan-800 dark:bg-cyan-800/30 dark:text-cyan-400">
+        <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
+            <div class="p-6 md:p-8 flex flex-col text-center h-full">
+                <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-indigo-50 text-indigo-500 dark:bg-indigo-900/20 dark:text-indigo-400">
+                    <i class="bi bi-arrow-left-right text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Stock In / Out</h3>
+                <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">Process incoming and outgoing stock movements</p>
+                <a asp-controller="Warehouse" asp-action="Index" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                    <i class="bi bi-arrow-right"></i> Open
+                </a>
+            </div>
+        </div>
+        
+        <!-- Card -->
+        <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
+            <div class="p-6 md:p-8 flex flex-col text-center h-full">
+                <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-cyan-50 text-cyan-500 dark:bg-cyan-900/20 dark:text-cyan-400">
                     <i class="bi bi-search text-2xl"></i>
                 </div>
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-1">Inventory List</h3>
-                <p class="text-sm text-gray-500 dark:text-neutral-500 grow mb-4">Search and browse all products in the system</p>
-                <a asp-controller="Products" asp-action="Index" class="mt-auto py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
-                    <i class="bi bi-arrow-right-circle"></i> Browse
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Inventory List</h3>
+                <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">Search and browse all products in the system</p>
+                <a asp-controller="Products" asp-action="Index" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                    <i class="bi bi-arrow-right"></i> Browse
                 </a>
             </div>
         </div>
 
         <!-- Card -->
-        <div class="flex flex-col bg-white border-l-4 @(ViewBag.LowStockCount > 0 ? "border-l-red-500" : "border-l-green-500") shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-t-neutral-800 dark:border-r-neutral-800 dark:border-b-neutral-800">
-            <div class="p-4 md:p-5 flex flex-col text-center h-full">
-                <div class="relative inline-flex justify-center items-center size-[62px] rounded-full mx-auto mb-4 @(ViewBag.LowStockCount > 0 ? "bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-400" : "bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-400")">
-                    <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-exclamation-triangle-fill text-2xl" : "bi-check-circle-fill text-2xl")"></i>
+        <div class="flex flex-col bg-white border border-gray-100 border-l-4 @(ViewBag.LowStockCount > 0 ? "border-l-red-500" : "border-l-emerald-500") rounded-3xl dark:bg-neutral-900 dark:border-t-neutral-800 dark:border-r-neutral-800 dark:border-b-neutral-800">
+            <div class="p-6 md:p-8 flex flex-col text-center h-full">
+                <div class="relative inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 @(ViewBag.LowStockCount > 0 ? "bg-red-50 text-red-500 dark:bg-red-900/20 dark:text-red-400" : "bg-emerald-50 text-emerald-500 dark:bg-emerald-900/20 dark:text-emerald-400")">
+                    <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-bell text-2xl" : "bi-check-circle text-2xl")"></i>
                     @if (ViewBag.LowStockCount > 0)
                     {
-                        <span class="absolute top-0 end-0 size-3 bg-red-500 border-2 border-white rounded-full dark:border-neutral-900"></span>
+                        <span class="absolute top-[2px] right-[2px] size-3.5 bg-red-500 border-2 border-white rounded-full dark:border-neutral-900"></span>
                     }
                 </div>
-                <h3 class="text-lg font-bold @(ViewBag.LowStockCount > 0 ? "text-red-600 dark:text-red-500" : "text-green-600 dark:text-green-500") mb-1">Low Stock Alerts</h3>
-                <p class="text-sm text-gray-500 dark:text-neutral-500 grow mb-4">@(ViewBag.LowStockCount > 0 ? "Items below threshold — reorder needed" : "Inventory levels are healthy")</p>
+                <h3 class="text-xl font-bold @(ViewBag.LowStockCount > 0 ? "text-red-600 dark:text-red-500" : "text-emerald-600 dark:text-emerald-500") mb-2">Low Stock Alerts</h3>
+                <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">@(ViewBag.LowStockCount > 0 ? "Items below threshold — reorder needed" : "Inventory levels are healthy")</p>
                 
                 @if (ViewBag.LowStockCount > 0)
                 {
-                    <a asp-controller="Warehouse" asp-action="LowStock" class="mt-auto py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none w-full">
+                    <a asp-controller="Warehouse" asp-action="LowStock" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none transition-all w-full">
                         <i class="bi bi-exclamation-octagon"></i> View Alerts (@ViewBag.LowStockCount)
                     </a>
                 }
                 else
                 {
-                    <a asp-controller="Warehouse" asp-action="LowStock" class="mt-auto py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+                    <a asp-controller="Warehouse" asp-action="LowStock" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
                         <i class="bi bi-shield-check"></i> Check Levels
                     </a>
                 }
@@ -310,61 +285,61 @@
 }
 
 <!-- Self-Service Title -->
-<div class="flex items-center gap-x-3 mb-4 mt-8">
-    <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
+<div class="mb-4 mt-8">
+    <h2 class="text-sm font-bold text-gray-900 dark:text-white flex items-center gap-x-2">
         My Self-Service
     </h2>
-    <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
 </div>
 
-<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10">
     <!-- Card -->
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex flex-col text-center h-full">
-            <div class="inline-flex justify-center items-center size-[62px] rounded-full mx-auto mb-4 bg-indigo-100 text-indigo-800 dark:bg-indigo-800/30 dark:text-indigo-400">
-                <i class="bi bi-calendar-plus-fill text-2xl"></i>
+    <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="p-6 md:p-8 flex flex-col text-center h-full">
+            <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-indigo-50 text-indigo-500 dark:bg-indigo-900/20 dark:text-indigo-400">
+                <i class="bi bi-calendar-check text-2xl"></i>
             </div>
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-1">File Leave Request</h3>
-            <p class="text-sm text-gray-500 dark:text-neutral-500 grow mb-4">Submit a new leave request for manager approval. Track your remaining balance.</p>
-            <a asp-controller="LeaveRequests" asp-action="Create" class="mt-auto py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none w-full border-gray-200 shadow-sm">
-                <i class="bi bi-plus-circle"></i> File Leave
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">File Leave Request</h3>
+            <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">Submit a new leave request for manager approval. Track your remaining balance.</p>
+            <a asp-controller="LeaveRequests" asp-action="Create" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                <i class="bi bi-plus-lg"></i> File Leave
             </a>
         </div>
     </div>
 
     <!-- Card -->
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex flex-col text-center h-full">
-            <div class="inline-flex justify-center items-center size-[62px] rounded-full mx-auto mb-4 bg-amber-100 text-amber-800 dark:bg-amber-800/30 dark:text-amber-500">
+    <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="p-6 md:p-8 flex flex-col text-center h-full">
+            <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-amber-50 text-amber-500 dark:bg-amber-900/20 dark:text-amber-400">
                 <i class="bi bi-folder2-open text-2xl"></i>
             </div>
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-1">My Leave History</h3>
-            <p class="text-sm text-gray-500 dark:text-neutral-500 grow mb-4">View all submitted leave requests and their current approval status.</p>
-            <div class="flex gap-2 justify-center flex-wrap mb-4">
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-green-100 text-green-800 text-xs font-medium dark:bg-green-800/30 dark:text-green-500">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">My Leave History</h3>
+            <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-6 leading-relaxed">View all submitted leave requests and their current approval status.</p>
+            <div class="flex gap-2 justify-center flex-wrap mb-6">
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100 dark:border-transparent dark:bg-emerald-900/20 dark:text-emerald-400">
                     <i class="bi bi-check-circle"></i> @ViewBag.UserApproved Approved
                 </span>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-amber-100 text-amber-800 text-xs font-medium dark:bg-amber-800/30 dark:text-amber-500">
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold border border-amber-100 dark:border-transparent dark:bg-amber-900/20 dark:text-amber-400">
                     <i class="bi bi-hourglass-split"></i> @ViewBag.UserPending Pending
                 </span>
             </div>
-            <a asp-controller="LeaveRequests" asp-action="Index" class="mt-auto py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+            <a asp-controller="LeaveRequests" asp-action="Index" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
                 View History
             </a>
         </div>
     </div>
 
     <!-- Card -->
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl hover:shadow-md transition dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex flex-col text-center h-full">
-            <div class="inline-flex justify-center items-center size-[62px] rounded-full mx-auto mb-4 bg-cyan-100 text-cyan-800 dark:bg-cyan-800/30 dark:text-cyan-500">
-                <i class="bi bi-file-earmark-text-fill text-2xl"></i>
+    <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="p-6 md:p-8 flex flex-col text-center h-full">
+            <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-cyan-50 text-cyan-500 dark:bg-cyan-900/20 dark:text-cyan-400">
+                <i class="bi bi-file-earmark-text text-2xl"></i>
             </div>
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-1">View Payslip</h3>
-            <p class="text-sm text-gray-500 dark:text-neutral-500 grow mb-4">Access your latest payslip and compensation details</p>
-            <a asp-controller="Payroll" asp-action="MyPayslip" class="mt-auto py-2 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">View Payslip</h3>
+            <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">Access your latest payslip and compensation details</p>
+            <a asp-controller="Payroll" asp-action="MyPayslip" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
                 <i class="bi bi-file-earmark-text"></i> View Payslip
             </a>
         </div>
     </div>
 </div>
+

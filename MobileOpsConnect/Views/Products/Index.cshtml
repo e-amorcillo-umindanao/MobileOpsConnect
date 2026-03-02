@@ -13,184 +13,141 @@
 }
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <div class="flex flex-wrap items-center gap-2 mb-4">
-                <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-neutral-200">
-                    <span class="size-1.5 inline-block bg-green-500 rounded-full"></span>
-                    Inventory Online
-                </span>
-                <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                    <i class="bi bi-box-seam-fill"></i> @totalProducts Products Tracked
-                </span>
-                @if (lowStockCount > 0)
-                {
-                    <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500/30 text-white">
-                        <i class="bi bi-exclamation-triangle-fill"></i> @lowStockCount Low Stock
-                    </span>
-                }
-                @if (outOfStockCount > 0)
-                {
-                    <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                        <i class="bi bi-archive-fill"></i> @outOfStockCount Archived
-                    </span>
-                }
-            </div>
-            <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Inventory Management</h1>
-            <p class="text-blue-100 text-lg">Product catalog, stock levels &amp; valuation</p>
-        </div>
-        <div class="hidden md:block opacity-20 pointer-events-none">
-            <i class="bi bi-box-seam-fill text-9xl text-white"></i>
-        </div>
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
+            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span>
+            Inventory Online
+        </span>
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
+            <i class="bi bi-box-seam"></i> @totalProducts Products Tracked
+        </span>
     </div>
+    <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Inventory Management</h1>
+    <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Product catalog, stock levels & valuation</p>
 </div>
 
 <!-- Stock Overview Title -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
-        <i class="bi bi-bar-chart-line-fill text-indigo-500"></i> Stock Overview
+<div class="mb-4">
+    <h2 class="text-xs font-bold uppercase tracking-widest text-[#5e4dcd] flex items-center gap-x-2 dark:text-indigo-400">
+        <i class="bi bi-grid-3x3-gap"></i> Stock Overview
     </h2>
-    <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
 </div>
 
 <!-- Metrics Grid -->
-<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
     <!-- Total SKUs -->
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg dark:bg-indigo-800/30 dark:text-indigo-500">
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-[#f4f2ff] text-[#5e4dcd] rounded-2xl dark:bg-indigo-900/20 dark:text-indigo-400">
                 <i class="bi bi-box-seam-fill text-xl"></i>
             </div>
-            <div class="grow">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Total SKUs</p>
-                <div class="mt-1 flex items-center gap-x-2">
-                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@totalProducts</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium dark:bg-indigo-800/20 dark:text-indigo-400">
-                        <i class="bi bi-box-seam"></i> Catalog
-                    </span>
-                </div>
-            </div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total SKUs</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@totalProducts</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-[#f4f2ff] text-[#5e4dcd] text-[10px] font-bold uppercase tracking-wide dark:bg-indigo-900/20 dark:text-indigo-400 mb-1">
+                <i class="bi bi-tag-fill"></i> Catalog
+            </span>
         </div>
     </div>
 
     <!-- Healthy -->
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg dark:bg-green-800/30 dark:text-green-500">
-                <i class="bi bi-check2-all text-xl"></i>
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-2xl dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/30">
+                <i class="bi bi-check-circle text-xl"></i>
             </div>
-            <div class="grow">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Healthy</p>
-                <div class="mt-1 flex items-center gap-x-2">
-                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@healthyCount</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium dark:bg-green-800/20 dark:text-green-400">
-                        <i class="bi bi-check-circle-fill"></i> In Stock
-                    </span>
-                </div>
-            </div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Healthy</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@healthyCount</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide dark:bg-emerald-900/20 dark:text-emerald-400 mb-1">
+                <i class="bi bi-check2-all"></i> In Stock
+            </span>
         </div>
     </div>
 
     <!-- Low Stock -->
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-red-100 text-red-800 rounded-lg dark:bg-red-800/30 dark:text-red-500">
-                <i class="bi bi-exclamation-octagon-fill text-xl"></i>
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-rose-50 text-rose-500 border border-rose-100 rounded-2xl dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800/30">
+                <i class="bi bi-exclamation-circle text-xl"></i>
             </div>
-            <div class="grow">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Low Stock</p>
-                <div class="mt-1 flex items-center gap-x-2">
-                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@lowStockCount</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium dark:bg-red-800/20 dark:text-red-400">
-                        <i class="bi bi-exclamation-triangle-fill"></i> Alert
-                    </span>
-                </div>
-            </div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Low Stock</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@lowStockCount</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide dark:bg-rose-900/20 dark:text-rose-400 mb-1">
+                <i class="bi bi-exclamation-triangle-fill"></i> Alert
+            </span>
         </div>
     </div>
 
     <!-- Out of Stock -->
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-gray-100 text-gray-800 rounded-lg dark:bg-neutral-800 dark:text-neutral-400">
-                <i class="bi bi-archive-fill text-xl"></i>
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-gray-100 text-gray-500 rounded-2xl dark:bg-neutral-800 dark:text-neutral-400">
+                <i class="bi bi-archive text-xl"></i>
             </div>
-            <div class="grow">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Out of Stock</p>
-                <div class="mt-1 flex items-center gap-x-2">
-                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@outOfStockCount</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(outOfStockCount > 0 ? "bg-red-100 text-red-800 dark:bg-red-800/20 dark:text-red-400" : "bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400")">
-                        <i class="bi @(outOfStockCount > 0 ? "bi-archive-fill" : "bi-check-circle-fill")"></i>
-                        @(outOfStockCount > 0 ? "Archived" : "None")
-                    </span>
-                </div>
-            </div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Out of Stock</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@outOfStockCount</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide dark:bg-emerald-900/20 dark:text-emerald-400 mb-1">
+                <i class="bi bi-check-circle-fill"></i> None
+            </span>
         </div>
     </div>
 </div>
 
-<!-- Product Directory Title -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
-        <i class="bi bi-list-columns-reverse text-amber-500"></i> Product Directory
+<!-- Product Directory Title & Actions -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-2">
+    <h2 class="text-xs font-bold uppercase tracking-widest text-[#f0a623] flex items-center gap-x-2">
+        <i class="bi bi-funnel"></i> Product Directory
     </h2>
-    <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
-</div>
-
-<!-- Action Bar -->
-<div class="flex flex-wrap justify-between items-center gap-4 mb-4">
-    <div class="flex items-center gap-x-3">
-        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800 dark:bg-indigo-800/30 dark:text-indigo-500">
-            <i class="bi bi-funnel-fill text-lg"></i>
-        </span>
-        <div>
-            <p class="font-semibold text-sm text-gray-800 dark:text-neutral-200 mb-0" id="inv-tab-label">Active Products</p>
-            <p class="text-gray-500 text-xs mb-0 dark:text-neutral-500" id="inv-tab-count">Showing @activeCount item@(activeCount != 1 ? "s" : "")</p>
-        </div>
-    </div>
-    <div class="flex flex-wrap gap-2">
-        <a asp-controller="Home" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+    <div class="flex gap-2">
+        <a asp-controller="Home" asp-action="Index" class="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
             <i class="bi bi-arrow-left"></i> Dashboard
         </a>
         @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
         {
-            <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700">
-                <i class="bi bi-plus-circle"></i> New Product
+            <a asp-action="Create" class="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] focus:outline-none focus:bg-[#1a1a1a]">
+                <i class="bi bi-plus text-lg leading-none"></i> New Product
             </a>
         }
     </div>
 </div>
 
-<!-- Tab Pills -->
-<nav class="flex gap-2 mb-6" aria-label="Tabs" role="tablist">
-    <button type="button" class="hs-tab-active:bg-blue-600 hs-tab-active:text-white hs-tab-active:border-transparent py-2 px-4 inline-flex items-center gap-2 bg-white text-sm font-medium text-gray-500 rounded-lg shadow-sm hover:text-gray-800 border border-gray-200 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 active" id="inv-active-tab" data-hs-tab="#inv-active-section" aria-controls="inv-active-section" role="tab">
+<!-- Tab Header Underline -->
+<nav class="flex space-x-6 border-b border-gray-200 dark:border-neutral-700 mb-6" aria-label="Tabs" role="tablist">
+    <button type="button" class="hs-tab-active:font-bold hs-tab-active:border-gray-800 hs-tab-active:text-gray-900 py-3 px-1 inline-flex items-center gap-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 dark:hs-tab-active:border-white dark:hs-tab-active:text-white dark:text-neutral-400 dark:hover:text-neutral-300 active font-medium" id="inv-active-tab" data-hs-tab="#inv-active-section" aria-controls="inv-active-section" role="tab">
         <i class="bi bi-box-seam"></i> Active
-        <span class="hs-tab-active:bg-white/20 hs-tab-active:text-white inline-flex items-center py-0.5 px-2.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-neutral-300">@activeCount</span>
+        <span class="hs-tab-active:bg-gray-100 hs-tab-active:text-gray-800 inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400 dark:hs-tab-active:bg-neutral-700 dark:hs-tab-active:text-white">@activeCount</span>
     </button>
-    <button type="button" class="hs-tab-active:bg-blue-600 hs-tab-active:text-white hs-tab-active:border-transparent py-2 px-4 inline-flex items-center gap-2 bg-white text-sm font-medium text-gray-500 rounded-lg shadow-sm hover:text-gray-800 border border-gray-200 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" id="inv-archived-tab" data-hs-tab="#inv-archived-section" aria-controls="inv-archived-section" role="tab">
+    <button type="button" class="hs-tab-active:font-bold hs-tab-active:border-gray-800 hs-tab-active:text-gray-900 py-3 px-1 inline-flex items-center gap-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 dark:hs-tab-active:border-white dark:hs-tab-active:text-white dark:text-neutral-400 dark:hover:text-neutral-300 font-medium" id="inv-archived-tab" data-hs-tab="#inv-archived-section" aria-controls="inv-archived-section" role="tab">
         <i class="bi bi-archive"></i> Archived
-        <span class="hs-tab-active:bg-white/20 hs-tab-active:text-white inline-flex items-center py-0.5 px-2.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-neutral-300">@outOfStockCount</span>
+        <span class="hs-tab-active:bg-gray-100 hs-tab-active:text-gray-800 inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400 dark:hs-tab-active:bg-neutral-700 dark:hs-tab-active:text-white">@outOfStockCount</span>
     </button>
 </nav>
 
 <!-- Product Table Card -->
-<div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6 relative overflow-hidden">
 
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-neutral-700">
+    <div class="px-6 py-5 border-b border-gray-100 dark:border-neutral-800">
         <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-x-3">
-                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800 dark:bg-indigo-800/30 dark:text-indigo-500">
-                    <i class="bi bi-table text-lg"></i>
+                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-[#f4f2ff] text-[#5e4dcd] dark:bg-indigo-900/30 dark:text-indigo-400">
+                    <i class="bi bi-layout-text-window text-lg"></i>
                 </span>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-200" id="inv-card-title">Inventory Catalog</h3>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-neutral-200" id="inv-card-title">Inventory Catalog</h3>
                     <span class="text-xs text-gray-500 dark:text-neutral-500" id="inv-card-subtitle">@activeCount active product@(activeCount != 1 ? "s" : "")</span>
                 </div>
             </div>
-            <div class="flex gap-1 flex-wrap" id="inv-card-badges">
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium dark:bg-green-800/20 dark:text-green-400">@healthyCount Stocked</span>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium dark:bg-red-800/20 dark:text-red-400">@lowStockCount Low</span>
+            <div class="flex gap-2 flex-wrap" id="inv-card-badges">
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">@healthyCount Stocked</span>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">@lowStockCount Low</span>
             </div>
         </div>
     </div>
@@ -202,12 +159,12 @@
 
             @if (activeProducts.Count == 0)
             {
-                <div class="text-center py-10">
-                    <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-green-50 bg-green-100 text-green-800 mx-auto mb-4 dark:border-green-900 dark:bg-green-800 dark:text-green-400">
-                        <i class="bi bi-box-seam text-2xl"></i>
+                <div class="text-center py-24 px-4">
+                    <span class="inline-flex justify-center items-center size-14 rounded-full bg-emerald-50 text-emerald-600 mx-auto mb-4 dark:bg-emerald-900/30 dark:text-emerald-400">
+                        <i class="bi bi-box text-2xl mb-0.5"></i>
                     </span>
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">No Active Products</h3>
-                    <p class="text-sm text-gray-500 dark:text-neutral-500">All products are currently out of stock. Check the Archive tab.</p>
+                    <h3 class="text-[17px] font-bold text-gray-900 dark:text-white mb-1.5 tracking-tight">No Active Products</h3>
+                    <p class="text-[13px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">All products are currently out of stock.</p>
                 </div>
             }
             else
@@ -363,12 +320,12 @@
 
             @if (archivedProducts.Count == 0)
             {
-                <div class="text-center py-10">
-                    <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-green-50 bg-green-100 text-green-800 mx-auto mb-4 dark:border-green-900 dark:bg-green-800 dark:text-green-400">
-                        <i class="bi bi-check-circle-fill text-2xl"></i>
+                <div class="text-center py-24 px-4">
+                    <span class="inline-flex justify-center items-center size-14 rounded-full bg-emerald-50 text-emerald-600 mx-auto mb-4 dark:bg-emerald-900/30 dark:text-emerald-400">
+                        <i class="bi bi-box text-2xl mb-0.5"></i>
                     </span>
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">No Archived Products</h3>
-                    <p class="text-sm text-gray-500 dark:text-neutral-500">All products currently have stock. Nothing to archive.</p>
+                    <h3 class="text-[17px] font-bold text-gray-900 dark:text-white mb-1.5 tracking-tight">No Archived Products</h3>
+                    <p class="text-[13px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">There are no products in the archive.</p>
                 </div>
             }
             else
@@ -469,15 +426,15 @@
     </div>
 
     <!-- Table Footer -->
-    <div class="px-6 py-4 border-t border-gray-200 dark:border-neutral-700">
+    <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
         <div class="flex flex-wrap justify-between items-center gap-2">
-            <span class="text-xs text-gray-500 dark:text-neutral-500" id="inv-footer-text">
+            <span class="text-[11px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide" id="inv-footer-text">
                 <i class="bi bi-info-circle me-1"></i>
                 Showing @activeCount active product@(activeCount != 1 ? "s" : "")
             </span>
-            <div class="flex gap-1" id="inv-footer-badges">
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium">@healthyCount Healthy</span>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium">@lowStockCount Low</span>
+            <div class="flex gap-2" id="inv-footer-badges">
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">@healthyCount Healthy</span>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">@lowStockCount Low</span>
             </div>
         </div>
     </div>
@@ -509,11 +466,11 @@
                 tabCount.textContent = 'Showing ' + activeCount + ' item' + (activeCount !== 1 ? 's' : '');
                 cardTitle.textContent = 'Inventory Catalog';
                 cardSubtitle.textContent = activeCount + ' active product' + (activeCount !== 1 ? 's' : '');
-                cardBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium">' + healthyCount + ' Stocked</span>' +
-                    '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium">' + lowStockCount + ' Low</span>';
+                cardBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">' + healthyCount + ' Stocked</span>' +
+                    '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">' + lowStockCount + ' Low</span>';
                 footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + activeCount + ' active product' + (activeCount !== 1 ? 's' : '');
-                footerBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium">' + healthyCount + ' Healthy</span>' +
-                    '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium">' + lowStockCount + ' Low</span>';
+                footerBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">' + healthyCount + ' Healthy</span>' +
+                    '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">' + lowStockCount + ' Low</span>';
             });
         }
 
@@ -521,11 +478,13 @@
             archivedTab.addEventListener('click', () => {
                 tabLabel.textContent = 'Archived Products';
                 tabCount.textContent = 'Showing ' + archivedCount + ' item' + (archivedCount !== 1 ? 's' : '');
-                cardTitle.textContent = 'Archived Inventory';
-                cardSubtitle.textContent = archivedCount + ' out-of-stock product' + (archivedCount !== 1 ? 's' : '');
-                cardBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-gray-100 text-gray-500 text-xs font-medium">' + archivedCount + ' Archived</span>';
+                cardTitle.textContent = 'Archived Products';
+                cardSubtitle.textContent = archivedCount + ' archived product' + (archivedCount !== 1 ? 's' : '');
+                cardBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">0 Stocked</span>' +
+                    '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">0 Low</span>';
                 footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + archivedCount + ' archived product' + (archivedCount !== 1 ? 's' : '');
-                footerBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-gray-100 text-gray-500 text-xs font-medium"><i class="bi bi-archive-fill me-1"></i> Out of Stock</span>';
+                footerBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">0 Healthy</span>' +
+                    '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">0 Low</span>';
             });
         }
     });

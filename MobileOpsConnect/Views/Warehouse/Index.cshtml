@@ -37,7 +37,7 @@
 
     <form asp-action="Index" method="get" id="scanForm" class="flex gap-2 flex-grow justify-end" style="max-width: 600px;">
         <div class="flex w-full">
-            <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-s-lg border border-gray-200 bg-gray-800 text-white hover:bg-gray-900 dark:bg-neutral-700 dark:border-neutral-600" data-bs-toggle="modal" data-bs-target="#scannerModal">
+            <button type="button" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-s-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800" data-bs-toggle="modal" data-bs-target="#scannerModal">
                 <i class="bi bi-camera-fill"></i> Scan
             </button>
             <input type="text" name="searchString" id="barcodeInput" class="py-2 px-4 block w-full border-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Scan SKU or Search Product..." value="@ViewData["CurrentFilter"]">

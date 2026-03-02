@@ -11,99 +11,166 @@
 
 <!-- Breadcrumb Navigation -->
 <div class="mb-6">
-    <a asp-controller="Home" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
+    <a asp-controller="Home" asp-action="Index" class="inline-flex items-center gap-x-2 text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
         <i class="bi bi-arrow-left"></i> Back to Dashboard
     </a>
 </div>
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm">
-                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> Directory Online
-            </span>
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                <i class="bi bi-people-fill"></i> @totalUsers Registered Account@(totalUsers != 1 ? "s" : "")
-            </span>
-        </div>
-        @if (isSuperAdmin)
-        {
-            <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">System Admin Management</h1>
-            <p class="text-blue-100 text-lg">Create &amp; manage Beta-level System Administrator accounts</p>
-        }
-        else
-        {
-            <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">User Management</h1>
-            <p class="text-blue-100 text-lg">Manage staff accounts, roles &amp; access permissions</p>
-        }
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
+            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span>
+            Directory Online
+        </span>
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
+            <i class="bi bi-people"></i> @totalUsers Registered Account@(totalUsers != 1 ? "s" : "")
+        </span>
     </div>
-    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
-        <i class="bi bi-people-fill text-9xl text-white"></i>
-    </div>
+    @if (isSuperAdmin)
+    {
+        <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">System Admin Management</h1>
+        <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Create & manage Beta-level System Administrator accounts</p>
+    }
+    else
+    {
+        <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">User Management</h1>
+        <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Manage staff accounts, roles & access permissions</p>
+    }
 </div>
 
 <!-- Account Overview -->
-<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-person-lines-fill text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Total Users</p><h3 class="text-xl font-medium text-gray-800 mt-1">@totalUsers</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium"><i class="bi bi-people-fill"></i> All Roles</span></div></div></div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-red-100 text-red-800 rounded-lg"><i class="bi bi-shield-lock-fill text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Super Admins</p><h3 class="text-xl font-medium text-gray-800 mt-1">@superAdminCount</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium"><i class="bi bi-shield-lock-fill"></i> Alpha</span></div></div></div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg"><i class="bi bi-gear-wide-connected text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Sys Admins</p><h3 class="text-xl font-medium text-gray-800 mt-1">@systemAdminCount</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium"><i class="bi bi-gear-fill"></i> Beta</span></div></div></div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl"><div class="p-4 md:p-5 flex gap-x-4"><div class="shrink-0 flex justify-center items-center size-[46px] bg-cyan-100 text-cyan-800 rounded-lg"><i class="bi bi-person-workspace text-xl"></i></div><div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Staff &amp; Others</p><h3 class="text-xl font-medium text-gray-800 mt-1">@otherCount</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-cyan-100 text-cyan-800 text-xs font-medium"><i class="bi bi-person-badge"></i> Standard</span></div></div></div>
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
+    <!-- Total Users -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-[#f4f2ff] text-[#5e4dcd] rounded-2xl dark:bg-indigo-900/20 dark:text-indigo-400">
+                <i class="bi bi-people text-xl"></i>
+            </div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total Users</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@totalUsers</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-[#f4f2ff] text-[#5e4dcd] text-[10px] font-bold uppercase tracking-wide dark:bg-indigo-900/20 dark:text-indigo-400 mb-1">
+                <i class="bi bi-layers"></i> All Roles
+            </span>
+        </div>
+    </div>
+
+    <!-- Super Admins -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-rose-50 text-rose-500 rounded-2xl dark:bg-rose-900/20 dark:text-rose-400">
+                <i class="bi bi-shield text-xl"></i>
+            </div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Super Admins</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@superAdminCount</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide dark:bg-rose-900/20 dark:text-rose-400 mb-1">
+                <i class="bi bi-shield-check"></i> Alpha
+            </span>
+        </div>
+    </div>
+
+    <!-- Sys Admins -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-amber-50 text-amber-500 rounded-2xl dark:bg-amber-900/20 dark:text-amber-400">
+                <i class="bi bi-gear text-xl"></i>
+            </div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Sys Admins</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@systemAdminCount</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-600 text-[10px] font-bold uppercase tracking-wide dark:bg-amber-900/20 dark:text-amber-400 mb-1">
+                <i class="bi bi-gear-wide"></i> Beta
+            </span>
+        </div>
+    </div>
+
+    <!-- Staff & Others -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-cyan-50 text-cyan-600 rounded-2xl dark:bg-cyan-900/20 dark:text-cyan-400">
+                <i class="bi bi-person-badge text-xl"></i>
+            </div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Staff & Others</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@otherCount</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-cyan-50 text-cyan-700 text-[10px] font-bold uppercase tracking-wide dark:bg-cyan-900/20 dark:text-cyan-400 mb-1">
+                <i class="bi bi-person-bounding-box"></i> Standard
+            </span>
+        </div>
+    </div>
 </div>
 
 <!-- Action Bar -->
-<div class="flex flex-wrap justify-between items-center gap-3 mb-6">
-    <div class="flex items-center gap-x-3">
-        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-green-100 text-green-800"><i class="bi bi-person-plus-fill text-lg"></i></span>
-        <div><p class="text-sm font-semibold text-gray-800 mb-0">Add New Account</p><span class="text-xs text-gray-500">Register a new user to the system</span></div>
+<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center p-6 bg-white border border-gray-100 shadow-sm rounded-[1.25rem] gap-4 mb-8 dark:bg-neutral-900 dark:border-neutral-800">
+    <div class="flex items-center gap-x-4">
+        <span class="inline-flex justify-center items-center size-[42px] rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400">
+            <i class="bi bi-person-plus text-xl"></i>
+        </span>
+        <div>
+            <p class="text-[15px] font-bold text-gray-900 dark:text-white mb-0">Add New Account</p>
+            <span class="text-[13px] font-medium text-gray-500 dark:text-neutral-400">Register a new user to the system</span>
+        </div>
     </div>
-    <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
-        <i class="bi bi-plus-circle"></i> Create New User
+    <a asp-action="Create" class="py-2.5 px-5 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] focus:outline-none focus:bg-[#1a1a1a] transition-colors w-full sm:w-auto">
+        <i class="bi bi-plus text-lg leading-none"></i> Create New User
     </a>
 </div>
 
 <!-- User Table -->
-<div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
-    <div class="px-6 py-4 border-b border-gray-200">
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] mb-6 relative overflow-hidden dark:bg-neutral-900 dark:border-neutral-800">
+    <div class="px-6 py-5 border-b border-gray-100 dark:border-neutral-800">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-x-3">
-                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-table text-lg"></i></span>
-                <div><h3 class="text-sm font-semibold text-gray-800">All Accounts</h3><span class="text-xs text-gray-500">@totalUsers user@(totalUsers != 1 ? "s" : "") registered</span></div>
+                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-[#f4f2ff] text-[#5e4dcd] dark:bg-indigo-900/30 dark:text-indigo-400">
+                    <i class="bi bi-layout-text-window text-lg"></i>
+                </span>
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-neutral-200">All Accounts</h3>
+                    <span class="text-xs text-gray-500 dark:text-neutral-500">@totalUsers user@(totalUsers != 1 ? "s" : "") registered</span>
+                </div>
             </div>
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"><i class="bi bi-filter"></i> Showing All</span>
+            <button class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-bold uppercase tracking-wide bg-[#f4f2ff] text-[#5e4dcd] hover:bg-indigo-100 transition-colors dark:bg-indigo-900/20 dark:text-indigo-400">
+                <i class="bi bi-funnel"></i> Showing All
+            </button>
         </div>
     </div>
     <div class="p-6">
         <!-- Desktop Table -->
         <div class="overflow-x-auto hidden md:block">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50"><tr>
-                    <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"><i class="bi bi-person me-1"></i> User</th>
-                    <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase"><i class="bi bi-shield me-1"></i> Role</th>
-                    <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase"><i class="bi bi-lightning me-1"></i> Actions</th>
+            <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
+                <thead><tr>
+                    <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-person me-2"></i> User</th>
+                    <th class="px-4 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-shield-check me-2"></i> Role</th>
+                    <th class="px-6 py-4 text-end text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-gear me-2"></i> Actions</th>
                 </tr></thead>
-                <tbody class="divide-y divide-gray-200">
+                <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
                     @foreach (var item in Model)
                     {
                         <tr class="hover:bg-gray-50 transition-colors">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-x-3">
+                            <td class="px-6 py-5">
+                                <div class="flex items-center gap-x-4">
                                     @if (item.Role == "SuperAdmin")
-                                    { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-red-100 text-red-800"><i class="bi bi-shield-lock-fill"></i></span> }
+                                    { <span class="inline-flex justify-center items-center size-[42px] rounded-2xl bg-rose-50 text-rose-500 dark:bg-rose-900/20 dark:text-rose-400"><i class="bi bi-shield-lock"></i></span> }
                                     else if (item.Role == "SystemAdmin")
-                                    { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-amber-100 text-amber-800"><i class="bi bi-gear-fill"></i></span> }
+                                    { <span class="inline-flex justify-center items-center size-[42px] rounded-2xl bg-amber-50 text-amber-500 dark:bg-amber-900/20 dark:text-amber-400"><i class="bi bi-gear-wide"></i></span> }
                                     else
-                                    { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-indigo-100 text-indigo-800"><i class="bi bi-person-fill"></i></span> }
-                                    <div><span class="text-sm font-semibold text-gray-800">@item.Email</span><br/><span class="text-xs text-gray-500">ID: @item.Id.Substring(0, Math.Min(8, item.Id.Length))…</span></div>
+                                    { <span class="inline-flex justify-center items-center size-[42px] rounded-2xl bg-cyan-50 text-cyan-600 dark:bg-cyan-900/20 dark:text-cyan-400"><i class="bi bi-person-bounding-box"></i></span> }
+                                    <div><span class="text-[14px] font-bold text-gray-900 dark:text-white">@item.Email</span><br/><span class="text-xs text-gray-500 font-medium tracking-wide dark:text-neutral-500">ID: @item.Id.Substring(0, Math.Min(8, item.Id.Length))…</span></div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-4 py-5 text-center">
                                 @if (item.Role == "SuperAdmin")
-                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="bi bi-shield-lock-fill"></i> Super Admin</span> }
+                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-[10px] uppercase tracking-wide font-bold bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400"><i class="bi bi-shield-check"></i> Super Admin</span> }
                                 else if (item.Role == "SystemAdmin")
-                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800"><i class="bi bi-gear-fill"></i> System Admin</span> }
+                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-[10px] uppercase tracking-wide font-bold bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"><i class="bi bi-gear-wide"></i> System Admin</span> }
                                 else
-                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800"><i class="bi bi-person-badge"></i> @item.Role</span> }
+                                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-[10px] uppercase tracking-wide font-bold bg-cyan-50 text-cyan-700 dark:bg-cyan-900/20 dark:text-cyan-400"><i class="bi bi-person-bounding-box"></i> @item.Role</span> }
                             </td>
                             <td class="px-6 py-4 text-end">
                                 <div class="hs-dropdown [--placement:bottom-right] relative inline-block">
@@ -171,13 +238,13 @@
     </div>
 
     <!-- Footer -->
-    <div class="px-6 py-4 border-t border-gray-200">
+    <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
         <div class="flex flex-wrap justify-between items-center gap-2">
-            <span class="text-xs text-gray-500"><i class="bi bi-info-circle me-1"></i> Showing all @totalUsers account@(totalUsers != 1 ? "s" : "")</span>
-            <div class="flex gap-1">
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-red-100 text-red-800 text-xs">@superAdminCount Alpha</span>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-amber-100 text-amber-800 text-xs">@systemAdminCount Beta</span>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-cyan-100 text-cyan-800 text-xs">@otherCount Staff</span>
+            <span class="text-[11px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide"><i class="bi bi-info-circle me-1"></i> Showing all @totalUsers account@(totalUsers != 1 ? "s" : "")</span>
+            <div class="flex gap-2">
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">@superAdminCount Alpha</span>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-600 text-[10px] uppercase tracking-wide font-bold dark:bg-amber-900/20 dark:text-amber-400">@systemAdminCount Beta</span>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-cyan-50 text-cyan-700 text-[10px] uppercase tracking-wide font-bold dark:bg-cyan-900/20 dark:text-cyan-400">@otherCount Staff</span>
             </div>
         </div>
     </div>
