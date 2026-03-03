@@ -43,18 +43,30 @@ namespace MobileOpsConnect.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
-            // LOGIC: Who sees what?
-            // "Bosses" (SuperAdmin, SystemAdmin, DepartmentManager) see EVERYTHING.
-            bool isBoss = User.IsInRole("SuperAdmin") ||
-                          User.IsInRole("SystemAdmin") ||
-                          User.IsInRole("DepartmentManager");
+            // Determine which roles' leaves the current user can see (direct tier only)
+            var myRoles = await _userManager.GetRolesAsync(user);
+            var myRole = myRoles.FirstOrDefault() ?? "";
+            var subordinateRoles = GetSubordinateRoles(myRole);
+            bool isBoss = subordinateRoles.Count > 0;
 
             List<LeaveRequest> requests;
+            var userRoles = new Dictionary<string, string>();
 
             if (isBoss)
             {
-                // Show ALL requests (so Beta can approve Charlie, and Charlie can approve Echo)
-                requests = await _context.LeaveRequests.Include(l => l.User).ToListAsync();
+                // Load all requests, then filter to only direct subordinate tier
+                var allRequests = await _context.LeaveRequests.Include(l => l.User).ToListAsync();
+                foreach (var req in allRequests)
+                {
+                    if (req.User != null && !userRoles.ContainsKey(req.UserID))
+                    {
+                        var roles = await _userManager.GetRolesAsync(req.User);
+                        userRoles[req.UserID] = roles.FirstOrDefault() ?? "Employee";
+                    }
+                }
+                requests = allRequests.Where(r =>
+                    subordinateRoles.Contains(userRoles.GetValueOrDefault(r.UserID, "Employee"))
+                ).ToList();
             }
             else
             {
@@ -63,20 +75,18 @@ namespace MobileOpsConnect.Controllers
                     .Where(l => l.UserID == user.Id)
                     .Include(l => l.User)
                     .ToListAsync();
-            }
 
-            // Pre-load roles for all users to avoid N+1 queries in the view
-            var userRoles = new Dictionary<string, string>();
-            foreach (var request in requests)
-            {
-                if (request.User != null && !userRoles.ContainsKey(request.UserID))
+                foreach (var req in requests)
                 {
-                    var roles = await _userManager.GetRolesAsync(request.User);
-                    userRoles[request.UserID] = roles.FirstOrDefault() ?? "Employee";
+                    if (req.User != null && !userRoles.ContainsKey(req.UserID))
+                    {
+                        var roles = await _userManager.GetRolesAsync(req.User);
+                        userRoles[req.UserID] = roles.FirstOrDefault() ?? "Employee";
+                    }
                 }
             }
-            ViewBag.UserRoles = userRoles;
 
+            ViewBag.UserRoles = userRoles;
             return View(requests);
         }
 
@@ -97,12 +107,16 @@ namespace MobileOpsConnect.Controllers
                 return NotFound();
             }
 
-            // SECURITY: Only the owner or a boss can view details
+            // SECURITY: Only the owner or a direct-tier superior can view details
             var user = await _userManager.GetUserAsync(User);
-            bool isBoss = User.IsInRole("SuperAdmin") ||
-                          User.IsInRole("SystemAdmin") ||
-                          User.IsInRole("DepartmentManager");
-            if (!isBoss && leaveRequest.UserID != user?.Id)
+            var myRoles = await _userManager.GetRolesAsync(user);
+            var myRole = myRoles.FirstOrDefault() ?? "";
+            var subordinateRoles = GetSubordinateRoles(myRole);
+            var requesterUser = await _userManager.FindByIdAsync(leaveRequest.UserID);
+            var requesterRoles = requesterUser != null ? await _userManager.GetRolesAsync(requesterUser) : new List<string>();
+            var requesterRole = requesterRoles.FirstOrDefault() ?? "Employee";
+            bool canView = subordinateRoles.Contains(requesterRole) || leaveRequest.UserID == user?.Id;
+            if (!canView)
             {
                 return Forbid();
             }
@@ -139,6 +153,12 @@ namespace MobileOpsConnect.Controllers
                 ModelState.AddModelError("EndDate", "End date must be on or after the start date.");
             }
 
+            // Server-side validation: StartDate must not be in the past (Philippine Time)
+            if (leaveRequest.StartDate.Date < PhilippineTime.Today)
+            {
+                ModelState.AddModelError("StartDate", "Start date cannot be in the past.");
+            }
+
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
@@ -146,7 +166,7 @@ namespace MobileOpsConnect.Controllers
 
                 // Auto-fill system fields
                 leaveRequest.UserID = user.Id;
-                leaveRequest.DateRequested = DateTime.UtcNow;
+                leaveRequest.DateRequested = PhilippineTime.Now;
 
                 var roles = await _userManager.GetRolesAsync(user);
                 var filerRole = roles.FirstOrDefault() ?? "Employee";
@@ -373,11 +393,15 @@ namespace MobileOpsConnect.Controllers
 
             if (leaveRequest == null) return NotFound();
 
-            // SECURITY: Only the owner or a boss can access delete
+            // SECURITY: Only the owner or a direct-tier superior can access delete
             var user = await _userManager.GetUserAsync(User);
-            bool isBoss = User.IsInRole("SuperAdmin") ||
-                          User.IsInRole("SystemAdmin") ||
-                          User.IsInRole("DepartmentManager");
+            var myRoles = await _userManager.GetRolesAsync(user);
+            var myRole = myRoles.FirstOrDefault() ?? "";
+            var subordinateRoles = GetSubordinateRoles(myRole);
+            var requesterUser = await _userManager.FindByIdAsync(leaveRequest.UserID);
+            var requesterRoles = requesterUser != null ? await _userManager.GetRolesAsync(requesterUser) : new List<string>();
+            var requesterRole = requesterRoles.FirstOrDefault() ?? "Employee";
+            bool isBoss = subordinateRoles.Contains(requesterRole);
             if (!isBoss && leaveRequest.UserID != user?.Id)
             {
                 return Forbid();
@@ -398,11 +422,15 @@ namespace MobileOpsConnect.Controllers
             // SECURITY: Only allow deletion of Pending requests
             if (leaveRequest.Status != "Pending") return Forbid();
 
-            // SECURITY: Only the owner or a boss can delete
+            // SECURITY: Only the owner or a direct-tier superior can delete
             var user = await _userManager.GetUserAsync(User);
-            bool isBoss = User.IsInRole("SuperAdmin") ||
-                          User.IsInRole("SystemAdmin") ||
-                          User.IsInRole("DepartmentManager");
+            var myRoles = await _userManager.GetRolesAsync(user);
+            var myRole = myRoles.FirstOrDefault() ?? "";
+            var subordinateRoles = GetSubordinateRoles(myRole);
+            var requesterUser = await _userManager.FindByIdAsync(leaveRequest.UserID);
+            var requesterRoles = requesterUser != null ? await _userManager.GetRolesAsync(requesterUser) : new List<string>();
+            var requesterRole = requesterRoles.FirstOrDefault() ?? "Employee";
+            bool isBoss = subordinateRoles.Contains(requesterRole);
             if (!isBoss && leaveRequest.UserID != user?.Id)
             {
                 return Forbid();
@@ -453,5 +481,17 @@ namespace MobileOpsConnect.Controllers
                 _ => 1
             };
         }
+
+        /// <summary>
+        /// Returns which roles' leave requests the given role can see and approve.
+        /// Each role only manages the tier directly below.
+        /// </summary>
+        private static List<string> GetSubordinateRoles(string myRole) => myRole switch
+        {
+            "SuperAdmin"        => new() { "SystemAdmin" },
+            "SystemAdmin"       => new() { "DepartmentManager" },
+            "DepartmentManager" => new() { "WarehouseStaff", "Employee" },
+            _                   => new()
+        };
     }
 }

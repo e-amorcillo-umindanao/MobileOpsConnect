@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Models
 {
@@ -7,7 +8,7 @@ namespace MobileOpsConnect.Models
         [Key]
         public int Id { get; set; }
 
-        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public DateTime Timestamp { get; set; } = PhilippineTime.Now;
 
         [Required]
         [StringLength(450)]

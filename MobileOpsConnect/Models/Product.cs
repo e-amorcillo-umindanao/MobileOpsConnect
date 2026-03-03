@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Models
 {
@@ -28,6 +29,6 @@ namespace MobileOpsConnect.Models
         public decimal Price { get; set; }
 
         [Display(Name = "Last Updated")]
-        public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+        public DateTime LastUpdated { get; set; } = PhilippineTime.Now;
     }
 }

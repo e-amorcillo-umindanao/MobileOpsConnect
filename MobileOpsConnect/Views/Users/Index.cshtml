@@ -6,7 +6,6 @@
     int totalUsers = Model.Count();
     int superAdminCount = Model.Count(u => u.Role == "SuperAdmin");
     int systemAdminCount = Model.Count(u => u.Role == "SystemAdmin");
-    int otherCount = totalUsers - superAdminCount - systemAdminCount;
 }
 
 <!-- Breadcrumb Navigation -->
@@ -40,7 +39,7 @@
 </div>
 
 <!-- Account Overview -->
-<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10">
     <!-- Total Users -->
     <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="flex justify-between items-center mb-6">
@@ -89,21 +88,6 @@
         </div>
     </div>
 
-    <!-- Staff & Others -->
-    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex justify-center items-center size-[46px] bg-cyan-50 text-cyan-600 rounded-2xl dark:bg-cyan-900/20 dark:text-cyan-400">
-                <i class="bi bi-person-badge text-xl"></i>
-            </div>
-        </div>
-        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Staff & Others</p>
-        <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@otherCount</h3>
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-cyan-50 text-cyan-700 text-[10px] font-bold uppercase tracking-wide dark:bg-cyan-900/20 dark:text-cyan-400 mb-1">
-                <i class="bi bi-person-bounding-box"></i> Standard
-            </span>
-        </div>
-    </div>
 </div>
 
 <!-- Action Bar -->
@@ -244,7 +228,6 @@
             <div class="flex gap-2">
                 <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">@superAdminCount Alpha</span>
                 <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-600 text-[10px] uppercase tracking-wide font-bold dark:bg-amber-900/20 dark:text-amber-400">@systemAdminCount Beta</span>
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-cyan-50 text-cyan-700 text-[10px] uppercase tracking-wide font-bold dark:bg-cyan-900/20 dark:text-cyan-400">@otherCount Staff</span>
             </div>
         </div>
     </div>

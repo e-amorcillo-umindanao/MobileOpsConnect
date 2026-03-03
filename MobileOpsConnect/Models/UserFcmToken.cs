@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Models
 {
@@ -13,6 +14,6 @@ namespace MobileOpsConnect.Models
         [Required]
         public string Token { get; set; } = string.Empty;
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = PhilippineTime.Now;
     }
 }

@@ -69,7 +69,7 @@ namespace MobileOpsConnect.Controllers
                 EstimatedCost = product.Price * Quantity,
                 RequestedById = currentUser.Id,
                 Status = "Pending",
-                DateRequested = DateTime.UtcNow,
+                DateRequested = PhilippineTime.Now,
                 Notes = Notes
             };
 
@@ -111,7 +111,7 @@ namespace MobileOpsConnect.Controllers
 
             order.Status = isApproval ? "Approved" : "Rejected";
             order.ApprovedById = currentUser.Id;
-            order.DateProcessed = DateTime.UtcNow;
+            order.DateProcessed = PhilippineTime.Now;
 
             await _context.SaveChangesAsync();
 

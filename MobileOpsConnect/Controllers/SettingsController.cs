@@ -63,7 +63,7 @@ namespace MobileOpsConnect.Controllers
             {
                 try
                 {
-                    systemSetting.LastUpdated = DateTime.UtcNow;
+                    systemSetting.LastUpdated = PhilippineTime.Now;
                     _context.Update(systemSetting);
                     await _context.SaveChangesAsync();
                     ViewBag.Message = "Settings updated successfully!";
@@ -131,7 +131,7 @@ namespace MobileOpsConnect.Controllers
 
             var exportData = new
             {
-                Timestamp = DateTime.UtcNow,
+                Timestamp = PhilippineTime.Now,
                 ExportedBy = User.Identity?.Name,
                 Users = await _userManager.Users.Select(u => new { u.Id, u.Email, u.UserName, u.EmailConfirmed }).ToListAsync(),
                 Roles = await _context.Roles.ToListAsync(),
@@ -146,7 +146,7 @@ namespace MobileOpsConnect.Controllers
 
             string json = JsonSerializer.Serialize(exportData, options);
             byte[] fileBytes = Encoding.UTF8.GetBytes(json);
-            string fileName = $"MobileOps_Backup_{DateTime.UtcNow:yyyyMMdd_HHmmss}.json";
+            string fileName = $"MobileOps_Backup_{PhilippineTime.Now:yyyyMMdd_HHmmss}.json";
 
             // Log the backup action
             var currentUser = await _userManager.GetUserAsync(User);
@@ -164,7 +164,7 @@ namespace MobileOpsConnect.Controllers
         [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> PurgeAuditLogsAsync()
         {
-            var thresholdDate = DateTime.UtcNow.AddDays(-90); // Purge older than 90 days
+            var thresholdDate = PhilippineTime.Now.AddDays(-90); // Purge older than 90 days
             
             var oldLogs = await _context.AuditLogs.Where(l => l.Timestamp < thresholdDate).ToListAsync();
             int count = oldLogs.Count;

@@ -99,7 +99,7 @@ namespace MobileOpsConnect.Controllers
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null) return Challenge();
                 entry.RecordedById = user.Id;
-                entry.CreatedAt = DateTime.UtcNow;
+                entry.CreatedAt = PhilippineTime.Now;
 
                 _context.Add(entry);
                 await _context.SaveChangesAsync();

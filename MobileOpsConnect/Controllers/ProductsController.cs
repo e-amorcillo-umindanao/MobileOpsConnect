@@ -51,7 +51,7 @@ namespace MobileOpsConnect.Controllers
         {
             if (ModelState.IsValid)
             {
-                product.LastUpdated = DateTime.UtcNow;
+                product.LastUpdated = PhilippineTime.Now;
                 _context.Add(product);
                 await _context.SaveChangesAsync();
 
@@ -91,7 +91,7 @@ namespace MobileOpsConnect.Controllers
             {
                 try
                 {
-                    product.LastUpdated = DateTime.UtcNow;
+                    product.LastUpdated = PhilippineTime.Now;
                     _context.Update(product);
                     await _context.SaveChangesAsync();
 
@@ -135,7 +135,7 @@ namespace MobileOpsConnect.Controllers
             if (product != null)
             {
                 product.StockQuantity = 0;
-                product.LastUpdated = DateTime.UtcNow;
+                product.LastUpdated = PhilippineTime.Now;
                 _context.Products.Update(product);
                 await _context.SaveChangesAsync();
 

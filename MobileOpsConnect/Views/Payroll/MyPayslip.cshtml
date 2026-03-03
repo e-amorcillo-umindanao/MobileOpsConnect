@@ -1,4 +1,5 @@
-﻿@{
+﻿@using MobileOpsConnect.Services
+@{
     ViewData["Title"] = "My Payslip";
     var currentUser = User.Identity?.Name;
 
@@ -56,7 +57,7 @@
             <i class="bi bi-check-circle"></i> PAID
         </span>
         <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
-            <i class="bi bi-calendar3"></i> @DateTime.Now.ToString("MMMM yyyy")
+            <i class="bi bi-calendar3"></i> @PhilippineTime.Now.ToString("MMMM yyyy")
         </span>
     </div>
     <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">My Payslip</h1>
@@ -93,7 +94,7 @@
             <span class="inline-flex justify-center items-center size-[64px] rounded-xl bg-[#0d0d0d] text-white mx-auto mb-4"><i class="bi bi-shield-lock text-2xl"></i></span>
             <h4 class="text-lg font-bold text-gray-800 mb-1">MobileOps Connect Inc.</h4>
             <p class="text-sm text-gray-500 mb-2">Official Compensation Statement</p>
-            <span class="inline-flex items-center gap-x-1 py-1 px-3 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"><i class="bi bi-calendar3"></i> Pay Period: @DateTime.Now.ToString("MMMM yyyy")</span>
+            <span class="inline-flex items-center gap-x-1 py-1 px-3 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"><i class="bi bi-calendar3"></i> Pay Period: @PhilippineTime.Now.ToString("MMMM yyyy")</span>
         </div>
 
         <div class="px-6 pb-6">
@@ -119,8 +120,8 @@
                             <span class="text-sm font-semibold text-gray-800">Status:</span>
                             <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check-circle-fill"></i> PAID</span>
                         </div>
-                        <p class="text-xs text-gray-500 mb-0.5">Issue Date: @DateTime.Now.ToString("dd MMM yyyy")</p>
-                        <p class="text-xs text-gray-500">Ref: MOC-@DateTime.Now.ToString("yyyyMM")-001</p>
+                        <p class="text-xs text-gray-500 mb-0.5">Issue Date: @PhilippineTime.Now.ToString("dd MMM yyyy")</p>
+                        <p class="text-xs text-gray-500">Ref: MOC-@PhilippineTime.Now.ToString("yyyyMM")-001</p>
                     </div>
                 </div>
 
@@ -178,7 +179,7 @@
         <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800 text-center">
             <div class="flex flex-col sm:flex-row justify-between items-center gap-2">
                 <span class="text-xs text-gray-500"><i class="bi bi-lock-fill me-1"></i> This is a system-generated document. No signature required.</span>
-                <span class="text-xs text-gray-500"><i class="bi bi-shield-check me-1"></i> Ref: MOC-@DateTime.Now.ToString("yyyyMM")-001</span>
+                <span class="text-xs text-gray-500"><i class="bi bi-shield-check me-1"></i> Ref: MOC-@PhilippineTime.Now.ToString("yyyyMM")-001</span>
             </div>
         </div>
     </div>

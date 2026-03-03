@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Models
 {
@@ -22,6 +23,6 @@ namespace MobileOpsConnect.Models
         [System.ComponentModel.DataAnnotations.Schema.Column(TypeName = "decimal(18,2)")]
         public decimal TaxRate { get; set; } = 12.00m; // Default VAT
 
-        public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
+        public DateTime LastUpdated { get; set; } = PhilippineTime.Now;
     }
 }

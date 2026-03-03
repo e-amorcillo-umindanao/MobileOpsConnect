@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Models
 {
@@ -37,7 +38,7 @@ namespace MobileOpsConnect.Models
         [ForeignKey("ApprovedById")]
         public IdentityUser? ApprovedBy { get; set; }
 
-        public DateTime DateRequested { get; set; } = DateTime.UtcNow;
+        public DateTime DateRequested { get; set; } = PhilippineTime.Now;
 
         public DateTime? DateProcessed { get; set; }
 

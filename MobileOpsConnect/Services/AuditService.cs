@@ -16,7 +16,7 @@ namespace MobileOpsConnect.Services
         {
             var log = new AuditLog
             {
-                Timestamp = DateTime.Now,
+                Timestamp = PhilippineTime.Now,
                 UserId = userId,
                 UserEmail = email,
                 UserRole = role,

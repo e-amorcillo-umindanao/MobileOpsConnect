@@ -86,8 +86,8 @@ namespace MobileOpsConnect.Controllers
                     EmployeeEmail = user.Email ?? "",
                     Role          = role,
                     CompanyName   = companyName,
-                    PayPeriod     = $"{DateTime.Now:MMMM} 1 – {DateTime.Now:MMMM} {DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)}, {DateTime.Now.Year}",
-                    PayDate       = DateTime.Now,
+                    PayPeriod     = $"{PhilippineTime.Now:MMMM} 1 – {PhilippineTime.Now:MMMM} {DateTime.DaysInMonth(PhilippineTime.Now.Year, PhilippineTime.Now.Month)}, {PhilippineTime.Now.Year}",
+                    PayDate       = PhilippineTime.Now,
                     BasicSalary   = basicSalary,
                     Overtime      = overtime,
                     Allowances    = allowance,
@@ -100,7 +100,7 @@ namespace MobileOpsConnect.Controllers
                 var document = new PayslipDocument(payslipData);
                 var pdfBytes = document.GeneratePdf();
 
-                return File(pdfBytes, "application/pdf", $"Payslip_{user.Email}_{DateTime.Now:yyyyMMdd}.pdf");
+                return File(pdfBytes, "application/pdf", $"Payslip_{user.Email}_{PhilippineTime.Now:yyyyMMdd}.pdf");
             }
             catch (Exception ex)
             {

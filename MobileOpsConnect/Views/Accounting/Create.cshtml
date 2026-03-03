@@ -1,4 +1,5 @@
 ﻿@model MobileOpsConnect.Models.AccountingEntry
+@using MobileOpsConnect.Services
 
 @{
     ViewData["Title"] = "New Transaction";
@@ -42,7 +43,7 @@
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
                             <label asp-for="TransactionDate" class="block text-sm font-medium mb-2 dark:text-white"><i class="bi bi-calendar3 me-1 text-indigo-500"></i> Date</label>
-                            <input asp-for="TransactionDate" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" />
+                            <input asp-for="TransactionDate" type="date" value="@PhilippineTime.Now.ToString("yyyy-MM-dd")" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" />
                             <span asp-validation-for="TransactionDate" class="text-red-500 text-xs"></span>
                         </div>
                         <div>

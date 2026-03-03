@@ -65,7 +65,7 @@ namespace MobileOpsConnect.Controllers
             if (existingToken != null)
             {
                 // Token already registered — just update the timestamp
-                existingToken.CreatedAt = DateTime.UtcNow;
+                existingToken.CreatedAt = PhilippineTime.Now;
             }
             else
             {
@@ -74,7 +74,7 @@ namespace MobileOpsConnect.Controllers
                 {
                     UserId = userId,
                     Token = request.Token,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = PhilippineTime.Now,
                 });
             }
 
@@ -178,7 +178,7 @@ namespace MobileOpsConnect.Controllers
             {
                 existing.P256dh = request.P256dh;
                 existing.Auth = request.Auth;
-                existing.CreatedAt = DateTime.UtcNow;
+                existing.CreatedAt = PhilippineTime.Now;
             }
             else
             {
@@ -188,7 +188,7 @@ namespace MobileOpsConnect.Controllers
                     Endpoint = request.Endpoint,
                     P256dh = request.P256dh,
                     Auth = request.Auth,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = PhilippineTime.Now,
                 });
             }
 

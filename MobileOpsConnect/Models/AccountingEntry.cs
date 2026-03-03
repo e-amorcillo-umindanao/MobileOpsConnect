@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using MobileOpsConnect.Services;
 
 namespace MobileOpsConnect.Models
 {
@@ -11,7 +12,7 @@ namespace MobileOpsConnect.Models
 
         [Required]
         [Display(Name = "Transaction Date")]
-        public DateTime TransactionDate { get; set; } = DateTime.Now;
+        public DateTime TransactionDate { get; set; } = PhilippineTime.Now;
 
         [Required]
         [StringLength(20)]
@@ -47,7 +48,7 @@ namespace MobileOpsConnect.Models
         [ForeignKey("RecordedById")]
         public IdentityUser? RecordedBy { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = PhilippineTime.Now;
 
         [StringLength(500)]
         public string? Notes { get; set; }

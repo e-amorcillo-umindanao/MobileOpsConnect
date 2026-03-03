@@ -11,7 +11,7 @@ namespace MobileOpsConnect.Services
         public string Role { get; set; } = "Employee";
         public string CompanyName { get; set; } = "MobileOps Connect";
         public string PayPeriod { get; set; } = "";
-        public DateTime PayDate { get; set; } = DateTime.Now;
+        public DateTime PayDate { get; set; } = PhilippineTime.Now;
 
         // Earnings
         public decimal BasicSalary { get; set; }

@@ -25,7 +25,7 @@ namespace MobileOpsConnect.Services
         {
             try
             {
-                var targetYear = year ?? DateTime.Now.Year;
+                var targetYear = year ?? PhilippineTime.Now.Year;
                 var url = $"https://date.nager.at/api/v3/PublicHolidays/{targetYear}/{countryCode}";
                 var response = await _httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();

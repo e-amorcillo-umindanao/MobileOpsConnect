@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MobileOpsConnect.Services;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -42,6 +43,6 @@ namespace MobileOpsConnect.Models
         // Who approved it? (Nullable, because it starts as null)
         public string? ApprovedById { get; set; }
 
-        public DateTime DateRequested { get; set; } = DateTime.UtcNow;
+        public DateTime DateRequested { get; set; } = PhilippineTime.Now;
     }
 }

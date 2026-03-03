@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MobileOpsConnect.Data;
 using MobileOpsConnect.Models;
+using MobileOpsConnect.Services;
 using System.Diagnostics;
 
 namespace MobileOpsConnect.Controllers
@@ -35,7 +36,7 @@ namespace MobileOpsConnect.Controllers
             var pendingLeaves = await _context.LeaveRequests.CountAsync(l => l.Status == "Pending");
 
             // On leave today: approved leaves where today falls within start–end range
-            var today = DateTime.UtcNow.Date;
+            var today = PhilippineTime.Today;
             var onLeaveToday = await _context.LeaveRequests
                 .CountAsync(l => l.Status == "Approved" && l.StartDate <= today && l.EndDate >= today);
 
@@ -116,7 +117,7 @@ namespace MobileOpsConnect.Controllers
 
                 if (oldestPending != default)
                 {
-                    var daysAgo = (DateTime.UtcNow - oldestPending).Days;
+                    var daysAgo = (PhilippineTime.Now - oldestPending).Days;
                     ViewBag.OldestPendingDays = daysAgo == 0 ? "Today" : $"{daysAgo} day{(daysAgo == 1 ? "" : "s")} ago";
                 }
                 else
@@ -171,12 +172,12 @@ namespace MobileOpsConnect.Controllers
                 ViewBag.UserApproved = userApproved;
 
                 // Next pay date = end of current month
-                var nextPayDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 
-                    DateTime.DaysInMonth(DateTime.UtcNow.Year, DateTime.UtcNow.Month));
+                var nextPayDate = new DateTime(PhilippineTime.Now.Year, PhilippineTime.Now.Month, 
+                    DateTime.DaysInMonth(PhilippineTime.Now.Year, PhilippineTime.Now.Month));
                 ViewBag.NextPayDate = nextPayDate.ToString("MMM dd");
 
                 // Latest payslip period
-                ViewBag.LatestPayPeriod = $"{DateTime.UtcNow:MMM} 1 – {DateTime.UtcNow:MMM} 15, {DateTime.UtcNow.Year}";
+                ViewBag.LatestPayPeriod = $"{PhilippineTime.Now:MMM} 1 – {PhilippineTime.Now:MMM} 15, {PhilippineTime.Now.Year}";
 
                 return View("EmployeeDashboard");
             }
@@ -198,7 +199,7 @@ namespace MobileOpsConnect.Controllers
             ViewBag.LowStockCount = lowStockCount;
 
             // Leave utilization
-            var today = DateTime.UtcNow.Date;
+            var today = PhilippineTime.Today;
             var allUsers = await _userManager.Users.CountAsync();
             var onLeaveToday = await _context.LeaveRequests
                 .CountAsync(l => l.Status == "Approved" && l.StartDate <= today && l.EndDate >= today);

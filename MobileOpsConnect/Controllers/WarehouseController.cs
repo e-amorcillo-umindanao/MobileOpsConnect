@@ -82,7 +82,7 @@ namespace MobileOpsConnect.Controllers
 
             // LOGIC: Add to Stock
             product.StockQuantity += quantity;
-            product.LastUpdated = DateTime.UtcNow;
+            product.LastUpdated = PhilippineTime.Now;
 
             await _context.SaveChangesAsync();
 
@@ -127,7 +127,7 @@ namespace MobileOpsConnect.Controllers
             }
 
             product.StockQuantity -= quantity;
-            product.LastUpdated = DateTime.UtcNow;
+            product.LastUpdated = PhilippineTime.Now;
 
             await _context.SaveChangesAsync();
 
