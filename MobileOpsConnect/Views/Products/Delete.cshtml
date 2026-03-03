@@ -5,22 +5,17 @@
 }
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500/30 text-white">
-                <i class="bi bi-exclamation-triangle-fill"></i> Archive Confirmation
-            </span>
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                <i class="bi bi-box-seam-fill"></i> SKU: @Model.SKU
-            </span>
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Archive Product</h1>
-        <p class="text-blue-100 text-lg">Review the product details below before archiving</p>
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-400 tracking-wide uppercase">
+            <i class="bi bi-exclamation-triangle"></i> Archive Confirmation
+        </span>
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
+            <i class="bi bi-box-seam"></i> SKU: @Model.SKU
+        </span>
     </div>
-    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
-        <i class="bi bi-archive-fill text-9xl text-white"></i>
-    </div>
+    <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Archive Product</h1>
+    <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Review the product details below before archiving</p>
 </div>
 
 <!-- Warning -->
@@ -33,31 +28,31 @@
 </div>
 
 <!-- Product Details -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-info-circle-fill text-indigo-500"></i> Product Details</h2>
-    <div class="grow border-t border-gray-200"></div>
+<div class="flex items-center gap-x-2 mb-4">
+    <i class="bi bi-info-circle text-gray-400"></i>
+    <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Product Details</h2>
 </div>
 
 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
             <div class="shrink-0 flex justify-center items-center size-[46px] bg-cyan-100 text-cyan-800 rounded-lg"><i class="bi bi-upc-scan text-xl"></i></div>
             <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">SKU Code</p><h3 class="text-xl font-medium text-gray-800 mt-1">@Model.SKU</h3></div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
             <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-box-seam text-xl"></i></div>
             <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Product Name</p><h3 class="text-xl font-medium text-gray-800 mt-1">@Model.Name</h3></div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
             <div class="shrink-0 flex justify-center items-center size-[46px] bg-purple-100 text-purple-800 rounded-lg"><i class="bi bi-tag-fill text-xl"></i></div>
             <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Category</p><h3 class="text-xl font-medium text-gray-800 mt-1">@(string.IsNullOrEmpty(Model.Category) ? "Uncategorized" : Model.Category)</h3></div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
             <div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg"><i class="bi bi-stack text-xl"></i></div>
             <div class="grow">
@@ -72,13 +67,13 @@
             </div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
             <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg"><i class="bi bi-currency-exchange text-xl"></i></div>
             <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Unit Price</p><h3 class="text-xl font-medium text-gray-800 mt-1">₱@Model.Price.ToString("N2")</h3></div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
             <div class="shrink-0 flex justify-center items-center size-[46px] bg-gray-100 text-gray-800 rounded-lg"><i class="bi bi-clock-history text-xl"></i></div>
             <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Last Updated</p><h3 class="text-xl font-medium text-gray-800 mt-1">@Model.LastUpdated.ToString("MMM dd, yyyy")</h3></div>
@@ -87,18 +82,18 @@
 </div>
 
 <!-- Action Buttons -->
-<div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl mb-6 dark:bg-neutral-900 dark:border-neutral-800">
     <div class="p-6">
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
             <div class="flex items-center gap-x-3">
-                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-red-100 text-red-800"><i class="bi bi-archive-fill text-lg"></i></span>
+                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-rose-50 text-rose-500 dark:bg-rose-900/20 dark:text-rose-400"><i class="bi bi-archive text-lg"></i></span>
                 <div>
-                    <h3 class="text-sm font-semibold text-gray-800">Confirm Archive</h3>
-                    <span class="text-xs text-gray-500">This will move the product to the archived section</span>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-neutral-200">Confirm Archive</h3>
+                    <span class="text-xs text-gray-500 dark:text-neutral-500">This will move the product to the archived section</span>
                 </div>
             </div>
             <div class="flex gap-2">
-                <a asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">
+                <a asp-action="Index" class="py-2.5 px-5 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-colors dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800">
                     <i class="bi bi-arrow-left"></i> Cancel
                 </a>
                 <form asp-action="Delete" method="post">

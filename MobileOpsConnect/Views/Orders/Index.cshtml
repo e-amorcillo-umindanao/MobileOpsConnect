@@ -8,37 +8,30 @@
 }
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-neutral-200">
-                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span>
-                Procurement Module
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
+            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span>
+            Procurement Module
+        </span>
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
+            <i class="bi bi-clipboard2-data"></i> @totalOrders Order@(totalOrders != 1 ? "s" : "")
+        </span>
+        @if (pendingCount > 0)
+        {
+            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-600 border border-amber-100 dark:bg-amber-900/30 dark:border-amber-800 dark:text-amber-400 tracking-wide uppercase">
+                <i class="bi bi-hourglass-split"></i> @pendingCount Pending
             </span>
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                <i class="bi bi-clipboard2-data-fill"></i> @totalOrders Order@(totalOrders != 1 ? "s" : "")
-            </span>
-            @if (pendingCount > 0)
-            {
-                <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-amber-500/30 text-white">
-                    <i class="bi bi-hourglass-split"></i> @pendingCount Pending
-                </span>
-            }
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Purchase Orders</h1>
-        <p class="text-blue-100 text-lg">Restock requests, approval tracking &amp; order history</p>
+        }
     </div>
-    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
-        <i class="bi bi-truck text-9xl text-white"></i>
-    </div>
+    <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Purchase Orders</h1>
+    <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Restock requests, approval tracking & order history</p>
 </div>
 
 <!-- Order Summary Title -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
-        <i class="bi bi-speedometer2 text-indigo-500"></i> Order Summary
-    </h2>
-    <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
+<div class="flex items-center gap-x-2 mb-4">
+    <i class="bi bi-speedometer2 text-gray-400"></i>
+    <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Order Summary</h2>
 </div>
 
 <!-- Metrics Grid -->
@@ -111,11 +104,9 @@
 </div>
 
 <!-- Order History Title -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
-        <i class="bi bi-list-columns-reverse text-amber-500"></i> Order History
-    </h2>
-    <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
+<div class="flex items-center gap-x-2 mb-4">
+    <i class="bi bi-list-columns-reverse text-gray-400"></i>
+    <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Order History</h2>
 </div>
 
 <!-- Action Bar -->
@@ -130,12 +121,12 @@
         </div>
     </div>
     <div class="flex flex-wrap gap-2">
-        <a asp-controller="Home" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+        <a asp-controller="Home" asp-action="Index" class="inline-flex items-center gap-x-2 text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
             <i class="bi bi-arrow-left"></i> Dashboard
         </a>
         @if (User.IsInRole("DepartmentManager"))
         {
-            <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700">
+            <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
                 <i class="bi bi-plus-circle"></i> Submit New PO
             </a>
         }
@@ -157,7 +148,7 @@
 }
 
 <!-- Order Table Card -->
-<div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
     <div class="p-0">
 
         @if (Model.Count == 0)
@@ -183,23 +174,23 @@
         {
             <!-- Desktop Table -->
             <div class="hidden md:block overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-                    <thead class="bg-gray-50 dark:bg-neutral-800">
+                <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
+                    <thead>
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-hash me-1"></i> PO #</th>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-box me-1"></i> Product</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-layers me-1"></i> Qty</th>
-                            <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-currency-exchange me-1"></i> Cost</th>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-person me-1"></i> Requested By</th>
-                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-calendar me-1"></i> Date</th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-flag me-1"></i> Status</th>
+                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-hash me-1"></i> PO #</th>
+                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-box me-1"></i> Product</th>
+                            <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-layers me-1"></i> Qty</th>
+                            <th scope="col" class="px-6 py-4 text-end text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-currency-exchange me-1"></i> Cost</th>
+                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-person me-1"></i> Requested By</th>
+                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-calendar me-1"></i> Date</th>
+                            <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-flag me-1"></i> Status</th>
                             @if ((bool)ViewBag.CanApprove)
                             {
-                                <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">Action</th>
+                                <th scope="col" class="px-6 py-4 text-end text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Action</th>
                             }
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                    <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
                         @foreach (var po in Model)
                         {
                             <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
@@ -348,7 +339,7 @@
     </div>
 
     <!-- Table Footer -->
-    <div class="px-6 py-4 border-t border-gray-200 dark:border-neutral-700">
+    <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
         <div class="flex flex-wrap justify-between items-center gap-2">
             <span class="text-xs text-gray-500 dark:text-neutral-500">
                 <i class="bi bi-info-circle me-1"></i>

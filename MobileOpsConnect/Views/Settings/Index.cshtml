@@ -5,22 +5,17 @@
 }
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm">
-                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> Configuration Active
-            </span>
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                <i class="bi bi-clock-history"></i> Last saved: @Model.LastUpdated.ToString("g")
-            </span>
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">System Configuration</h1>
-        <p class="text-blue-100 text-lg">Manage global settings, thresholds &amp; company parameters</p>
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
+            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span> Configuration Active
+        </span>
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
+            <i class="bi bi-clock-history"></i> Last saved: @Model.LastUpdated.ToString("g")
+        </span>
     </div>
-    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
-        <i class="bi bi-gear-wide-connected text-9xl text-white"></i>
-    </div>
+    <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">System Configuration</h1>
+    <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Manage global settings, thresholds &amp; company parameters</p>
 </div>
 
 <!-- Success Alert -->
@@ -78,12 +73,12 @@
         <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-8 pb-8 border-b border-gray-200">
             <!-- Left Header -->
             <div class="lg:col-span-4">
-                <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-shop-window text-indigo-500"></i> General Information</h2>
+                <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200 flex items-center gap-x-2"><i class="bi bi-shop-window text-gray-400"></i> General Information</h2>
                 <p class="text-sm text-gray-500 mt-1">Update your primary company identity and primary support contact details displayed across the platform.</p>
             </div>
             
             <!-- Right Form Card -->
-            <div class="lg:col-span-8 flex flex-col bg-white border shadow-sm rounded-xl">
+            <div class="lg:col-span-8 flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
                 <div class="p-6">
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
@@ -107,12 +102,12 @@
         <div class="grid lg:grid-cols-12 gap-6 lg:gap-8 mb-8">
             <!-- Left Header -->
             <div class="lg:col-span-4">
-                <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-box-seam-fill text-amber-500"></i> Inventory Logic</h2>
+                <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200 flex items-center gap-x-2"><i class="bi bi-box-seam text-gray-400"></i> Inventory Logic</h2>
                 <p class="text-sm text-gray-500 mt-1">Configure automated stock warnings and the default active tax calculation rate across your inventory.</p>
             </div>
             
             <!-- Right Form Card -->
-            <div class="lg:col-span-8 flex flex-col bg-white border shadow-sm rounded-xl">
+            <div class="lg:col-span-8 flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
                 <div class="p-6">
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div>
@@ -139,11 +134,11 @@
         <!-- Action Buttons -->
         <div class="grid lg:grid-cols-12 gap-6 lg:gap-8">
             <div class="lg:col-span-4"></div> <!-- Spacer for alignment -->
-            <div class="lg:col-span-8 flex flex-col bg-white border shadow-sm rounded-xl overflow-hidden">
+            <div class="lg:col-span-8 flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl overflow-hidden dark:bg-neutral-900 dark:border-neutral-800">
                 <div class="p-6 bg-gray-50/50">
                     <div class="grid sm:grid-cols-3 gap-4">
                         <div class="sm:col-span-2">
-                            <button type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 shadow-sm shadow-blue-500/30 transition-all">
+                            <button type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
                                 <i class="bi bi-check2-circle text-lg"></i> Save Configuration
                             </button>
                         </div>

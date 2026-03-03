@@ -10,67 +10,91 @@
 
 <!-- Breadcrumb Navigation -->
 <div class="mb-6">
-    <a asp-controller="Home" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
+    <a asp-controller="Home" asp-action="Index" class="inline-flex items-center gap-x-2 text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
         <i class="bi bi-arrow-left"></i> Back to Dashboard
     </a>
 </div>
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm">
-                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> Analytics Module
-            </span>
-            @if (lowStockCount > 0)
-            { <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500/30 text-white"><i class="bi bi-exclamation-triangle-fill"></i> @lowStockCount Low Stock Alert@(lowStockCount != 1 ? "s" : "")</span> }
-            @if (pendingLeaves > 0)
-            { <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-amber-500/30 text-white"><i class="bi bi-hourglass-split"></i> @pendingLeaves Pending Leave@(pendingLeaves != 1 ? "s" : "")</span> }
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Performance &amp; Analytics</h1>
-        <p class="text-blue-100 text-lg">Real-time overview of inventory, staffing &amp; operational alerts</p>
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
+            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span>
+            Analytics Module
+        </span>
+        @if (lowStockCount > 0)
+        { <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-400 tracking-wide uppercase"><i class="bi bi-exclamation-triangle"></i> @lowStockCount Low Stock Alert@(lowStockCount != 1 ? "s" : "")</span> }
+        @if (pendingLeaves > 0)
+        { <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-600 border border-amber-100 dark:bg-amber-900/30 dark:border-amber-800 dark:text-amber-400 tracking-wide uppercase"><i class="bi bi-hourglass-split"></i> @pendingLeaves Pending Leave@(pendingLeaves != 1 ? "s" : "")</span> }
     </div>
-    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
-        <i class="bi bi-graph-up-arrow text-9xl text-white"></i>
-    </div>
+    <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Performance & Analytics</h1>
+    <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Real-time overview of inventory, staffing & operational alerts</p>
 </div>
 
 <!-- Key Metrics -->
-<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5 flex justify-between">
-            <div><p class="text-xs uppercase tracking-wide text-gray-500">Inventory Value</p><h3 class="text-xl font-medium text-gray-800 mt-1">₱@totalValue.ToString("N0")</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium"><i class="bi bi-box-seam"></i> @totalProducts Products</span></div>
-            <span class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-cash-stack text-xl"></i></span>
-        </div>
-    </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5 flex justify-between">
-            <div><p class="text-xs uppercase tracking-wide text-gray-500">Total Products</p><h3 class="text-xl font-medium text-gray-800 mt-1">@totalProducts</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-purple-100 text-purple-800 text-xs font-medium"><i class="bi bi-grid-fill"></i> Catalog</span></div>
-            <span class="shrink-0 flex justify-center items-center size-[46px] bg-purple-100 text-purple-800 rounded-lg"><i class="bi bi-box-seam-fill text-xl"></i></span>
-        </div>
-    </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5 flex justify-between">
-            <div>
-                <p class="text-xs uppercase tracking-wide text-gray-500">Low Stock</p><h3 class="text-xl font-medium text-gray-800 mt-1">@lowStockCount</h3>
-                @if (lowStockCount > 0)
-                { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium"><i class="bi bi-exclamation-triangle-fill"></i> Reorder Needed</span> }
-                else
-                { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check-circle-fill"></i> Healthy</span> }
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
+    <!-- Inventory Value -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-[#f4f2ff] text-[#5e4dcd] rounded-2xl dark:bg-indigo-900/20 dark:text-indigo-400">
+                <i class="bi bi-cash-stack text-xl"></i>
             </div>
-            <span class="shrink-0 flex justify-center items-center size-[46px] @(lowStockCount > 0 ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800") rounded-lg"><i class="bi @(lowStockCount > 0 ? "bi-exclamation-octagon-fill" : "bi-check2-all") text-xl"></i></span>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Inventory Value</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">₱@totalValue.ToString("N0")</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-[#f4f2ff] text-[#5e4dcd] text-[10px] font-bold uppercase tracking-wide dark:bg-indigo-900/20 dark:text-indigo-400 mb-1">
+                <i class="bi bi-box-seam"></i> @totalProducts Products
+            </span>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5 flex justify-between">
-            <div>
-                <p class="text-xs uppercase tracking-wide text-gray-500">Staff On Leave</p><h3 class="text-xl font-medium text-gray-800 mt-1">@onLeaveCount</h3>
-                <div class="progress mt-1" style="height:4px;width:72px;">
-                    <div class="progress-bar rounded-pill" role="progressbar" style="width:@leaveUtilPercent%;background:#6366f1;" aria-valuenow="@leaveUtilPercent" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <span class="text-xs text-gray-500">@leaveUtilPercent% of workforce</span>
+
+    <!-- Total Products -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-purple-50 text-purple-500 rounded-2xl dark:bg-purple-900/20 dark:text-purple-400">
+                <i class="bi bi-box-seam text-xl"></i>
             </div>
-            <span class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg"><i class="bi bi-people-fill text-xl"></i></span>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total Products</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@totalProducts</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-purple-50 text-purple-600 text-[10px] font-bold uppercase tracking-wide dark:bg-purple-900/20 dark:text-purple-400 mb-1">
+                <i class="bi bi-grid"></i> Catalog
+            </span>
+        </div>
+    </div>
+
+    <!-- Low Stock -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] @(lowStockCount > 0 ? "bg-rose-50 text-rose-500 dark:bg-rose-900/20 dark:text-rose-400" : "bg-emerald-50 text-emerald-500 dark:bg-emerald-900/20 dark:text-emerald-400") rounded-2xl">
+                <i class="bi @(lowStockCount > 0 ? "bi-exclamation-octagon" : "bi-check2-all") text-xl"></i>
+            </div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Low Stock</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@lowStockCount</h3>
+            @if (lowStockCount > 0)
+            { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide dark:bg-rose-900/20 dark:text-rose-400 mb-1"><i class="bi bi-exclamation-triangle"></i> Reorder Needed</span> }
+            else
+            { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide dark:bg-emerald-900/20 dark:text-emerald-400 mb-1"><i class="bi bi-check-circle"></i> Healthy</span> }
+        </div>
+    </div>
+
+    <!-- Staff On Leave -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-amber-50 text-amber-500 rounded-2xl dark:bg-amber-900/20 dark:text-amber-400">
+                <i class="bi bi-people text-xl"></i>
+            </div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Staff On Leave</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@onLeaveCount</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-600 text-[10px] font-bold uppercase tracking-wide dark:bg-amber-900/20 dark:text-amber-400 mb-1">
+                <i class="bi bi-percent"></i> @leaveUtilPercent% Workforce
+            </span>
         </div>
     </div>
 </div>
@@ -79,11 +103,11 @@
 <div class="grid lg:grid-cols-2 gap-6 mb-8">
     <!-- Inventory Distribution -->
     <div>
-        <div class="flex items-center gap-x-3 mb-4">
-            <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-pie-chart-fill text-indigo-500"></i> Inventory Distribution</h2>
-            <div class="grow border-t border-gray-200"></div>
+        <div class="flex items-center gap-x-2 mb-4">
+            <i class="bi bi-pie-chart text-gray-400"></i>
+            <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Inventory Distribution</h2>
         </div>
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl h-full">
+        <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl h-full dark:bg-neutral-900 dark:border-neutral-800">
             <div class="p-6">
                 @if (ViewBag.TopCategories != null)
                 {
@@ -127,11 +151,11 @@
 
     <!-- Actions Required -->
     <div>
-        <div class="flex items-center gap-x-3 mb-4">
-            <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-bell-fill text-indigo-500"></i> Actions Required</h2>
-            <div class="grow border-t border-gray-200"></div>
+        <div class="flex items-center gap-x-2 mb-4">
+            <i class="bi bi-bell text-gray-400"></i>
+            <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Actions Required</h2>
         </div>
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl h-full">
+        <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl h-full dark:bg-neutral-900 dark:border-neutral-800">
             <div class="p-0">
                 @{ bool hasAlerts = pendingLeaves > 0 || (ViewBag.LowStockAlerts != null && ((IEnumerable<dynamic>)ViewBag.LowStockAlerts).Any()); }
                 @if (!hasAlerts)

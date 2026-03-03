@@ -8,21 +8,16 @@
 }
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">Inventory Alert</span>
-            @if (totalLow > 0)
-            { <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500/30 text-white">@totalLow Item@(totalLow != 1 ? "s" : "") Below Threshold</span> }
-            else
-            { <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-green-500/30 text-white">All Stocked</span> }
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Low Stock Alerts</h1>
-        <p class="text-blue-100 text-lg">Items below the minimum safety threshold requiring attention</p>
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-400 tracking-wide uppercase">Inventory Alert</span>
+        @if (totalLow > 0)
+        { <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-400 tracking-wide uppercase">@totalLow Item@(totalLow != 1 ? "s" : "") Below Threshold</span> }
+        else
+        { <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">All Stocked</span> }
     </div>
-    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
-        <i class="bi bi-exclamation-octagon-fill text-9xl text-white"></i>
-    </div>
+    <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Low Stock Alerts</h1>
+    <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Items below the minimum safety threshold requiring attention</p>
 </div>
 
 <!-- Alert Summary -->
@@ -60,13 +55,13 @@
         <div><p class="text-sm font-semibold text-gray-800 mb-0">Low Stock Items</p><span class="text-xs text-gray-500">Showing @totalLow item@(totalLow != 1 ? "s" : "") below threshold</span></div>
     </div>
     <div class="flex gap-2">
-        <a asp-controller="Warehouse" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">Warehouse</a>
-        <a asp-controller="Home" asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50">Dashboard</a>
+        <a asp-controller="Warehouse" asp-action="Index" class="inline-flex items-center gap-x-2 text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">Warehouse</a>
+        <a asp-controller="Home" asp-action="Index" class="inline-flex items-center gap-x-2 text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">Dashboard</a>
     </div>
 </div>
 
 <!-- Alert Table -->
-<div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
     <div class="p-0">
         @if (!Model.Any())
         {
@@ -80,16 +75,16 @@
         {
             <!-- Desktop Table -->
             <div class="overflow-x-auto hidden md:block">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50"><tr>
-                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">SKU</th>
-                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Product</th>
-                        <th class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Category</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Stock</th>
-                        <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
-                        <th class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase">Action</th>
+                <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
+                    <thead><tr>
+                        <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">SKU</th>
+                        <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Product</th>
+                        <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Category</th>
+                        <th class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Stock</th>
+                        <th class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Status</th>
+                        <th class="px-6 py-4 text-end text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Action</th>
                     </tr></thead>
-                    <tbody class="divide-y divide-gray-200">
+                    <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
                         @foreach (var item in Model)
                         {
                             <tr class="hover:bg-gray-50 transition-colors">
@@ -114,7 +109,7 @@
                                     { <span class="inline-flex items-center py-1 px-2.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800">CRITICAL</span> }
                                 </td>
                                 <td class="px-6 py-4 text-end">
-                                    <a asp-controller="Warehouse" asp-action="Adjust" asp-route-id="@item.ProductID" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
+                                    <a asp-controller="Warehouse" asp-action="Adjust" asp-route-id="@item.ProductID" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
                                         Adjust Stock
                                     </a>
                                 </td>
@@ -146,7 +141,7 @@
                             else
                             { <span class="inline-flex items-center py-0.5 px-2 rounded-full text-xs font-bold bg-amber-100 text-amber-800">CRITICAL</span> }
                         </div>
-                        <a asp-controller="Warehouse" asp-action="Adjust" asp-route-id="@item.ProductID" class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
+                        <a asp-controller="Warehouse" asp-action="Adjust" asp-route-id="@item.ProductID" class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
                             Adjust Stock
                         </a>
                     </div>
@@ -156,7 +151,7 @@
     </div>
 
     <!-- Footer -->
-    <div class="px-6 py-4 border-t border-gray-200">
+    <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
         <div class="flex flex-wrap justify-between items-center gap-2">
             <span class="text-xs text-gray-500">Showing all @totalLow item@(totalLow != 1 ? "s" : "") below safety threshold</span>
             <div class="flex gap-1">

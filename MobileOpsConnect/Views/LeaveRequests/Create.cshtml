@@ -14,28 +14,23 @@
 }
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm">
-                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span> HR Module Active
-            </span>
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                New Application
-            </span>
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">File Leave Request</h1>
-        <p class="text-blue-100 text-lg">Submit a new leave application for manager approval</p>
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
+            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span> HR Module Active
+        </span>
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
+            New Application
+        </span>
     </div>
-    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
-        <i class="bi bi-calendar-plus-fill text-9xl text-white"></i>
-    </div>
+    <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">File Leave Request</h1>
+    <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Submit a new leave application for manager approval</p>
 </div>
 
 <!-- Leave Info -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2">Leave Info</h2>
-    <div class="grow border-t border-gray-200"></div>
+<div class="flex items-center gap-x-2 mb-4">
+    <i class="bi bi-bar-chart text-gray-400"></i>
+    <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Leave Info</h2>
 </div>
 
 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
@@ -71,8 +66,8 @@
     <!-- Left Column: Holidays & Info (Span 8) -->
     <div class="lg:col-span-8 order-2 lg:order-none space-y-8 min-w-0">
         <!-- Public Holidays Card -->
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-neutral-700">
+        <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
+            <div class="px-6 py-5 border-b border-gray-100 dark:border-neutral-800">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-x-3">
                         <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-gray-100 text-gray-800"><i class="bi bi-calendar-event text-lg"></i></span>
@@ -88,16 +83,16 @@
                 @if (upcomingHolidays.Any())
                 {
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-                            <thead class="bg-gray-50 dark:bg-neutral-800">
+                        <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
+                            <thead>
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Date</th>
-                                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Holiday</th>
-                                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">English Name</th>
-                                    <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
+                                    <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">Date</th>
+                                    <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">Holiday</th>
+                                    <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">English Name</th>
+                                    <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest">Status</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                            <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
                                 @foreach (var h in upcomingHolidays)
                                 {
                                     var daysUntil = h.Date.DayNumber - DateOnly.FromDateTime(DateTime.Today).DayNumber;
@@ -137,12 +132,12 @@
 
     <!-- Right Column: Sticky Application Form (Span 4) -->
     <div class="lg:col-span-4 order-1 lg:order-none lg:sticky lg:top-6 min-w-0">
-        <div class="flex items-center gap-x-3 mb-4">
-            <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2">Application Form</h2>
-            <div class="grow border-t border-gray-200"></div>
+        <div class="flex items-center gap-x-2 mb-4">
+            <i class="bi bi-file-earmark-text text-gray-400"></i>
+            <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Application Form</h2>
         </div>
 
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
+        <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
             <div class="p-6">
                 <form asp-action="Create">
                 <div class="grid gap-y-5">
@@ -185,8 +180,8 @@
 
                     <!-- Actions -->
                     <div class="flex gap-2 pt-2 border-t border-gray-100 mt-2">
-                        <input type="submit" value="Submit Request" class="py-2.5 px-3 flex-1 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 cursor-pointer shadow-sm shadow-blue-500/30 transition-all" />
-                        <a asp-controller="Home" asp-action="Index" class="py-2.5 px-3 flex-[0.5] inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 transition-colors">
+                        <input type="submit" value="Submit Request" class="py-2.5 px-3 flex-1 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] cursor-pointer transition-colors" />
+                        <a asp-controller="Home" asp-action="Index" class="py-2.5 px-3 flex-[0.5] inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-colors dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300">
                             Cancel
                         </a>
                     </div>

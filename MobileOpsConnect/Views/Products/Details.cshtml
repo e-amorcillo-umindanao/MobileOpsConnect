@@ -7,86 +7,97 @@
 
 <!-- Breadcrumb Navigation -->
 <div class="mb-6">
-    <a asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
+    <a asp-action="Index" class="inline-flex items-center gap-x-2 text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
         <i class="bi bi-arrow-left"></i> Back to Inventory
     </a>
 </div>
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                <i class="bi bi-upc-scan"></i> SKU: @Model.SKU
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
+            <i class="bi bi-upc-scan"></i> SKU: @Model.SKU
+        </span>
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-[#f4f2ff] text-[#5e4dcd] border border-indigo-100 dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-400 tracking-wide uppercase">
+            <i class="bi bi-tag"></i> @Model.Category
+        </span>
+        @if (isLowStock)
+        {
+            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-400 tracking-wide uppercase">
+                <i class="bi bi-exclamation-triangle"></i> Low Stock
             </span>
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                <i class="bi bi-tag-fill"></i> @Model.Category
-            </span>
-            @if (isLowStock)
-            {
-                <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-500/30 text-white">
-                    <i class="bi bi-exclamation-triangle-fill"></i> Low Stock
-                </span>
-            }
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">@Model.Name</h1>
-        <p class="text-blue-100 text-lg">Product details &amp; inventory information</p>
+        }
     </div>
-    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
-        <i class="bi bi-box-seam-fill text-9xl text-white"></i>
-    </div>
+    <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">@Model.Name</h1>
+    <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Product details & inventory information</p>
 </div>
 
 <!-- Quick Overview -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-bar-chart-line-fill text-indigo-500"></i> Quick Overview</h2>
-    <div class="grow border-t border-gray-200"></div>
+<div class="flex items-center gap-x-2 mb-4">
+    <i class="bi bi-bar-chart-line text-gray-400"></i>
+    <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Quick Overview</h2>
 </div>
 
-<div class="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5 flex justify-between">
-            <div><p class="text-xs uppercase tracking-wide text-gray-500">Category</p><h3 class="text-xl font-medium text-gray-800 mt-1">@Model.Category</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-cyan-100 text-cyan-800 text-xs font-medium"><i class="bi bi-tag-fill"></i> Classification</span></div>
-            <span class="shrink-0 flex justify-center items-center size-[46px] bg-cyan-100 text-cyan-800 rounded-lg"><i class="bi bi-bookmark-star-fill text-xl"></i></span>
+<div class="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-10">
+    <!-- Category -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-cyan-50 text-cyan-500 rounded-2xl dark:bg-cyan-900/20 dark:text-cyan-400"><i class="bi bi-bookmark-star text-xl"></i></div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Category</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2rem] font-bold text-gray-900 dark:text-white leading-none">@Model.Category</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-cyan-50 text-cyan-600 text-[10px] font-bold uppercase tracking-wide mb-1"><i class="bi bi-tag"></i> Classification</span>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5 flex justify-between">
-            <div>
-                <p class="text-xs uppercase tracking-wide text-gray-500">In Stock</p>
-                <h3 class="text-xl font-medium text-gray-800 mt-1">@Model.StockQuantity <span class="text-sm text-gray-500">units</span></h3>
-                @if (isLowStock)
-                { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium"><i class="bi bi-exclamation-triangle-fill"></i> Low Stock</span> }
-                else
-                { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check-circle-fill"></i> Healthy</span> }
-            </div>
-            <span class="shrink-0 flex justify-center items-center size-[46px] @(isLowStock ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800") rounded-lg"><i class="bi @(isLowStock ? "bi-exclamation-octagon-fill" : "bi-box-seam-fill") text-xl"></i></span>
+    <!-- In Stock -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] @(isLowStock ? "bg-rose-50 text-rose-500 dark:bg-rose-900/20 dark:text-rose-400" : "bg-emerald-50 text-emerald-500 dark:bg-emerald-900/20 dark:text-emerald-400") rounded-2xl"><i class="bi @(isLowStock ? "bi-exclamation-octagon" : "bi-box-seam") text-xl"></i></div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">In Stock</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@Model.StockQuantity <span class="text-sm text-gray-400 font-medium">units</span></h3>
+            @if (isLowStock)
+            { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide mb-1"><i class="bi bi-exclamation-triangle"></i> Low Stock</span> }
+            else
+            { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide mb-1"><i class="bi bi-check-circle"></i> Healthy</span> }
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5 flex justify-between">
-            <div><p class="text-xs uppercase tracking-wide text-gray-500">Unit Price</p><h3 class="text-xl font-medium text-gray-800 mt-1">₱@Model.Price.ToString("N2")</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium"><i class="bi bi-currency-exchange"></i> Per Unit</span></div>
-            <span class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-cash-stack text-xl"></i></span>
+    <!-- Unit Price -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-[#f4f2ff] text-[#5e4dcd] rounded-2xl dark:bg-indigo-900/20 dark:text-indigo-400"><i class="bi bi-cash-stack text-xl"></i></div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Unit Price</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">₱@Model.Price.ToString("N2")</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-[#f4f2ff] text-[#5e4dcd] text-[10px] font-bold uppercase tracking-wide mb-1"><i class="bi bi-currency-exchange"></i> Per Unit</span>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5 flex justify-between">
-            <div><p class="text-xs uppercase tracking-wide text-gray-500">Last Updated</p><h3 class="text-xl font-medium text-gray-800 mt-1">@Model.LastUpdated.ToString("MMM dd")</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-purple-100 text-purple-800 text-xs font-medium"><i class="bi bi-clock-history"></i> @Model.LastUpdated.ToString("yyyy")</span></div>
-            <span class="shrink-0 flex justify-center items-center size-[46px] bg-purple-100 text-purple-800 rounded-lg"><i class="bi bi-calendar-check text-xl"></i></span>
+    <!-- Last Updated -->
+    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex justify-center items-center size-[46px] bg-purple-50 text-purple-500 rounded-2xl dark:bg-purple-900/20 dark:text-purple-400"><i class="bi bi-calendar-check text-xl"></i></div>
+        </div>
+        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Last Updated</p>
+        <div class="flex items-end justify-between mt-auto">
+            <h3 class="text-[2rem] font-bold text-gray-900 dark:text-white leading-none">@Model.LastUpdated.ToString("MMM dd")</h3>
+            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-purple-50 text-purple-600 text-[10px] font-bold uppercase tracking-wide mb-1"><i class="bi bi-clock-history"></i> @Model.LastUpdated.ToString("yyyy")</span>
         </div>
     </div>
 </div>
 
 <!-- Full Details -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-file-earmark-text-fill text-amber-500"></i> Full Details</h2>
-    <div class="grow border-t border-gray-200"></div>
+<div class="flex items-center gap-x-2 mb-4">
+    <i class="bi bi-file-earmark-text text-gray-400"></i>
+    <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Full Details</h2>
 </div>
 
 <div class="max-w-2xl mx-auto">
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl mb-6">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl mb-6 dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-6">
-            <div class="divide-y divide-gray-200">
+            <div class="divide-y divide-gray-100 dark:divide-neutral-800">
                 <div class="flex items-center py-4 gap-x-3">
                     <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-upc-scan"></i></span>
                     <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium">SKU Code</span><p class="text-sm font-semibold text-gray-800 mb-0">@Model.SKU</p></div>
@@ -117,7 +128,7 @@
             </div>
         </div>
         <!-- Footer Actions -->
-        <div class="px-6 py-4 border-t border-gray-200">
+        <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
             <div class="flex flex-wrap gap-2 justify-end">
                 <div class="flex gap-2">
                     @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))

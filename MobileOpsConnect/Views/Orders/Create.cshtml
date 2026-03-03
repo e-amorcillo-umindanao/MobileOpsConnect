@@ -3,31 +3,24 @@
 }
 
 <!-- Hero Banner -->
-<div class="bg-blue-600 rounded-xl shadow-sm p-6 sm:p-10 mb-6 relative overflow-hidden dark:bg-blue-800">
-    <div class="relative z-10">
-        <div class="flex flex-wrap items-center gap-2 mb-4">
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-neutral-200">
-                <span class="size-1.5 inline-block bg-green-500 rounded-full"></span>
-                Procurement Module
-            </span>
-            <span class="inline-flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-white/20 text-white">
-                <i class="bi bi-pencil-square"></i> New Request
-            </span>
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Submit Purchase Order</h1>
-        <p class="text-blue-100 text-lg">Request inventory restocking &mdash; managers will review and approve</p>
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
+            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span>
+            Procurement Module
+        </span>
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
+            <i class="bi bi-pencil-square"></i> New Request
+        </span>
     </div>
-    <div class="hidden md:block absolute top-1/2 right-6 -translate-y-1/2 opacity-20 pointer-events-none">
-        <i class="bi bi-truck text-9xl text-white"></i>
-    </div>
+    <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Submit Purchase Order</h1>
+    <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Request inventory restocking &mdash; managers will review and approve</p>
 </div>
 
 <!-- Section Title -->
-<div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 flex items-center gap-x-2">
-        <i class="bi bi-cart-plus-fill text-indigo-500"></i> Order Details
-    </h2>
-    <div class="grow border-t border-gray-200 dark:border-neutral-700"></div>
+<div class="flex items-center gap-x-2 mb-4">
+    <i class="bi bi-cart-plus text-gray-400"></i>
+    <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Order Details</h2>
 </div>
 
 @if (TempData["Error"] != null)
@@ -38,7 +31,7 @@
 }
 
 <div class="max-w-2xl mx-auto">
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
         <div class="p-6">
 
             <form asp-action="Create" method="post">
@@ -94,10 +87,10 @@
 
                     <!-- Action Buttons -->
                     <div class="flex gap-3 pt-2">
-                        <button type="submit" class="py-3 px-4 flex-1 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700">
-                            <i class="bi bi-send-fill"></i> Submit Purchase Order
+                        <button type="submit" class="py-3 px-4 flex-1 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+                            <i class="bi bi-send"></i> Submit Purchase Order
                         </button>
-                        <a asp-action="Index" class="py-3 px-4 flex-1 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                        <a asp-action="Index" class="py-3 px-4 flex-1 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-colors dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300">
                             <i class="bi bi-arrow-left"></i> Cancel &amp; Go Back
                         </a>
                     </div>
@@ -108,7 +101,7 @@
         </div>
 
         <!-- Card Footer -->
-        <div class="px-6 py-4 border-t border-gray-200 dark:border-neutral-700 text-center">
+        <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800 text-center">
             <span class="text-xs text-gray-500 dark:text-neutral-500">
                 <i class="bi bi-lock-fill me-1"></i>
                 Your order is submitted securely and routed to authorized approvers.
