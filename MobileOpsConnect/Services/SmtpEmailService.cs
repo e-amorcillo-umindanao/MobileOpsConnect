@@ -34,7 +34,8 @@ namespace MobileOpsConnect.Services
                 using var client = new SmtpClient(host, port)
                 {
                     Credentials = new NetworkCredential(username, password),
-                    EnableSsl = true
+                    EnableSsl = true,
+                    Timeout = 15000 // 15 seconds instead of default 100s
                 };
 
                 var message = new MailMessage

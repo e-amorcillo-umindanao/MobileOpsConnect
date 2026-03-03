@@ -216,35 +216,42 @@ namespace MobileOpsConnect.Services
             });
 
             int successCount = 0;
-            var staleIds = new List<int>();
+            var staleIds = new System.Collections.Concurrent.ConcurrentBag<int>();
 
-            foreach (var sub in subscriptions)
+            // Send all Web Push notifications in parallel (instead of one-by-one)
+            var tasks = subscriptions.Select(async sub =>
             {
                 try
                 {
+                    using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
                     var pushSub = new PushSubscription(sub.Endpoint, sub.P256dh, sub.Auth);
-                    await _webPushClient.SendNotificationAsync(pushSub, payload, _vapidDetails);
-                    successCount++;
+                    await _webPushClient.SendNotificationAsync(pushSub, payload, _vapidDetails, cts.Token);
+                    Interlocked.Increment(ref successCount);
                     _logger.LogDebug("Web Push sent to endpoint: {Endpoint}", sub.Endpoint[..50]);
                 }
                 catch (WebPushException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Gone ||
                                                    ex.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
-                    // Subscription expired or invalid — mark for removal
                     staleIds.Add(sub.Id);
                     _logger.LogWarning("Web Push subscription expired: {Endpoint}", sub.Endpoint[..50]);
+                }
+                catch (OperationCanceledException)
+                {
+                    _logger.LogWarning("Web Push timed out for endpoint: {Endpoint}", sub.Endpoint[..Math.Min(50, sub.Endpoint.Length)]);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Web Push failed for endpoint: {Endpoint}", sub.Endpoint[..Math.Min(50, sub.Endpoint.Length)]);
                 }
-            }
+            });
+            await Task.WhenAll(tasks);
 
             // Clean up stale subscriptions
-            if (staleIds.Count > 0)
+            if (!staleIds.IsEmpty)
             {
+                var idsToRemove = staleIds.ToList();
                 var toRemove = await _context.UserPushSubscriptions
-                    .Where(s => staleIds.Contains(s.Id)).ToListAsync();
+                    .Where(s => idsToRemove.Contains(s.Id)).ToListAsync();
                 _context.UserPushSubscriptions.RemoveRange(toRemove);
                 await _context.SaveChangesAsync();
             }

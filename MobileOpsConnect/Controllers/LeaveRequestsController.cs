@@ -25,8 +25,10 @@ namespace MobileOpsConnect.Controllers
         private readonly IEmailService _emailService;
         private readonly IAuditService _auditService;
         private readonly HolidayService _holidayService;
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly ILogger<LeaveRequestsController> _logger;
 
-        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService, HolidayService holidayService)
+        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService, HolidayService holidayService, IServiceScopeFactory scopeFactory, ILogger<LeaveRequestsController> logger)
         {
             _context = context;
             _userManager = userManager;
@@ -35,6 +37,8 @@ namespace MobileOpsConnect.Controllers
             _emailService = emailService;
             _auditService = auditService;
             _holidayService = holidayService;
+            _scopeFactory = scopeFactory;
+            _logger = logger;
         }
 
         // GET: LeaveRequests
@@ -185,29 +189,49 @@ namespace MobileOpsConnect.Controllers
                 _context.Add(leaveRequest);
                 await _context.SaveChangesAsync();
 
-                // Notify + broadcast only for non-SuperAdmin (they don't need approval)
-                if (filerRole != "SuperAdmin")
+                // Fire-and-forget: notifications are best-effort, don't block the response
+                var leaveId = leaveRequest.LeaveID;
+                var leaveType = leaveRequest.LeaveType;
+                var startDate = leaveRequest.StartDate;
+                var endDate = leaveRequest.EndDate;
+                var userId = user.Id;
+                var userEmail = user.Email!;
+                var userIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+                _ = Task.Run(async () =>
                 {
-                    string targetRole = filerRole switch
+                    try
                     {
-                        "Employee" or "WarehouseStaff" => "DepartmentManager",
-                        "DepartmentManager" => "SystemAdmin",
-                        "SystemAdmin" => "SuperAdmin",
-                        _ => "SuperAdmin"
-                    };
+                        using var scope = _scopeFactory.CreateScope();
+                        var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                        var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
+                        var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
 
-                    // FCM push to the target role
-                    await _notificationService.SendToRoleAsync(targetRole,
-                        "📋 New Leave Request",
-                        $"{user.Email} submitted a {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
+                        if (filerRole != "SuperAdmin")
+                        {
+                            string targetRole = filerRole switch
+                            {
+                                "Employee" or "WarehouseStaff" => "DepartmentManager",
+                                "DepartmentManager" => "SystemAdmin",
+                                "SystemAdmin" => "SuperAdmin",
+                                _ => "SuperAdmin"
+                            };
 
-                    // SignalR toast to the target role group only
-                    var displayName = user.Email?.Split('@')[0] ?? "Someone";
-                    await _hubContext.Clients.Group($"role_{targetRole}").SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Pending", leaveRequest.UserID, displayName);
-                }
+                            await notificationService.SendToRoleAsync(targetRole,
+                                "📋 New Leave Request",
+                                $"{userEmail} submitted a {leaveType} leave request ({startDate:MMM dd} – {endDate:MMM dd}).");
 
-                // Audit log
-                await _auditService.LogAsync(user.Id, user.Email!, filerRole, "CREATE", $"Filed {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+                            var displayName = userEmail.Split('@')[0];
+                            await hubContext.Clients.Group($"role_{targetRole}").SendAsync("LeaveStatusChanged", leaveId, "Pending", userId, displayName);
+                        }
+
+                        await auditService.LogAsync(userId, userEmail, filerRole, "CREATE", $"Filed {leaveType} leave request ({startDate:MMM dd} – {endDate:MMM dd}).", userIp);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Background notification failed for leave request #{LeaveId}", leaveId);
+                    }
+                });
 
                 return RedirectToAction(nameof(Index));
             }
@@ -246,23 +270,47 @@ namespace MobileOpsConnect.Controllers
             leaveRequest.ApprovedById = approver.Id;
             await _context.SaveChangesAsync();
 
-            // Notify the employee via push + email
-            var approveMsg = $"Your {leaveRequest.LeaveType} leave ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}) has been approved.";
-            await _notificationService.SendToUserAsync(leaveRequest.UserID, "✅ Leave Approved", approveMsg);
+            // Fire-and-forget: notifications are best-effort
+            var leaveId = leaveRequest.LeaveID;
+            var leaveType = leaveRequest.LeaveType;
+            var startDate = leaveRequest.StartDate;
+            var endDate = leaveRequest.EndDate;
+            var requesterId = leaveRequest.UserID;
+            var approverId = approver.Id;
+            var approverEmail = approver.Email!;
+            var approverIp = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            var employee = await _userManager.FindByIdAsync(leaveRequest.UserID);
-            if (employee?.Email != null)
+            _ = Task.Run(async () =>
             {
-                await _emailService.SendEmailAsync(employee.Email, "✅ Leave Approved",
-                    $"<h2>Leave Approved</h2><p>{approveMsg}</p><hr><p><small>MobileOps Connect ERP</small></p>");
-            }
+                try
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                    var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
+                    var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
+                    var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
+                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            // Broadcast real-time update to the requester only
-            await _hubContext.Clients.User(leaveRequest.UserID).SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Approved", leaveRequest.UserID, "");
+                    var approveMsg = $"Your {leaveType} leave ({startDate:MMM dd} – {endDate:MMM dd}) has been approved.";
+                    await notificationService.SendToUserAsync(requesterId, "✅ Leave Approved", approveMsg);
 
-            // Audit log
-            var approverRoles = await _userManager.GetRolesAsync(approver);
-            await _auditService.LogAsync(approver.Id, approver.Email!, approverRoles.FirstOrDefault() ?? "", "APPROVE", $"Approved leave request #{id} ({leaveRequest.LeaveType}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+                    var employee = await userManager.FindByIdAsync(requesterId);
+                    if (employee?.Email != null)
+                    {
+                        await emailService.SendEmailAsync(employee.Email, "✅ Leave Approved",
+                            $"<h2>Leave Approved</h2><p>{approveMsg}</p><hr><p><small>MobileOps Connect ERP</small></p>");
+                    }
+
+                    await hubContext.Clients.User(requesterId).SendAsync("LeaveStatusChanged", leaveId, "Approved", requesterId, "");
+
+                    var approverRoles = await userManager.GetRolesAsync(await userManager.FindByIdAsync(approverId));
+                    await auditService.LogAsync(approverId, approverEmail, approverRoles.FirstOrDefault() ?? "", "APPROVE", $"Approved leave request #{leaveId} ({leaveType}).", approverIp);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Background notification failed for leave approval #{LeaveId}", leaveId);
+                }
+            });
 
             return RedirectToAction(nameof(Index));
         }
@@ -297,23 +345,47 @@ namespace MobileOpsConnect.Controllers
             leaveRequest.ApprovedById = rejector.Id;
             await _context.SaveChangesAsync();
 
-            // Notify the employee via push + email
-            var rejectMsg = $"Your {leaveRequest.LeaveType} leave ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}) has been rejected.";
-            await _notificationService.SendToUserAsync(leaveRequest.UserID, "❌ Leave Rejected", rejectMsg);
+            // Fire-and-forget: notifications are best-effort
+            var leaveId = leaveRequest.LeaveID;
+            var leaveType = leaveRequest.LeaveType;
+            var startDate = leaveRequest.StartDate;
+            var endDate = leaveRequest.EndDate;
+            var requesterId = leaveRequest.UserID;
+            var rejectorId = rejector.Id;
+            var rejectorEmail = rejector.Email!;
+            var rejectorIp = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            var rejectedEmployee = await _userManager.FindByIdAsync(leaveRequest.UserID);
-            if (rejectedEmployee?.Email != null)
+            _ = Task.Run(async () =>
             {
-                await _emailService.SendEmailAsync(rejectedEmployee.Email, "❌ Leave Rejected",
-                    $"<h2>Leave Rejected</h2><p>{rejectMsg}</p><hr><p><small>MobileOps Connect ERP</small></p>");
-            }
+                try
+                {
+                    using var scope = _scopeFactory.CreateScope();
+                    var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                    var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
+                    var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
+                    var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
+                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-            // Broadcast real-time update to the requester only
-            await _hubContext.Clients.User(leaveRequest.UserID).SendAsync("LeaveStatusChanged", leaveRequest.LeaveID, "Rejected", leaveRequest.UserID, "");
+                    var rejectMsg = $"Your {leaveType} leave ({startDate:MMM dd} – {endDate:MMM dd}) has been rejected.";
+                    await notificationService.SendToUserAsync(requesterId, "❌ Leave Rejected", rejectMsg);
 
-            // Audit log
-            var rejectorRoles = await _userManager.GetRolesAsync(rejector);
-            await _auditService.LogAsync(rejector.Id, rejector.Email!, rejectorRoles.FirstOrDefault() ?? "", "REJECT", $"Rejected leave request #{id} ({leaveRequest.LeaveType}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+                    var rejectedEmployee = await userManager.FindByIdAsync(requesterId);
+                    if (rejectedEmployee?.Email != null)
+                    {
+                        await emailService.SendEmailAsync(rejectedEmployee.Email, "❌ Leave Rejected",
+                            $"<h2>Leave Rejected</h2><p>{rejectMsg}</p><hr><p><small>MobileOps Connect ERP</small></p>");
+                    }
+
+                    await hubContext.Clients.User(requesterId).SendAsync("LeaveStatusChanged", leaveId, "Rejected", requesterId, "");
+
+                    var rejectorRoles = await userManager.GetRolesAsync(await userManager.FindByIdAsync(rejectorId));
+                    await auditService.LogAsync(rejectorId, rejectorEmail, rejectorRoles.FirstOrDefault() ?? "", "REJECT", $"Rejected leave request #{leaveId} ({leaveType}).", rejectorIp);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Background notification failed for leave rejection #{LeaveId}", leaveId);
+                }
+            });
 
             return RedirectToAction(nameof(Index));
         }
