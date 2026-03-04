@@ -78,7 +78,8 @@
                             <label asp-for="Amount" class="block text-sm font-medium mb-2 dark:text-white"><i class="bi bi-cash me-1 text-green-500"></i> Amount</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none z-20 ps-4"><span class="text-sm text-gray-500 font-semibold">₱</span></div>
-                                <input asp-for="Amount" type="number" step="0.01" min="0" class="py-3 px-4 ps-8 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" />
+                                <input id="amountDisplay" type="text" inputmode="numeric" class="py-3 px-4 ps-8 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="0" autocomplete="off" />
+                                <input type="hidden" name="Amount" id="amountValue" value="0" />
                             </div>
                             <span asp-validation-for="Amount" class="text-red-500 text-xs"></span>
                         </div>
@@ -104,4 +105,33 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+    (function () {
+        const display = document.getElementById('amountDisplay');
+        const hidden  = document.getElementById('amountValue');
+        if (!display || !hidden) return;
+
+        display.addEventListener('input', function () {
+            // Strip everything except digits
+            const raw = this.value.replace(/\D/g, '');
+            const num = parseInt(raw, 10) || 0;
+
+            // Update hidden field with raw integer
+            hidden.value = num;
+
+            // Format display with commas
+            this.value = num > 0 ? num.toLocaleString('en-PH') : '';
+        });
+
+        // Prevent paste of non-numeric content
+        display.addEventListener('paste', function (e) {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text');
+            const raw = text.replace(/\D/g, '');
+            const num = parseInt(raw, 10) || 0;
+            hidden.value = num;
+            this.value = num > 0 ? num.toLocaleString('en-PH') : '';
+        });
+    })();
+    </script>
 }

@@ -94,6 +94,10 @@ namespace MobileOpsConnect.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TransactionDate,Type,Category,Description,Amount,ReferenceNumber,Notes")] AccountingEntry entry)
         {
+            // Remove server-set fields from validation (set manually below)
+            ModelState.Remove("RecordedById");
+            ModelState.Remove("RecordedBy");
+
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
@@ -116,8 +120,23 @@ namespace MobileOpsConnect.Controllers
                     $"{entry.Type}: {entry.Description} (₱{entry.Amount:N2})");
 
                 TempData["Message"] = "Transaction recorded successfully!";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Invoice), new { id = entry.Id });
             }
+            return View(entry);
+        }
+
+        // GET: Accounting/Invoice/5
+        public async Task<IActionResult> Invoice(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var entry = await _context.AccountingEntries
+                .Include(a => a.RecordedBy)
+                .Include(a => a.PurchaseOrder)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (entry == null) return NotFound();
+
             return View(entry);
         }
     }

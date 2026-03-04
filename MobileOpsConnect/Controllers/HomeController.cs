@@ -78,6 +78,7 @@ namespace MobileOpsConnect.Controllers
                     ViewBag.UptimeDisplay = $"{uptime.Minutes}m {uptime.Seconds}s";
 
                 ViewBag.AppStartTimeUtc = _appStartTime.ToString("o");
+                ViewBag.ServerNowUtc = DateTime.UtcNow.ToString("o");
 
                 return View();
             }

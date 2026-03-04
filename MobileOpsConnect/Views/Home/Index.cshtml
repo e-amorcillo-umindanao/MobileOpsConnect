@@ -109,7 +109,7 @@
             <div class="p-5">
                 <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500 mb-4">Uptime</p>
                 <div class="flex justify-between items-end">
-                    <h3 id="uptimeCounter" class="text-4xl font-bold text-gray-900 dark:text-neutral-200 leading-none" data-start-utc="@ViewBag.AppStartTimeUtc">
+                    <h3 id="uptimeCounter" class="text-4xl font-bold text-gray-900 dark:text-neutral-200 leading-none" data-start-utc="@ViewBag.AppStartTimeUtc" data-server-now-utc="@ViewBag.ServerNowUtc">
                         @ViewBag.UptimeDisplay
                     </h3>
                     <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full bg-green-50 text-green-700 text-[10px] font-bold border border-green-100 dark:bg-green-900/10 dark:text-green-400 dark:border-green-900/30">
@@ -344,10 +344,15 @@
     const el = document.getElementById('uptimeCounter');
     if (!el) return;
     const startUtc = new Date(el.dataset.startUtc).getTime();
-    if (isNaN(startUtc)) return;
+    const serverNow = new Date(el.dataset.serverNowUtc).getTime();
+    if (isNaN(startUtc) || isNaN(serverNow)) return;
+
+    // Clock offset: how far the client clock is from the server clock
+    const clockOffset = Date.now() - serverNow;
 
     function tick() {
-        const diff = Date.now() - startUtc;
+        // Subtract offset to align with server time, clamp to 0
+        const diff = Math.max(0, (Date.now() - clockOffset) - startUtc);
         const totalSec = Math.floor(diff / 1000);
         const days = Math.floor(totalSec / 86400);
         const hrs  = Math.floor((totalSec % 86400) / 3600);
