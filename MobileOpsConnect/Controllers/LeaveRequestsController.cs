@@ -42,7 +42,7 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: LeaveRequests
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? view)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
@@ -52,6 +52,14 @@ namespace MobileOpsConnect.Controllers
             var myRole = myRoles.FirstOrDefault() ?? "";
             var subordinateRoles = GetSubordinateRoles(myRole);
             bool isBoss = subordinateRoles.Count > 0;
+
+            // If ?view=my, show the user's own leave history regardless of role
+            bool isMyView = string.Equals(view, "my", StringComparison.OrdinalIgnoreCase);
+            if (isMyView)
+            {
+                isBoss = false;
+            }
+            ViewBag.IsMyView = isMyView;
 
             List<LeaveRequest> requests;
             var userRoles = new Dictionary<string, string>();
@@ -233,8 +241,13 @@ namespace MobileOpsConnect.Controllers
                     }
                 });
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { view = "my" });
             }
+            // Re-populate holiday data for the view on validation failure
+            var holidays = await _holidayService.GetHolidaysAsync("PH");
+            ViewBag.Holidays = holidays;
+            ViewBag.HolidaysJson = System.Text.Json.JsonSerializer.Serialize(
+                holidays.Select(h => new { date = h.Date.ToString("yyyy-MM-dd"), name = h.LocalName, nameEn = h.Name }));
             return View(leaveRequest);
         }
 
@@ -449,7 +462,7 @@ namespace MobileOpsConnect.Controllers
                     if (!LeaveRequestExists(leaveRequest.LeaveID)) return NotFound();
                     else throw;
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { view = "my" });
             }
             return View(leaveRequest);
         }
@@ -531,7 +544,7 @@ namespace MobileOpsConnect.Controllers
                     $"{user.Email} cancelled their {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { view = "my" });
         }
 
         private bool LeaveRequestExists(int id)

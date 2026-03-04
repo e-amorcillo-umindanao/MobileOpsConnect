@@ -80,6 +80,14 @@ namespace MobileOpsConnect.Controllers
                 ViewBag.AppStartTimeUtc = _appStartTime.ToString("o");
                 ViewBag.ServerNowUtc = DateTime.UtcNow.ToString("o");
 
+                // User's own leave stats (for My Leave History card)
+                var currentUser = await _userManager.GetUserAsync(User);
+                var currentUserId = currentUser?.Id ?? "";
+                ViewBag.UserApproved = await _context.LeaveRequests
+                    .CountAsync(l => l.UserID == currentUserId && l.Status == "Approved");
+                ViewBag.UserPending = await _context.LeaveRequests
+                    .CountAsync(l => l.UserID == currentUserId && l.Status == "Pending");
+
                 return View();
             }
 
@@ -132,6 +140,14 @@ namespace MobileOpsConnect.Controllers
 
                 // Pending purchase orders for approval
                 ViewBag.PendingOrders = await _context.PurchaseOrders.CountAsync(po => po.Status == "Pending");
+
+                // User's own leave stats (for My Leave History card)
+                var currentUser = await _userManager.GetUserAsync(User);
+                var currentUserId = currentUser?.Id ?? "";
+                ViewBag.UserApproved = await _context.LeaveRequests
+                    .CountAsync(l => l.UserID == currentUserId && l.Status == "Approved");
+                ViewBag.UserPending = await _context.LeaveRequests
+                    .CountAsync(l => l.UserID == currentUserId && l.Status == "Pending");
 
                 return View("ManagerDashboard");
             }

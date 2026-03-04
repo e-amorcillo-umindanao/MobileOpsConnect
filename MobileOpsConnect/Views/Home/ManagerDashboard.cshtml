@@ -263,6 +263,18 @@
                 <i class="bi bi-chevron-right text-gray-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5"></i>
             </a>
 
+            <!-- My Leave History -->
+            <a asp-controller="LeaveRequests" asp-action="Index" asp-route-view="my" class="group p-5 flex items-center gap-x-4 hover:bg-gray-50/50 transition-all dark:hover:bg-neutral-800">
+                <div class="size-10 flex justify-center items-center bg-amber-50 text-amber-500 rounded-lg dark:bg-amber-900/20 dark:text-amber-400 border border-amber-100 dark:border-amber-900/30">
+                    <i class="bi bi-folder2-open text-lg"></i>
+                </div>
+                <div class="grow">
+                    <h3 class="font-bold text-gray-800 dark:text-white text-sm">My Leave History</h3>
+                    <p class="text-[10px] text-gray-400 dark:text-neutral-500">View submitted leaves & approval status</p>
+                </div>
+                <i class="bi bi-chevron-right text-gray-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5"></i>
+            </a>
+
             <!-- My Payslip -->
             <a asp-controller="Payroll" asp-action="MyPayslip" class="group p-5 flex items-center gap-x-4 hover:bg-gray-50/50 transition-all dark:hover:bg-neutral-800">
                 <div class="size-10 flex justify-center items-center bg-cyan-50 text-cyan-600 rounded-lg dark:bg-cyan-900/20 dark:text-cyan-400 border border-cyan-100 dark:border-cyan-900/30">

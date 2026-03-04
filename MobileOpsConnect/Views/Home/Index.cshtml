@@ -264,7 +264,7 @@
                     <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Review &amp; Approve</p>
                 </div>
             </div>
-            <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">Review and approve employee leave applications. Pending requests require your attention.</p>
+            <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">@(isSuperAdmin ? "Review and approve System Admin leave applications. Pending requests require your attention." : "Review and approve employee leave applications. Pending requests require your attention.")</p>
         </div>
         <a asp-controller="LeaveRequests" asp-action="Index" class="group py-4 px-6 inline-flex justify-center items-center gap-x-2 text-sm font-bold bg-white text-gray-900 hover:bg-gray-50 border-t border-gray-100 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:border-neutral-800 transition-all">
             Review Requests <i class="bi bi-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
@@ -286,6 +286,18 @@
                 <div class="grow">
                     <h3 class="font-bold text-gray-800 dark:text-white transition-colors">File Leave Request</h3>
                     <p class="text-xs text-gray-400 dark:text-neutral-500">Submit a new leave application</p>
+                </div>
+                <i class="bi bi-chevron-right text-gray-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5"></i>
+            </a>
+
+            <!-- My Leave History -->
+            <a asp-controller="LeaveRequests" asp-action="Index" asp-route-view="my" class="group p-5 flex items-center gap-x-4 bg-white border border-gray-100 rounded-2xl hover:bg-gray-50/50 transition-all dark:bg-neutral-900 dark:border-neutral-800 shadow-sm">
+                <div class="size-12 flex justify-center items-center bg-amber-50 text-amber-500 rounded-xl dark:bg-amber-900/20 dark:text-amber-400 border border-amber-100 dark:border-amber-900/30">
+                    <i class="bi bi-folder2-open text-xl"></i>
+                </div>
+                <div class="grow">
+                    <h3 class="font-bold text-gray-800 dark:text-white transition-colors">My Leave History</h3>
+                    <p class="text-xs text-gray-400 dark:text-neutral-500">View submitted leaves & approval status</p>
                 </div>
                 <i class="bi bi-chevron-right text-gray-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5"></i>
             </a>

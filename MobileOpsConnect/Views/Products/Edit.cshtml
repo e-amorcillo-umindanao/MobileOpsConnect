@@ -80,7 +80,8 @@
                             <label asp-for="Price" class="block text-sm font-medium mb-2 dark:text-white">
                                 <i class="bi bi-currency-exchange me-1 text-green-500"></i> Price (₱)
                             </label>
-                            <input asp-for="Price" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" type="number" step="0.01" placeholder="0.00" />
+                            <input type="text" id="priceDisplay" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" inputmode="decimal" placeholder="0.00" value="@Model.Price.ToString("N2")" />
+                            <input type="hidden" asp-for="Price" id="priceHidden" />
                             <span asp-validation-for="Price" class="text-xs text-red-600 mt-2 block"></span>
                         </div>
 
@@ -89,7 +90,8 @@
                             <label asp-for="StockQuantity" class="block text-sm font-medium mb-2 dark:text-white">
                                 <i class="bi bi-layers me-1 text-amber-500"></i> Stock Quantity
                             </label>
-                            <input asp-for="StockQuantity" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" type="number" placeholder="0" />
+                            <input type="text" id="qtyDisplay" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" inputmode="numeric" placeholder="0" value="@Model.StockQuantity.ToString("N0")" />
+                            <input type="hidden" asp-for="StockQuantity" id="qtyHidden" />
                             <span asp-validation-for="StockQuantity" class="text-xs text-red-600 mt-2 block"></span>
                         </div>
                     </div>
@@ -108,4 +110,48 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+    (function() {
+        const pDisp = document.getElementById('priceDisplay');
+        const pHid = document.getElementById('priceHidden');
+        const qDisp = document.getElementById('qtyDisplay');
+        const qHid = document.getElementById('qtyHidden');
+
+        function formatNumber(val, decimals = 0) {
+            let parts = val.toString().split(".");
+            parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return parts.join(".");
+        }
+
+        function handleInput(display, hidden, isDecimal) {
+            display.addEventListener('input', function(e) {
+                let val = this.value.replace(/,/g, '');
+                if (isDecimal) {
+                    val = val.replace(/[^0-9.]/g, '');
+                    const dots = val.split('.');
+                    if (dots.length > 2) val = dots[0] + '.' + dots.slice(1).join('');
+                } else {
+                    val = val.replace(/[^0-9]/g, '');
+                }
+                
+                hidden.value = val || 0;
+                
+                let cursorPos = this.selectionStart;
+                let oldLen = this.value.length;
+                this.value = formatNumber(val, isDecimal ? 2 : 0);
+                let newLen = this.value.length;
+                this.setSelectionRange(cursorPos + (newLen - oldLen), cursorPos + (newLen - oldLen));
+            });
+        }
+
+        if (pDisp && pHid) {
+            pHid.value = "@Model.Price";
+            handleInput(pDisp, pHid, true);
+        }
+        if (qDisp && qHid) {
+            qHid.value = "@Model.StockQuantity";
+            handleInput(qDisp, qHid, false);
+        }
+    })();
+    </script>
 }
