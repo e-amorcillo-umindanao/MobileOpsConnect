@@ -101,7 +101,13 @@ namespace MobileOpsConnect.Controllers
                 var allUsers = await _userManager.Users.CountAsync();
                 ViewBag.TeamCount = allUsers - superAdmins.Count;
 
-                ViewBag.PendingLeaves = pendingLeaves;
+                // Scoped pending leaves: only from Employee and WarehouseStaff subordinates
+                var empUsers = await _userManager.GetUsersInRoleAsync("Employee");
+                var whUsers = await _userManager.GetUsersInRoleAsync("WarehouseStaff");
+                var subIds = empUsers.Select(u => u.Id).Concat(whUsers.Select(u => u.Id)).ToHashSet();
+                var scopedPendingLeavesDashboard = await _context.LeaveRequests
+                    .CountAsync(l => l.Status == "Pending" && subIds.Contains(l.UserID));
+                ViewBag.PendingLeaves = scopedPendingLeavesDashboard;
                 ViewBag.OnLeaveToday = onLeaveToday;
                 ViewBag.TotalProducts = totalProducts;
                 ViewBag.LowStockCount = lowStockCount;
@@ -246,11 +252,31 @@ namespace MobileOpsConnect.Controllers
                 .ToListAsync();
             ViewBag.LowStockAlerts = lowStockProducts;
 
-            // Pending leaves
-            var pendingLeaves = await _context.LeaveRequests
-                .Where(l => l.Status == "Pending")
-                .CountAsync();
-            ViewBag.PendingLeaves = pendingLeaves;
+            // Scoped pending leaves for Analytics
+            int scopedPendingLeavesAnalytics;
+            if (User.IsInRole("DepartmentManager"))
+            {
+                var empUsers = await _userManager.GetUsersInRoleAsync("Employee");
+                var whUsers = await _userManager.GetUsersInRoleAsync("WarehouseStaff");
+                var subIds = empUsers.Select(u => u.Id).Concat(whUsers.Select(u => u.Id)).ToHashSet();
+                scopedPendingLeavesAnalytics = await _context.LeaveRequests
+                    .CountAsync(l => l.Status == "Pending" && subIds.Contains(l.UserID));
+            }
+            else if (User.IsInRole("SuperAdmin"))
+            {
+                // SuperAdmin sees all or specifically SystemAdmin pending leaves? 
+                // Plan said: "If SuperAdmin, count pending from SystemAdmins only."
+                var sysAdmins = await _userManager.GetUsersInRoleAsync("SystemAdmin");
+                var sysAdminIds = sysAdmins.Select(u => u.Id).ToHashSet();
+                scopedPendingLeavesAnalytics = await _context.LeaveRequests
+                    .CountAsync(l => l.Status == "Pending" && sysAdminIds.Contains(l.UserID));
+            }
+            else
+            {
+                scopedPendingLeavesAnalytics = await _context.LeaveRequests
+                    .CountAsync(l => l.Status == "Pending");
+            }
+            ViewBag.PendingLeaves = scopedPendingLeavesAnalytics;
 
             return View();
         }

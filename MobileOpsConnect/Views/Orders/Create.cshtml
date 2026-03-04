@@ -56,8 +56,41 @@
                         <label class="block text-sm font-medium mb-2 dark:text-white">
                             <i class="bi bi-layers me-1 text-green-500"></i> Quantity <span class="text-red-500">*</span>
                         </label>
-                        <input type="number" name="Quantity" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" min="1" value="1" required />
+                        <input type="text" id="QuantityDisplay" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="0" value="1" required inputmode="numeric" />
+                        <input type="hidden" name="Quantity" id="QuantityRaw" value="1" />
                     </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            const display = document.getElementById('QuantityDisplay');
+                            const raw = document.getElementById('QuantityRaw');
+
+                            function formatNumber(val) {
+                                if (!val) return '';
+                                return parseFloat(val.replace(/,/g, '')).toLocaleString('en-US');
+                            }
+
+                            display.addEventListener('input', function (e) {
+                                let cursorPosition = e.target.selectionStart;
+                                let originalLength = e.target.value.length;
+                                
+                                // Remove non-numeric characters except for leading zero protection
+                                let numericValue = e.target.value.replace(/[^0-9]/g, '');
+                                if (numericValue === '') numericValue = '0';
+                                
+                                raw.value = numericValue;
+                                e.target.value = formatNumber(numericValue);
+
+                                // Adjust cursor position after comma insertion
+                                let newLength = e.target.value.length;
+                                cursorPosition = cursorPosition + (newLength - originalLength);
+                                e.target.setSelectionRange(cursorPosition, cursorPosition);
+                            });
+
+                            // Initial format
+                            display.value = formatNumber(raw.value);
+                        });
+                    </script>
 
                     <!-- Notes -->
                     <div>

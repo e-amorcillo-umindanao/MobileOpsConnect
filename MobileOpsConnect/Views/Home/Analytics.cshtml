@@ -93,14 +93,14 @@
         <div class="flex items-end justify-between mt-auto">
             <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@onLeaveCount</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-600 text-[10px] font-bold uppercase tracking-wide dark:bg-amber-900/20 dark:text-amber-400 mb-1">
-                <i class="bi bi-percent"></i> @leaveUtilPercent% Workforce
+                @leaveUtilPercent% Workforce
             </span>
         </div>
     </div>
 </div>
 
 <!-- Charts & Alerts Row -->
-<div class="grid lg:grid-cols-2 gap-6 mb-8">
+<div class="grid lg:grid-cols-2 gap-6 gap-y-14 mb-8">
     <!-- Inventory Distribution -->
     <div>
         <div class="flex items-center gap-x-2 mb-4">
@@ -111,28 +111,47 @@
             <div class="p-6">
                 @if (ViewBag.TopCategories != null)
                 {
-                    var colors = new[] {
-                        new { bg = "rgba(99,102,241,0.12)", bar = "#6366f1", text = "text-indigo-600" },
-                        new { bg = "rgba(14,165,233,0.12)", bar = "#0ea5e9", text = "text-cyan-600" },
-                        new { bg = "rgba(99,102,241,0.08)", bar = "#818cf8", text = "text-indigo-400" },
-                        new { bg = "rgba(14,165,233,0.08)", bar = "#38bdf8", text = "text-cyan-400" },
-                        new { bg = "rgba(99,102,241,0.06)", bar = "#a5b4fc", text = "text-indigo-300" },
-                        new { bg = "rgba(14,165,233,0.06)", bar = "#7dd3fc", text = "text-cyan-300" }
-                    };
-                    int ci = 0;
-                    foreach (var cat in ViewBag.TopCategories)
+                    var categories = (IEnumerable<dynamic>)ViewBag.TopCategories;
+                    var colors = new[] { "#6366f1", "#0ea5e9", "#818cf8", "#38bdf8", "#a5b4fc", "#7dd3fc" };
+                    var bgColors = new[] { "rgba(99,102,241,0.12)", "rgba(14,165,233,0.12)", "rgba(99,102,241,0.08)", "rgba(14,165,233,0.08)", "rgba(99,102,241,0.06)", "rgba(14,165,233,0.06)" };
+                    
+                    // Calculate conic gradient segments
+                    var gradientParts = new List<string>();
+                    double currentPercent = 0;
+                    int i = 0;
+                    foreach (var cat in categories)
                     {
-                        var c = colors[ci % colors.Length]; ci++;
+                        var color = colors[i % colors.Length];
+                        gradientParts.Add($"{color} {currentPercent}% {currentPercent + cat.Percent}%");
+                        currentPercent += cat.Percent;
+                        i++;
+                    }
+                    var gradientStr = string.Join(", ", gradientParts);
+
+                    <!-- Donut Chart -->
+                    <div class="relative size-48 mx-auto mb-8">
+                        <div class="size-full rounded-full" style="background: conic-gradient(@gradientStr);"></div>
+                        <div class="absolute inset-4 bg-white dark:bg-neutral-900 rounded-full flex flex-col items-center justify-center border-4 border-gray-50 dark:border-neutral-800">
+                            <span class="text-2xl font-bold text-gray-900 dark:text-white">@totalProducts</span>
+                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Items</span>
+                        </div>
+                    </div>
+
+                    int ci = 0;
+                    foreach (var cat in categories)
+                    {
+                        var color = colors[ci % colors.Length];
+                        var bgColor = bgColors[ci % bgColors.Length]; ci++;
                         <div class="mb-4">
                             <div class="flex justify-between items-center mb-2">
                                 <div class="flex items-center gap-2">
-                                    <span class="inline-flex justify-center items-center size-[32px] rounded-md" style="background:@c.bg;"><i class="bi bi-tag-fill @c.text" style="font-size:0.8rem;"></i></span>
-                                    <span class="text-sm font-semibold text-gray-800">@(string.IsNullOrEmpty(cat.Category) ? "Uncategorized" : cat.Category)</span>
+                                    <span class="inline-flex justify-center items-center size-[32px] rounded-md" style="background:@bgColor;"><i class="bi bi-tag-fill" style="color:@color; font-size:0.8rem;"></i></span>
+                                    <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">@(string.IsNullOrEmpty(cat.Category) ? "Uncategorized" : cat.Category)</span>
                                 </div>
-                                <div class="text-right"><span class="text-sm font-bold text-gray-800">@cat.Count</span> <span class="text-xs text-gray-500">(@cat.Percent%)</span></div>
+                                <div class="text-right"><span class="text-sm font-bold text-gray-800 dark:text-neutral-200">@cat.Count</span> <span class="text-xs text-gray-500">(@cat.Percent%)</span></div>
                             </div>
-                            <div class="progress rounded-pill" style="height:8px;background:#e5e7eb;">
-                                <div class="progress-bar rounded-pill" style="width:@cat.Percent%;background:@c.bar;transition:width 1s ease;" role="progressbar"></div>
+                            <div class="progress rounded-pill" style="height:6px;background:#f3f4f6;">
+                                <div class="progress-bar rounded-pill" style="width:@cat.Percent%;background:@color;transition:width 1s ease;" role="progressbar"></div>
                             </div>
                         </div>
                     }
@@ -155,7 +174,7 @@
             <i class="bi bi-bell text-gray-400"></i>
             <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Actions Required</h2>
         </div>
-        <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl h-full dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
             <div class="p-0">
                 @{ bool hasAlerts = pendingLeaves > 0 || (ViewBag.LowStockAlerts != null && ((IEnumerable<dynamic>)ViewBag.LowStockAlerts).Any()); }
                 @if (!hasAlerts)

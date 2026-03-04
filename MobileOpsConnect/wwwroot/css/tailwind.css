@@ -654,6 +654,10 @@ body {
   inset: 0px;
 }
 
+.inset-4 {
+  inset: 1rem;
+}
+
 .inset-y-0 {
   top: 0px;
   bottom: 0px;
@@ -968,6 +972,11 @@ body {
 .size-4 {
   width: 1rem;
   height: 1rem;
+}
+
+.size-48 {
+  width: 12rem;
+  height: 12rem;
 }
 
 .size-5 {
@@ -1366,6 +1375,10 @@ body {
 
 .gap-y-1 {
   row-gap: 0.25rem;
+}
+
+.gap-y-14 {
+  row-gap: 3.5rem;
 }
 
 .gap-y-2 {
@@ -2466,16 +2479,6 @@ body {
   color: rgb(30 64 175 / var(--tw-text-opacity, 1));
 }
 
-.text-cyan-300 {
-  --tw-text-opacity: 1;
-  color: rgb(103 232 249 / var(--tw-text-opacity, 1));
-}
-
-.text-cyan-400 {
-  --tw-text-opacity: 1;
-  color: rgb(34 211 238 / var(--tw-text-opacity, 1));
-}
-
 .text-cyan-500 {
   --tw-text-opacity: 1;
   color: rgb(6 182 212 / var(--tw-text-opacity, 1));
@@ -2569,16 +2572,6 @@ body {
 .text-green-800 {
   --tw-text-opacity: 1;
   color: rgb(22 101 52 / var(--tw-text-opacity, 1));
-}
-
-.text-indigo-300 {
-  --tw-text-opacity: 1;
-  color: rgb(165 180 252 / var(--tw-text-opacity, 1));
-}
-
-.text-indigo-400 {
-  --tw-text-opacity: 1;
-  color: rgb(129 140 248 / var(--tw-text-opacity, 1));
 }
 
 .text-indigo-500 {
