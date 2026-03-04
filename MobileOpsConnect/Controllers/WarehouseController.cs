@@ -39,8 +39,16 @@ namespace MobileOpsConnect.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                // Simulate "Scanning" by searching Name or SKU
-                products = products.Where(s => s.Name.Contains(searchString) || s.SKU.Contains(searchString));
+                // Priority: exact SKU match (barcode scan), then fuzzy fallback (manual search)
+                var exactMatch = products.Where(s => s.SKU == searchString);
+                if (await exactMatch.AnyAsync())
+                {
+                    products = exactMatch;
+                }
+                else
+                {
+                    products = products.Where(s => s.Name.Contains(searchString) || s.SKU.Contains(searchString));
+                }
             }
 
             // Get configurable threshold from settings

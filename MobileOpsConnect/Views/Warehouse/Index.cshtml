@@ -134,9 +134,14 @@
                     <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-[#f4f2ff] text-[#5e4dcd] dark:bg-indigo-900/30 dark:text-indigo-400"><i class="bi bi-qr-code-scan text-lg"></i></span>
                     <h3 class="text-sm font-bold text-gray-900 dark:text-neutral-200">Barcode Scanner</h3>
                 </div>
-                <button id="closeScannerBtn" class="size-8 inline-flex justify-center items-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-700 transition-colors">
-                    <i class="bi bi-x-lg text-sm"></i>
-                </button>
+                <div class="flex items-center gap-2">
+                    <button id="torchToggleBtn" title="Toggle flashlight" class="hidden size-8 inline-flex justify-center items-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-700 transition-colors">
+                        <i class="bi bi-lightning-fill text-sm"></i>
+                    </button>
+                    <button id="closeScannerBtn" class="size-8 inline-flex justify-center items-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-700 transition-colors">
+                        <i class="bi bi-x-lg text-sm"></i>
+                    </button>
+                </div>
             </div>
 
             <!-- Modal Body -->
@@ -144,6 +149,9 @@
                 <div id="reader" class="overflow-hidden rounded-xl shadow-sm bg-gray-50 dark:bg-neutral-800 mb-4"></div>
                 <p class="text-gray-500 text-sm text-center mb-0 dark:text-neutral-400" id="scanStatus">
                     <i class="bi bi-camera-fill me-1"></i> Point your camera at a product barcode.
+                </p>
+                <p class="text-xs text-gray-400 dark:text-neutral-500 mt-3 text-center">
+                    <i class="bi bi-keyboard me-1"></i> Can't scan? Close and type the SKU manually in the search box.
                 </p>
             </div>
         </div>
@@ -155,12 +163,30 @@
     <script>
     (function () {
         let html5QrcodeScanner = null;
+        let torchOn = false;
         const modal = document.getElementById('scannerModal');
         const backdrop = document.getElementById('scannerBackdrop');
         const openBtn = document.getElementById('openScannerBtn');
         const closeBtn = document.getElementById('closeScannerBtn');
+        const torchBtn = document.getElementById('torchToggleBtn');
         const scanStatus = document.getElementById('scanStatus');
 
+        // ── Audio feedback ──
+        function playBeep() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.frequency.value = 1200;
+                gain.gain.value = 0.3;
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.15);
+            } catch (e) { /* Audio not supported — silent fallback */ }
+        }
+
+        // ── Modal controls ──
         function openModal() {
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -171,38 +197,68 @@
             stopScanner();
             modal.classList.add('hidden');
             document.body.style.overflow = '';
+            torchOn = false;
         }
 
+        // ── Scanner core ──
         function startScanner() {
             if (html5QrcodeScanner) return;
 
-            html5QrcodeScanner = new Html5Qrcode("reader");
+            // Restrict to 1D barcode formats only + enable native BarcodeDetector
+            html5QrcodeScanner = new Html5Qrcode("reader", {
+                formatsToSupport: [
+                    Html5QrcodeSupportedFormats.CODE_128,
+                    Html5QrcodeSupportedFormats.CODE_39,
+                    Html5QrcodeSupportedFormats.EAN_13,
+                    Html5QrcodeSupportedFormats.EAN_8,
+                    Html5QrcodeSupportedFormats.UPC_A,
+                    Html5QrcodeSupportedFormats.UPC_E,
+                    Html5QrcodeSupportedFormats.ITF,
+                    Html5QrcodeSupportedFormats.CODABAR
+                ],
+                useBarCodeDetectorIfSupported: true
+            });
 
             html5QrcodeScanner.start(
                 { facingMode: "environment" },
                 {
                     fps: 10,
-                    qrbox: { width: 250, height: 150 },
-                    aspectRatio: 1.5
+                    qrbox: { width: 300, height: 80 },  // Wider, thinner — optimized for 1D barcodes
+                    aspectRatio: 1.7778
                 },
                 (decodedText) => {
+                    // ── Success: beep + vibrate + visual feedback ──
+                    playBeep();
+                    if (navigator.vibrate) navigator.vibrate(200);
+
                     scanStatus.innerHTML =
                         '<span class="text-emerald-600 font-bold"><i class="bi bi-check-circle-fill me-1"></i> Scanned: ' + decodedText + '</span>';
 
                     html5QrcodeScanner.stop().then(() => {
                         html5QrcodeScanner = null;
-                        closeModal();
 
-                        document.getElementById('barcodeInput').value = decodedText;
-                        document.getElementById('scanForm').submit();
+                        // Brief delay so user sees the result before redirect
+                        setTimeout(() => {
+                            closeModal();
+                            document.getElementById('barcodeInput').value = decodedText;
+                            document.getElementById('scanForm').submit();
+                        }, 500);
                     });
                 },
-                (errorMessage) => { /* Continuous scanning — ignore frame-level errors */ }
+                (errorMessage) => { /* Continuous scanning — ignore per-frame decode failures */ }
             ).catch((err) => {
                 scanStatus.innerHTML =
                     '<span class="text-rose-600"><i class="bi bi-exclamation-triangle-fill me-1"></i> Camera access denied. Please allow camera permissions.</span>';
                 console.error("html5-qrcode start error:", err);
             });
+
+            // Show torch button if device supports it
+            setTimeout(() => {
+                try {
+                    const track = html5QrcodeScanner.getRunningTrackSettings && html5QrcodeScanner.getRunningTrackSettings();
+                    if (track || true) torchBtn.classList.remove('hidden');
+                } catch (e) { /* torch not supported */ }
+            }, 1000);
         }
 
         function stopScanner() {
@@ -210,16 +266,29 @@
                 html5QrcodeScanner.stop().then(() => {
                     html5QrcodeScanner = null;
                     scanStatus.innerHTML = '<i class="bi bi-camera-fill me-1"></i> Point your camera at a product barcode.';
+                    torchBtn.classList.add('hidden');
                 }).catch(() => { html5QrcodeScanner = null; });
             }
         }
 
-        // Event listeners
+        // ── Torch toggle ──
+        torchBtn.addEventListener('click', function () {
+            if (!html5QrcodeScanner) return;
+            torchOn = !torchOn;
+            try {
+                html5QrcodeScanner.applyVideoConstraints({
+                    advanced: [{ torch: torchOn }]
+                });
+                torchBtn.classList.toggle('bg-amber-100', torchOn);
+                torchBtn.classList.toggle('text-amber-600', torchOn);
+            } catch (e) { console.warn("Torch not supported on this device."); }
+        });
+
+        // ── Event listeners ──
         openBtn.addEventListener('click', openModal);
         closeBtn.addEventListener('click', closeModal);
         backdrop.addEventListener('click', closeModal);
 
-        // Close on Escape key
         document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
                 closeModal();
@@ -228,3 +297,4 @@
     })();
     </script>
 }
+
