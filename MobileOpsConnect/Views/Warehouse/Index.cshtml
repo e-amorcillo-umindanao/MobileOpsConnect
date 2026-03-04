@@ -242,7 +242,7 @@
                             closeModal();
                             document.getElementById('barcodeInput').value = decodedText;
                             document.getElementById('scanForm').submit();
-                        }, 500);
+                        }, 2500);
                     });
                 },
                 (errorMessage) => { /* Continuous scanning — ignore per-frame decode failures */ }
