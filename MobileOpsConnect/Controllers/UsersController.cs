@@ -40,7 +40,7 @@ namespace MobileOpsConnect.Controllers
 
         // GET: Users
         [Authorize(Roles = "SuperAdmin,SystemAdmin")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? role)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null) return Challenge();
@@ -52,21 +52,60 @@ namespace MobileOpsConnect.Controllers
             {
                 if (user == null) continue;
                 var roles = await _userManager.GetRolesAsync(user);
-                var role = roles.FirstOrDefault() ?? "Employee";
+                var userRole = roles.FirstOrDefault() ?? "Employee";
 
                 // SCOPE LOGIC: Alpha sees Beta; Beta sees Staff.
-                if (CanManageUser(currentUser, role, user.Id))
+                if (CanManageUser(currentUser, userRole, user.Id))
                 {
-                    userViewModels.Add(new UserViewModel
+                    // Filter by role if specified
+                    if (string.IsNullOrEmpty(role) || userRole == role)
                     {
-                        Id = user.Id,
-                        Email = user.Email,
-                        Role = role
-                    });
+                        userViewModels.Add(new UserViewModel
+                        {
+                            Id = user.Id,
+                            Email = user.Email,
+                            Role = userRole
+                        });
+                    }
                 }
             }
 
-            return View(userViewModels);
+            // Define hierarchical order
+            var roleOrder = new Dictionary<string, int>
+            {
+                { "SuperAdmin", 1 },
+                { "SystemAdmin", 2 },
+                { "DepartmentManager", 3 },
+                { "WarehouseStaff", 4 },
+                { "Employee", 5 }
+            };
+
+            // Sort hierarchically
+            var sortedViewModels = userViewModels
+                .OrderBy(u => roleOrder.ContainsKey(u.Role) ? roleOrder[u.Role] : 99)
+                .ThenBy(u => u.Email)
+                .ToList();
+
+            // Prepare role filter list (hierarchical)
+            var availableRoles = new List<string> { "SuperAdmin", "SystemAdmin", "DepartmentManager", "WarehouseStaff", "Employee" };
+            if (!User.IsInRole("SuperAdmin"))
+            {
+                availableRoles.Remove("SuperAdmin");
+                availableRoles.Remove("SystemAdmin");
+            }
+
+            ViewBag.AllRoles = availableRoles;
+            ViewBag.SelectedRole = role;
+            ViewBag.RoleDisplayNames = new Dictionary<string, string>
+            {
+                { "SuperAdmin", "Super Admin" },
+                { "SystemAdmin", "System Admin" },
+                { "DepartmentManager", "Department Manager" },
+                { "WarehouseStaff", "Warehouse Staff" },
+                { "Employee", "Employee" }
+            };
+
+            return View(sortedViewModels);
         }
 
         // GET: Users/Create

@@ -12,6 +12,13 @@
     var archivedProducts = Model.Where(p => p.StockQuantity == 0).ToList();
 }
 
+<!-- Breadcrumb Navigation -->
+<div class="mb-6">
+    <a asp-controller="Home" asp-action="Index" class="text-sm font-medium text-gray-400 hover:text-gray-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">
+        ← Back to Dashboard
+    </a>
+</div>
+
 <!-- Hero Banner -->
 <div class="mb-8 mt-2 sm:mb-10">
     <div class="flex flex-wrap items-center gap-2 mb-3">
@@ -107,9 +114,7 @@
         <i class="bi bi-funnel"></i> Product Directory
     </h2>
     <div class="flex gap-2">
-        <a asp-controller="Home" asp-action="Index" class="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-            <i class="bi bi-arrow-left"></i> Dashboard
-        </a>
+
         @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
         {
             <a asp-action="Create" class="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] focus:outline-none focus:bg-[#1a1a1a]">

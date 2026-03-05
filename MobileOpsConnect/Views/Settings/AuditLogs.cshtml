@@ -1,4 +1,5 @@
-﻿@model List<MobileOpsConnect.Models.AuditLog>
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@model List<MobileOpsConnect.Models.AuditLog>
 @{
     bool isSuperAdmin = (bool)ViewBag.IsSuperAdmin;
     ViewData["Title"] = isSuperAdmin ? "Global Audit Logs" : "Standard Audit Logs";
@@ -11,8 +12,8 @@
 
 <!-- Breadcrumb Navigation -->
 <div class="mb-6">
-    <a asp-controller="Home" asp-action="Index" class="inline-flex items-center gap-x-2 text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
-        <i class="bi bi-arrow-left"></i> Back to Dashboard
+    <a asp-controller="Home" asp-action="Index" class="text-sm font-medium text-gray-400 hover:text-gray-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">
+        ← Back to Dashboard
     </a>
 </div>
 
@@ -50,6 +51,68 @@
             <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Login Events</p><h3 class="text-xl font-bold text-amber-600 mt-1">@loginCount</h3></div>
         </div>
     }
+</div>
+
+<!-- Filter Bar -->
+<div class="bg-white border border-gray-100 rounded-2xl p-5 mb-8 shadow-sm dark:bg-neutral-900 dark:border-neutral-800">
+    <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+                <i class="bi bi-funnel-fill"></i>
+            </span>
+            <div>
+                <h4 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider">Search Filters</h4>
+                <p class="text-[11px] text-gray-400 dark:text-neutral-500 font-medium">Refine audit entries by role or specific user</p>
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(ViewBag.SelectedRole) || !string.IsNullOrEmpty(ViewBag.SelectedUserId))
+        {
+            <a asp-action="AuditLogs" class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-lg text-xs font-semibold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-700">
+                <i class="bi bi-x-circle-fill"></i> Reset
+            </a>
+        }
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-4">
+        <div class="space-y-1.5">
+            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1 ml-1 cursor-default">Roles</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-gray-400">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                <select id="roleFilter" class="py-2.5 ps-10 pe-9 block w-full bg-gray-50 border-gray-200 rounded-xl text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:focus:ring-neutral-600 transition-all font-medium">
+                    <option value="">All Roles</option>
+                    @foreach (string roleName in ViewBag.AllRoles)
+                    {
+                        string displayName = ((Dictionary<string, string>)ViewBag.RoleDisplayNames).GetValueOrDefault(roleName, roleName);
+                        <option value="@roleName" selected="@(ViewBag.SelectedRole == roleName)">@displayName</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="space-y-1.5">
+            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1 ml-1 cursor-default">Individual Users</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-gray-400">
+                    <i class="bi bi-search"></i>
+                </div>
+                <select id="userFilter" class="py-2.5 ps-10 pe-9 block w-full bg-gray-50 border-gray-200 rounded-xl text-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:focus:ring-neutral-600 transition-all font-medium">
+                    <option value="">All Users</option>
+                    @foreach (var entry in (Dictionary<string, List<SelectListItem>>)ViewBag.UsersByRole)
+                    {
+                        string groupName = ((Dictionary<string, string>)ViewBag.RoleDisplayNames).GetValueOrDefault(entry.Key, entry.Key);
+                        <optgroup label="@groupName">
+                            @foreach (var user in entry.Value)
+                            {
+                                <option value="@user.Value" data-role="@entry.Key" selected="@(ViewBag.SelectedUserId == user.Value)">@user.Text</option>
+                            }
+                        </optgroup>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Log Table -->
@@ -131,3 +194,65 @@
         }
     </div>
 </div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const roleFilter = document.getElementById('roleFilter');
+        const userFilter = document.getElementById('userFilter');
+        const userOptions = Array.from(userFilter.querySelectorAll('option[data-role]'));
+        const optGroups = Array.from(userFilter.querySelectorAll('optgroup'));
+
+        function applyFilters() {
+            const role = roleFilter.value;
+            const userId = userFilter.value;
+            let url = '@Url.Action("AuditLogs", "Settings")';
+            const params = [];
+            if (role) params.push(`role=${encodeURIComponent(role)}`);
+            if (userId) params.push(`userId=${encodeURIComponent(userId)}`);
+            
+            if (params.length > 0) {
+                url += '?' + params.join('&');
+            }
+            window.location.href = url;
+        }
+
+        function syncDropdowns() {
+            const selectedRole = roleFilter.value;
+            
+            if (!selectedRole) {
+                // Show all optgroups and options
+                optGroups.forEach(og => og.style.display = '');
+                userOptions.forEach(o => o.style.display = '');
+            } else {
+                // Hide optgroups that don't match, show the one that does
+                optGroups.forEach(og => {
+                    if (og.label === selectedRole) {
+                        og.style.display = '';
+                        Array.from(og.querySelectorAll('option')).forEach(o => o.style.display = '');
+                    } else {
+                        og.style.display = 'none';
+                    }
+                });
+            }
+        }
+
+        roleFilter.addEventListener('change', function() {
+            // When role changes, if the current selected user is NOT in that role, reset user filter
+            const selectedRole = roleFilter.value;
+            const selectedUserOption = userFilter.options[userFilter.selectedIndex];
+            
+            if (selectedRole && selectedUserOption.dataset.role && selectedUserOption.dataset.role !== selectedRole) {
+                userFilter.value = "";
+            }
+            
+            applyFilters();
+        });
+
+        userFilter.addEventListener('change', applyFilters);
+
+        // Initial sync on load
+        syncDropdowns();
+    });
+</script>
+}

@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using MobileOpsConnect.Data;
+using MobileOpsConnect.Hubs;
 using MobileOpsConnect.Models;
 using MobileOpsConnect.Services;
 
@@ -16,13 +18,15 @@ namespace MobileOpsConnect.Controllers
         private readonly INotificationService _notificationService;
         private readonly IAuditService _auditService;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IHubContext<InventoryHub> _hubContext;
 
-        public OrdersController(ApplicationDbContext context, INotificationService notificationService, IAuditService auditService, UserManager<IdentityUser> userManager)
+        public OrdersController(ApplicationDbContext context, INotificationService notificationService, IAuditService auditService, UserManager<IdentityUser> userManager, IHubContext<InventoryHub> hubContext)
         {
             _context = context;
             _notificationService = notificationService;
             _auditService = auditService;
             _userManager = userManager;
+            _hubContext = hubContext;
         }
 
         // GET: Orders
@@ -76,10 +80,14 @@ namespace MobileOpsConnect.Controllers
             _context.PurchaseOrders.Add(order);
             await _context.SaveChangesAsync();
 
-            // Notify department managers about new PO
+            // Notify department managers about new PO (Push)
             await _notificationService.SendToRoleAsync("DepartmentManager",
                 "📦 New Purchase Order",
                 $"{currentUser.Email} submitted PO for {Quantity}x {product.Name} (₱{order.EstimatedCost:N0}).");
+
+            // Real-time broadcast (SignalR)
+            await _hubContext.Clients.Group("role_DepartmentManager")
+                .SendAsync("PurchaseOrderUpdated", order.Id, product.Name, Quantity, "Submitted", currentUser.Email);
 
             // Audit log
             var roles = await _userManager.GetRolesAsync(currentUser);
@@ -133,6 +141,12 @@ namespace MobileOpsConnect.Controllers
             // Audit log
             var roles = await _userManager.GetRolesAsync(currentUser);
             await _auditService.LogAsync(currentUser.Id, currentUser.Email!, roles.FirstOrDefault() ?? "", isApproval ? "APPROVE" : "REJECT", $"{(isApproval ? "Approved" : "Rejected")} purchase order #{id} ({order.Product?.Name}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+
+            // Real-time broadcast (SignalR)
+            await _hubContext.Clients.Group("role_WarehouseStaff")
+                .SendAsync("PurchaseOrderUpdated", id, order.Product?.Name, order.Quantity, isApproval ? "Approved" : "Rejected", currentUser.Email);
+            await _hubContext.Clients.Group("role_DepartmentManager")
+                .SendAsync("PurchaseOrderUpdated", id, order.Product?.Name, order.Quantity, isApproval ? "Approved" : "Rejected", currentUser.Email);
 
             TempData["Message"] = $"Purchase Order #{id} has been successfully {pastTense}.";
             return RedirectToAction(nameof(Index));

@@ -7,6 +7,13 @@
     int rejectedCount = Model.Count(po => po.Status == "Rejected");
 }
 
+<!-- Breadcrumb Navigation -->
+<div class="mb-6">
+    <a asp-controller="Home" asp-action="Index" class="text-sm font-medium text-gray-400 hover:text-gray-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">
+        ← Back to Dashboard
+    </a>
+</div>
+
 <!-- Hero Banner -->
 <div class="mb-8 mt-2 sm:mb-10">
     <div class="flex flex-wrap items-center gap-2 mb-3">
@@ -109,22 +116,21 @@
     <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Order History</h2>
 </div>
 
-<!-- Action Bar -->
-<div class="flex flex-wrap justify-between items-center gap-4 mb-4">
-    <div class="flex items-center gap-x-3">
-        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800 dark:bg-indigo-800/30 dark:text-indigo-500">
-            <i class="bi bi-funnel-fill text-lg"></i>
-        </span>
-        <div>
-            <p class="font-semibold text-sm text-gray-800 dark:text-neutral-200 mb-0">All Orders</p>
-            <p class="text-gray-500 text-xs mb-0 dark:text-neutral-500">Showing @totalOrders record@(totalOrders != 1 ? "s" : "")</p>
-        </div>
-    </div>
+<!-- Tab Interface -->
+<div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+    <nav class="flex gap-x-1" aria-label="Tabs" role="tablist">
+        <button type="button" class="tab-btn active py-3 px-4 inline-flex items-center gap-x-2 bg-white text-sm font-semibold text-center border-b-2 border-indigo-600 text-indigo-600 dark:bg-neutral-900 dark:text-indigo-500 dark:border-indigo-500" data-tab="active" role="tab">
+            Active
+            <span class="py-0.5 px-1.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">@pendingCount</span>
+        </button>
+        <button type="button" class="tab-btn py-3 px-4 inline-flex items-center gap-x-2 bg-transparent text-sm font-medium text-center border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300" data-tab="archived" role="tab">
+            Archived
+            <span class="py-0.5 px-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-neutral-800 dark:text-neutral-500">@(approvedCount + rejectedCount)</span>
+        </button>
+    </nav>
     <div class="flex flex-wrap gap-2">
-        <a asp-controller="Home" asp-action="Index" class="inline-flex items-center gap-x-2 text-sm font-medium text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 transition-colors">
-            <i class="bi bi-arrow-left"></i> Dashboard
-        </a>
-        @if (User.IsInRole("DepartmentManager"))
+
+        @if (User.IsInRole("DepartmentManager") || User.IsInRole("WarehouseStaff"))
         {
             <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
                 <i class="bi bi-plus-circle"></i> Submit New PO
@@ -133,22 +139,35 @@
     </div>
 </div>
 
-<!-- Alerts -->
-@if (TempData["Message"] != null)
-{
-    <div class="bg-green-50 border border-green-200 text-sm text-green-800 rounded-lg p-4 mb-4 flex items-center gap-2 dark:bg-green-800/10 dark:border-green-900 dark:text-green-400" role="alert">
-        <i class="bi bi-check-circle-fill"></i> @TempData["Message"]
+<!-- Active/Archived Status Context -->
+<div id="statusContext" class="flex items-center gap-x-3 mb-4">
+    <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800 dark:bg-indigo-800/30 dark:text-indigo-500">
+        <i id="contextIcon" class="bi bi-hourglass-split text-lg"></i>
+    </span>
+    <div>
+        <p id="contextTitle" class="font-semibold text-sm text-gray-800 dark:text-neutral-200 mb-0">Active Orders</p>
+        <p id="contextDescription" class="text-gray-500 text-xs mb-0 dark:text-neutral-500">Showing @pendingCount pending request@(pendingCount != 1 ? "s" : "")</p>
     </div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="bg-red-50 border border-red-200 text-sm text-red-800 rounded-lg p-4 mb-4 flex items-center gap-2 dark:bg-red-800/10 dark:border-red-900 dark:text-red-400" role="alert">
-        <i class="bi bi-x-circle-fill"></i> @TempData["Error"]
-    </div>
-}
+</div>
+
+<!-- No Orders View (Managed by JS) -->
+<div id="noOrdersActive" class="hidden text-center py-10 px-6">
+    <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-indigo-50 bg-indigo-100 text-indigo-800 mx-auto mb-4 dark:border-indigo-900 dark:bg-indigo-800 dark:text-indigo-400">
+        <i class="bi bi-check-circle text-2xl"></i>
+    </span>
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">All Caught Up!</h3>
+    <p class="text-sm text-gray-500 dark:text-neutral-500">No active purchase orders awaiting processing.</p>
+</div>
+<div id="noOrdersArchived" class="hidden text-center py-10 px-6">
+    <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-400 mx-auto mb-4">
+        <i class="bi bi-archive text-2xl"></i>
+    </span>
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">Archive Empty</h3>
+    <p class="text-sm text-gray-500 dark:text-neutral-500">No processed purchase orders found in history.</p>
+</div>
 
 <!-- Order Table Card -->
-<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
+<div id="orderTableCard" class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
     <div class="p-0">
 
         @if (Model.Count == 0)
@@ -193,7 +212,7 @@
                     <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
                         @foreach (var po in Model)
                         {
-                            <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                            <tr class="po-row hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors" data-status="@po.Status.ToLower()">
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-800/20 dark:text-indigo-400">
                                         PO-@po.Id.ToString("D4")
@@ -276,11 +295,10 @@
                 </table>
             </div>
 
-            <!-- Mobile Card List -->
             <div class="md:hidden p-4 space-y-3">
                 @foreach (var po in Model)
                 {
-                    <div class="flex flex-col bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 border-l-4 @(po.Status == "Pending" ? "border-l-amber-500" : po.Status == "Approved" ? "border-l-green-500" : "border-l-red-500")">
+                    <div class="po-card flex flex-col bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 border-l-4 @(po.Status == "Pending" ? "border-l-amber-500" : po.Status == "Approved" ? "border-l-green-500" : "border-l-red-500")" data-status="@po.Status.ToLower()">
                         <div class="flex items-start justify-between mb-3">
                             <div class="flex items-center gap-x-3">
                                 <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800">
@@ -353,3 +371,103 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // ── Toast Notifications ──
+        const msg = '@(TempData["Message"] ?? "")';
+        const err = '@(TempData["Error"] ?? "")';
+        const isProcessAction = msg.includes("successfully approved") || msg.includes("successfully rejected") || msg.includes("has been successfully");
+
+        if (msg) showPageToast("✅", "Success", msg);
+        if (err) showPageToast("❌", "Error", err);
+
+        function showPageToast(icon, title, message) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'bg-white border text-gray-800 rounded-xl shadow-lg p-4 dark:bg-neutral-900 dark:border-neutral-800 pointer-events-auto transition-all duration-300 opacity-0 translate-x-10';
+            toast.innerHTML = `<div class="flex items-center gap-3">
+                <span class="text-xl">${icon}</span>
+                <div>
+                    <p class="text-sm font-bold">${title}</p>
+                    <p class="text-xs text-gray-500">${message}</p>
+                </div>
+            </div>`;
+            container.appendChild(toast);
+            
+            requestAnimationFrame(() => {
+                toast.classList.remove('opacity-0', 'translate-x-10');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-x-10');
+                setTimeout(() => toast.remove(), 350);
+            }, 5000);
+        }
+
+        // ── Tab Management ──
+        const tabs = document.querySelectorAll('.tab-btn');
+        const rows = document.querySelectorAll('.po-row');
+        const cards = document.querySelectorAll('.po-card');
+        const contextIcon = document.getElementById('contextIcon');
+        const contextTitle = document.getElementById('contextTitle');
+        const contextDesc = document.getElementById('contextDescription');
+        const noActive = document.getElementById('noOrdersActive');
+        const noArchived = document.getElementById('noOrdersArchived');
+        const desktopTable = document.querySelector('.overflow-x-auto');
+        const mobileList = document.querySelector('.md\\:hidden.p-4');
+
+        function switchTab(target) {
+            tabs.forEach(t => {
+                t.classList.remove('active', 'border-indigo-600', 'text-indigo-600', 'dark:text-indigo-500', 'dark:border-indigo-500');
+                t.classList.add('border-transparent', 'text-gray-500', 'dark:text-neutral-400');
+                t.querySelector('span').classList.remove('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-900/30');
+            });
+
+            const btn = document.querySelector(`[data-tab="${target}"]`);
+            btn.classList.add('active', 'border-indigo-600', 'text-indigo-600', 'dark:text-indigo-500', 'dark:border-indigo-500');
+            btn.classList.remove('border-transparent', 'text-gray-500', 'dark:text-neutral-400');
+            btn.querySelector('span').classList.add('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-900/30');
+
+            let visibleCount = 0;
+            if (target === 'active') {
+                rows.forEach(r => r.style.display = r.getAttribute('data-status') === 'pending' ? '' : 'none');
+                cards.forEach(c => c.style.display = c.getAttribute('data-status') === 'pending' ? 'flex' : 'none');
+                visibleCount = @pendingCount;
+                contextIcon.className = 'bi bi-hourglass-split text-lg';
+                contextTitle.innerText = 'Active Orders';
+                contextDesc.innerText = `Showing ${visibleCount} pending request${visibleCount !== 1 ? 's' : ''}`;
+                noActive.classList.toggle('hidden', visibleCount > 0);
+                noArchived.classList.add('hidden');
+            } else {
+                rows.forEach(r => r.style.display = r.getAttribute('data-status') !== 'pending' ? '' : 'none');
+                cards.forEach(c => c.style.display = c.getAttribute('data-status') !== 'pending' ? 'flex' : 'none');
+                visibleCount = @(approvedCount + rejectedCount);
+                contextIcon.className = 'bi bi-archive text-lg';
+                contextTitle.innerText = 'Archived Orders';
+                contextDesc.innerText = `Showing ${visibleCount} processed request${visibleCount !== 1 ? 's' : ''}`;
+                noArchived.classList.toggle('hidden', visibleCount > 0);
+                noActive.classList.add('hidden');
+            }
+
+            // Hide/show containers based on visibility
+            const tableCard = document.getElementById('orderTableCard');
+            if (tableCard) tableCard.classList.toggle('hidden', visibleCount === 0);
+            if (mobileList) mobileList.classList.toggle('hidden', visibleCount === 0 || window.innerWidth >= 768);
+        }
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        // Auto-select tab logic
+        if (isProcessAction) {
+            switchTab('archived');
+        } else {
+            switchTab('active');
+        }
+    });
+</script>
+}

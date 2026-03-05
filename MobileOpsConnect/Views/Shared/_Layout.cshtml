@@ -152,6 +152,14 @@
             setTimeout(() => location.reload(), 5000); // reload after toast finishes
         });
 
+        connection.on("PurchaseOrderUpdated", (orderId, productName, quantity, action, byUser) => {
+            const icon = action.includes("Approved") ? "✅" : action.includes("Rejected") ? "❌" : "📦";
+            const title = action.includes("Submitted") ? "New Purchase Order" : `PO ${action}`;
+            const desc = `PO #${orderId} — ${quantity}x ${productName} by ${byUser}`;
+            showSignalRToast(icon, title, desc);
+            setTimeout(() => location.reload(), 5000);
+        });
+
         connection.start().catch(err => console.error("SignalR Error:", err));
     </script>
 
