@@ -48,7 +48,7 @@ self.addEventListener('notificationclick', function (event) {
 });
 
 // ─── PWA Offline Support ───
-const CACHE_NAME = 'mobileops-v4';
+const CACHE_NAME = 'mobileops-v5';
 const OFFLINE_URL = '/offline.html';
 
 const PRECACHE_ASSETS = [
