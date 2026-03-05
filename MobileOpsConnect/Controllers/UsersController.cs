@@ -11,7 +11,7 @@ using MobileOpsConnect.Services;
 namespace MobileOpsConnect.Controllers
 {
     // REVERTED: Only SuperAdmin and SystemAdmin can access this. 
-    // Charlie (Manager) handles Leaves, not User Accounts.
+    // DepartmentManager handles Leaves, not User Accounts.
     [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
     public class UsersController : Controller
     {
@@ -54,7 +54,7 @@ namespace MobileOpsConnect.Controllers
                 var roles = await _userManager.GetRolesAsync(user);
                 var userRole = roles.FirstOrDefault() ?? "Employee";
 
-                // SCOPE LOGIC: Alpha sees Beta; Beta sees Staff.
+                // SCOPE LOGIC: SuperAdmin manages SystemAdmins; SystemAdmin manages Managers/Staff.
                 if (CanManageUser(currentUser, userRole, user.Id))
                 {
                     // Filter by role if specified
@@ -383,14 +383,14 @@ namespace MobileOpsConnect.Controllers
             // I can always see myself
             if (me.Id == targetId) return true;
 
-            // Alpha (SuperAdmin) -> Can ONLY manage SystemAdmins (Beta)
+            // SuperAdmin -> Can ONLY manage SystemAdmins
             if (User.IsInRole("SuperAdmin"))
             {
                 return targetRole == "SystemAdmin";
             }
 
-            // Beta (SystemAdmin) -> Can manage Managers, Staff, Employees
-            // Beta CANNOT manage SuperAdmin or other SystemAdmins
+            // SystemAdmin -> Can manage Managers, Staff, Employees
+            // SystemAdmin CANNOT manage SuperAdmin or other SystemAdmins
             if (User.IsInRole("SystemAdmin"))
             {
                 return targetRole != "SuperAdmin" && targetRole != "SystemAdmin";
@@ -406,12 +406,12 @@ namespace MobileOpsConnect.Controllers
 
             if (User.IsInRole("SuperAdmin"))
             {
-                // Alpha can only create Betas
+                // SuperAdmin can only create SystemAdmins
                 roles.Add("SystemAdmin");
             }
             else if (User.IsInRole("SystemAdmin"))
             {
-                // Beta can create everyone else
+                // SystemAdmin can create everyone else
                 roles.Add("DepartmentManager");
                 roles.Add("WarehouseStaff");
                 roles.Add("Employee");
@@ -427,7 +427,7 @@ namespace MobileOpsConnect.Controllers
 
             if (User.IsInRole("SuperAdmin"))
             {
-                // Alpha can promote a Beta to SuperAdmin
+                // SuperAdmin can promote a SystemAdmin to SuperAdmin
                 roles.Add("SuperAdmin");
             }
 
@@ -466,7 +466,7 @@ namespace MobileOpsConnect.Controllers
                 var roles = await _userManager.GetRolesAsync(user);
                 var role = roles.FirstOrDefault() ?? "Employee";
 
-                // Charlie can only see staff-level roles (not admins)
+                // DepartmentManager can only see staff-level roles (not admins)
                 if (role == "WarehouseStaff" || role == "Employee" || role == "DepartmentManager")
                 {
                     var pendingLeaves = await _context.LeaveRequests.CountAsync(l => l.UserID == user.Id && l.Status == "Pending");

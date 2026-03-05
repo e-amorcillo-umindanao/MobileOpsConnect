@@ -108,7 +108,9 @@ namespace MobileOpsConnect.Controllers
             var userEmail = currentUser?.Email ?? "";
             var userRoles = currentUser != null ? await _userManager.GetRolesAsync(currentUser) : new List<string>();
             var userRole = userRoles.FirstOrDefault() ?? "";
-            await _auditService.LogAsync(userId, userEmail, userRole, "STOCK_IN", $"Added {quantity} units to {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.", HttpContext.Connection.RemoteIpAddress?.ToString());
+            var logMessage = $"Added {quantity} units to {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.";
+            if (!string.IsNullOrWhiteSpace(notes)) logMessage += $" Notes: {notes}";
+            await _auditService.LogAsync(userId, userEmail, userRole, "STOCK_IN", logMessage, HttpContext.Connection.RemoteIpAddress?.ToString());
 
             return RedirectToAction(nameof(Index));
         }
@@ -153,7 +155,9 @@ namespace MobileOpsConnect.Controllers
             var userEmail = currentUser?.Email ?? "";
             var userRoles = currentUser != null ? await _userManager.GetRolesAsync(currentUser) : new List<string>();
             var userRole = userRoles.FirstOrDefault() ?? "";
-            await _auditService.LogAsync(userId, userEmail, userRole, "STOCK_OUT", $"Removed {quantity} units from {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.", HttpContext.Connection.RemoteIpAddress?.ToString());
+            var logMessage = $"Removed {quantity} units from {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.";
+            if (!string.IsNullOrWhiteSpace(notes)) logMessage += $" Notes: {notes}";
+            await _auditService.LogAsync(userId, userEmail, userRole, "STOCK_OUT", logMessage, HttpContext.Connection.RemoteIpAddress?.ToString());
 
             // Check for low stock and notify
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();

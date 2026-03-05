@@ -40,9 +40,7 @@ namespace MobileOpsConnect.Controllers
             var onLeaveToday = await _context.LeaveRequests
                 .CountAsync(l => l.Status == "Approved" && l.StartDate <= today && l.EndDate >= today);
 
-            // ═══════════════════════════════════════════
-            // 1. SuperAdmin (Alpha) & SystemAdmin (Beta)
-            // ═══════════════════════════════════════════
+            // 1. SuperAdmin & SystemAdmin
             if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
             {
                 // ── Business overview (already existed) ──
@@ -91,9 +89,7 @@ namespace MobileOpsConnect.Controllers
                 return View();
             }
 
-            // ═══════════════════════════════════════════
-            // 2. Department Manager (Charlie)
-            // ═══════════════════════════════════════════
+            // 2. Department Manager
             else if (User.IsInRole("DepartmentManager"))
             {
                 // Exclude SuperAdmin from team count
@@ -158,9 +154,7 @@ namespace MobileOpsConnect.Controllers
                 return View("ManagerDashboard");
             }
 
-            // ═══════════════════════════════════════════
-            // 3. Everyone Else (Echo, Delta)
-            // ═══════════════════════════════════════════
+            // 3. Everyone Else (WarehouseStaff, Employee)
             else
             {
                 var user = await _userManager.GetUserAsync(User);
@@ -206,7 +200,7 @@ namespace MobileOpsConnect.Controllers
             }
         }
 
-        [Authorize(Roles = "SuperAdmin,DepartmentManager")]
+        [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
         public async Task<IActionResult> Analytics()
         {
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();

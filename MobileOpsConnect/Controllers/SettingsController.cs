@@ -126,7 +126,6 @@ namespace MobileOpsConnect.Controllers
 
             // Prepare filter data — hierarchical order
             var allRoles = (await _context.Roles
-                .Where(r => r.Name != "Alpha")
                 .Select(r => r.Name)
                 .ToListAsync())
                 .OrderBy(n => roleOrder.GetValueOrDefault(n, 99))
@@ -136,7 +135,6 @@ namespace MobileOpsConnect.Controllers
             var usersWithRoles = await (from u in _context.Users
                                       join ur in _context.UserRoles on u.Id equals ur.UserId
                                       join r in _context.Roles on ur.RoleId equals r.Id
-                                      where r.Name != "Alpha"
                                       select new { u.Id, u.Email, RoleName = r.Name })
                                       .OrderBy(x => x.Email)
                                       .ToListAsync();

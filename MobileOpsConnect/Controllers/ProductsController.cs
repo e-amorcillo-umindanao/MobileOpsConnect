@@ -144,10 +144,6 @@ namespace MobileOpsConnect.Controllers
                     "🗂️ Product Archived",
                     $"{product.Name} (SKU: {product.SKU}) has been archived (stock set to 0).");
             }
-            else
-            {
-                await _context.SaveChangesAsync();
-            }
             return RedirectToAction(nameof(Index));
         }
 
