@@ -161,6 +161,31 @@
 
         <!-- ACTIVE PRODUCTS SECTION -->
         <div id="inv-active-section" role="tabpanel" aria-labelledby="inv-active-tab">
+            
+            <!-- Stock Level Filter Bar -->
+            <div class="flex items-center gap-x-2 mb-6 p-1 bg-gray-50 rounded-xl w-fit dark:bg-neutral-800/50">
+                <button type="button" class="stock-filter-btn active py-1.5 px-4 inline-flex items-center gap-x-2 bg-white text-xs font-bold rounded-lg border border-gray-200 text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-all" data-filter="all">
+                    All Items
+                </button>
+                <button type="button" class="stock-filter-btn py-1.5 px-4 inline-flex items-center gap-x-2 bg-transparent text-xs font-bold rounded-lg border border-transparent text-gray-500 hover:text-emerald-600 focus:outline-none dark:text-neutral-400 dark:hover:text-emerald-400 transition-all" data-filter="healthy">
+                    <span class="size-2 rounded-full bg-emerald-500"></span>
+                    Healthy
+                </button>
+                <button type="button" class="stock-filter-btn py-1.5 px-4 inline-flex items-center gap-x-2 bg-transparent text-xs font-bold rounded-lg border border-transparent text-gray-500 hover:text-rose-600 focus:outline-none dark:text-neutral-400 dark:hover:text-rose-400 transition-all" data-filter="low">
+                    <span class="size-2 rounded-full bg-rose-500"></span>
+                    Low Stock
+                </button>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="relative max-w-md mb-6">
+                <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-3.5">
+                    <i class="bi bi-search text-gray-400 dark:text-neutral-500"></i>
+                </div>
+                <input type="text" id="searchInput"
+                       class="py-2.5 ps-10 pe-4 block w-full bg-white border-gray-200 rounded-xl text-sm focus:border-indigo-500 focus:ring-indigo-500 shadow-sm dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                       placeholder="Search products by Name, SKU, or Category...">
+            </div>
 
             @if (activeProducts.Count == 0)
             {
@@ -203,7 +228,9 @@
                                     <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
                                         @foreach (var item in activeProducts)
                                         {
-                                            <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                                            <tr class="product-row hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors" 
+                                                data-stock-level="@(item.StockQuantity <= 10 ? "low" : "healthy")"
+                                                data-search="@(item.Name.ToLower())|@(item.SKU.ToLower())|@(item.Category.ToLower())">
                                                 <td class="whitespace-nowrap px-6 py-4">
                                                     <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-800/20 dark:text-indigo-400">
                                                         @item.SKU
@@ -275,7 +302,9 @@
                 <div class="md:hidden space-y-3">
                     @foreach (var item in activeProducts)
                     {
-                        <div class="flex flex-col bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 @(item.StockQuantity <= 10 ? "border-l-4 border-l-red-500" : "")">
+                        <div class="product-card flex flex-col bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 @(item.StockQuantity <= 10 ? "border-l-4 border-l-red-500" : "")" 
+                             data-stock-level="@(item.StockQuantity <= 10 ? "low" : "healthy")"
+                             data-search="@(item.Name.ToLower())|@(item.SKU.ToLower())|@(item.Category.ToLower())">
                             <div class="flex items-start justify-between mb-3">
                                 <div class="flex items-center gap-x-3 min-w-0">
                                     <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg @(item.StockQuantity <= 10 ? "bg-red-100 text-red-800" : "bg-indigo-100 text-indigo-800")">
@@ -492,5 +521,86 @@
                     '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">0 Low</span>';
             });
         }
+
+        // --- Stock Level & Search Filtering ---
+        const filterBtns = document.querySelectorAll('.stock-filter-btn');
+        const searchInput = document.getElementById('searchInput');
+        const productRows = document.querySelectorAll('.product-row');
+        const productCards = document.querySelectorAll('.product-card');
+
+        let currentFilter = 'all';
+
+        function updateVisibility() {
+            const query = searchInput.value.toLowerCase().trim();
+            let visibleCount = 0;
+            let currentHealthy = 0;
+            let currentLow = 0;
+
+            // Update Desktop Rows
+            productRows.forEach(row => {
+                const stockLevel = row.dataset.stockLevel;
+                const searchContent = row.dataset.search;
+                
+                const matchesFilter = currentFilter === 'all' || stockLevel === currentFilter;
+                const matchesSearch = !query || searchContent.includes(query);
+                
+                const isVisible = matchesFilter && matchesSearch;
+                row.style.display = isVisible ? '' : 'none';
+                
+                if (isVisible) {
+                    visibleCount++;
+                    if (stockLevel === 'healthy') currentHealthy++;
+                    else currentLow++;
+                }
+            });
+
+            // Update Mobile Cards
+            productCards.forEach(card => {
+                const stockLevel = card.dataset.stockLevel;
+                const searchContent = card.dataset.search;
+                
+                const matchesFilter = currentFilter === 'all' || stockLevel === currentFilter;
+                const matchesSearch = !query || searchContent.includes(query);
+                
+                card.style.display = (matchesFilter && matchesSearch) ? 'flex' : 'none';
+            });
+
+            // Update Header & Footer
+            const label = currentFilter === 'all' ? 'active' : currentFilter;
+            const searchContext = query ? ` matching "${query}"` : '';
+            cardSubtitle.textContent = visibleCount + ' ' + label + ' product' + (visibleCount !== 1 ? 's' : '') + searchContext;
+            footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + visibleCount + ' ' + label + ' product' + (visibleCount !== 1 ? 's' : '') + searchContext;
+            
+            // Re-render badges
+            if (activeTab.classList.contains('active')) {
+                const badgeHtml = (currentFilter === 'all' || currentFilter === 'healthy' ? '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">' + currentHealthy + ' Stocked</span>' : '') +
+                    (currentFilter === 'all' || currentFilter === 'low' ? '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400 ms-1">' + currentLow + ' Low</span>' : '');
+                cardBadges.innerHTML = badgeHtml;
+                footerBadges.innerHTML = badgeHtml;
+            }
+        }
+
+        function applyFilter(filter) {
+            currentFilter = filter;
+            
+            // Update button styles
+            filterBtns.forEach(btn => {
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('active', 'bg-white', 'border-gray-200', 'text-gray-800', 'shadow-sm', 'dark:bg-neutral-900', 'dark:border-neutral-700', 'dark:text-white');
+                    btn.classList.remove('bg-transparent', 'border-transparent', 'text-gray-500', 'dark:text-neutral-400');
+                } else {
+                    btn.classList.remove('active', 'bg-white', 'border-gray-200', 'text-gray-800', 'shadow-sm', 'dark:bg-neutral-900', 'dark:border-neutral-700', 'dark:text-white');
+                    btn.classList.add('bg-transparent', 'border-transparent', 'text-gray-500', 'dark:text-neutral-400');
+                }
+            });
+
+            updateVisibility();
+        }
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
+        });
+
+        searchInput.addEventListener('input', updateVisibility);
     });
 </script>

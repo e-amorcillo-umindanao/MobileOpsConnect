@@ -48,9 +48,18 @@
 <!-- Action Bar -->
 <div class="flex flex-wrap justify-between items-center gap-3 mb-8">
 
-    <a asp-action="Create" class="py-2.5 px-5 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
-        <i class="bi bi-plus-lg"></i> New Entry
-    </a>
+    <div class="flex flex-wrap items-center gap-3">
+        <!-- Instant Search -->
+        <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-400">
+                <i class="bi bi-search text-xs"></i>
+            </div>
+            <input type="text" id="ledgerSearchInput" class="py-2.5 px-9 block w-full bg-white border-gray-200 rounded-lg text-xs focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Instant search ledger...">
+        </div>
+        <a asp-action="Create" class="py-2.5 px-5 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+            <i class="bi bi-plus-lg"></i> New Entry
+        </a>
+    </div>
 </div>
 
 <!-- Summary Cards -->
@@ -229,7 +238,7 @@
                 <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
                     @foreach (var item in Model)
                     {
-                        <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                        <tr class="ledger-row hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors" data-search="@(item.Category.ToLower())|@(item.Description.ToLower())|@(item.ReferenceNumber?.ToLower() ?? "")|@(item.Type.ToLower())">
                             <td class="whitespace-nowrap px-6 py-4"><span class="text-sm font-semibold text-gray-800">@item.TransactionDate.ToString("MMM dd, yyyy")</span></td>
                             <td class="whitespace-nowrap px-6 py-4">
                                 @if (item.Type == "Income")
@@ -270,3 +279,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ledgerSearchInput = document.getElementById('ledgerSearchInput');
+        const ledgerRows = document.querySelectorAll('.ledger-row');
+
+        ledgerSearchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            ledgerRows.forEach(row => {
+                const searchContent = row.dataset.search;
+                row.style.display = !query || searchContent.includes(query) ? '' : 'none';
+            });
+        });
+    });
+</script>

@@ -152,7 +152,14 @@
             <p class="text-gray-500 text-xs mb-0" id="lv-tab-count">Showing @pendingCount record@(pendingCount != 1 ? "s" : "")</p>
         </div>
     </div>
-    <div class="flex gap-2">
+    <div class="flex flex-wrap items-center gap-2">
+        <!-- Search Bar -->
+        <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-400">
+                <i class="bi bi-search text-xs"></i>
+            </div>
+            <input type="text" id="leaveSearchInput" class="py-2 px-9 block w-full bg-white border-gray-200 rounded-lg text-xs focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Search requests...">
+        </div>
         @if (!hasPower)
         {
             <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
@@ -236,7 +243,8 @@
                                             int targetRank = rRole == "SuperAdmin" ? 4 : rRole == "SystemAdmin" ? 3 : rRole == "DepartmentManager" ? 2 : 1;
                                             bool canApproveThisRow = (myRank > targetRank);
 
-                                            <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors @(hasPower && canApproveThisRow ? "border-l-4 border-l-amber-500" : "")">
+                                            <tr class="leave-row hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors @(hasPower && canApproveThisRow ? "border-l-4 border-l-amber-500" : "")"
+                                                data-search="@(item.User?.UserName?.ToLower() ?? "")|@(item.LeaveType.ToLower())|@(item.Reason.ToLower())|pending">
                                                 <td class="whitespace-nowrap px-6 py-4">
                                                     <div class="flex items-center gap-x-3">
                                                         <span class="shrink-0 inline-flex justify-center items-center size-[36px] rounded-full @(RoleIconClass(rRole))">
@@ -310,7 +318,8 @@
                         int targetRank = rRole == "SuperAdmin" ? 4 : rRole == "SystemAdmin" ? 3 : rRole == "DepartmentManager" ? 2 : 1;
                         bool canApproveThisRow = (myRank > targetRank);
 
-                        <div class="flex flex-col bg-white border border-l-4 border-l-amber-500 shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800">
+                        <div class="leave-card flex flex-col bg-white border border-l-4 border-l-amber-500 shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800"
+                             data-search="@(item.User?.UserName?.ToLower() ?? "")|@(item.LeaveType.ToLower())|@(item.Reason.ToLower())|pending">
                             <div class="flex items-start justify-between mb-3">
                                 <div class="flex items-center gap-x-3 min-w-0">
                                     <span class="shrink-0 inline-flex justify-center items-center size-[36px] rounded-full @(RoleIconClass(rRole))">
@@ -398,7 +407,8 @@
                                             bool isMyRequest = (item.UserID == currentUserId);
                                             string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
 
-                                            <tr class="opacity-60 hover:opacity-100 transition-opacity">
+                                            <tr class="leave-row opacity-60 hover:opacity-100 transition-opacity"
+                                                data-search="@(item.User?.UserName?.ToLower() ?? "")|@(item.LeaveType.ToLower())|@(item.Reason.ToLower())|@(item.Status.ToLower())">
                                                 <td class="whitespace-nowrap px-6 py-4">
                                                     <div class="flex items-center gap-x-3">
                                                         <span class="shrink-0 inline-flex justify-center items-center size-[36px] rounded-full @(RoleIconClass(rRole))"><i class="bi @(RoleIcon(rRole)) text-sm"></i></span>
@@ -437,7 +447,8 @@
                         bool isMyRequest = (item.UserID == currentUserId);
                         string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
 
-                        <div class="flex flex-col bg-white border border-l-4 shadow-sm rounded-xl p-4 opacity-60 dark:bg-neutral-900 dark:border-neutral-800 @(item.Status == "Approved" ? "border-l-green-500" : "border-l-red-500")">
+                        <div class="leave-card flex flex-col bg-white border border-l-4 shadow-sm rounded-xl p-4 opacity-60 dark:bg-neutral-900 dark:border-neutral-800 @(item.Status == "Approved" ? "border-l-green-500" : "border-l-red-500")"
+                             data-search="@(item.User?.UserName?.ToLower() ?? "")|@(item.LeaveType.ToLower())|@(item.Reason.ToLower())|@(item.Status.ToLower())">
                             <div class="flex items-start justify-between mb-3">
                                 <div class="flex items-center gap-x-3 min-w-0">
                                     <span class="shrink-0 inline-flex justify-center items-center size-[36px] rounded-full @(RoleIconClass(rRole))"><i class="bi @(RoleIcon(rRole)) text-sm"></i></span>
@@ -496,15 +507,47 @@
     const cardBadges = document.getElementById('lv-card-badges');
     const footerText = document.getElementById('lv-footer-text');
     const footerBadges = document.getElementById('lv-footer-badges');
+    const leaveSearchInput = document.getElementById('leaveSearchInput');
 
-    const pendingCount = @pendingCount;
-    const archivedCount = @archivedCount;
-    const approvedCount = @approvedCount;
-    const rejectedCount = @rejectedCount;
+    let currentTab = 'active';
+
+    function updateVisibility() {
+        const query = leaveSearchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        // Filter Rows
+        document.querySelectorAll('.leave-row').forEach(row => {
+            const searchContent = row.dataset.search;
+            const isPending = searchContent.includes('|pending');
+            const matchesTab = currentTab === 'active' ? isPending : !isPending;
+            const matchesSearch = !query || searchContent.includes(query);
+            
+            const isVisible = matchesTab && matchesSearch;
+            row.style.display = isVisible ? '' : 'none';
+            if (isVisible) visibleCount++;
+        });
+
+        // Filter Cards
+        document.querySelectorAll('.leave-card').forEach(card => {
+            const searchContent = card.dataset.search;
+            const isPending = searchContent.includes('|pending');
+            const matchesTab = currentTab === 'active' ? isPending : !isPending;
+            const matchesSearch = !query || searchContent.includes(query);
+            
+            card.style.display = (matchesTab && matchesSearch) ? 'flex' : 'none';
+        });
+
+        const searchContext = query ? ` matching "${query}"` : '';
+        const label = currentTab === 'active' ? 'Active' : 'Archived';
+        tabLabel.textContent = label + ' Requests' + searchContext;
+        tabCount.textContent = 'Showing ' + visibleCount + ' record' + (visibleCount !== 1 ? 's' : '');
+        cardSubtitle.textContent = visibleCount + ' record' + (visibleCount !== 1 ? 's' : '') + searchContext;
+        footerText.innerHTML = 'Showing ' + visibleCount + ' ' + label.toLowerCase() + ' request' + (visibleCount !== 1 ? 's' : '') + searchContext;
+    }
 
     btns.forEach(btn => {
         btn.addEventListener('click', function () {
-            const tab = this.dataset.tab;
+            currentTab = this.dataset.tab;
 
             btns.forEach(b => {
                 b.classList.remove('active');
@@ -517,30 +560,25 @@
             const badges = this.querySelectorAll('span');
             badges.forEach(s => { s.className = 'inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white'; });
 
-            if (tab === 'active') {
+            if (currentTab === 'active') {
                 activeSection.style.display = '';
                 archivedSection.style.display = 'none';
-                tabLabel.textContent = 'Active Requests';
-                tabCount.textContent = 'Showing ' + pendingCount + ' record' + (pendingCount !== 1 ? 's' : '');
                 cardTitle.textContent = 'Leave Records';
-                cardSubtitle.textContent = pendingCount + ' pending application' + (pendingCount !== 1 ? 's' : '');
-                cardBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">' + pendingCount + ' Pending</span>';
-                footerText.innerHTML = 'Showing ' + pendingCount + ' pending request' + (pendingCount !== 1 ? 's' : '');
-                footerBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">' + pendingCount + ' Pending</span>';
+                cardBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">' + @pendingCount + ' Pending</span>';
+                footerBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">' + @pendingCount + ' Pending</span>';
             } else {
                 activeSection.style.display = 'none';
                 archivedSection.style.display = '';
-                tabLabel.textContent = 'Archived Requests';
-                tabCount.textContent = 'Showing ' + archivedCount + ' record' + (archivedCount !== 1 ? 's' : '');
                 cardTitle.textContent = 'Leave Archive';
-                cardSubtitle.textContent = archivedCount + ' resolved application' + (archivedCount !== 1 ? 's' : '');
-                cardBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium">' + approvedCount + ' Approved</span>' +
-                    '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium">' + rejectedCount + ' Rejected</span>';
-                footerText.innerHTML = 'Showing ' + archivedCount + ' archived request' + (archivedCount !== 1 ? 's' : '');
-                footerBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium">' + approvedCount + ' Approved</span>' +
-                    '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium">' + rejectedCount + ' Rejected</span>';
+                cardBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium">' + @approvedCount + ' Approved</span>' +
+                    '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium">' + @rejectedCount + ' Rejected</span>';
+                footerBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium">' + @approvedCount + ' Approved</span>' +
+                    '<span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium">' + @rejectedCount + ' Rejected</span>';
             }
+            updateVisibility();
         });
     });
+
+    leaveSearchInput.addEventListener('input', updateVisibility);
 })();
 </script>

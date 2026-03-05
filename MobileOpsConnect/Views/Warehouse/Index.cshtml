@@ -46,7 +46,7 @@
             <button type="button" id="openScannerBtn" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-s-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
                 <i class="bi bi-camera-fill"></i> Scan
             </button>
-            <input type="text" name="searchString" id="barcodeInput" class="py-2 px-4 block w-full border-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Scan SKU or Search Product..." value="@ViewData["CurrentFilter"]">
+            <input type="text" name="searchString" id="warehouseSearchInput" class="py-2.5 px-4 block w-full border-gray-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Instant search by Name or SKU..." value="@ViewData["CurrentFilter"]">
             <button class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-e-lg border border-transparent bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors" type="submit">
                 <i class="bi bi-search"></i>
             </button>
@@ -80,7 +80,7 @@
             <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
                 @foreach (var item in Model)
                 {
-                    <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                    <tr class="warehouse-product-row hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors" data-search="@(item.Name.ToLower())|@(item.SKU.ToLower())">
                         <td class="whitespace-nowrap px-6 py-4">
                             <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-800/20 dark:text-indigo-400">
                                 @item.SKU
@@ -293,6 +293,27 @@
             if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
                 closeModal();
             }
+        });
+
+        // ── Instant Search Logic ──
+        const warehouseSearchInput = document.getElementById('warehouseSearchInput');
+        const productRows = document.querySelectorAll('.warehouse-product-row');
+        const productCards = document.querySelectorAll('.warehouse-product-card');
+
+        warehouseSearchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            // Filter Desktop Table
+            productRows.forEach(row => {
+                const searchContent = row.dataset.search;
+                row.style.display = !query || searchContent.includes(query) ? '' : 'none';
+            });
+
+            // Filter Mobile Cards
+            productCards.forEach(card => {
+                const searchContent = card.dataset.search;
+                card.style.display = !query || searchContent.includes(query) ? 'flex' : 'none';
+            });
         });
     })();
     </script>

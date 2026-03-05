@@ -118,17 +118,15 @@
 
 <!-- Tab Interface -->
 <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
-    <nav class="flex gap-x-1" aria-label="Tabs" role="tablist">
-        <button type="button" class="tab-btn active py-3 px-4 inline-flex items-center gap-x-2 bg-white text-sm font-semibold text-center border-b-2 border-indigo-600 text-indigo-600 dark:bg-neutral-900 dark:text-indigo-500 dark:border-indigo-500" data-tab="active" role="tab">
-            Active
-            <span class="py-0.5 px-1.5 rounded-full text-xs font-medium bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">@pendingCount</span>
-        </button>
-        <button type="button" class="tab-btn py-3 px-4 inline-flex items-center gap-x-2 bg-transparent text-sm font-medium text-center border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300" data-tab="archived" role="tab">
-            Archived
-            <span class="py-0.5 px-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-neutral-800 dark:text-neutral-500">@(approvedCount + rejectedCount)</span>
-        </button>
     </nav>
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap items-center gap-2">
+        <!-- Search Bar -->
+        <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-400">
+                <i class="bi bi-search text-xs"></i>
+            </div>
+            <input type="text" id="orderSearchInput" class="py-2 px-9 block w-full bg-white border-gray-200 rounded-lg text-xs focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Search orders...">
+        </div>
 
         @if (User.IsInRole("DepartmentManager") || User.IsInRole("WarehouseStaff"))
         {
@@ -212,7 +210,9 @@
                     <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
                         @foreach (var po in Model)
                         {
-                            <tr class="po-row hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors" data-status="@po.Status.ToLower()">
+                            <tr class="po-row hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors" 
+                                data-status="@po.Status.ToLower()"
+                                data-search="po-@po.Id.ToString("D4")|@(po.Product?.Name?.ToLower() ?? "")|@(po.RequestedBy?.Email?.ToLower() ?? "")|@po.Status.ToLower()">
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-800/20 dark:text-indigo-400">
                                         PO-@po.Id.ToString("D4")
@@ -298,7 +298,9 @@
             <div class="md:hidden p-4 space-y-3">
                 @foreach (var po in Model)
                 {
-                    <div class="po-card flex flex-col bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 border-l-4 @(po.Status == "Pending" ? "border-l-amber-500" : po.Status == "Approved" ? "border-l-green-500" : "border-l-red-500")" data-status="@po.Status.ToLower()">
+                    <div class="po-card flex flex-col bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 border-l-4 @(po.Status == "Pending" ? "border-l-amber-500" : po.Status == "Approved" ? "border-l-green-500" : "border-l-red-500")" 
+                         data-status="@po.Status.ToLower()"
+                         data-search="po-@po.Id.ToString("D4")|@(po.Product?.Name?.ToLower() ?? "")|@(po.RequestedBy?.Email?.ToLower() ?? "")|@po.Status.ToLower()">
                         <div class="flex items-start justify-between mb-3">
                             <div class="flex items-center gap-x-3">
                                 <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800">
@@ -419,10 +421,65 @@
         const desktopTable = document.querySelector('.overflow-x-auto');
         const mobileList = document.querySelector('.md\\:hidden.p-4');
 
+        const orderSearchInput = document.getElementById('orderSearchInput');
+        let currentTab = 'active';
+
+        function updateVisibility() {
+            const query = orderSearchInput.value.toLowerCase().trim();
+            const targetStatus = currentTab === 'active' ? 'pending' : '';
+            
+            let visibleCount = 0;
+
+            // Header/Context updates
+            if (currentTab === 'active') {
+                contextIcon.className = 'bi bi-hourglass-split text-lg';
+                contextTitle.innerText = 'Active Orders';
+            } else {
+                contextIcon.className = 'bi bi-archive text-lg';
+                contextTitle.innerText = 'Archived Orders';
+            }
+
+            // Filter Desktop Rows
+            rows.forEach(r => {
+                const status = r.getAttribute('data-status');
+                const searchContent = r.getAttribute('data-search');
+                
+                const matchesTab = currentTab === 'active' ? status === 'pending' : status !== 'pending';
+                const matchesSearch = !query || searchContent.includes(query);
+                
+                const isVisible = matchesTab && matchesSearch;
+                r.style.display = isVisible ? '' : 'none';
+                if (isVisible) visibleCount++;
+            });
+
+            // Filter Mobile Cards
+            cards.forEach(c => {
+                const status = c.getAttribute('data-status');
+                const searchContent = c.getAttribute('data-search');
+                
+                const matchesTab = currentTab === 'active' ? status === 'pending' : status !== 'pending';
+                const matchesSearch = !query || searchContent.includes(query);
+                
+                c.style.display = (matchesTab && matchesSearch) ? 'flex' : 'none';
+            });
+
+            const searchContext = query ? ` matching "${query}"` : '';
+            contextDesc.innerText = `Showing ${visibleCount} order${visibleCount !== 1 ? 's' : ''}${searchContext}`;
+            
+            noActive.classList.toggle('hidden', currentTab !== 'active' || visibleCount > 0);
+            noArchived.classList.toggle('hidden', currentTab !== 'archived' || visibleCount > 0);
+
+            const tableCard = document.getElementById('orderTableCard');
+            if (tableCard) tableCard.classList.toggle('hidden', visibleCount === 0);
+            if (mobileList) mobileList.classList.toggle('hidden', visibleCount === 0 || window.innerWidth >= 768);
+        }
+
         function switchTab(target) {
+            currentTab = target;
             tabs.forEach(t => {
                 t.classList.remove('active', 'border-indigo-600', 'text-indigo-600', 'dark:text-indigo-500', 'dark:border-indigo-500');
-                t.classList.add('border-transparent', 'text-gray-500', 'dark:text-neutral-400');
+                t.classList.add('border-transparent', 'text-gray-500', 'dark:text-neutral-400', 'bg-transparent');
+                t.classList.remove('bg-white');
                 t.querySelector('span').classList.remove('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-900/30');
             });
 
@@ -431,36 +488,14 @@
             btn.classList.remove('border-transparent', 'text-gray-500', 'dark:text-neutral-400');
             btn.querySelector('span').classList.add('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-900/30');
 
-            let visibleCount = 0;
-            if (target === 'active') {
-                rows.forEach(r => r.style.display = r.getAttribute('data-status') === 'pending' ? '' : 'none');
-                cards.forEach(c => c.style.display = c.getAttribute('data-status') === 'pending' ? 'flex' : 'none');
-                visibleCount = @pendingCount;
-                contextIcon.className = 'bi bi-hourglass-split text-lg';
-                contextTitle.innerText = 'Active Orders';
-                contextDesc.innerText = `Showing ${visibleCount} pending request${visibleCount !== 1 ? 's' : ''}`;
-                noActive.classList.toggle('hidden', visibleCount > 0);
-                noArchived.classList.add('hidden');
-            } else {
-                rows.forEach(r => r.style.display = r.getAttribute('data-status') !== 'pending' ? '' : 'none');
-                cards.forEach(c => c.style.display = c.getAttribute('data-status') !== 'pending' ? 'flex' : 'none');
-                visibleCount = @(approvedCount + rejectedCount);
-                contextIcon.className = 'bi bi-archive text-lg';
-                contextTitle.innerText = 'Archived Orders';
-                contextDesc.innerText = `Showing ${visibleCount} processed request${visibleCount !== 1 ? 's' : ''}`;
-                noArchived.classList.toggle('hidden', visibleCount > 0);
-                noActive.classList.add('hidden');
-            }
-
-            // Hide/show containers based on visibility
-            const tableCard = document.getElementById('orderTableCard');
-            if (tableCard) tableCard.classList.toggle('hidden', visibleCount === 0);
-            if (mobileList) mobileList.classList.toggle('hidden', visibleCount === 0 || window.innerWidth >= 768);
+            updateVisibility();
         }
 
         tabs.forEach(btn => {
             btn.addEventListener('click', () => switchTab(btn.dataset.tab));
         });
+
+        orderSearchInput.addEventListener('input', updateVisibility);
 
         // Auto-select tab logic
         if (isProcessAction) {

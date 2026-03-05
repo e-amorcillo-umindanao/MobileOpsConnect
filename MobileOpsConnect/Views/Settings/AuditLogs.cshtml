@@ -113,6 +113,19 @@
             </div>
         </div>
     </div>
+    
+    <!-- Instant Search -->
+    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800">
+        <div class="space-y-1.5">
+            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1 ml-1 cursor-default">Instant Filter</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-gray-400">
+                    <i class="bi bi-search"></i>
+                </div>
+                <input type="text" id="auditSearchInput" class="py-2.5 ps-10 pe-4 block w-full bg-gray-50 border-gray-200 rounded-xl text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 transition-all font-medium" placeholder="Search by details, action, or user email...">
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Log Table -->
@@ -154,7 +167,7 @@
                         {
                             var actionBadge = log.Action switch { "LOGIN" => "bg-green-100 text-green-800", "CREATE" => "bg-cyan-100 text-cyan-800", "UPDATE" => "bg-indigo-100 text-indigo-800", "DELETE" => "bg-red-100 text-red-800", "STOCK_IN" => "bg-green-100 text-green-800", "STOCK_OUT" => "bg-amber-100 text-amber-800", "APPROVE" => "bg-green-100 text-green-800", "REJECT" => "bg-red-100 text-red-800", "SECURITY" => "bg-red-100 text-red-800", _ => "bg-purple-100 text-purple-800" };
                             var actionIcon = log.Action switch { "LOGIN" => "bi-box-arrow-in-right", "CREATE" => "bi-plus-circle-fill", "UPDATE" => "bi-pencil-fill", "DELETE" => "bi-trash-fill", "STOCK_IN" => "bi-arrow-down-circle-fill", "STOCK_OUT" => "bi-arrow-up-circle-fill", "APPROVE" => "bi-check-circle-fill", "REJECT" => "bi-x-circle-fill", "SECURITY" => "bi-shield-fill-exclamation", _ => "bi-activity" };
-                            <tr class="hover:bg-gray-50 transition-colors" style="@(log.IsCritical ? "background: rgba(239,68,68,0.03);" : "")">
+                            <tr class="audit-log-row hover:bg-gray-50 transition-colors" style="@(log.IsCritical ? "background: rgba(239,68,68,0.03);" : "")" data-search="@(log.UserEmail.ToLower())|@(log.Action.ToLower())|@(log.Details.ToLower())">
                                 <td class="px-6 py-4"><span class="text-sm text-gray-800">@log.Timestamp.ToString("MMM dd, yyyy")</span><br/><span class="text-xs text-gray-500">@log.Timestamp.ToString("hh:mm:ss tt")</span></td>
                                 <td class="px-6 py-4"><span class="text-sm font-semibold text-gray-800">@log.UserEmail</span>@if (!string.IsNullOrEmpty(log.UserRole)){<br/><span class="text-xs text-gray-500">@log.UserRole</span>}</td>
                                 <td class="px-6 py-4">
@@ -175,7 +188,7 @@
                 {
                     var actionBadge = log.Action switch { "LOGIN" => "bg-green-100 text-green-800", "CREATE" => "bg-cyan-100 text-cyan-800", "UPDATE" => "bg-indigo-100 text-indigo-800", "DELETE" => "bg-red-100 text-red-800", "STOCK_IN" => "bg-green-100 text-green-800", "STOCK_OUT" => "bg-amber-100 text-amber-800", "APPROVE" => "bg-green-100 text-green-800", "REJECT" => "bg-red-100 text-red-800", "SECURITY" => "bg-red-100 text-red-800", _ => "bg-purple-100 text-purple-800" };
                     var actionIcon = log.Action switch { "LOGIN" => "bi-box-arrow-in-right", "CREATE" => "bi-plus-circle-fill", "UPDATE" => "bi-pencil-fill", "DELETE" => "bi-trash-fill", "STOCK_IN" => "bi-arrow-down-circle-fill", "STOCK_OUT" => "bi-arrow-up-circle-fill", "APPROVE" => "bi-check-circle-fill", "REJECT" => "bi-x-circle-fill", "SECURITY" => "bi-shield-fill-exclamation", _ => "bi-activity" };
-                    <div class="p-4 rounded-xl bg-gray-50 border" style="border-left: 3px solid @(log.IsCritical ? "#ef4444" : "#6366f1") !important;">
+                    <div class="audit-log-card p-4 rounded-xl bg-gray-50 border" style="border-left: 3px solid @(log.IsCritical ? "#ef4444" : "#6366f1") !important;" data-search="@(log.UserEmail.ToLower())|@(log.Action.ToLower())|@(log.Details.ToLower())">
                         <div class="flex items-start justify-between mb-2">
                             <div class="min-w-0 flex-1"><span class="text-sm font-semibold text-gray-800 block break-all">@log.UserEmail</span>@if (!string.IsNullOrEmpty(log.UserRole)){<span class="text-xs text-gray-500">@log.UserRole</span>}</div>
                             <div class="ms-2 shrink-0">
@@ -253,6 +266,27 @@
 
         // Initial sync on load
         syncDropdowns();
+
+        // ── Instant Search Logic ──
+        const auditSearchInput = document.getElementById('auditSearchInput');
+        const auditRows = document.querySelectorAll('.audit-log-row');
+        const auditCards = document.querySelectorAll('.audit-log-card');
+
+        auditSearchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            // Filter Desktop Table
+            auditRows.forEach(row => {
+                const searchContent = row.dataset.search;
+                row.style.display = !query || searchContent.includes(query) ? '' : 'none';
+            });
+
+            // Filter Mobile Cards
+            auditCards.forEach(card => {
+                const searchContent = card.dataset.search;
+                card.style.display = !query || searchContent.includes(query) ? 'block' : 'none';
+            });
+        });
     });
 </script>
 }

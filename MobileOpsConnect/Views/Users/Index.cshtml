@@ -111,8 +111,8 @@
 <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] mb-6 relative overflow-hidden dark:bg-neutral-900 dark:border-neutral-800">
     <div class="px-6 py-5 border-b border-gray-100 dark:border-neutral-800">
         <div class="flex items-center justify-between">
-            <div class="flex items-center gap-x-3">
-                <div class="relative inline-block w-48">
+            <div class="flex items-center gap-x-3 w-full sm:w-auto">
+                <div class="relative inline-block w-full sm:w-48">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-400">
                         <i class="bi bi-funnel"></i>
                     </div>
@@ -124,6 +124,14 @@
                             <option value="@roleName" selected="@(ViewBag.SelectedRole == roleName)">@displayName</option>
                         }
                     </select>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative inline-block w-full sm:w-64">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-400">
+                        <i class="bi bi-search text-xs"></i>
+                    </div>
+                    <input type="text" id="userSearchInput" class="py-1.5 ps-9 pe-4 block w-full bg-gray-50 border-gray-200 rounded-lg text-xs font-medium focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 transition-all" placeholder="Search by email or role...">
                 </div>
             </div>
         </div>
@@ -140,7 +148,7 @@
                 <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
                     @foreach (var item in Model)
                     {
-                        <tr class="hover:bg-gray-50 transition-colors">
+                        <tr class="user-row hover:bg-gray-50 transition-colors" data-search="@(item.Email.ToLower())|@(item.Role.ToLower())">
                             <td class="px-6 py-5">
                                 <div class="flex items-center gap-x-4">
                                     @if (item.Role == "SuperAdmin")
@@ -196,7 +204,7 @@
         <div class="md:hidden space-y-4">
             @foreach (var item in Model)
             {
-                <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                <div class="user-card bg-gray-50 rounded-xl p-4 border border-gray-100" data-search="@(item.Email.ToLower())|@(item.Role.ToLower())">
                     <div class="flex items-center gap-3 mb-3">
                         @if (item.Role == "SuperAdmin")
                         { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-red-100 text-red-800"><i class="bi bi-shield-lock-fill"></i></span> }
@@ -296,6 +304,27 @@
                 url += `?role=${encodeURIComponent(role)}`;
             }
             window.location.href = url;
+        });
+
+        // ── Instant Search Logic ──
+        const userSearchInput = document.getElementById('userSearchInput');
+        const userRows = document.querySelectorAll('.user-row');
+        const userCards = document.querySelectorAll('.user-card');
+
+        userSearchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            // Filter Desktop Table
+            userRows.forEach(row => {
+                const searchContent = row.dataset.search;
+                row.style.display = !query || searchContent.includes(query) ? '' : 'none';
+            });
+
+            // Filter Mobile Cards
+            userCards.forEach(card => {
+                const searchContent = card.dataset.search;
+                card.style.display = !query || searchContent.includes(query) ? 'block' : 'none';
+            });
         });
     });
 </script>

@@ -87,11 +87,19 @@ namespace MobileOpsConnect.Controllers
                 .ToList();
 
             // Prepare role filter list (hierarchical)
-            var availableRoles = new List<string> { "SuperAdmin", "SystemAdmin", "DepartmentManager", "WarehouseStaff", "Employee" };
-            if (!User.IsInRole("SuperAdmin"))
+            var availableRoles = new List<string>();
+            if (User.IsInRole("SuperAdmin"))
             {
-                availableRoles.Remove("SuperAdmin");
-                availableRoles.Remove("SystemAdmin");
+                // SuperAdmin scope: themselves + SystemAdmins only
+                availableRoles.Add("SuperAdmin");
+                availableRoles.Add("SystemAdmin");
+            }
+            else if (User.IsInRole("SystemAdmin"))
+            {
+                // SystemAdmin scope: Managers, Staff, Employees
+                availableRoles.Add("DepartmentManager");
+                availableRoles.Add("WarehouseStaff");
+                availableRoles.Add("Employee");
             }
 
             ViewBag.AllRoles = availableRoles;
