@@ -223,7 +223,7 @@
                         else
                         { 
                             string displayName = roleDisplayNames.GetValueOrDefault(item.Role, item.Role);
-                            <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-cyan-100 text-cyan-800 text-xs font-medium" style="max-width:7.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"><i class="bi bi-person-badge"></i> @displayName</span> 
+                            <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full bg-cyan-100 text-cyan-800 text-xs font-medium max-w-[8rem] break-words"><i class="bi bi-person-badge"></i> @displayName</span> 
                         }
                     </div>
                     <div class="flex gap-2">

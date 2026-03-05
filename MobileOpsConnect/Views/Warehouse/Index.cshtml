@@ -41,7 +41,7 @@
         }
     </a>
 
-    <form asp-action="Index" method="get" id="scanForm" class="flex gap-2 flex-grow justify-end" style="max-width: 600px;">
+    <form asp-action="Index" method="get" id="scanForm" class="flex gap-2 w-full sm:w-auto sm:flex-grow justify-end sm:max-w-[600px]">
         <div class="flex w-full">
             <button type="button" id="openScannerBtn" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-s-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
                 <i class="bi bi-camera-fill"></i> Scan
@@ -66,7 +66,8 @@
         </div>
     </div>
 
-    <div class="overflow-x-auto">
+    <!-- Desktop Table -->
+    <div class="hidden md:block overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
             <thead>
                 <tr>
@@ -118,6 +119,39 @@
             </tbody>
         </table>
     </div>
+
+    <!-- Mobile Cards -->
+    <div class="md:hidden p-4 space-y-4">
+        @foreach (var item in Model)
+        {
+            <div class="warehouse-product-card p-4 rounded-xl bg-gray-50 border border-gray-100 dark:bg-neutral-800 dark:border-neutral-700" data-search="@(item.Name.ToLower())|@(item.SKU.ToLower())">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="min-w-0">
+                        <span class="text-sm font-bold text-gray-900 dark:text-white block truncate mb-1">@item.Name</span>
+                        <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-md text-[10px] font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-400 uppercase tracking-wider">@item.SKU</span>
+                    </div>
+                    <div class="shrink-0 ms-2">
+                        @if (item.StockQuantity <= 10)
+                        {
+                            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-bold bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400">@item.StockQuantity Stock</span>
+                        }
+                        else
+                        {
+                            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-bold bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400">@item.StockQuantity Stock</span>
+                        }
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between mb-4">
+                    <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full text-[10px] font-bold bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-400 uppercase tracking-wider">@item.Category</span>
+                </div>
+
+                <a asp-action="Adjust" asp-route-id="@item.ProductID" class="w-full py-2 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+                    Manage Stock
+                </a>
+            </div>
+        }
+    </div>
 </div>
 
 <!-- Scanner Modal (Vanilla JS — no Bootstrap required) -->
@@ -126,8 +160,8 @@
     <div id="scannerBackdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
 
     <!-- Modal Content -->
-    <div class="relative flex items-center justify-center min-h-full p-4">
-        <div class="relative w-full max-w-md bg-white rounded-2xl shadow-xl dark:bg-neutral-900 overflow-hidden">
+    <div class="relative flex items-center justify-center min-h-full p-2 sm:p-4">
+        <div class="relative w-full max-w-md sm:max-w-md bg-white rounded-2xl shadow-xl dark:bg-neutral-900 overflow-hidden">
             <!-- Modal Header -->
             <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between">
                 <div class="flex items-center gap-x-3">
@@ -312,7 +346,7 @@
             // Filter Mobile Cards
             productCards.forEach(card => {
                 const searchContent = card.dataset.search;
-                card.style.display = !query || searchContent.includes(query) ? 'flex' : 'none';
+                card.style.display = !query || searchContent.includes(query) ? 'block' : 'none';
             });
         });
     })();

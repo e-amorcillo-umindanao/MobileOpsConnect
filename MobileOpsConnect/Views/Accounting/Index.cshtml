@@ -77,7 +77,7 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total Income</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@(((decimal)ViewBag.TotalIncome).ToString("C"))</h3>
+            <h3 class="text-2xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@(((decimal)ViewBag.TotalIncome).ToString("C"))</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide dark:bg-emerald-900/20 dark:text-emerald-400 mb-1">
                 <i class="bi bi-receipt"></i> @incomeCount Txns
             </span>
@@ -92,7 +92,7 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total Expenses</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@(((decimal)ViewBag.TotalExpense).ToString("C"))</h3>
+            <h3 class="text-2xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@(((decimal)ViewBag.TotalExpense).ToString("C"))</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide dark:bg-rose-900/20 dark:text-rose-400 mb-1">
                 <i class="bi bi-receipt"></i> @expenseCount Txns
             </span>
@@ -107,7 +107,7 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Net Result</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold leading-none" style="color:@(isPositive ? "#16a34a" : "#dc2626");">@netResult.ToString("C")</h3>
+            <h3 class="text-2xl sm:text-[2.5rem] font-bold leading-none" style="color:@(isPositive ? "#16a34a" : "#dc2626");">@netResult.ToString("C")</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-@(isPositive ? "emerald" : "rose")-50 text-@(isPositive ? "emerald" : "rose")-600 text-[10px] font-bold uppercase tracking-wide mb-1">
                 <i class="bi bi-@(isPositive ? "graph-up-arrow" : "graph-down-arrow")"></i> @(isPositive ? "Profit" : "Loss")
             </span>
@@ -155,6 +155,11 @@
                     }
                 }
             </div>
+            <div class="md:hidden text-center mt-2 px-4">
+                <span class="inline-flex items-center gap-1 text-[10px] font-bold text-[#5e4dcd] uppercase tracking-widest animate-pulse">
+                    <i class="bi bi-chevron-left"></i> Scroll rates <i class="bi bi-chevron-right"></i>
+                </span>
+            </div>
             <p class="text-xs text-gray-500 mt-3 text-center"><i class="bi bi-info-circle me-1"></i> 1 PHP = displayed rate &bull; Data from <strong>open.er-api.com</strong></p>
         }
         else
@@ -180,7 +185,7 @@
         </div>
     </div>
     <div class="p-6">
-        <form method="get" class="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+        <form method="get" class="grid grid-cols-2 lg:grid-cols-5 gap-4 items-end">
             <div>
                 <label class="block text-sm font-medium mb-2 dark:text-white">Type</label>
                 <select name="filterType" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-gray-500 focus:ring-gray-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300">
@@ -201,7 +206,7 @@
                 <label class="block text-sm font-medium mb-2 dark:text-white">End Date</label>
                 <input type="date" name="endDate" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-gray-500 focus:ring-gray-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300" />
             </div>
-            <div>
+            <div class="col-span-2 lg:col-span-1">
                 <button type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
                     <i class="bi bi-search"></i> Filter
                 </button>
@@ -222,7 +227,8 @@
         </div>
     </div>
     <div class="p-6">
-        <div class="overflow-x-auto">
+        <!-- Desktop Table -->
+        <div class="hidden md:block overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
                 <thead>
                     <tr>
@@ -261,22 +267,54 @@
                             </td>
                         </tr>
                     }
-                    @if (!Model.Any())
-                    {
-                        <tr>
-                            <td colspan="7" class="text-center py-10">
-                                <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-500 mx-auto mb-4"><i class="bi bi-journal-x text-2xl"></i></span>
-                                <h3 class="text-lg font-semibold text-gray-800 mb-1">No Transactions Found</h3>
-                                <p class="text-sm text-gray-500 mb-4">Start by recording your first transaction.</p>
-                                <a asp-action="Create" class="py-2.5 px-5 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
-                                    <i class="bi bi-plus-lg"></i> New Entry
-                                </a>
-                            </td>
-                        </tr>
-                    }
                 </tbody>
             </table>
         </div>
+
+        <!-- Mobile Cards -->
+        <div class="md:hidden space-y-3">
+            @foreach (var item in Model)
+            {
+                <div class="ledger-card p-4 rounded-xl bg-gray-50 border border-gray-100 dark:bg-neutral-800 dark:border-neutral-700" data-search="@(item.Category.ToLower())|@(item.Description.ToLower())|@(item.ReferenceNumber?.ToLower() ?? "")|@(item.Type.ToLower())">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="min-w-0">
+                            <span class="text-xs font-semibold text-gray-400 block mb-1">@item.TransactionDate.ToString("MMM dd, yyyy")</span>
+                            <span class="text-sm font-bold text-gray-800 dark:text-white block truncate">@(string.IsNullOrEmpty(item.Description) ? "No Description" : item.Description)</span>
+                        </div>
+                        <div class="shrink-0 ms-2 text-end">
+                            <span class="text-sm font-bold block" style="color:@(item.Type == "Income" ? "#16a34a" : "#dc2626");">
+                                @(item.Type == "Income" ? "+" : "−")@item.Amount.ToString("C")
+                            </span>
+                            @if (item.Type == "Income")
+                            { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full text-[10px] font-bold bg-green-100 text-green-800 uppercase tracking-wider">Income</span> }
+                            else
+                            { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full text-[10px] font-bold bg-red-100 text-red-800 uppercase tracking-wider">Expense</span> }
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-400 uppercase tracking-wider">@item.Category</span>
+                        <span class="text-[10px] font-mono text-gray-400">Ref: @(item.ReferenceNumber ?? "—")</span>
+                    </div>
+
+                    <a asp-action="Details" asp-route-id="@item.Id" class="w-full py-2 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-colors">
+                        <i class="bi bi-eye"></i> View Details
+                    </a>
+                </div>
+            }
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="text-center py-10">
+                <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-500 mx-auto mb-4"><i class="bi bi-journal-x text-2xl"></i></span>
+                <h3 class="text-lg font-semibold text-gray-800 mb-1">No Transactions Found</h3>
+                <p class="text-sm text-gray-500 mb-4">Start by recording your first transaction.</p>
+                <a asp-action="Create" class="py-2.5 px-5 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+                    <i class="bi bi-plus-lg"></i> New Entry
+                </a>
+            </div>
+        }
     </div>
 </div>
 
@@ -284,13 +322,21 @@
     document.addEventListener('DOMContentLoaded', function() {
         const ledgerSearchInput = document.getElementById('ledgerSearchInput');
         const ledgerRows = document.querySelectorAll('.ledger-row');
+        const ledgerCards = document.querySelectorAll('.ledger-card');
 
         ledgerSearchInput.addEventListener('input', function() {
             const query = this.value.toLowerCase().trim();
             
+            // Filter Desktop Rows
             ledgerRows.forEach(row => {
                 const searchContent = row.dataset.search;
                 row.style.display = !query || searchContent.includes(query) ? '' : 'none';
+            });
+
+            // Filter Mobile Cards
+            ledgerCards.forEach(card => {
+                const searchContent = card.dataset.search;
+                card.style.display = !query || searchContent.includes(query) ? 'block' : 'none';
             });
         });
     });
