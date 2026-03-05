@@ -6,47 +6,47 @@
 }
 
 <div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-envelope-fill text-cyan-500"></i> Manage Email</h2>
-    <div class="grow border-t border-gray-200"></div>
+    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200 flex items-center gap-x-2"><i class="bi bi-envelope-fill text-cyan-500"></i> Manage Email</h2>
+    <div class="grow border-t border-gray-100 dark:border-neutral-800"></div>
 </div>
 
 <partial name="_StatusMessage" for="StatusMessage" />
 
-<div class="flex flex-col bg-white border shadow-sm rounded-xl">
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
     <div class="p-6">
         <form id="email-form" method="post">
-            <div asp-validation-summary="All" class="text-red-500 mb-4" role="alert"></div>
+            <div asp-validation-summary="All" class="text-sm text-red-600 mt-2 mb-4 bg-red-50 p-3 rounded-lg dark:bg-red-500/10 dark:text-red-400" role="alert"></div>
 
             <!-- Current Email -->
             <div class="flex items-center gap-x-3 mb-3">
-                <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-cyan-100 text-cyan-800"><i class="bi bi-envelope-check-fill"></i></span>
-                <div><h3 class="text-sm font-bold text-gray-800 mb-0">Current Email</h3><span class="text-xs text-gray-500">Your registered email address</span></div>
+                <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-cyan-50 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-400"><i class="bi bi-envelope-check-fill"></i></span>
+                <div><h3 class="text-sm font-bold text-gray-800 dark:text-neutral-200 mb-0">Current Email</h3><span class="text-xs text-gray-500 dark:text-neutral-500">Your primary registered address</span></div>
             </div>
             <div class="mb-5 flex items-center gap-2">
-                <input asp-for="Email" class="py-3 px-4 block w-full bg-gray-100 border-gray-200 rounded-lg text-sm" disabled />
+                <input asp-for="Email" class="py-3 px-4 block w-full bg-gray-50 border-gray-200 rounded-lg text-sm text-gray-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400" disabled />
                 @if (Model.IsEmailConfirmed)
-                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-800"><i class="bi bi-check-circle-fill"></i> Verified</span> }
+                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400 uppercase tracking-wider"><i class="bi bi-patch-check-fill"></i> Verified</span> }
                 else
-                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800"><i class="bi bi-exclamation-circle-fill"></i> Unverified</span> }
+                { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400 uppercase tracking-wider"><i class="bi bi-exclamation-triangle-fill"></i> Unverified</span> }
             </div>
 
-            <hr class="my-5 border-gray-100" />
+            <hr class="my-6 border-gray-100 dark:border-neutral-800" />
 
             <!-- New Email -->
             <div class="flex items-center gap-x-3 mb-3">
-                <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-pencil-fill"></i></span>
-                <div><h3 class="text-sm font-bold text-gray-800 mb-0">New Email</h3><span class="text-xs text-gray-500">Enter a new email address to update</span></div>
+                <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"><i class="bi bi-pencil-fill"></i></span>
+                <div><h3 class="text-sm font-bold text-gray-800 dark:text-neutral-200 mb-0">New Email Address</h3><span class="text-xs text-gray-500 dark:text-neutral-500">A verification link will be sent to the new address</span></div>
             </div>
-            <div class="mb-5">
+            <div class="mb-6">
                 <div class="flex">
-                    <span class="py-3 px-4 inline-flex items-center min-w-fit rounded-s-lg border border-e-0 border-gray-200 bg-indigo-50 text-sm text-gray-500"><i class="bi bi-at text-indigo-600"></i></span>
-                    <input asp-for="Input.NewEmail" class="py-3 px-4 block w-full border-gray-200 rounded-e-lg text-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Enter new email address" />
+                    <span class="py-3 px-4 inline-flex items-center min-w-fit rounded-s-lg border border-e-0 border-gray-200 bg-gray-50 text-sm text-gray-400 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-500"><i class="bi bi-at"></i></span>
+                    <input asp-for="Input.NewEmail" class="py-3 px-4 block w-full border-gray-200 rounded-e-lg text-sm focus:border-gray-500 focus:ring-gray-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300 dark:placeholder-neutral-500" placeholder="Enter new email address" />
                 </div>
-                <span asp-validation-for="Input.NewEmail" class="text-red-500 text-xs"></span>
+                <span asp-validation-for="Input.NewEmail" class="text-xs text-red-600 mt-2 block"></span>
             </div>
 
-            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700">
-                <i class="bi bi-check-circle"></i> Change Email
+            <button id="change-email-button" type="submit" asp-page-handler="ChangeEmail" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+                <i class="bi bi-arrow-repeat"></i> Update Email Address
             </button>
         </form>
     </div>

@@ -4,9 +4,10 @@
     var hasPassword = await SignInManager.UserManager.HasPasswordAsync(await SignInManager.UserManager.GetUserAsync(User));
 }
 
-<div class="flex flex-col bg-white border shadow-sm rounded-xl overflow-hidden">
-    <div class="p-6">
-        <p class="uppercase text-xs font-bold text-gray-500 tracking-wide mb-4 px-2">
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden">
+    <!-- Desktop Navigation -->
+    <div class="hidden md:block p-6">
+        <p class="uppercase text-[10px] font-bold text-gray-400 tracking-widest mb-4 px-2">
             <i class="bi bi-gear-fill me-1"></i> Account Settings
         </p>
         <nav class="flex flex-col gap-1" id="manage-nav">
@@ -28,11 +29,6 @@
                     Password
                 </a>
             }
-            <a class="nav-link rounded-lg px-4 py-2.5 flex items-center gap-2 text-sm font-semibold @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)"
-               id="two-factor" asp-page="./TwoFactorAuthentication">
-                <span class="inline-flex justify-center items-center size-[28px] rounded-md bg-green-100 text-green-800"><i class="bi bi-shield-lock-fill text-xs"></i></span>
-                Two-Factor Auth
-            </a>
             <a class="nav-link rounded-lg px-4 py-2.5 flex items-center gap-2 text-sm font-semibold @ManageNavPages.PersonalDataNavClass(ViewContext)"
                id="personal-data" asp-page="./PersonalData">
                 <span class="inline-flex justify-center items-center size-[28px] rounded-md bg-red-100 text-red-800"><i class="bi bi-database-fill text-xs"></i></span>
@@ -40,12 +36,29 @@
             </a>
         </nav>
     </div>
+
+    <!-- Mobile Navigation (Horizontal Scroll) -->
+    <div class="md:hidden overflow-x-auto whitespace-nowrap p-4 border-b border-gray-100 dark:border-neutral-800">
+        <div class="inline-flex gap-2">
+            <a class="px-4 py-2 rounded-full text-xs font-bold transition-all @(ManageNavPages.IndexNavClass(ViewContext) == "active" ? "bg-[#0d0d0d] text-white shadow-sm" : "bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700")"
+               asp-page="./Index">Profile</a>
+            <a class="px-4 py-2 rounded-full text-xs font-bold transition-all @(ManageNavPages.EmailNavClass(ViewContext) == "active" ? "bg-[#0d0d0d] text-white shadow-sm" : "bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700")"
+               asp-page="./Email">Email</a>
+            @if (hasPassword)
+            {
+                <a class="px-4 py-2 rounded-full text-xs font-bold transition-all @(ManageNavPages.ChangePasswordNavClass(ViewContext) == "active" ? "bg-[#0d0d0d] text-white shadow-sm" : "bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700")"
+                   asp-page="./ChangePassword">Password</a>
+            }
+            <a class="px-4 py-2 rounded-full text-xs font-bold transition-all @(ManageNavPages.PersonalDataNavClass(ViewContext) == "active" ? "bg-[#0d0d0d] text-white shadow-sm" : "bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700")"
+               asp-page="./PersonalData">Data</a>
+        </div>
+    </div>
 </div>
 
 <style>
     #manage-nav .nav-link { color: #374151; transition: all 0.2s ease; }
     #manage-nav .nav-link:hover { background: rgba(99,102,241,0.06); color: #4f46e5; }
-    #manage-nav .nav-link.active { background: #3b82f6; color: #fff !important; }
+    #manage-nav .nav-link.active { background: #0d0d0d; color: #fff !important; }
     #manage-nav .nav-link.active span { background: rgba(255,255,255,0.2) !important; }
     #manage-nav .nav-link.active i { color: #fff !important; }
 </style>

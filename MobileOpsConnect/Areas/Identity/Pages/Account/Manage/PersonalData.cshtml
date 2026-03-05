@@ -6,48 +6,48 @@
 }
 
 <div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-database-fill text-red-500"></i> Personal Data</h2>
-    <div class="grow border-t border-gray-200"></div>
+    <h2 class="text-sm font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200 flex items-center gap-x-2"><i class="bi bi-database-fill text-red-500"></i> Personal Data</h2>
+    <div class="grow border-t border-gray-100 dark:border-neutral-800"></div>
 </div>
 
-<div class="flex flex-col bg-white border shadow-sm rounded-xl">
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
     <div class="p-6">
-        <div class="text-center p-6 mb-5">
-            <span class="inline-flex justify-center items-center size-[64px] rounded-xl bg-red-100 text-red-800 mx-auto mb-4"><i class="bi bi-database text-2xl"></i></span>
-            <h3 class="text-lg font-bold text-gray-800 mb-2">Your Personal Data</h3>
-            <p class="text-sm text-gray-500 mb-0">Your account contains personal data that you have provided. You can download or delete this data at any time.</p>
+        <div class="text-center p-6 mb-6">
+            <span class="inline-flex justify-center items-center size-[64px] rounded-2xl bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400 mx-auto mb-4 tracking-tight"><i class="bi bi-database text-2xl"></i></span>
+            <h3 class="text-xl font-bold text-gray-800 dark:text-neutral-200 mb-2">Your Personal Data</h3>
+            <p class="text-sm text-gray-500 dark:text-neutral-500 max-w-sm mx-auto">Your account contains personal information that you have provided. You can request a download or permanently delete your data here.</p>
         </div>
 
-        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+        <div class="grid sm:grid-cols-2 gap-4 mb-8">
             <!-- Download -->
-            <div class="flex flex-col bg-gray-50 border border-gray-100 rounded-xl p-6 text-center">
-                <span class="inline-flex justify-center items-center size-[48px] rounded-lg bg-indigo-100 text-indigo-800 mx-auto mb-3"><i class="bi bi-download text-xl"></i></span>
-                <h3 class="text-sm font-bold text-gray-800 mb-2">Download Data</h3>
-                <p class="text-xs text-gray-500 mb-4">Get a copy of all personal data associated with your account.</p>
+            <div class="flex flex-col bg-gray-50 border border-gray-100 rounded-2xl p-6 text-center dark:bg-neutral-800 dark:border-neutral-700">
+                <span class="inline-flex justify-center items-center size-[48px] rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-400 mx-auto mb-3"><i class="bi bi-download text-xl"></i></span>
+                <h3 class="text-sm font-bold text-gray-800 dark:text-neutral-200 mb-2">Download Data</h3>
+                <p class="text-xs text-gray-500 dark:text-neutral-500 mb-5 leading-relaxed">Download a structured JSON copy of all your associated personal data.</p>
                 <form asp-page="./DownloadPersonalData" method="post">
-                    <button class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50" type="submit">
-                        <i class="bi bi-cloud-download"></i> Download
+                    <button class="w-full py-2.5 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800" type="submit">
+                        <i class="bi bi-cloud-download"></i> Download JSON
                     </button>
                 </form>
             </div>
 
             <!-- Delete -->
-            <div class="flex flex-col bg-gray-50 rounded-xl p-6 text-center" style="border: 1px solid rgba(239,68,68,0.15);">
-                <span class="inline-flex justify-center items-center size-[48px] rounded-lg bg-red-100 text-red-800 mx-auto mb-3"><i class="bi bi-trash3-fill text-xl"></i></span>
-                <h3 class="text-sm font-bold text-gray-800 mb-2">Delete Data</h3>
-                <p class="text-xs text-gray-500 mb-4">Permanently remove your account and all associated data.</p>
-                <a id="delete" asp-page="./DeletePersonalData" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100 mx-auto">
-                    <i class="bi bi-exclamation-triangle"></i> Delete
+            <div class="flex flex-col bg-red-50/30 border border-red-100/50 rounded-2xl p-6 text-center dark:bg-red-500/5 dark:border-red-500/10">
+                <span class="inline-flex justify-center items-center size-[48px] rounded-xl bg-red-50 text-red-600 dark:bg-red-900/40 dark:text-red-400 mx-auto mb-3"><i class="bi bi-trash3-fill text-xl"></i></span>
+                <h3 class="text-sm font-bold text-gray-800 dark:text-neutral-200 mb-2">Delete Account</h3>
+                <p class="text-xs text-gray-500 dark:text-neutral-500 mb-5 leading-relaxed">Permanently remove your account, profile, and all operational data history.</p>
+                <a id="delete" asp-page="./DeletePersonalData" class="py-2.5 px-3 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-red-200 bg-red-50 text-red-700 hover:bg-red-100 transition-all dark:bg-red-900/20 dark:border-red-900/30 dark:text-red-400 dark:hover:bg-red-900/40">
+                    <i class="bi bi-exclamation-triangle"></i> Deletion Options
                 </a>
             </div>
         </div>
 
         <!-- Warning -->
-        <div class="bg-red-50 border border-red-100 rounded-lg p-4 flex items-start gap-3">
-            <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-red-100 text-red-800 shrink-0"><i class="bi bi-exclamation-triangle-fill"></i></span>
+        <div class="bg-amber-50 border border-amber-100 rounded-xl p-4 flex items-start gap-4 dark:bg-amber-900/10 dark:border-amber-900/20">
+            <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 shrink-0 shadow-sm"><i class="bi bi-info-circle-fill"></i></span>
             <div>
-                <p class="text-sm font-semibold text-gray-800 mb-1">Warning</p>
-                <p class="text-xs text-gray-500 mb-0">Deleting your data will permanently remove your account and all associated information. This action cannot be undone. Please make sure to download your data first if needed.</p>
+                <p class="text-sm font-bold text-gray-800 dark:text-neutral-200 mb-1">Important Security Note</p>
+                <p class="text-xs text-gray-500 dark:text-neutral-400 leading-relaxed font-medium capitalize">Deleting your personal data is irreversible. Please ensure you have exported any required information before proceeding with account closure.</p>
             </div>
         </div>
     </div>
