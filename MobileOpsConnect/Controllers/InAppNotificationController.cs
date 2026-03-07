@@ -49,6 +49,7 @@ namespace MobileOpsConnect.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> MarkRead(int id)
         {
             var userId = _userManager.GetUserId(User);
@@ -66,6 +67,7 @@ namespace MobileOpsConnect.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> MarkAllAsRead()
         {
             var userId = _userManager.GetUserId(User);

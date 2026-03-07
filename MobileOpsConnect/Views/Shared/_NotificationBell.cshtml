@@ -11,7 +11,7 @@
     <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-[320px] max-w-[320px] bg-white shadow-xl rounded-xl p-0 mt-2 dark:bg-neutral-800 dark:border dark:border-neutral-700 z-[100]" role="menu" aria-orientation="vertical" aria-labelledby="notification-bell-btn">
         <div class="px-4 py-3 border-b border-gray-200 dark:border-neutral-700 flex justify-between items-center">
             <h3 class="font-bold text-gray-800 dark:text-white">Notifications</h3>
-            <button onclick="markAllNotificationsAsRead()" class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400 font-medium">Mark all as read</button>
+            <button onclick="markAllNotificationsAsRead(event)" class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400 font-medium">Mark all as read</button>
         </div>
         
         <div id="notification-list" class="max-h-[350px] overflow-y-auto scrollbar-thin">
@@ -118,7 +118,7 @@
     async function handleNotificationClick(element, url) {
         const id = element.dataset.id;
         try {
-            await fetch(\`/InAppNotification/MarkRead?id=\${id}\`, { method: 'POST' });
+            await fetch(`/InAppNotification/MarkRead?id=${id}`, { method: 'POST' });
             if (url && url !== '#' && url !== 'null') {
                 window.location.href = url;
             } else {
@@ -130,10 +130,23 @@
         }
     }
 
-    async function markAllNotificationsAsRead() {
+    async function markAllNotificationsAsRead(event) {
+        if (event) event.stopPropagation(); // Prevent Preline from closing the dropdown
+
+        const btn = event?.currentTarget;
+        const originalText = btn ? btn.innerText : 'Mark all as read';
+
         try {
             const response = await fetch('/InAppNotification/MarkAllAsRead', { method: 'POST' });
             if (response.ok) {
+                if (btn) {
+                    btn.innerText = 'Done ✓';
+                    btn.classList.add('text-emerald-600');
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.classList.remove('text-emerald-600');
+                    }, 2000);
+                }
                 fetchNotifications(true);
             }
         } catch (error) {
@@ -177,6 +190,22 @@
     } else {
         fetchNotifications(true);
     }
+
+    // Refresh when dropdown opens
+    document.addEventListener('open.hs.dropdown', (e) => {
+        // Preline 2.0+ event: check if the opened dropdown is our notification bell
+        const dropdown = e.detail.el;
+        if (dropdown && dropdown.contains(document.getElementById('notification-bell-btn'))) {
+            console.log('[Bell] Dropdown opened, refreshing...');
+            fetchNotifications(true);
+        }
+    });
+
+    // Fallback for older Preline or custom toggle logic
+    document.getElementById('notification-bell-btn').addEventListener('click', () => {
+        // Short delay to allow dropdown to transition or Preline to fire
+        setTimeout(() => fetchNotifications(false), 100);
+    });
 
     // Register SignalR handler once
     function registerNotificationHandler() {
