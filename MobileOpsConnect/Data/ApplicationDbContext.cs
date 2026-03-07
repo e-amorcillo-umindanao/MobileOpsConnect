@@ -19,6 +19,7 @@ namespace MobileOpsConnect.Data
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<AccountingEntry> AccountingEntries { get; set; }
+        public DbSet<InAppNotification> InAppNotifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

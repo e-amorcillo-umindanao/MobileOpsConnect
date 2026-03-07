@@ -205,6 +205,46 @@ namespace MobileOpsConnect.Controllers
 
             return Ok(new { success = true, message = "Push subscription registered" });
         }
+
+        /// <summary>
+        /// Removes a push subscription for the currently logged-in user.
+        /// Called during the logout process.
+        /// </summary>
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> UnregisterSubscription([FromBody] UnregisterSubscriptionRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request?.Endpoint))
+                return BadRequest(new { success = false, message = "Endpoint is required" });
+
+            var userId = _userManager.GetUserId(User);
+            if (userId == null)
+                return Unauthorized(new { success = false, message = "Not authenticated" });
+
+            // Remove the specific subscription
+            var subscriptions = await _context.UserPushSubscriptions
+                .Where(s => s.UserId == userId && s.Endpoint == request.Endpoint)
+                .ToListAsync();
+
+            if (subscriptions.Any())
+            {
+                _context.UserPushSubscriptions.RemoveRange(subscriptions);
+            }
+
+            // Also remove any FCM tokens as a cleanup measure
+            var fcmTokens = await _context.UserFcmTokens
+                .Where(t => t.UserId == userId)
+                .ToListAsync();
+
+            if (fcmTokens.Any())
+            {
+                _context.UserFcmTokens.RemoveRange(fcmTokens);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { success = true, message = "Push subscription unregistered" });
+        }
     }
 
     // -- Request DTOs --
@@ -225,5 +265,10 @@ namespace MobileOpsConnect.Controllers
         public string Endpoint { get; set; } = string.Empty;
         public string P256dh { get; set; } = string.Empty;
         public string Auth { get; set; } = string.Empty;
+    }
+
+    public class UnregisterSubscriptionRequest
+    {
+        public string Endpoint { get; set; } = string.Empty;
     }
 }

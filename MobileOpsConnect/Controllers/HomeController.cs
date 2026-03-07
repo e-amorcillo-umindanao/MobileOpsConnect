@@ -33,7 +33,7 @@ namespace MobileOpsConnect.Controllers
             var totalProducts = await _context.Products.CountAsync();
             var lowStockCount = await _context.Products.Where(p => p.StockQuantity <= threshold).CountAsync();
             var totalValue = await _context.Products.SumAsync(p => (decimal?)p.StockQuantity * p.Price) ?? 0m;
-            var pendingLeaves = await _context.LeaveRequests.CountAsync(l => l.Status == "Pending");
+            int pendingLeaves = 0; // Will be scoped by role below
 
             // On leave today: approved leaves where today falls within start–end range
             var today = PhilippineTime.Today;
@@ -43,6 +43,24 @@ namespace MobileOpsConnect.Controllers
             // 1. SuperAdmin & SystemAdmin
             if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
             {
+                // Scope pending leaves count:
+                if (User.IsInRole("SuperAdmin"))
+                {
+                    // SuperAdmin counts pending from SystemAdmins
+                    var sysAdmins = await _userManager.GetUsersInRoleAsync("SystemAdmin");
+                    var sysAdminIds = sysAdmins.Select(u => u.Id).ToHashSet();
+                    pendingLeaves = await _context.LeaveRequests
+                        .CountAsync(l => l.Status == "Pending" && sysAdminIds.Contains(l.UserID));
+                }
+                else // SystemAdmin
+                {
+                    // SystemAdmin counts pending from DepartmentManagers
+                    var deptManagers = await _userManager.GetUsersInRoleAsync("DepartmentManager");
+                    var deptManagerIds = deptManagers.Select(u => u.Id).ToHashSet();
+                    pendingLeaves = await _context.LeaveRequests
+                        .CountAsync(l => l.Status == "Pending" && deptManagerIds.Contains(l.UserID));
+                }
+
                 // ── Business overview (already existed) ──
                 ViewBag.TotalProducts = totalProducts;
                 ViewBag.LowStockCount = lowStockCount;

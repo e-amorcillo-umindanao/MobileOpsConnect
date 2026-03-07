@@ -101,7 +101,6 @@
                 <div class="flex items-center py-4 gap-x-3">
                     <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-upc-scan"></i></span>
                     <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium">SKU Code</span><p class="text-sm font-semibold text-gray-800 mb-0">@Model.SKU</p></div>
-                    <span class="inline-flex items-center py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium">Barcode</span>
                 </div>
                 <div class="flex items-center py-4 gap-x-3">
                     <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-purple-100 text-purple-800"><i class="bi bi-box-seam"></i></span>
@@ -110,12 +109,10 @@
                 <div class="flex items-center py-4 gap-x-3">
                     <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-cyan-100 text-cyan-800"><i class="bi bi-bookmark-star-fill"></i></span>
                     <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium">Category</span><p class="text-sm font-semibold text-gray-800 mb-0">@Model.Category</p></div>
-                    <span class="inline-flex items-center py-0.5 px-2 rounded-md bg-cyan-100 text-cyan-800 text-xs font-medium"><i class="bi bi-tag-fill me-1"></i>@Model.Category</span>
                 </div>
                 <div class="flex items-center py-4 gap-x-3">
                     <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg @(isLowStock ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800")"><i class="bi @(isLowStock ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill")"></i></span>
                     <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium">Stock Quantity</span><p class="text-sm font-semibold text-gray-800 mb-0">@Model.StockQuantity units</p></div>
-                    <span class="inline-flex items-center py-1 px-2.5 rounded-full @(isLowStock ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800") text-xs font-medium"><i class="bi @(isLowStock ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill") me-1"></i> @Model.StockQuantity</span>
                 </div>
                 <div class="flex items-center py-4 gap-x-3">
                     <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-amber-100 text-amber-800"><i class="bi bi-cash-stack"></i></span>

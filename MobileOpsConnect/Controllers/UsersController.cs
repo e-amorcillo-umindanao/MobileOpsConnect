@@ -21,6 +21,7 @@ namespace MobileOpsConnect.Controllers
         private readonly IAuditService _auditService;
         private readonly ApplicationDbContext _context;
         private readonly INotificationService _notificationService;
+        private readonly IInAppNotificationService _inAppNotificationService;
 
         public UsersController(
             UserManager<IdentityUser> userManager,
@@ -28,7 +29,8 @@ namespace MobileOpsConnect.Controllers
             SignInManager<IdentityUser> signInManager,
             IAuditService auditService,
             ApplicationDbContext context,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IInAppNotificationService inAppNotificationService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -36,6 +38,7 @@ namespace MobileOpsConnect.Controllers
             _auditService = auditService;
             _context = context;
             _notificationService = notificationService;
+            _inAppNotificationService = inAppNotificationService;
         }
 
         // GET: Users
@@ -158,6 +161,12 @@ namespace MobileOpsConnect.Controllers
                 await _notificationService.SendToRoleAsync("SuperAdmin",
                     "👤 New User Created",
                     $"{email} has been added as {role} by {currentUser.Email}.");
+
+                // In-App Notification
+                await _inAppNotificationService.CreateForRoleAsync("SuperAdmin",
+                    "👤 New User Created",
+                    $"{email} added as {role}.",
+                    "User", "bi-person-plus", "/Users/Index");
 
                 return RedirectToAction(nameof(Index));
             }
@@ -348,6 +357,12 @@ namespace MobileOpsConnect.Controllers
             await _notificationService.SendToRoleAsync("SuperAdmin",
                 "🗑️ User Deleted",
                 $"{deletedEmail} ({targetRole}) has been removed by {currentUser.Email}.");
+
+            // In-App Notification
+            await _inAppNotificationService.CreateForRoleAsync("SuperAdmin",
+                "🗑️ User Deleted",
+                $"{deletedEmail} has been removed.",
+                "User", "bi-person-dash", "/Users/Index");
             return RedirectToAction(nameof(Index));
         }
 

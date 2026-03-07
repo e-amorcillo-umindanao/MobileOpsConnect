@@ -128,6 +128,7 @@ namespace MobileOpsConnect.Controllers
             var allRoles = (await _context.Roles
                 .Select(r => r.Name)
                 .ToListAsync())
+                .Where(n => roleOrder.ContainsKey(n))
                 .OrderBy(n => roleOrder.GetValueOrDefault(n, 99))
                 .ToList();
             
@@ -140,6 +141,7 @@ namespace MobileOpsConnect.Controllers
                                       .ToListAsync();
 
             var usersByRoleTable = usersWithRoles
+                .Where(x => roleOrder.ContainsKey(x.RoleName))
                 .GroupBy(x => x.RoleName)
                 .OrderBy(g => roleOrder.GetValueOrDefault(g.Key, 99))
                 .ToDictionary(

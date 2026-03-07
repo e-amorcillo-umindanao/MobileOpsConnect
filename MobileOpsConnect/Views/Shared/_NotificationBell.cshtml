@@ -1,0 +1,232 @@
+@* --- Notification Bell Partial --- *@
+<div class="hs-dropdown relative inline-flex [--placement:bottom-right] ml-2">
+    <button id="notification-bell-btn" type="button" class="hs-dropdown-toggle relative p-2 inline-flex justify-center items-center gap-x-2 rounded-lg border border-transparent text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" aria-haspopup="menu" aria-expanded="false" aria-label="Notifications">
+        <i class="bi bi-bell text-xl"></i>
+        <span id="notification-badge" class="hidden absolute top-1.5 end-1.5 flex h-4 w-4">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-4 w-4 bg-red-500 text-[10px] text-white items-center justify-center font-bold">0</span>
+        </span>
+    </button>
+
+    <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-[320px] max-w-[320px] bg-white shadow-xl rounded-xl p-0 mt-2 dark:bg-neutral-800 dark:border dark:border-neutral-700 z-[100]" role="menu" aria-orientation="vertical" aria-labelledby="notification-bell-btn">
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-neutral-700 flex justify-between items-center">
+            <h3 class="font-bold text-gray-800 dark:text-white">Notifications</h3>
+            <button onclick="markAllNotificationsAsRead()" class="text-xs text-blue-600 hover:text-blue-800 dark:text-blue-500 dark:hover:text-blue-400 font-medium">Mark all as read</button>
+        </div>
+        
+        <div id="notification-list" class="max-h-[350px] overflow-y-auto scrollbar-thin">
+            <!-- Loading state -->
+            <div id="notification-loading" class="p-8 text-center">
+                <div class="animate-spin inline-block size-6 border-[3px] border-current border-t-transparent text-blue-600 rounded-full dark:text-blue-500" role="status" aria-label="loading">
+                    <span class="sr-only">Loading...</span>
+                </div>
+            </div>
+            <!-- Notifications will be injected here -->
+        </div>
+
+        <div id="notification-empty" class="hidden p-8 text-center flex flex-col items-center gap-2">
+            <div class="size-12 bg-gray-100 rounded-full flex items-center justify-center dark:bg-neutral-700">
+                <i class="bi bi-bell-slash text-gray-400 text-xl"></i>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-neutral-400">You're all caught up! 🎉</p>
+        </div>
+
+        <div class="p-3 border-t border-gray-200 dark:border-neutral-700">
+            <a href="#" class="block text-center text-xs text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 font-medium py-1">View all activity</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    let _lastFetchTime = 0;
+    let _fetchDebounceTimer = null;
+    let _notificationHandlerRegistered = false;
+    let _bounceTimeout = null;
+
+    async function fetchNotifications(force = false) {
+        const now = Date.now();
+        if (!force && now - _lastFetchTime < 1000) return; // Rate limit anti-spam
+        
+        const list = document.getElementById('notification-list');
+        const loading = document.getElementById('notification-loading');
+        
+        loading.classList.remove('hidden'); // Show spinner explicitly
+
+        try {
+            const response = await fetch('/InAppNotification/GetRecent');
+            if (!response.ok) {
+                console.error('[Bell] API returned error');
+                return;
+            }
+            const data = await response.json();
+            renderNotifications(data.notifications, data.unreadCount);
+            _lastFetchTime = Date.now();
+        } catch (error) {
+            console.error('[Bell] Failed to fetch notifications', error);
+        } finally {
+            loading.classList.add('hidden'); // Always hide spinner
+        }
+    }
+
+    function renderNotifications(notifications, unreadCount) {
+        const list = document.getElementById('notification-list');
+        const empty = document.getElementById('notification-empty');
+        
+        if (!notifications || notifications.length === 0) {
+            list.innerHTML = '';
+            empty.classList.remove('hidden');
+            updateBadge(0);
+            return;
+        }
+
+        empty.classList.add('hidden');
+        updateBadge(unreadCount);
+
+        list.innerHTML = notifications.map(n => `
+            <div data-id="${n.id}" onclick="handleNotificationClick(this, '${n.url}')" 
+                 class="p-4 border-b border-gray-100 dark:border-neutral-700 hover:bg-gray-50 dark:hover:bg-neutral-700/50 cursor-pointer transition-colors relative ${n.isRead ? '' : 'bg-blue-50/30 dark:bg-blue-900/10'}">
+                ${!n.isRead ? '<div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>' : ''}
+                <div class="flex gap-x-3">
+                    <div class="flex-shrink-0">
+                        <span class="inline-flex items-center justify-center size-8 rounded-lg ${getIconBg(n.type)} text-white">
+                            <i class="bi ${n.icon || 'bi-info-circle'}"></i>
+                        </span>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start mb-0.5">
+                            <span class="block text-sm font-bold text-gray-800 dark:text-white">${n.title}</span>
+                            <span class="text-[10px] text-gray-400 dark:text-neutral-500 whitespace-nowrap">${formatTime(n.createdAt)}</span>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-neutral-400 line-clamp-2">${n.message}</p>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function updateBadge(count) {
+        const badge = document.getElementById('notification-badge');
+        const span = badge.querySelector('span:last-child');
+        if (count > 0) {
+            span.innerText = count > 99 ? '99+' : count;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+
+    async function handleNotificationClick(element, url) {
+        const id = element.dataset.id;
+        try {
+            await fetch(\`/InAppNotification/MarkRead?id=\${id}\`, { method: 'POST' });
+            if (url && url !== '#' && url !== 'null') {
+                window.location.href = url;
+            } else {
+                fetchNotifications(true); 
+            }
+        } catch (error) {
+            console.error('Failed to mark read', error);
+            if (url) window.location.href = url;
+        }
+    }
+
+    async function markAllNotificationsAsRead() {
+        try {
+            const response = await fetch('/InAppNotification/MarkAllAsRead', { method: 'POST' });
+            if (response.ok) {
+                fetchNotifications(true);
+            }
+        } catch (error) {
+            console.error('Failed to mark all as read', error);
+        }
+    }
+
+    function formatTime(dateStr) {
+        const date = new Date(dateStr);
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - date) / 1000);
+        
+        if (diffInSeconds < 60) return 'just now';
+        
+        const diffInMinutes = Math.floor(diffInSeconds / 60);
+        if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+        
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        if (diffInHours < 24) return `${diffInHours}h ago`;
+        
+        const diffInDays = Math.floor(diffInHours / 24);
+        if (diffInDays < 7) return `${diffInDays}d ago`;
+        
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    }
+
+    function getIconBg(type) {
+        switch (type) {
+            case 'Leave': return 'bg-purple-500';
+            case 'Stock': return 'bg-blue-500';
+            case 'Order': return 'bg-amber-500';
+            case 'User': return 'bg-emerald-500';
+            case 'Accounting': return 'bg-rose-500';
+            default: return 'bg-gray-500';
+        }
+    }
+
+    // Initial fetch
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => fetchNotifications(true));
+    } else {
+        fetchNotifications(true);
+    }
+
+    // Register SignalR handler once
+    function registerNotificationHandler() {
+        if (_notificationHandlerRegistered || typeof connection === 'undefined') return;
+
+        connection.on("NewNotification", (notification) => {
+            console.log('[Bell] New In-App Notification received');
+            
+            // Debounce the fetch to prevent spamming if many notifications arrive
+            clearTimeout(_fetchDebounceTimer);
+            _fetchDebounceTimer = setTimeout(() => fetchNotifications(true), 500);
+            
+            // Bounce effect (debounced)
+            const bell = document.getElementById('notification-bell-btn');
+            if (bell) {
+                bell.classList.remove('animate-bounce');
+                void bell.offsetWidth; // Trigger reflow
+                bell.classList.add('animate-bounce');
+                
+                if (_bounceTimeout) clearTimeout(_bounceTimeout);
+                _bounceTimeout = setTimeout(() => bell.classList.remove('animate-bounce'), 2000);
+            }
+        });
+        
+        _notificationHandlerRegistered = true;
+        console.log('[Bell] In-App Notification handler registered');
+    }
+
+    // Watch for SignalR event (NewNotification)
+    window.addEventListener('signalr-connected', registerNotificationHandler);
+    
+    // Fallback if signalr already connected
+    if (typeof connection !== 'undefined' && connection.state === "Connected") {
+        registerNotificationHandler();
+    }
+</script>
+
+<style>
+    /* Custom scrollbar for better look */
+    .scrollbar-thin::-webkit-scrollbar {
+        width: 4px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+    .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #4a5568;
+    }
+</style>

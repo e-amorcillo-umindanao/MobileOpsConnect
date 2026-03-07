@@ -16,14 +16,16 @@ namespace MobileOpsConnect.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly INotificationService _notificationService;
+        private readonly IInAppNotificationService _inAppNotificationService;
         private readonly IAuditService _auditService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IHubContext<InventoryHub> _hubContext;
 
-        public OrdersController(ApplicationDbContext context, INotificationService notificationService, IAuditService auditService, UserManager<IdentityUser> userManager, IHubContext<InventoryHub> hubContext)
+        public OrdersController(ApplicationDbContext context, INotificationService notificationService, IInAppNotificationService inAppNotificationService, IAuditService auditService, UserManager<IdentityUser> userManager, IHubContext<InventoryHub> hubContext)
         {
             _context = context;
             _notificationService = notificationService;
+            _inAppNotificationService = inAppNotificationService;
             _auditService = auditService;
             _userManager = userManager;
             _hubContext = hubContext;
@@ -85,6 +87,12 @@ namespace MobileOpsConnect.Controllers
                 "📦 New Purchase Order",
                 $"{currentUser.Email} submitted PO for {Quantity}x {product.Name} (₱{order.EstimatedCost:N0}).");
 
+            // In-App Notification
+            await _inAppNotificationService.CreateForRoleAsync("DepartmentManager",
+                "📦 New Purchase Order",
+                $"{currentUser.Email} submitted a PO for {Quantity}x {product.Name}.",
+                "Order", "bi-bag-plus", $"/Orders/Index");
+
             // Real-time broadcast (SignalR)
             await _hubContext.Clients.Group("role_DepartmentManager")
                 .SendAsync("PurchaseOrderUpdated", order.Id, product.Name, Quantity, "Submitted", currentUser.Email);
@@ -130,12 +138,24 @@ namespace MobileOpsConnect.Controllers
                 isApproval ? "✅ Order Approved" : "❌ Order Rejected",
                 $"Purchase Order #{id} ({order.Product?.Name}) has been {pastTense} by {currentUser.Email}.");
 
+            // In-App Notification
+            await _inAppNotificationService.CreateAsync(order.RequestedById,
+                isApproval ? "✅ Order Approved" : "❌ Order Rejected",
+                $"Your PO for {order.Product?.Name} has been {pastTense}.",
+                "Order", isApproval ? "bi-check-circle" : "bi-x-circle", "/Orders/Index");
+
             // If approved, notify warehouse staff about incoming stock
             if (isApproval)
             {
                 await _notificationService.SendToRoleAsync("WarehouseStaff",
                     "📦 PO Approved — Incoming Stock",
                     $"PO #{id}: {order.Quantity}x {order.Product?.Name} approved. Prepare for receiving.");
+
+                // In-App Notification
+                await _inAppNotificationService.CreateForRoleAsync("WarehouseStaff",
+                    "📦 PO Approved",
+                    $"{order.Quantity}x {order.Product?.Name} approved. Prepare for receiving.",
+                    "Order", "bi-truck", "/Warehouse/Index");
             }
 
             // Audit log

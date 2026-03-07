@@ -16,14 +16,16 @@ namespace MobileOpsConnect.Controllers
         private readonly IAuditService _auditService;
         private readonly ExchangeRateService _exchangeRateService;
         private readonly INotificationService _notificationService;
+        private readonly IInAppNotificationService _inAppNotificationService;
 
-        public AccountingController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IAuditService auditService, ExchangeRateService exchangeRateService, INotificationService notificationService)
+        public AccountingController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IAuditService auditService, ExchangeRateService exchangeRateService, INotificationService notificationService, IInAppNotificationService inAppNotificationService)
         {
             _context = context;
             _userManager = userManager;
             _auditService = auditService;
             _exchangeRateService = exchangeRateService;
             _notificationService = notificationService;
+            _inAppNotificationService = inAppNotificationService;
         }
 
         // GET: Accounting
@@ -118,6 +120,12 @@ namespace MobileOpsConnect.Controllers
                 await _notificationService.SendToRoleAsync("SuperAdmin",
                     "💰 New Transaction",
                     $"{entry.Type}: {entry.Description} (₱{entry.Amount:N2})");
+
+                // In-App Notification
+                await _inAppNotificationService.CreateForRoleAsync("SuperAdmin",
+                    "💰 New Transaction",
+                    $"{entry.Type}: {entry.Description} (₱{entry.Amount:N2})",
+                    "Accounting", "bi-cash-coin", "/Accounting/Index");
 
                 TempData["Message"] = "Transaction recorded successfully!";
                 return RedirectToAction(nameof(Invoice), new { id = entry.Id });

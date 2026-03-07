@@ -66,7 +66,9 @@
                         <label asp-for="Category" class="block text-sm font-medium mb-2 dark:text-white">
                             <i class="bi bi-tag-fill me-1 text-cyan-500"></i> Category
                         </label>
-                        <input asp-for="Category" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="e.g., Electronics" />
+                        <select asp-for="Category" asp-items="ViewBag.Categories" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
+                            <option value="">— Select Category —</option>
+                        </select>
                         <span asp-validation-for="Category" class="text-xs text-red-600 mt-2 block"></span>
                     </div>
 
@@ -76,7 +78,8 @@
                             <label asp-for="Price" class="block text-sm font-medium mb-2 dark:text-white">
                                 <i class="bi bi-currency-exchange me-1 text-green-500"></i> Price (₱)
                             </label>
-                            <input asp-for="Price" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" type="number" step="0.01" placeholder="0.00" />
+                            <input id="PriceInput" type="text" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="0.00" />
+                            <input type="hidden" asp-for="Price" id="RawPrice" />
                             <span asp-validation-for="Price" class="text-xs text-red-600 mt-2 block"></span>
                         </div>
 
@@ -85,7 +88,8 @@
                             <label asp-for="StockQuantity" class="block text-sm font-medium mb-2 dark:text-white">
                                 <i class="bi bi-layers me-1 text-amber-500"></i> Stock Quantity
                             </label>
-                            <input asp-for="StockQuantity" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" type="number" placeholder="0" />
+                            <input id="StockInput" type="text" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="0" />
+                            <input type="hidden" asp-for="StockQuantity" id="RawStock" />
                             <span asp-validation-for="StockQuantity" class="text-xs text-red-600 mt-2 block"></span>
                         </div>
                     </div>
@@ -104,4 +108,60 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const priceInput = document.getElementById('PriceInput');
+            const rawPrice = document.getElementById('RawPrice');
+            const stockInput = document.getElementById('StockInput');
+            const rawStock = document.getElementById('RawStock');
+            const form = document.querySelector('form');
+
+            function formatNumber(val, decimals = 0) {
+                if (!val) return "";
+                const parts = val.toString().split(".");
+                parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                return parts.join(".");
+            }
+
+            function stripCommas(val) {
+                return val.replace(/,/g, "");
+            }
+
+            // Price Formatting
+            priceInput.addEventListener('input', function(e) {
+                let cursor = this.selectionStart;
+                let originalLen = this.value.length;
+                let val = stripCommas(this.value).replace(/[^0-9.]/g, "");
+                
+                // Only one decimal point
+                const decimalCount = (val.match(/\./g) || []).length;
+                if (decimalCount > 1) val = val.substring(0, val.lastIndexOf("."));
+
+                this.value = formatNumber(val, 2);
+                rawPrice.value = val;
+
+                // Adjust cursor position
+                let newLen = this.value.length;
+                this.setSelectionRange(cursor + (newLen - originalLen), cursor + (newLen - originalLen));
+            });
+
+            // Stock Formatting (Integers only)
+            stockInput.addEventListener('input', function(e) {
+                let cursor = this.selectionStart;
+                let originalLen = this.value.length;
+                let val = stripCommas(this.value).replace(/[^0-9]/g, "");
+
+                this.value = formatNumber(val, 0);
+                rawStock.value = val;
+
+                // Adjust cursor position
+                let newLen = this.value.length;
+                this.setSelectionRange(cursor + (newLen - originalLen), cursor + (newLen - originalLen));
+            });
+
+            // Handle pre-filled values
+            if (rawPrice.value) priceInput.value = formatNumber(rawPrice.value, 2);
+            if (rawStock.value) stockInput.value = formatNumber(rawStock.value, 0);
+        });
+    </script>
 }

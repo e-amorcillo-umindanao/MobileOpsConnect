@@ -45,6 +45,7 @@ else
     Console.WriteLine("   Push notifications will NOT work until you add the key file.");
 }
 builder.Services.AddScoped<INotificationService, FcmNotificationService>();
+builder.Services.AddScoped<IInAppNotificationService, InAppNotificationService>();
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 builder.Services.AddScoped<IAuditService, AuditService>();
 

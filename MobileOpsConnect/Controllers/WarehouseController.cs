@@ -15,15 +15,17 @@ namespace MobileOpsConnect.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly INotificationService _notificationService;
+        private readonly IInAppNotificationService _inAppNotificationService;
         private readonly IHubContext<InventoryHub> _hubContext;
         private readonly IEmailService _emailService;
         private readonly IAuditService _auditService;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public WarehouseController(ApplicationDbContext context, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService, UserManager<IdentityUser> userManager)
+        public WarehouseController(ApplicationDbContext context, INotificationService notificationService, IInAppNotificationService inAppNotificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _notificationService = notificationService;
+            _inAppNotificationService = inAppNotificationService;
             _hubContext = hubContext;
             _emailService = emailService;
             _auditService = auditService;
@@ -103,6 +105,12 @@ namespace MobileOpsConnect.Controllers
                 "📥 Stock In",
                 $"{currentUser?.Email} added {quantity} units of {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.");
 
+            // In-App Notification
+            await _inAppNotificationService.CreateForRoleAsync("DepartmentManager",
+                "📥 Stock In",
+                $"{currentUser?.Email} added {quantity} units of {product.Name}.",
+                "Stock", "bi-box-arrow-in-down", $"/Warehouse/Adjust/{product.ProductID}");
+
             // Audit log
             var userId = currentUser?.Id ?? "";
             var userEmail = currentUser?.Email ?? "";
@@ -150,6 +158,12 @@ namespace MobileOpsConnect.Controllers
                 "📤 Stock Out",
                 $"{currentUser?.Email} removed {quantity} units of {product.Name} (SKU: {product.SKU}). New qty: {product.StockQuantity}.");
 
+            // In-App Notification
+            await _inAppNotificationService.CreateForRoleAsync("DepartmentManager",
+                "📤 Stock Out",
+                $"{currentUser?.Email} removed {quantity} units of {product.Name}.",
+                "Stock", "bi-box-arrow-up", $"/Warehouse/Adjust/{product.ProductID}");
+
             // Audit log
             var userId = currentUser?.Id ?? "";
             var userEmail = currentUser?.Email ?? "";
@@ -168,6 +182,12 @@ namespace MobileOpsConnect.Controllers
 
                 await _notificationService.SendToRoleAsync("DepartmentManager",
                     "⚠️ Low Stock Alert", alertMessage);
+
+                // In-App Notification
+                await _inAppNotificationService.CreateForRoleAsync("DepartmentManager",
+                    "⚠️ Low Stock Alert",
+                    $"{product.Name} is down to {product.StockQuantity} units.",
+                    "Stock", "bi-exclamation-triangle", $"/Warehouse/Adjust/{product.ProductID}");
 
                 // Send email alert to support/admin
                 var supportEmail = settings?.SupportEmail ?? "support@mobileops.com";

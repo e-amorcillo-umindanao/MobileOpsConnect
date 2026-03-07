@@ -24,15 +24,17 @@ namespace MobileOpsConnect.Controllers
         private readonly IHubContext<InventoryHub> _hubContext;
         private readonly IEmailService _emailService;
         private readonly IAuditService _auditService;
+        private readonly IInAppNotificationService _inAppNotificationService;
         private readonly HolidayService _holidayService;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<LeaveRequestsController> _logger;
 
-        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService, HolidayService holidayService, IServiceScopeFactory scopeFactory, ILogger<LeaveRequestsController> logger)
+        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IInAppNotificationService inAppNotificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService, HolidayService holidayService, IServiceScopeFactory scopeFactory, ILogger<LeaveRequestsController> logger)
         {
             _context = context;
             _userManager = userManager;
             _notificationService = notificationService;
+            _inAppNotificationService = inAppNotificationService;
             _hubContext = hubContext;
             _emailService = emailService;
             _auditService = auditService;
@@ -139,6 +141,21 @@ namespace MobileOpsConnect.Controllers
         // GET: LeaveRequests/Create
         public async Task<IActionResult> Create()
         {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var myLeaves = await _context.LeaveRequests
+                    .Where(l => l.UserID == user.Id)
+                    .OrderByDescending(l => l.DateRequested)
+                    .ToListAsync();
+
+                ViewBag.RecentLeaves = myLeaves.Take(10).ToList();
+                ViewBag.MyTotalCount = myLeaves.Count;
+                ViewBag.MyPendingCount = myLeaves.Count(l => l.Status == "Pending");
+                ViewBag.MyApprovedCount = myLeaves.Count(l => l.Status == "Approved");
+                ViewBag.MyRejectedCount = myLeaves.Count(l => l.Status == "Rejected");
+            }
+
             // Fetch Philippine public holidays from Nager.Date API
             var holidays = await _holidayService.GetHolidaysAsync("PH");
             ViewBag.Holidays = holidays;
@@ -212,6 +229,7 @@ namespace MobileOpsConnect.Controllers
                     {
                         using var scope = _scopeFactory.CreateScope();
                         var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                        var inAppNotificationService = scope.ServiceProvider.GetRequiredService<IInAppNotificationService>();
                         var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
                         var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
 
@@ -228,6 +246,12 @@ namespace MobileOpsConnect.Controllers
                             await notificationService.SendToRoleAsync(targetRole,
                                 "📋 New Leave Request",
                                 $"{userEmail} submitted a {leaveType} leave request ({startDate:MMM dd} – {endDate:MMM dd}).");
+
+                            // In-App Notification
+                            await inAppNotificationService.CreateForRoleAsync(targetRole,
+                                "📋 New Leave Request",
+                                $"{userEmail} filed a {leaveType} leave.",
+                                "Leave", "bi-calendar-plus", "/LeaveRequests/Index");
 
                             var displayName = userEmail.Split('@')[0];
                             await hubContext.Clients.Group($"role_{targetRole}").SendAsync("LeaveStatusChanged", leaveId, "Pending", userId, displayName);
@@ -299,6 +323,7 @@ namespace MobileOpsConnect.Controllers
                 {
                     using var scope = _scopeFactory.CreateScope();
                     var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                    var inAppNotificationService = scope.ServiceProvider.GetRequiredService<IInAppNotificationService>();
                     var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
                     var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
                     var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
@@ -306,6 +331,12 @@ namespace MobileOpsConnect.Controllers
 
                     var approveMsg = $"Your {leaveType} leave ({startDate:MMM dd} – {endDate:MMM dd}) has been approved.";
                     await notificationService.SendToUserAsync(requesterId, "✅ Leave Approved", approveMsg);
+
+                    // In-App Notification
+                    await inAppNotificationService.CreateAsync(requesterId,
+                        "✅ Leave Approved",
+                        $"Your {leaveType} leave request has been approved.",
+                        "Leave", "bi-check-circle", "/LeaveRequests/Index?view=my");
 
                     var employee = await userManager.FindByIdAsync(requesterId);
                     if (employee?.Email != null)
@@ -374,6 +405,7 @@ namespace MobileOpsConnect.Controllers
                 {
                     using var scope = _scopeFactory.CreateScope();
                     var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
+                    var inAppNotificationService = scope.ServiceProvider.GetRequiredService<IInAppNotificationService>();
                     var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
                     var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
                     var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
@@ -381,6 +413,12 @@ namespace MobileOpsConnect.Controllers
 
                     var rejectMsg = $"Your {leaveType} leave ({startDate:MMM dd} – {endDate:MMM dd}) has been rejected.";
                     await notificationService.SendToUserAsync(requesterId, "❌ Leave Rejected", rejectMsg);
+
+                    // In-App Notification
+                    await inAppNotificationService.CreateAsync(requesterId,
+                        "❌ Leave Rejected",
+                        $"Your {leaveType} leave request has been rejected.",
+                        "Leave", "bi-x-circle", "/LeaveRequests/Index?view=my");
 
                     var rejectedEmployee = await userManager.FindByIdAsync(requesterId);
                     if (rejectedEmployee?.Email != null)
@@ -542,6 +580,12 @@ namespace MobileOpsConnect.Controllers
                 await _notificationService.SendToRoleAsync(targetRole,
                     "🗑️ Leave Request Cancelled",
                     $"{user.Email} cancelled their {leaveRequest.LeaveType} leave request ({leaveRequest.StartDate:MMM dd} – {leaveRequest.EndDate:MMM dd}).");
+
+                // In-App Notification
+                await _inAppNotificationService.CreateForRoleAsync(targetRole,
+                    "🗑️ Leave Request Cancelled",
+                    $"{user.Email} cancelled a {leaveRequest.LeaveType} leave.",
+                    "Leave", "bi-calendar-x", "/LeaveRequests/Index");
             }
 
             return RedirectToAction(nameof(Index), new { view = "my" });

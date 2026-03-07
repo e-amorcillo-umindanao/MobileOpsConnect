@@ -66,12 +66,48 @@
         }
     }
 
+    // ── Unregister push subscription (Logout) ──
+    async function unregisterSubscription() {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+
+            if (subscription) {
+                // 1. Tell server to remove from DB while we still have the session cookie
+                await fetch('/Notification/UnregisterSubscription', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ endpoint: subscription.endpoint }),
+                });
+
+                // 2. Unsubscribe in the browser
+                await subscription.unsubscribe();
+            }
+
+            // 3. Clear local flags
+            localStorage.removeItem('moc_push_enabled');
+            localStorage.removeItem('moc_push_dismissed');
+
+            return true;
+        } catch (error) {
+            console.error('[Push] Unregistration error:', error);
+            return false;
+        }
+    }
+
     // ── Request permission + register (ONLY from Enable button) ──
     async function requestAndRegister() {
+        if (!document.querySelector('meta[name="user-authenticated"]')) {
+            console.warn('[Push] Cannot register: User is not authenticated.');
+            return false;
+        }
         const permission = await Notification.requestPermission();
         if (permission !== 'granted') return false;
         return await registerSubscription();
     }
+
+    // ── Expose to window ──
+    window.unregisterPushNotifications = unregisterSubscription;
 
     // ── Public: Enable button handler ──
     window.enablePushNotifications = async function () {
@@ -102,6 +138,11 @@
 
     // ── Startup ──
     function init() {
+        // AUTH GUARD: Only run registration logic if the user is logged in
+        if (!document.querySelector('meta[name="user-authenticated"]')) {
+            return;
+        }
+
         if (Notification.permission === 'granted') {
             registerSubscription();
             return;

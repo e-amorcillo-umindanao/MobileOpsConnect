@@ -12,11 +12,13 @@ namespace MobileOpsConnect.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly INotificationService _notificationService;
+        private readonly IInAppNotificationService _inAppNotificationService;
 
-        public ProductsController(ApplicationDbContext context, INotificationService notificationService)
+        public ProductsController(ApplicationDbContext context, INotificationService notificationService, IInAppNotificationService inAppNotificationService)
         {
             _context = context;
             _notificationService = notificationService;
+            _inAppNotificationService = inAppNotificationService;
         }
 
         // GET: Products
@@ -38,9 +40,25 @@ namespace MobileOpsConnect.Controllers
 
         // GET: Products/Create
         [Authorize(Roles = "SuperAdmin,DepartmentManager")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            await PopulateCategoriesAsync();
             return View();
+        }
+
+        private async Task PopulateCategoriesAsync()
+        {
+            var categories = new List<string>
+            {
+                "Computer Accessories",
+                "Computers & Laptops",
+                "Computer Components",
+                "Networking Devices",
+                "Storage Devices",
+                "Printers & Scanners",
+                "Power Products"
+            };
+            ViewBag.Categories = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(categories);
         }
 
         // POST: Products/Create
@@ -63,6 +81,12 @@ namespace MobileOpsConnect.Controllers
                     "📦 New Product Added",
                     $"{product.Name} (SKU: {product.SKU}) has been added with {product.StockQuantity} units.");
 
+                // In-App Notification
+                await _inAppNotificationService.CreateForRoleAsync("DepartmentManager",
+                    "📦 New Product Added",
+                    $"{product.Name} has been added with {product.StockQuantity} units.",
+                    "Stock", "bi-plus-square", $"/Products/Details/{product.ProductID}");
+
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
@@ -76,6 +100,7 @@ namespace MobileOpsConnect.Controllers
 
             var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
+            await PopulateCategoriesAsync();
             return View(product);
         }
 
@@ -102,6 +127,12 @@ namespace MobileOpsConnect.Controllers
                     await _notificationService.SendToRoleAsync("DepartmentManager",
                         "✏️ Product Updated",
                         $"{product.Name} (SKU: {product.SKU}) has been updated. Stock: {product.StockQuantity}.");
+
+                    // In-App Notification
+                    await _inAppNotificationService.CreateForRoleAsync("DepartmentManager",
+                        "✏️ Product Updated",
+                        $"{product.Name} has been updated. Stock: {product.StockQuantity}.",
+                        "Stock", "bi-pencil-square", $"/Products/Details/{product.ProductID}");
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -143,6 +174,12 @@ namespace MobileOpsConnect.Controllers
                 await _notificationService.SendToRoleAsync("DepartmentManager",
                     "🗂️ Product Archived",
                     $"{product.Name} (SKU: {product.SKU}) has been archived (stock set to 0).");
+
+                // In-App Notification
+                await _inAppNotificationService.CreateForRoleAsync("DepartmentManager",
+                    "🗂️ Product Archived",
+                    $"{product.Name} has been archived.",
+                    "Stock", "bi-archive", $"/Products/Details/{product.ProductID}");
             }
             return RedirectToAction(nameof(Index));
         }
@@ -158,6 +195,12 @@ namespace MobileOpsConnect.Controllers
                 await _notificationService.SendToRoleAsync("DepartmentManager",
                     "⚠️ Low Stock Alert",
                     $"{product.Name} (SKU: {product.SKU}) has only {product.StockQuantity} units left — below the {threshold}-unit threshold.");
+
+                // In-App Notification
+                await _inAppNotificationService.CreateForRoleAsync("DepartmentManager",
+                    "⚠️ Low Stock Alert",
+                    $"{product.Name} has only {product.StockQuantity} units left.",
+                    "Stock", "bi-exclamation-triangle", $"/Warehouse/Adjust/{product.ProductID}");
             }
         }
     }

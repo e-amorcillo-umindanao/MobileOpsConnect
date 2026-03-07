@@ -9,11 +9,30 @@
         <a class="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
             Hello @User.Identity?.Name!
         </a>
-        <form class="m-0 p-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" onclick="sessionStorage.clear();" class="flex items-center gap-x-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-neutral-300 bg-transparent border-0 p-0 m-0 cursor-pointer">
+        <form id="logoutForm" class="m-0 p-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+            <button type="button" onclick="handleLogout()" class="flex items-center gap-x-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-neutral-400 dark:hover:text-neutral-300 bg-transparent border-0 p-0 m-0 cursor-pointer">
                 <i class="bi bi-box-arrow-right"></i> Logout
             </button>
         </form>
+
+        <script>
+            async function handleLogout() {
+                // 1. Unregister push notifications if the function exists
+                if (window.unregisterPushNotifications) {
+                    try {
+                        await window.unregisterPushNotifications();
+                    } catch (e) {
+                        console.error('Logout: Push unregister failed', e);
+                    }
+                }
+
+                // 2. Clear session storage
+                sessionStorage.clear();
+
+                // 3. Submit the form
+                document.getElementById('logoutForm').submit();
+            }
+        </script>
     </div>
 }
 else

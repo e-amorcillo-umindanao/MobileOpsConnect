@@ -70,7 +70,9 @@
                         <label asp-for="Category" class="block text-sm font-medium mb-2 dark:text-white">
                             <i class="bi bi-tag-fill me-1 text-cyan-500"></i> Category
                         </label>
-                        <input asp-for="Category" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="e.g., Electronics" />
+                        <select asp-for="Category" asp-items="ViewBag.Categories" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
+                            <option value="">— Select Category —</option>
+                        </select>
                         <span asp-validation-for="Category" class="text-xs text-red-600 mt-2 block"></span>
                     </div>
 

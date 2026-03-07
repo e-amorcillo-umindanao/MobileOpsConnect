@@ -345,6 +345,15 @@
                         </div>
                     }
                 </div>
+
+                <!-- No Results Empty State -->
+                <div id="active-empty-state" class="text-center py-24 px-4" style="display: none;">
+                    <span class="inline-flex justify-center items-center size-14 rounded-full bg-gray-50 text-gray-500 mx-auto mb-4 dark:bg-neutral-800 dark:text-neutral-500">
+                        <i class="bi bi-search text-2xl"></i>
+                    </span>
+                    <h3 class="text-[17px] font-bold text-gray-900 dark:text-white mb-1.5 tracking-tight">No products found</h3>
+                    <p class="text-[13px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">Try adjusting your search or filters to find what you're looking for.</p>
+                </div>
             }
 
         </div>
@@ -571,6 +580,20 @@
             cardSubtitle.textContent = visibleCount + ' ' + label + ' product' + (visibleCount !== 1 ? 's' : '') + searchContext;
             footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + visibleCount + ' ' + label + ' product' + (visibleCount !== 1 ? 's' : '') + searchContext;
             
+            // Toggle Empty State
+            const activeEmptyState = document.getElementById('active-empty-state');
+            if (activeEmptyState) {
+                if (visibleCount === 0 && (query || currentFilter !== 'all')) {
+                    activeEmptyState.style.display = 'block';
+                    document.querySelector('#inv-active-section .hidden.md\\:block')?.classList.add('hidden');
+                    document.querySelector('#inv-active-section .md\\:hidden.space-y-3')?.classList.add('hidden');
+                } else {
+                    activeEmptyState.style.display = 'none';
+                    document.querySelector('#inv-active-section .hidden.md\\:block')?.classList.remove('hidden');
+                    document.querySelector('#inv-active-section .md\\:hidden.space-y-3')?.classList.remove('hidden');
+                }
+            }
+
             // Re-render badges
             if (activeTab.classList.contains('active')) {
                 const badgeHtml = (currentFilter === 'all' || currentFilter === 'healthy' ? '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">' + currentHealthy + ' Stocked</span>' : '') +

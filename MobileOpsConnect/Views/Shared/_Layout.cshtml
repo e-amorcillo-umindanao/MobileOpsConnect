@@ -13,6 +13,10 @@
     <meta name="apple-mobile-web-app-title" content="MobileOps" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <meta name="user-authenticated" content="true" />
+    }
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/css/tailwind.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -62,6 +66,12 @@
                             <i class="bi bi-shield-check mr-1"></i> Privacy
                         </a>
                         
+                        <!-- Notification Bell -->
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <partial name="_NotificationBell" />
+                        }
+
                         <!-- Login Partial -->
                         <partial name="_LoginPartial" />
                     </div>
@@ -136,11 +146,13 @@
             }, 5000);
         }
 
+        connection.off("StockUpdated");
         connection.on("StockUpdated", (productId, productName, newQty, action) => {
             showSignalRToast("📦", `${action}`, `${productName} — now at ${newQty} units`);
             setTimeout(() => location.reload(), 5000); // reload after toast finishes
         });
 
+        connection.off("LeaveStatusChanged");
         connection.on("LeaveStatusChanged", (leaveId, status, userId, employeeName) => {
             const icon = status === "Approved" ? "✅" : status === "Rejected" ? "❌" : "📋";
             const label = status === "Pending" ? "New Leave Request" : `Leave ${status}`;
@@ -151,6 +163,7 @@
             setTimeout(() => location.reload(), 5000); // reload after toast finishes
         });
 
+        connection.off("PurchaseOrderUpdated");
         connection.on("PurchaseOrderUpdated", (orderId, productName, quantity, action, byUser) => {
             const icon = action.includes("Approved") ? "✅" : action.includes("Rejected") ? "❌" : "📦";
             const title = action.includes("Submitted") ? "New Purchase Order" : `PO ${action}`;
@@ -159,7 +172,15 @@
             setTimeout(() => location.reload(), 5000);
         });
 
-        connection.start().catch(err => console.error("SignalR Error:", err));
+        connection.start()
+            .then(() => {
+                console.log("SignalR Connected.");
+                if (!window._signalrConnectedFired) {
+                    window._signalrConnectedFired = true;
+                    window.dispatchEvent(new CustomEvent('signalr-connected'));
+                }
+            })
+            .catch(err => console.error("SignalR Error:", err));
     </script>
 
     @* ── Push Notification Init ── *@
