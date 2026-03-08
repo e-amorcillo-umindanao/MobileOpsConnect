@@ -1,5 +1,5 @@
 @* --- Notification Bell Partial --- *@
-<div class="hs-dropdown relative inline-flex [--placement:bottom-right] ml-2">
+<div class="hs-dropdown relative inline-flex [--placement:bottom-right] [--auto-close:inside] ml-2">
     <button id="notification-bell-btn" type="button" class="hs-dropdown-toggle relative p-2 inline-flex justify-center items-center gap-x-2 rounded-lg border border-transparent text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:text-neutral-400 dark:hover:bg-neutral-700 dark:focus:bg-neutral-700" aria-haspopup="menu" aria-expanded="false" aria-label="Notifications">
         <i class="bi bi-bell text-xl"></i>
         <span id="notification-badge" class="hidden absolute top-1.5 end-1.5 flex h-4 w-4">
@@ -130,27 +130,48 @@
         }
     }
 
+    function markAllAsReadOptimistic() {
+        const list = document.getElementById('notification-list');
+        if (!list) return;
+        
+        const items = list.querySelectorAll('[data-id]');
+        items.forEach(item => {
+            item.classList.remove('bg-blue-50/30', 'dark:bg-blue-900/10');
+            const indicator = item.querySelector('.bg-blue-500');
+            if (indicator) indicator.remove();
+        });
+
+        updateBadge(0);
+    }
+
     async function markAllNotificationsAsRead(event) {
         if (event) event.stopPropagation(); // Prevent Preline from closing the dropdown
 
         const btn = event?.currentTarget;
         const originalText = btn ? btn.innerText : 'Mark all as read';
 
+        // Step 1: Optimistic UI Update (Immediate feedback)
+        markAllAsReadOptimistic();
+        
+        if (btn) {
+            btn.innerText = 'Done ✓';
+            btn.classList.add('text-emerald-600');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('text-emerald-600');
+            }, 2000);
+        }
+
         try {
+            // Step 2: Persist to server in background
             const response = await fetch('/InAppNotification/MarkAllAsRead', { method: 'POST' });
-            if (response.ok) {
-                if (btn) {
-                    btn.innerText = 'Done ✓';
-                    btn.classList.add('text-emerald-600');
-                    setTimeout(() => {
-                        btn.innerText = originalText;
-                        btn.classList.remove('text-emerald-600');
-                    }, 2000);
-                }
-                fetchNotifications(true);
+            if (!response.ok) {
+                console.error('[Bell] MarkAllAsRead failed on server');
+                fetchNotifications(true); // Rollback to actual state
             }
         } catch (error) {
             console.error('Failed to mark all as read', error);
+            fetchNotifications(true); // Rollback to actual state
         }
     }
 
@@ -194,7 +215,8 @@
     // Refresh when dropdown opens
     document.addEventListener('open.hs.dropdown', (e) => {
         // Preline 2.0+ event: check if the opened dropdown is our notification bell
-        const dropdown = e.detail.el;
+        // HS 2.0.x uses e.detail.payload for the element
+        const dropdown = e.detail?.payload || e.detail?.el;
         if (dropdown && dropdown.contains(document.getElementById('notification-bell-btn'))) {
             console.log('[Bell] Dropdown opened, refreshing...');
             fetchNotifications(true);
