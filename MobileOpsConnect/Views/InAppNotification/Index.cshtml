@@ -1,0 +1,411 @@
+@model IEnumerable<MobileOpsConnect.Models.InAppNotification>
+
+@{
+    ViewData["Title"] = "Notifications";
+    int totalCount = ViewBag.TotalCount ?? 0;
+    int unreadCount = ViewBag.UnreadCount ?? 0;
+    int readCount = ViewBag.ReadCount ?? 0;
+    string topType = ViewBag.TopType ?? "None";
+}
+
+<!-- Breadcrumb Navigation -->
+<div class="mb-6">
+    <a asp-controller="Home" asp-action="Index" class="text-sm font-medium text-gray-400 hover:text-gray-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">
+        ← Back to Dashboard
+    </a>
+</div>
+
+<!-- Hero Banner -->
+<div class="mb-8 mt-2 sm:mb-10">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-600 border border-blue-100 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 tracking-wide uppercase">
+            <span class="size-1.5 inline-block bg-blue-500 rounded-full animate-pulse"></span> Personal Activity
+        </span>
+        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
+            @totalCount Total Notifications
+        </span>
+        @if (unreadCount > 0)
+        {
+            <span id="unread-meta-badge" class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-600 border border-amber-100 dark:bg-amber-900/30 dark:border-amber-800 dark:text-amber-400 tracking-wide uppercase">
+                @unreadCount Unread
+            </span>
+        }
+    </div>
+    <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Activity History</h1>
+    <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Track your personal activity history and system updates.</p>
+</div>
+
+<!-- Overview Title -->
+<div class="flex items-center gap-x-2 mb-4">
+    <i class="bi bi-bar-chart text-gray-400"></i>
+    <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Activity Overview</h2>
+</div>
+
+<!-- Metrics Grid -->
+<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="p-4 md:p-5 flex gap-x-4">
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-bell text-xl"></i></div>
+            <div class="grow">
+                <p class="text-xs uppercase tracking-wide text-gray-500">Total</p>
+                <div class="mt-1 flex items-center gap-x-2">
+                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@totalCount</h3>
+                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium">All</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="p-4 md:p-5 flex gap-x-4">
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg"><i class="bi bi-envelope text-xl"></i></div>
+            <div class="grow">
+                <p class="text-xs uppercase tracking-wide text-gray-500">Unread</p>
+                <div class="mt-1 flex items-center gap-x-2">
+                    <h3 id="unread-metric-count" class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@unreadCount</h3>
+                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">New</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="p-4 md:p-5 flex gap-x-4">
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-emerald-100 text-emerald-800 rounded-lg"><i class="bi bi-check2-all text-xl"></i></div>
+            <div class="grow">
+                <p class="text-xs uppercase tracking-wide text-gray-500">Read</p>
+                <div class="mt-1 flex items-center gap-x-2">
+                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@readCount</h3>
+                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-emerald-100 text-emerald-800 text-xs font-medium">Viewed</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+        <div class="p-4 md:p-5 flex gap-x-4">
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-purple-100 text-purple-800 rounded-lg"><i class="bi bi-tags text-xl"></i></div>
+            <div class="grow">
+                <p class="text-xs uppercase tracking-wide text-gray-500">Top Category</p>
+                <div class="mt-1 flex items-center gap-x-2">
+                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@topType</h3>
+                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-purple-100 text-purple-800 text-xs font-medium">Freq</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Bar -->
+<div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+    <div class="flex items-center gap-x-3">
+        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-funnel-fill text-lg"></i></span>
+        <div>
+            <p class="font-semibold text-sm text-gray-800 mb-0 dark:text-white" id="notif-tab-label">Unread Activity</p>
+            <p class="text-gray-500 text-xs mb-0 dark:text-neutral-400" id="notif-tab-count">Showing @unreadCount record@(unreadCount != 1 ? "s" : "")</p>
+        </div>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+        <!-- Search Bar -->
+        <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-400">
+                <i class="bi bi-search text-xs"></i>
+            </div>
+            <input type="text" id="notifSearchInput" class="py-2 px-9 block w-full bg-white border-gray-200 rounded-lg text-xs focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Search activity...">
+        </div>
+        <button onclick="markAllNotificationsAsRead(this)" class="py-2 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
+            Mark all read
+        </button>
+        <button onclick="clearAllNotifications(this)" class="py-2 px-3 inline-flex items-center gap-x-2 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100 transition-colors">
+             <i class="bi bi-trash3"></i> Clear all
+        </button>
+    </div>
+</div>
+
+<!-- Tab Header -->
+<nav class="flex space-x-6 border-b border-gray-200 dark:border-neutral-700 mb-6" aria-label="Tabs">
+    <button type="button" class="py-3 px-1 inline-flex items-center gap-2 border-b-2 border-gray-800 text-sm whitespace-nowrap text-gray-900 font-bold focus:outline-none dark:border-white dark:text-white notif-tab-btn active" data-tab="unread">
+        Unread
+        <span id="tab-unread-count" class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white">@unreadCount</span>
+    </button>
+    <button type="button" class="py-3 px-1 inline-flex items-center gap-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-gray-700 font-medium focus:outline-none dark:text-neutral-400 dark:hover:text-neutral-300 notif-tab-btn" data-tab="all">
+        All History
+        <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400">@totalCount</span>
+    </button>
+</nav>
+
+<!-- Notifications Table Card -->
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6 overflow-hidden">
+    <div class="p-0">
+        @if (totalCount == 0)
+        {
+            <div class="text-center py-16 px-6">
+                <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-800 mx-auto mb-4 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400">
+                    <i class="bi bi-bell-slash text-2xl"></i>
+                </span>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">No activity yet</h3>
+                <p class="text-sm text-gray-500 dark:text-neutral-400 max-w-xs mx-auto">Notifications and system updates will appear here once they arrive.</p>
+            </div>
+        }
+        else
+        {
+            <!-- Desktop Table -->
+            <div class="hidden md:block">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
+                        <thead>
+                            <tr class="bg-gray-50/50 dark:bg-neutral-800/50">
+                                <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">Type</th>
+                                <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">Notification</th>
+                                <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">Received</th>
+                                <th scope="col" class="px-6 py-4 text-end text-[11px] font-bold text-gray-500 uppercase tracking-widest">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 dark:divide-neutral-800" id="notif-table-body">
+                            @foreach (var item in Model)
+                            {
+                                <tr class="notif-row transition-all duration-200 @(item.IsRead ? "opacity-60 grayscale-[0.3]" : "bg-blue-50/10 active-row")" 
+                                    data-id="@item.Id" 
+                                    data-unread="@(!item.IsRead)" 
+                                    data-search="@(item.Title.ToLower())|@(item.Message.ToLower())|@(item.Type.ToLower())">
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <div class="flex items-center gap-x-3">
+                                            <span class="inline-flex items-center justify-center size-8 rounded-lg @(GetIconBg(item.Type)) text-white shadow-sm">
+                                                <i class="bi @(item.Icon ?? "bi-info-circle")"></i>
+                                            </span>
+                                            <span class="text-xs font-semibold text-gray-800 dark:text-neutral-300">@item.Type</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="relative ps-3">
+                                            @if (!item.IsRead)
+                                            {
+                                                <div class="indicator-dot absolute left-0 top-1.5 size-1.5 bg-blue-500 rounded-full"></div>
+                                            }
+                                            <p class="text-sm font-bold text-gray-900 dark:text-white mb-0.5">@item.Title</p>
+                                            <p class="text-xs text-gray-500 dark:text-neutral-400 line-clamp-1">@item.Message</p>
+                                        </div>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4">
+                                        <span class="text-[11px] font-medium text-gray-500 dark:text-neutral-500 uppercase">@item.CreatedAt.ToString("MMM dd, yyyy HH:mm")</span>
+                                    </td>
+                                    <td class="whitespace-nowrap px-6 py-4 text-end">
+                                        <div class="flex justify-end gap-x-2">
+                                            @if (!string.IsNullOrEmpty(item.Url) && item.Url != "#")
+                                            {
+                                                <a href="@item.Url" class="p-1 text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors" title="View Source">
+                                                    <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            }
+                                            @if (!item.IsRead)
+                                            {
+                                                <button onclick="markSingleRead(this, @item.Id)" class="p-1 text-gray-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors" title="Mark as read">
+                                                    <i class="bi bi-check-lg text-lg"></i>
+                                                </button>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mobile Card List -->
+            <div class="md:hidden divide-y divide-gray-100 dark:divide-neutral-800" id="notif-mobile-body">
+                @foreach (var item in Model)
+                {
+                    <div class="notif-card p-4 transition-all @(item.IsRead ? "opacity-60" : "bg-blue-50/10 active-row")" 
+                         data-id="@item.Id" 
+                         data-unread="@(!item.IsRead)"
+                         data-search="@(item.Title.ToLower())|@(item.Message.ToLower())|@(item.Type.ToLower())">
+                        <div class="flex gap-x-3 mb-3">
+                            <span class="shrink-0 inline-flex items-center justify-center size-9 rounded-xl @(GetIconBg(item.Type)) text-white">
+                                <i class="bi @(item.Icon ?? "bi-info-circle") text-lg"></i>
+                            </span>
+                            <div class="flex-grow min-w-0">
+                                <div class="flex justify-between items-start gap-2 mb-1">
+                                    <h4 class="text-sm font-bold text-gray-900 dark:text-white truncate">@item.Title</h4>
+                                    <span class="text-[10px] text-gray-500 uppercase whitespace-nowrap">@item.CreatedAt.ToString("MMM dd")</span>
+                                </div>
+                                <p class="text-xs text-gray-600 dark:text-neutral-400 line-clamp-2 mb-2">@item.Message</p>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full @(GetIconBg(item.Type)) bg-opacity-10 dark:bg-opacity-20 uppercase tracking-tighter" style="color:inherit">@item.Type</span>
+                                    <div class="flex gap-x-3">
+                                        @if (!string.IsNullOrEmpty(item.Url) && item.Url != "#")
+                                        {
+                                            <a href="@item.Url" class="text-xs text-indigo-600 font-bold dark:text-indigo-400">View Details</a>
+                                        }
+                                        @if (!item.IsRead)
+                                        {
+                                            <button onclick="markSingleRead(this, @item.Id)" class="text-xs text-emerald-600 font-bold dark:text-emerald-400">Mark read</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    string GetIconBg(string type) => type switch {
+        "Leave" => "bg-purple-500",
+        "Stock" => "bg-blue-500",
+        "Order" => "bg-amber-500",
+        "User" => "bg-emerald-500",
+        "Accounting" => "bg-rose-500",
+        _ => "bg-gray-500"
+    };
+}
+
+<script>
+(function() {
+    const searchInput = document.getElementById('notifSearchInput');
+    const tabBtns = document.querySelectorAll('.notif-tab-btn');
+    const tabLabel = document.getElementById('notif-tab-label');
+    const tabCount = document.getElementById('notif-tab-count');
+    
+    let currentTab = 'unread';
+
+    function refreshView() {
+        const query = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+        
+        // Filter desktop rows
+        document.querySelectorAll('.notif-row').forEach(row => {
+            const isUnread = row.dataset.unread === 'true';
+            const matchesTab = (currentTab === 'all') || isUnread;
+            const matchesSearch = !query || row.dataset.search.includes(query);
+            
+            const isVisible = matchesTab && matchesSearch;
+            row.style.display = isVisible ? '' : 'none';
+            if (isVisible) visibleCount++;
+        });
+
+        // Filter mobile cards
+        document.querySelectorAll('.notif-card').forEach(card => {
+            const isUnread = card.dataset.unread === 'true';
+            const matchesTab = (currentTab === 'all') || isUnread;
+            const matchesSearch = !query || card.dataset.search.includes(query);
+            
+            card.style.display = matchesTab && matchesSearch ? '' : 'none';
+        });
+
+        const label = currentTab === 'unread' ? 'Unread Activity' : 'All Activity';
+        tabLabel.textContent = label + (query ? ` matching "${query}"` : '');
+        tabCount.textContent = `Showing ${visibleCount} record${visibleCount !== 1 ? 's' : ''}`;
+    }
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentTab = this.dataset.tab;
+            tabBtns.forEach(b => {
+                b.classList.remove('active', 'font-bold', 'text-gray-900', 'border-gray-800', 'dark:text-white', 'dark:border-white');
+                b.classList.add('text-gray-500', 'border-transparent', 'font-medium');
+            });
+            this.classList.add('active', 'font-bold', 'text-gray-900', 'border-gray-800', 'dark:text-white', 'dark:border-white');
+            this.classList.remove('text-gray-500', 'border-transparent', 'font-medium');
+            refreshView();
+        });
+    });
+
+    searchInput.addEventListener('input', refreshView);
+    
+    // Initial filter
+    window.addEventListener('load', refreshView);
+})();
+
+// OPTIMISTIC ACTIONS
+async function markSingleRead(btn, id) {
+    // Optimistic UI
+    const targets = document.querySelectorAll(`[data-id="${id}"]`);
+    targets.forEach(el => {
+        el.dataset.unread = 'false';
+        el.classList.add('opacity-60', 'grayscale-[0.3]');
+        el.classList.remove('bg-blue-50/10', 'active-row');
+        const dot = el.querySelector('.indicator-dot');
+        if (dot) dot.remove();
+        // Remove individual mark read buttons
+        const readBtn = el.querySelector('button[title="Mark as read"], button:contains("Mark read")');
+        if (readBtn) readBtn.remove();
+    });
+
+    // Update metrics
+    const unreadMetric = document.getElementById('unread-metric-count');
+    const currentUnread = parseInt(unreadMetric.textContent);
+    if (currentUnread > 0) {
+        unreadMetric.textContent = currentUnread - 1;
+        const metaBadge = document.getElementById('unread-meta-badge');
+        const tabBadge = document.getElementById('tab-unread-count');
+        if (tabBadge) tabBadge.textContent = currentUnread - 1;
+        if (metaBadge) {
+            if (currentUnread - 1 === 0) metaBadge.remove();
+            else metaBadge.innerHTML = `<span class="size-1.5 inline-block bg-blue-500 rounded-full animate-pulse"></span> ${currentUnread - 1} Unread`;
+        }
+    }
+
+    try {
+        await fetch(`/InAppNotification/MarkRead?id=${id}`, { method: 'POST' });
+    } catch (e) {
+        console.error('Failed to mark read', e);
+        location.reload(); // Rollback on severe failure
+    }
+}
+
+async function markAllNotificationsAsRead(btn) {
+    const originalText = btn.innerText;
+    
+    // Optimistic UI
+    document.querySelectorAll('.active-row').forEach(row => {
+        const id = row.dataset.id;
+        markSingleRead(row, id);
+    });
+
+    btn.innerText = 'All Read ✓';
+    btn.classList.add('text-emerald-600');
+    setTimeout(() => {
+        btn.innerText = originalText;
+        btn.classList.remove('text-emerald-600');
+    }, 2000);
+
+    try {
+        await fetch('/InAppNotification/MarkAllAsRead', { method: 'POST' });
+    } catch (e) {
+        console.error('Failed to mark all as read', e);
+        location.reload();
+    }
+}
+
+async function clearAllNotifications(btn) {
+    if (!confirm('Are you sure you want to permanently delete all notifications?')) return;
+    
+    const originalHtml = btn.innerHTML;
+    
+    // Optimistic UI
+    const container = document.querySelector('.overflow-hidden.bg-white');
+    container.innerHTML = `
+        <div class="text-center py-16 px-6">
+            <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-800 mx-auto mb-4">
+                <i class="bi bi-bell-slash text-2xl"></i>
+            </span>
+            <h3 class="text-lg font-semibold text-gray-800">All Cleared!</h3>
+            <p class="text-sm text-gray-500">Your notification history has been permanently removed.</p>
+        </div>
+    `;
+
+    btn.innerHTML = 'Cleared ✓';
+    setTimeout(() => btn.remove(), 2000);
+
+    try {
+        await fetch('/InAppNotification/ClearAll', { method: 'POST' });
+        // Update badge in header if it exists
+        const badge = document.getElementById('notification-badge');
+        if (badge) badge.classList.add('hidden');
+    } catch (e) {
+        console.error('Failed to clear all', e);
+        location.reload();
+    }
+}
+</script>

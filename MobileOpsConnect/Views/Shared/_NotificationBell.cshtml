@@ -31,8 +31,12 @@
             <p class="text-sm text-gray-500 dark:text-neutral-400">You're all caught up! 🎉</p>
         </div>
 
-        <div class="p-3 border-t border-gray-200 dark:border-neutral-700">
-            <a href="#" class="block text-center text-xs text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 font-medium py-1">View all activity</a>
+        <div class="px-4 py-3 border-t border-gray-200 dark:border-neutral-700 flex justify-between items-center bg-gray-50/50 dark:bg-neutral-800/50 rounded-b-xl">
+            <button onclick="clearAllNotifications(event)" class="text-xs text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium flex items-center gap-1">
+                <i class="bi bi-trash3 text-[10px]"></i>
+                Clear all
+            </button>
+            <a href="/InAppNotification" class="text-xs text-gray-500 hover:text-gray-800 dark:text-neutral-400 dark:hover:text-neutral-200 font-medium">View all activity</a>
         </div>
     </div>
 </div>
@@ -172,6 +176,43 @@
         } catch (error) {
             console.error('Failed to mark all as read', error);
             fetchNotifications(true); // Rollback to actual state
+        }
+    }
+
+    async function clearAllNotifications(event) {
+        if (event) event.stopPropagation();
+
+        const btn = event?.currentTarget;
+        const originalHtml = btn ? btn.innerHTML : 'Clear all';
+
+        // Step 1: Optimistic UI Update
+        const list = document.getElementById('notification-list');
+        const empty = document.getElementById('notification-empty');
+        if (list) list.innerHTML = '';
+        if (empty) empty.classList.remove('hidden');
+        updateBadge(0);
+
+        if (btn) {
+            btn.innerHTML = 'Cleared ✓';
+            btn.classList.add('text-emerald-600');
+            btn.classList.remove('text-red-500');
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                btn.classList.remove('text-emerald-600');
+                btn.classList.add('text-red-500');
+            }, 2000);
+        }
+
+        try {
+            // Step 2: Persist in background
+            const response = await fetch('/InAppNotification/ClearAll', { method: 'POST' });
+            if (!response.ok) {
+                console.error('[Bell] ClearAll failed on server');
+                fetchNotifications(true); // Rollback
+            }
+        } catch (error) {
+            console.error('Failed to clear notifications', error);
+            fetchNotifications(true); // Rollback
         }
     }
 

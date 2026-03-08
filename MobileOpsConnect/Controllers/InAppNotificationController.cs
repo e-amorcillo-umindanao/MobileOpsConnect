@@ -20,6 +20,30 @@ namespace MobileOpsConnect.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var notifications = await _context.InAppNotifications
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+
+            ViewBag.TotalCount = notifications.Count;
+            ViewBag.UnreadCount = notifications.Count(n => !n.IsRead);
+            ViewBag.ReadCount = notifications.Count(n => n.IsRead);
+
+            // Get count of most common notification type
+            ViewBag.TopType = notifications.GroupBy(n => n.Type)
+                .OrderByDescending(g => g.Count())
+                .Select(g => g.Key)
+                .FirstOrDefault() ?? "None";
+
+            return View(notifications);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> GetRecent()
         {
             var userId = _userManager.GetUserId(User);
@@ -87,6 +111,26 @@ namespace MobileOpsConnect.Controllers
             }
 
             return Json(new { success = true });
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> ClearAll()
+        {
+            var userId = _userManager.GetUserId(User);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var notifications = await _context.InAppNotifications
+                .Where(n => n.UserId == userId)
+                .ToListAsync();
+
+            if (notifications.Any())
+            {
+                _context.InAppNotifications.RemoveRange(notifications);
+                await _context.SaveChangesAsync();
+            }
+
+            return Json(new { success = true, deletedCount = notifications.Count });
         }
     }
 }
