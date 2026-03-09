@@ -17,20 +17,6 @@
 
 <!-- Hero Banner -->
 <div class="mb-8 mt-2 sm:mb-10">
-    <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-600 border border-blue-100 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-400 tracking-wide uppercase">
-            <span class="size-1.5 inline-block bg-blue-500 rounded-full animate-pulse"></span> Personal Activity
-        </span>
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
-            @totalCount Total Notifications
-        </span>
-        @if (unreadCount > 0)
-        {
-            <span id="unread-meta-badge" class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-600 border border-amber-100 dark:bg-amber-900/30 dark:border-amber-800 dark:text-amber-400 tracking-wide uppercase">
-                @unreadCount Unread
-            </span>
-        }
-    </div>
     <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Activity History</h1>
     <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Track your personal activity history and system updates.</p>
 </div>
@@ -44,7 +30,6 @@
                 <p class="text-xs uppercase tracking-wide text-gray-500">Total</p>
                 <div class="mt-1 flex items-center gap-x-2">
                     <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@totalCount</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium">All</span>
                 </div>
             </div>
         </div>
@@ -56,7 +41,6 @@
                 <p class="text-xs uppercase tracking-wide text-gray-500">Unread</p>
                 <div class="mt-1 flex items-center gap-x-2">
                     <h3 id="unread-metric-count" class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@unreadCount</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">New</span>
                 </div>
             </div>
         </div>
@@ -68,7 +52,6 @@
                 <p class="text-xs uppercase tracking-wide text-gray-500">Read</p>
                 <div class="mt-1 flex items-center gap-x-2">
                     <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@readCount</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-emerald-100 text-emerald-800 text-xs font-medium">Viewed</span>
                 </div>
             </div>
         </div>
@@ -80,7 +63,6 @@
                 <p class="text-xs uppercase tracking-wide text-gray-500">Top Category</p>
                 <div class="mt-1 flex items-center gap-x-2">
                     <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@topType</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-purple-100 text-purple-800 text-xs font-medium">Freq</span>
                 </div>
             </div>
         </div>
@@ -280,13 +262,8 @@ async function markSingleRead(btn, id) {
     const currentUnread = parseInt(unreadMetric.textContent);
     if (currentUnread > 0) {
         unreadMetric.textContent = currentUnread - 1;
-        const metaBadge = document.getElementById('unread-meta-badge');
         const tabBadge = document.getElementById('tab-unread-count');
         if (tabBadge) tabBadge.textContent = currentUnread - 1;
-        if (metaBadge) {
-            if (currentUnread - 1 === 0) metaBadge.remove();
-            else metaBadge.innerHTML = `<span class="size-1.5 inline-block bg-blue-500 rounded-full animate-pulse"></span> ${currentUnread - 1} Unread`;
-        }
     }
 
     try {

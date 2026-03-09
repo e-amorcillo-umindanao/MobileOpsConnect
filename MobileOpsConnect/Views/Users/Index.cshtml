@@ -18,15 +18,6 @@
 
 <!-- Hero Banner -->
 <div class="mb-8 mt-2 sm:mb-10">
-    <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
-            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span>
-            Directory Online
-        </span>
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
-            <i class="bi bi-people"></i> @totalUsers Registered Account@(totalUsers != 1 ? "s" : "")
-        </span>
-    </div>
     @if (isSuperAdmin)
     {
         <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">System Admin Management</h1>
@@ -50,9 +41,6 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total Users</p>
         <div class="flex items-end justify-between mt-auto">
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-[#f4f2ff] text-[#5e4dcd] text-[10px] font-bold uppercase tracking-wide dark:bg-indigo-900/20 dark:text-indigo-400 mb-1">
-                <i class="bi bi-layers"></i> All Roles
-            </span>
             <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@totalUsers</h3>
         </div>
     </div>
@@ -66,9 +54,6 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Super Admins</p>
         <div class="flex items-end justify-between mt-auto">
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide dark:bg-rose-900/20 dark:text-rose-400 mb-1">
-                <i class="bi bi-shield-check"></i> Super Admin
-            </span>
             <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@superAdminCount</h3>
         </div>
     </div>
@@ -82,9 +67,6 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Sys Admins</p>
         <div class="flex items-end justify-between mt-auto">
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-600 text-[10px] font-bold uppercase tracking-wide dark:bg-amber-900/20 dark:text-amber-400 mb-1">
-                <i class="bi bi-gear-wide"></i> System Admin
-            </span>
             <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@systemAdminCount</h3>
         </div>
     </div>
@@ -295,10 +277,6 @@
                 <i class="bi bi-info-circle me-1"></i> 
                 Showing @((Model.PageIndex - 1) * 10 + 1) to @(Math.Min(Model.PageIndex * 10, totalUsers)) of @totalUsers account@(totalUsers != 1 ? "s" : "")
             </span>
-            <div class="flex gap-2">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">@superAdminCount Super Admin</span>
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-600 text-[10px] uppercase tracking-wide font-bold dark:bg-amber-900/20 dark:text-amber-400">@systemAdminCount System Admin</span>
-            </div>
         </div>
     </div>
 </div>

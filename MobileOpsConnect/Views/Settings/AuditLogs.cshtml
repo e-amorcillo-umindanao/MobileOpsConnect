@@ -19,11 +19,6 @@
 
 <!-- Hero Banner -->
 <div class="mb-8 mt-2 sm:mb-10">
-    <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-[#f4f2ff] text-[#5e4dcd] border border-[#e6e1fc] dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-400 tracking-wide uppercase">
-            <i class="bi bi-shield-lock"></i> @(isSuperAdmin ? "Global Access" : "Standard View")
-        </span>
-    </div>
     <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">@(isSuperAdmin ? "Global Audit Logs" : "Standard Audit Logs")</h1>
     <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">@(isSuperAdmin ? "Complete system activity — including security events" : "General system activity log")</p>
 </div>

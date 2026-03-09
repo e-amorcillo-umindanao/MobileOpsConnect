@@ -52,20 +52,6 @@
 
 <!-- Hero Banner -->
 <div class="mb-8 mt-2 sm:mb-10">
-    <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
-            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span> HR Module Active
-        </span>
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
-            @totalRequests Total Request@(totalRequests != 1 ? "s" : "")
-        </span>
-        @if (pendingCount > 0)
-        {
-            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-600 border border-amber-100 dark:bg-amber-900/30 dark:border-amber-800 dark:text-amber-400 tracking-wide uppercase">
-                @pendingCount Pending
-            </span>
-        }
-    </div>
     @if (hasPower)
     {
         <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Manage Leave Requests</h1>
@@ -93,7 +79,6 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-xs uppercase tracking-wide text-gray-500">Total</p>
-                        <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium mt-1"><i class="bi bi-list-check"></i> All</span>
                     </div>
                     <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@totalRequests</h3>
                 </div>
@@ -107,7 +92,6 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-xs uppercase tracking-wide text-gray-500">Pending</p>
-                        <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium mt-1"><i class="bi bi-hourglass-split"></i> Awaiting</span>
                     </div>
                     <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@pendingCount</h3>
                 </div>
@@ -121,7 +105,6 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-xs uppercase tracking-wide text-gray-500">Approved</p>
-                        <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium mt-1"><i class="bi bi-check-circle-fill"></i> Cleared</span>
                     </div>
                     <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@approvedCount</h3>
                 </div>
@@ -135,7 +118,6 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-xs uppercase tracking-wide text-gray-500">Rejected</p>
-                        <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium mt-1"><i class="bi bi-x-circle-fill"></i> Denied</span>
                     </div>
                     <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@rejectedCount</h3>
                 </div>
@@ -206,9 +188,6 @@
                     <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-200" id="lv-card-title">Leave Records</h3>
                     <span class="text-xs text-gray-500" id="lv-card-subtitle">@pendingCount pending application@(pendingCount != 1 ? "s" : "")</span>
                 </div>
-            </div>
-            <div class="flex gap-1 flex-wrap" id="lv-card-badges">
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">@pendingCount Pending</span>
             </div>
         </div>
     </div>
@@ -397,10 +376,6 @@
                 <i class="bi bi-info-circle me-1"></i> 
                 Showing @((Model.PageIndex - 1) * 10 + 1) to @(Math.Min(Model.PageIndex * 10, totalRequests)) of @totalRequests total requests
             </span>
-            <div class="flex gap-1 flex-wrap">
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-[10px] font-bold uppercase tracking-wide">@pendingCount Pending</span>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wide">@approvedCount Approved</span>
-            </div>
         </div>
     </div>
 </div>

@@ -16,18 +16,6 @@
 
 <!-- Hero Banner -->
 <div class="mb-8 mt-2 sm:mb-10">
-    <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
-            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span>
-            Warehouse Floor
-        </span>
-        @if (lowStockCount > 0)
-        {
-            <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-400 tracking-wide uppercase">
-                @lowStockCount Item@(lowStockCount != 1 ? "s" : "") Low
-            </span>
-        }
-    </div>
     <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Warehouse Operations</h1>
     <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Scan products, manage stock levels, and verify inventory in real-time.</p>
 </div>

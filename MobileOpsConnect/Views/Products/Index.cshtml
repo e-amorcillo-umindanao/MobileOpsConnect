@@ -15,15 +15,6 @@
 
 <!-- Hero Banner -->
 <div class="mb-8 mt-2 sm:mb-10">
-    <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
-            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span>
-            Inventory Online
-        </span>
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
-            <i class="bi bi-box-seam"></i> @ViewBag.TotalProducts Products Tracked
-        </span>
-    </div>
     <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Inventory Management</h1>
     <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Product catalog, stock levels & valuation</p>
 </div>
@@ -46,9 +37,6 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total SKUs</p>
         <div class="flex items-end justify-between mt-auto">
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-[#f4f2ff] text-[#5e4dcd] text-[10px] font-bold uppercase tracking-wide dark:bg-indigo-900/20 dark:text-indigo-400 mb-1">
-                <i class="bi bi-tag-fill"></i> Catalog
-            </span>
             <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@ViewBag.TotalProducts</h3>
         </div>
     </div>
@@ -62,9 +50,6 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Healthy</p>
         <div class="flex items-end justify-between mt-auto">
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide dark:bg-emerald-900/20 dark:text-emerald-400 mb-1">
-                <i class="bi bi-check2-all"></i> In Stock
-            </span>
             <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@(ViewBag.ActiveCount - ViewBag.LowStockCount)</h3>
         </div>
     </div>
@@ -78,9 +63,6 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Low Stock</p>
         <div class="flex items-end justify-between mt-auto">
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide dark:bg-rose-900/20 dark:text-rose-400 mb-1">
-                <i class="bi bi-exclamation-triangle-fill"></i> Alert
-            </span>
             <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@ViewBag.LowStockCount</h3>
         </div>
     </div>
@@ -94,9 +76,6 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Out of Stock</p>
         <div class="flex items-end justify-between mt-auto">
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide dark:bg-emerald-900/20 dark:text-emerald-400 mb-1">
-                <i class="bi bi-check-circle-fill"></i> None
-            </span>
             <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@ViewBag.ArchivedCount</h3>
         </div>
     </div>
@@ -149,14 +128,6 @@
                         Showing page @Model.PageIndex of @Model.TotalPages
                     </span>
                 </div>
-            </div>
-            <div class="flex gap-2 flex-wrap">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">
-                    @(ViewBag.ActiveCount - ViewBag.LowStockCount) Stocked
-                </span>
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">
-                    @ViewBag.LowStockCount Low
-                </span>
             </div>
         </div>
     </div>

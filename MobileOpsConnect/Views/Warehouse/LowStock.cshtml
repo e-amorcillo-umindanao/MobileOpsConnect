@@ -15,13 +15,6 @@
 
 <!-- Hero Banner -->
 <div class="mb-8 mt-2 sm:mb-10">
-    <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-400 tracking-wide uppercase">Inventory Alert</span>
-        @if (totalLow > 0)
-        { <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-600 border border-rose-100 dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-400 tracking-wide uppercase">@totalLow Item@(totalLow != 1 ? "s" : "") Below Threshold</span> }
-        else
-        { <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">All Stocked</span> }
-    </div>
     <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Low Stock Alerts</h1>
     <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Items below the minimum safety threshold requiring attention</p>
 </div>
@@ -35,7 +28,6 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Total Alerts</p>
-                        <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md @(totalLow > 0 ? "bg-red-100 text-red-800 dark:bg-red-800/20 dark:text-red-400" : "bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400") text-xs font-medium mt-1">@(totalLow > 0 ? "Needs Action" : "All Clear")</span>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 dark:text-neutral-200">@totalLow</h3>
                 </div>

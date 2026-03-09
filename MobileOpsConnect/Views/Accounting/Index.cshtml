@@ -37,15 +37,6 @@
 
 <!-- Hero Banner -->
 <div class="mb-8 mt-2 sm:mb-10">
-    <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 tracking-wide uppercase">
-            <span class="size-1.5 inline-block bg-emerald-500 rounded-full"></span>
-            Financial Records
-        </span>
-        <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
-            <i class="bi bi-receipt"></i> @totalEntries Entries
-        </span>
-    </div>
     <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Accounting Ledger</h1>
     <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Track all financial transactions, income, and expenses.</p>
 </div>
@@ -80,9 +71,6 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total Income</p>
         <div class="flex items-end justify-between mt-auto">
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide dark:bg-emerald-900/20 dark:text-emerald-400 mb-1">
-                <i class="bi bi-receipt"></i> @incomeCount Txns
-            </span>
             <h3 class="text-2xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@(((decimal)(ViewBag.TotalIncome ?? 0m)).ToString("C"))</h3>
         </div>
     </div>
@@ -95,9 +83,6 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total Expenses</p>
         <div class="flex items-end justify-between mt-auto">
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide dark:bg-rose-900/20 dark:text-rose-400 mb-1">
-                <i class="bi bi-receipt"></i> @expenseCount Txns
-            </span>
             <h3 class="text-2xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@(((decimal)(ViewBag.TotalExpense ?? 0m)).ToString("C"))</h3>
         </div>
     </div>
@@ -110,9 +95,6 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Net Result</p>
         <div class="flex items-end justify-between mt-auto">
-            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-@(isPositive ? "emerald" : "rose")-50 text-@(isPositive ? "emerald" : "rose")-600 text-[10px] font-bold uppercase tracking-wide mb-1">
-                <i class="bi bi-@(isPositive ? "graph-up-arrow" : "graph-down-arrow")"></i> @(isPositive ? "Profit" : "Loss")
-            </span>
             <h3 class="text-2xl sm:text-[2.5rem] font-bold leading-none" style="color:@(isPositive ? "#16a34a" : "#dc2626");">@netResult.ToString("C")</h3>
         </div>
     </div>

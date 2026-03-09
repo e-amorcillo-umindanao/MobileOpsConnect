@@ -5,25 +5,6 @@
 
 <!-- Hero Banner -->
 <div class="mb-8">
-    <div class="flex flex-wrap items-center gap-2 mb-4">
-        <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200">
-            <span class="size-1.5 inline-block bg-green-500 rounded-full"></span>
-            All Systems Operational
-        </span>
-        @if (isWarehouse)
-        {
-            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200 dark:bg-neutral-800/50 dark:border-neutral-700 dark:text-neutral-400">
-                <i class="bi bi-shield-check"></i>
-                Warehouse Staff &bull; Delta
-            </span>
-        }
-        else
-        {
-            <span class="inline-flex items-center gap-1.5 py-1 px-3 rounded-full text-xs font-semibold bg-gray-50 text-gray-600 border border-gray-200 dark:bg-neutral-800/50 dark:border-neutral-700 dark:text-neutral-400">
-                Employee &bull; Echo
-            </span>
-        }
-    </div>
     
     @if (isWarehouse)
     {
@@ -56,9 +37,6 @@
             <div class="grow flex flex-col justify-center">
               <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Movements</p>
               <div class="flex items-baseline justify-between">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md bg-gray-100/80 text-gray-600 text-xs font-semibold dark:bg-neutral-800/80 dark:text-neutral-400">
-                  Today
-                </span>
                 <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">0</h3>
               </div>
             </div>
@@ -74,9 +52,6 @@
             <div class="grow flex flex-col justify-center">
               <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">In Stock</p>
               <div class="flex items-baseline justify-between">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold dark:bg-emerald-900/20 dark:text-emerald-400">
-                  <i class="bi bi-check-circle"></i> Healthy
-                </span>
                 <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.TotalProducts</h3>
               </div>
             </div>
@@ -92,10 +67,6 @@
             <div class="grow flex flex-col justify-center">
               <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Low Stock</p>
               <div class="flex items-baseline justify-between">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md text-xs font-semibold @(ViewBag.LowStockCount > 0 ? "bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400" : "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400")">
-                  <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-exclamation-triangle" : "bi-check-circle")"></i> 
-                  @(ViewBag.LowStockCount > 0 ? "Alert" : "All Good")
-                </span>
                 <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.LowStockCount</h3>
               </div>
             </div>
@@ -111,9 +82,6 @@
             <div class="grow flex flex-col justify-center">
               <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Leave Bal.</p>
               <div class="flex items-baseline justify-between">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold dark:bg-emerald-900/20 dark:text-emerald-400">
-                  Available
-                </span>
                 <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.LeaveBalance <span class="text-lg font-medium text-gray-400 dark:text-neutral-500 ml-1">days</span></h3>
               </div>
             </div>
@@ -131,9 +99,6 @@
             <div class="grow flex flex-col justify-center">
               <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Leave Bal.</p>
               <div class="flex items-baseline justify-between">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold dark:bg-emerald-900/20 dark:text-emerald-400">
-                  Available
-                </span>
                 <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.LeaveBalance <span class="text-lg font-medium text-gray-400 ml-1">days</span></h3>
               </div>
             </div>
@@ -175,10 +140,6 @@
             <div class="grow flex flex-col justify-center">
               <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Pending</p>
               <div class="flex items-baseline justify-between">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md text-xs font-semibold @(ViewBag.UserPending > 0 ? "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400" : "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400")">
-                  <i class="bi @(ViewBag.UserPending > 0 ? "bi-hourglass-split" : "bi-check-circle")"></i>
-                  @(ViewBag.UserPending > 0 ? "Waiting" : "None")
-                </span>
                 <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.UserPending</h3>
               </div>
             </div>
@@ -194,9 +155,6 @@
             <div class="grow flex flex-col justify-center">
               <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Next Pay</p>
               <div class="flex items-baseline justify-between">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2 rounded-md bg-cyan-50 text-cyan-700 text-xs font-semibold dark:bg-cyan-900/20 dark:text-cyan-400">
-                  Scheduled
-                </span>
                 <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.NextPayDate</h3>
               </div>
             </div>
