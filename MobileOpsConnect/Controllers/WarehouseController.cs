@@ -17,17 +17,15 @@ namespace MobileOpsConnect.Controllers
         private readonly INotificationService _notificationService;
         private readonly IInAppNotificationService _inAppNotificationService;
         private readonly IHubContext<InventoryHub> _hubContext;
-        private readonly IEmailService _emailService;
         private readonly IAuditService _auditService;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public WarehouseController(ApplicationDbContext context, INotificationService notificationService, IInAppNotificationService inAppNotificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService, UserManager<IdentityUser> userManager)
+        public WarehouseController(ApplicationDbContext context, INotificationService notificationService, IInAppNotificationService inAppNotificationService, IHubContext<InventoryHub> hubContext, IAuditService auditService, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _notificationService = notificationService;
             _inAppNotificationService = inAppNotificationService;
             _hubContext = hubContext;
-            _emailService = emailService;
             _auditService = auditService;
             _userManager = userManager;
         }
@@ -188,13 +186,6 @@ namespace MobileOpsConnect.Controllers
                     "⚠️ Low Stock Alert",
                     $"{product.Name} is down to {product.StockQuantity} units.",
                     "Stock", "bi-exclamation-triangle", $"/Warehouse/Adjust/{product.ProductID}");
-
-                // Send email alert to support/admin
-                var supportEmail = settings?.SupportEmail ?? "support@mobileops.com";
-                await _emailService.SendEmailAsync(
-                    supportEmail,
-                    $"⚠️ Low Stock Alert: {product.Name}",
-                    $"<h2>Low Stock Alert</h2><p>{alertMessage}</p><p>Please reorder this item as soon as possible.</p><hr><p><small>MobileOps Connect ERP — Automated Alert</small></p>");
             }
 
             return RedirectToAction(nameof(Index));

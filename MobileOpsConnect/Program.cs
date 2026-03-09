@@ -46,7 +46,7 @@ else
 }
 builder.Services.AddScoped<INotificationService, FcmNotificationService>();
 builder.Services.AddScoped<IInAppNotificationService, InAppNotificationService>();
-builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+
 builder.Services.AddScoped<IAuditService, AuditService>();
 
 // === EXTERNAL API SERVICES ===

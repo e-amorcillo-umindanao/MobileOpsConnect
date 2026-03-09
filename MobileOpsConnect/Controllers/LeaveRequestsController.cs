@@ -22,21 +22,19 @@ namespace MobileOpsConnect.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly INotificationService _notificationService;
         private readonly IHubContext<InventoryHub> _hubContext;
-        private readonly IEmailService _emailService;
         private readonly IAuditService _auditService;
         private readonly IInAppNotificationService _inAppNotificationService;
         private readonly HolidayService _holidayService;
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<LeaveRequestsController> _logger;
 
-        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IInAppNotificationService inAppNotificationService, IHubContext<InventoryHub> hubContext, IEmailService emailService, IAuditService auditService, HolidayService holidayService, IServiceScopeFactory scopeFactory, ILogger<LeaveRequestsController> logger)
+        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IInAppNotificationService inAppNotificationService, IHubContext<InventoryHub> hubContext, IAuditService auditService, HolidayService holidayService, IServiceScopeFactory scopeFactory, ILogger<LeaveRequestsController> logger)
         {
             _context = context;
             _userManager = userManager;
             _notificationService = notificationService;
             _inAppNotificationService = inAppNotificationService;
             _hubContext = hubContext;
-            _emailService = emailService;
             _auditService = auditService;
             _holidayService = holidayService;
             _scopeFactory = scopeFactory;
@@ -324,7 +322,6 @@ namespace MobileOpsConnect.Controllers
                     using var scope = _scopeFactory.CreateScope();
                     var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
                     var inAppNotificationService = scope.ServiceProvider.GetRequiredService<IInAppNotificationService>();
-                    var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
                     var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
                     var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
@@ -337,13 +334,6 @@ namespace MobileOpsConnect.Controllers
                         "✅ Leave Approved",
                         $"Your {leaveType} leave request has been approved.",
                         "Leave", "bi-check-circle", "/LeaveRequests/Index?view=my");
-
-                    var employee = await userManager.FindByIdAsync(requesterId);
-                    if (employee?.Email != null)
-                    {
-                        await emailService.SendEmailAsync(employee.Email, "✅ Leave Approved",
-                            $"<h2>Leave Approved</h2><p>{approveMsg}</p><hr><p><small>MobileOps Connect ERP</small></p>");
-                    }
 
                     await hubContext.Clients.User(requesterId).SendAsync("LeaveStatusChanged", leaveId, "Approved", requesterId, "");
 
@@ -406,7 +396,6 @@ namespace MobileOpsConnect.Controllers
                     using var scope = _scopeFactory.CreateScope();
                     var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
                     var inAppNotificationService = scope.ServiceProvider.GetRequiredService<IInAppNotificationService>();
-                    var emailService = scope.ServiceProvider.GetRequiredService<IEmailService>();
                     var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
                     var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
                     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
@@ -419,13 +408,6 @@ namespace MobileOpsConnect.Controllers
                         "❌ Leave Rejected",
                         $"Your {leaveType} leave request has been rejected.",
                         "Leave", "bi-x-circle", "/LeaveRequests/Index?view=my");
-
-                    var rejectedEmployee = await userManager.FindByIdAsync(requesterId);
-                    if (rejectedEmployee?.Email != null)
-                    {
-                        await emailService.SendEmailAsync(rejectedEmployee.Email, "❌ Leave Rejected",
-                            $"<h2>Leave Rejected</h2><p>{rejectMsg}</p><hr><p><small>MobileOps Connect ERP</small></p>");
-                    }
 
                     await hubContext.Clients.User(requesterId).SendAsync("LeaveStatusChanged", leaveId, "Rejected", requesterId, "");
 
