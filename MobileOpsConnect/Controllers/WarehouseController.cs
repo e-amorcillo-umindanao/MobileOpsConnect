@@ -31,23 +31,23 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Warehouse/Index (The Scanner Screen)
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string? searchString, int? page)
         {
             ViewData["CurrentFilter"] = searchString;
 
-            var products = from p in _context.Products select p;
+            var query = from p in _context.Products select p;
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 // Priority: exact SKU match (barcode scan), then fuzzy fallback (manual search)
-                var exactMatch = products.Where(s => s.SKU == searchString);
+                var exactMatch = query.Where(s => s.SKU == searchString);
                 if (await exactMatch.AnyAsync())
                 {
-                    products = exactMatch;
+                    query = exactMatch;
                 }
                 else
                 {
-                    products = products.Where(s => s.Name.Contains(searchString) || s.SKU.Contains(searchString));
+                    query = query.Where(s => s.Name.Contains(searchString) || s.SKU.Contains(searchString));
                 }
             }
 
@@ -55,12 +55,13 @@ namespace MobileOpsConnect.Controllers
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();
             int threshold = settings?.LowStockThreshold ?? 10;
 
-            // Get Low Stock Items for the Alert Box
-            ViewBag.LowStockItems = await _context.Products
-                                          .Where(p => p.StockQuantity <= threshold)
-                                          .ToListAsync();
+            // Stats for summary (Filtered by search query if any)
+            ViewBag.TotalCount = await query.CountAsync();
+            ViewBag.LowStockCount = await query.CountAsync(p => p.StockQuantity <= threshold);
 
-            return View(await products.ToListAsync());
+            var products = query.OrderBy(p => p.ProductID);
+
+            return View(await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), page ?? 1, 10));
         }
 
         // GET: Warehouse/Adjust/5
@@ -192,15 +193,21 @@ namespace MobileOpsConnect.Controllers
         }
 
         // NEW: GET: Warehouse/LowStock
-        public async Task<IActionResult> LowStock()
+        public async Task<IActionResult> LowStock(int? page)
         {
             var settings = await _context.SystemSettings.FirstOrDefaultAsync();
             int threshold = settings?.LowStockThreshold ?? 10;
 
-            var lowStockItems = await _context.Products
-                                          .Where(p => p.StockQuantity <= threshold)
-                                          .ToListAsync();
-            return View(lowStockItems);
+            var query = _context.Products.Where(p => p.StockQuantity <= threshold);
+
+            // Calculate counts for summary cards
+            ViewBag.TotalLow = await query.CountAsync();
+            ViewBag.OutOfStock = await query.CountAsync(p => p.StockQuantity == 0);
+            ViewBag.CriticalCount = ViewBag.TotalLow - ViewBag.OutOfStock;
+
+            var lowStockItems = query.OrderBy(p => p.StockQuantity).ThenBy(p => p.Name);
+
+            return View(await PaginatedList<Product>.CreateAsync(lowStockItems.AsNoTracking(), page ?? 1, 10));
         }
     }
 }

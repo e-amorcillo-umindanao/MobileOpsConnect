@@ -1,0 +1,80 @@
+@model dynamic
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    int pageIndex = Model.PageIndex;
+    int totalPages = Model.TotalPages;
+    int totalCount = Model.TotalCount;
+
+    // Get current route values to preserve filters/search terms
+    var routeData = new Dictionary<string, string>();
+    foreach (var key in Context.Request.Query.Keys)
+    {
+        if (key != "page")
+        {
+            routeData[key] = Context.Request.Query[key];
+        }
+    }
+}
+
+@if (Model.TotalPages > 1)
+{
+    <div class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200 dark:border-neutral-700">
+        <div>
+            <p class="text-sm text-gray-600 dark:text-neutral-400">
+                Showing <span class="font-semibold text-gray-800 dark:text-neutral-200">@((pageIndex - 1) * 10 + 1)</span> to 
+                <span class="font-semibold text-gray-800 dark:text-neutral-200">@(Math.Min(pageIndex * 10, totalCount))</span> of 
+                <span class="font-semibold text-gray-800 dark:text-neutral-200">@totalCount</span> results
+            </p>
+        </div>
+
+        <div>
+            <div class="inline-flex gap-x-2">
+                @if (Model.HasPreviousPage)
+                {
+                    var prevRoute = new Dictionary<string, string>(routeData);
+                    prevRoute["page"] = (pageIndex - 1).ToString();
+                    <a asp-all-route-data="prevRoute"
+                       class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                        <i class="bi bi-chevron-left"></i>
+                        Prev
+                    </a>
+                }
+                else
+                {
+                    <button type="button" disabled
+                            class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm opacity-50 cursor-not-allowed dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                        <i class="bi bi-chevron-left"></i>
+                        Prev
+                    </button>
+                }
+
+                @* Page numbers (Simple version: Current of Total) *@
+                <div class="flex items-center px-1">
+                    <span class="text-sm font-bold text-gray-800 dark:text-neutral-200">@pageIndex</span>
+                    <span class="text-sm text-gray-400 dark:text-neutral-500 mx-2">of</span>
+                    <span class="text-sm font-bold text-gray-800 dark:text-neutral-200">@totalPages</span>
+                </div>
+
+                @if (Model.HasNextPage)
+                {
+                    var nextRoute = new Dictionary<string, string>(routeData);
+                    nextRoute["page"] = (pageIndex + 1).ToString();
+                    <a asp-all-route-data="nextRoute"
+                       class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                        Next
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                }
+                else
+                {
+                    <button type="button" disabled
+                            class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm opacity-50 cursor-not-allowed dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                        Next
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+}

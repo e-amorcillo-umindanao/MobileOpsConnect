@@ -29,8 +29,13 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Accounting
-        public async Task<IActionResult> Index(string filterType, string filterCategory, DateTime? startDate, DateTime? endDate)
+        public async Task<IActionResult> Index(string? filterType, string? filterCategory, DateTime? startDate, DateTime? endDate, int? page)
         {
+            ViewData["FilterType"] = filterType;
+            ViewData["FilterCategory"] = filterCategory;
+            ViewData["StartDate"] = startDate?.ToString("yyyy-MM-dd");
+            ViewData["EndDate"] = endDate?.ToString("yyyy-MM-dd");
+
             var query = _context.AccountingEntries
                 .Include(a => a.RecordedBy)
                 .Include(a => a.PurchaseOrder)
@@ -56,18 +61,22 @@ namespace MobileOpsConnect.Controllers
                 query = query.Where(a => a.TransactionDate <= endDate.Value);
             }
 
-            var entries = await query.OrderByDescending(a => a.TransactionDate).ToListAsync();
-
-            // Calculate totals
-            ViewBag.TotalIncome = entries.Where(a => a.Type == "Income").Sum(a => a.Amount);
-            ViewBag.TotalExpense = entries.Where(a => a.Type == "Expense").Sum(a => a.Amount);
+            // Stats for summary (Filtered)
+            var statsQuery = await query.Select(a => new { a.Type, a.Amount }).ToListAsync();
+            ViewBag.TotalCount = statsQuery.Count;
+            ViewBag.TotalIncome = statsQuery.Where(a => a.Type == "Income").Sum(a => a.Amount);
+            ViewBag.TotalExpense = statsQuery.Where(a => a.Type == "Expense").Sum(a => a.Amount);
+            ViewBag.IncomeCount = statsQuery.Count(a => a.Type == "Income");
+            ViewBag.ExpenseCount = statsQuery.Count(a => a.Type == "Expense");
             ViewBag.NetResult = ViewBag.TotalIncome - ViewBag.TotalExpense;
 
             // Fetch live exchange rates from ExchangeRate-API
             var exchangeRates = await _exchangeRateService.GetRatesAsync("PHP");
             ViewBag.ExchangeRates = exchangeRates;
 
-            return View(entries);
+            var entries = query.OrderByDescending(a => a.TransactionDate);
+
+            return View(await PaginatedList<AccountingEntry>.CreateAsync(entries.AsNoTracking(), page ?? 1, 10));
         }
 
         // GET: Accounting/Details/5

@@ -32,16 +32,35 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? status, int? page)
         {
-            var orders = await _context.PurchaseOrders
+            var query = _context.PurchaseOrders
                 .Include(po => po.Product)
                 .Include(po => po.RequestedBy)
-                .OrderByDescending(po => po.DateRequested)
-                .ToListAsync();
+                .AsQueryable();
 
-            ViewBag.CanApprove = User.IsInRole("DepartmentManager");
-            return View(orders);
+            // Calculate counts for summary
+            ViewBag.TotalCount = await query.CountAsync();
+            ViewBag.PendingCount = await query.CountAsync(po => po.Status == "Pending");
+            ViewBag.ApprovedCount = await query.CountAsync(po => po.Status == "Approved");
+            ViewBag.RejectedCount = await query.CountAsync(po => po.Status == "Rejected");
+
+            string currentStatus = status ?? "active";
+            ViewBag.CurrentStatus = currentStatus;
+
+            if (currentStatus == "active")
+            {
+                query = query.Where(po => po.Status == "Pending");
+            }
+            else if (currentStatus == "archived")
+            {
+                query = query.Where(po => po.Status != "Pending");
+            }
+
+            var orders = query.OrderByDescending(po => po.DateRequested);
+
+            ViewBag.CanApprove = User.IsInRole("DepartmentManager") || User.IsInRole("SuperAdmin");
+            return View(await PaginatedList<PurchaseOrder>.CreateAsync(orders.AsNoTracking(), page ?? 1, 10));
         }
 
         // GET: Orders/Create

@@ -86,7 +86,7 @@ namespace MobileOpsConnect.Controllers
 
         // GET: Settings/AuditLogs
         [Authorize(Roles = "SuperAdmin,SystemAdmin")]
-        public async Task<IActionResult> AuditLogs(string? role, string? userId)
+        public async Task<IActionResult> AuditLogs(string? role, string? userId, int? page)
         {
             bool isSuperAdmin = User.IsInRole("SuperAdmin");
 
@@ -107,7 +107,12 @@ namespace MobileOpsConnect.Controllers
                 query = query.Where(l => l.UserId == userId);
             }
 
-            var logs = await query.OrderByDescending(l => l.Timestamp).Take(1000).ToListAsync();
+            // Stats for summary (Respect filters)
+            ViewBag.TotalEvents = await query.CountAsync();
+            ViewBag.LoginCount = await query.CountAsync(l => l.Action == "LOGIN");
+            ViewBag.CreateCount = await query.CountAsync(l => l.Action == "CREATE" || l.Action == "UPDATE" || l.Action == "DELETE");
+            ViewBag.StockCount = await query.CountAsync(l => l.Action == "STOCK_IN" || l.Action == "STOCK_OUT");
+            ViewBag.SecurityCount = await query.CountAsync(l => l.IsCritical);
 
             // Role display name + hierarchical sort order
             var roleDisplayNames = new Dictionary<string, string>
@@ -128,8 +133,8 @@ namespace MobileOpsConnect.Controllers
             var allRoles = (await _context.Roles
                 .Select(r => r.Name)
                 .ToListAsync())
-                .Where(n => roleOrder.ContainsKey(n))
-                .OrderBy(n => roleOrder.GetValueOrDefault(n, 99))
+                .Where(n => roleOrder.ContainsKey(n!))
+                .OrderBy(n => roleOrder.GetValueOrDefault(n!, 99))
                 .ToList();
             
             // Get all users with their roles for the dropdown
@@ -141,28 +146,24 @@ namespace MobileOpsConnect.Controllers
                                       .ToListAsync();
 
             var usersByRoleTable = usersWithRoles
-                .Where(x => roleOrder.ContainsKey(x.RoleName))
+                .Where(x => roleOrder.ContainsKey(x.RoleName!))
                 .GroupBy(x => x.RoleName)
-                .OrderBy(g => roleOrder.GetValueOrDefault(g.Key, 99))
+                .OrderBy(g => roleOrder.GetValueOrDefault(g.Key!, 99))
                 .ToDictionary(
                     g => g.Key ?? "Unknown",
                     g => g.Select(x => new SelectListItem { Value = x.Id, Text = x.Email }).ToList()
                 );
 
             ViewBag.IsSuperAdmin = isSuperAdmin;
-            ViewBag.TotalEvents = logs.Count;
-            ViewBag.LoginCount = logs.Count(l => l.Action == "LOGIN");
-            ViewBag.CreateCount = logs.Count(l => l.Action == "CREATE" || l.Action == "UPDATE" || l.Action == "DELETE");
-            ViewBag.StockCount = logs.Count(l => l.Action == "STOCK_IN" || l.Action == "STOCK_OUT");
-            ViewBag.SecurityCount = logs.Count(l => l.IsCritical);
-            
             ViewBag.AllRoles = allRoles;
             ViewBag.UsersByRole = usersByRoleTable;
             ViewBag.RoleDisplayNames = roleDisplayNames;
             ViewBag.SelectedRole = role;
             ViewBag.SelectedUserId = userId;
 
-            return View(logs);
+            var logs = query.OrderByDescending(l => l.Timestamp);
+
+            return View(await PaginatedList<AuditLog>.CreateAsync(logs.AsNoTracking(), page ?? 1, 10));
         }
 
         // --- NEW: System Maintenance & Database Backups ---

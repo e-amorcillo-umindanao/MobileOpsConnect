@@ -30,12 +30,16 @@
                     <div class="size-10 flex justify-center items-center bg-amber-50 text-amber-600 rounded-lg dark:bg-amber-900/20 dark:text-amber-400 border border-amber-100 dark:border-amber-900/30">
                         <i class="bi bi-hourglass-split text-lg"></i>
                     </div>
-                    <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full @(ViewBag.PendingLeaves > 0 ? "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/10 dark:text-amber-400" : "bg-green-50 text-green-700 border-green-100 dark:bg-green-900/10 dark:text-green-400") text-[10px] font-bold border">
-                        @(ViewBag.PendingLeaves > 0 ? "Action" : "Clear")
-                    </span>
                 </div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Pending</p>
-                <h3 class="text-4xl font-bold text-gray-900 dark:text-neutral-200 leading-none mt-1">@ViewBag.PendingLeaves</h3>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Pending</p>
+                        <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full @(ViewBag.PendingLeaves > 0 ? "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/10 dark:text-amber-400" : "bg-green-50 text-green-700 border-green-100 dark:bg-green-900/10 dark:text-green-400") text-[10px] font-bold border mt-2">
+                            @(ViewBag.PendingLeaves > 0 ? "Action" : "Clear")
+                        </span>
+                    </div>
+                    <h3 class="text-4xl font-bold text-gray-900 dark:text-neutral-200 leading-none">@ViewBag.PendingLeaves</h3>
+                </div>
             </div>
         </div>
 
@@ -46,12 +50,16 @@
                     <div class="size-10 flex justify-center items-center bg-indigo-50 text-indigo-600 rounded-lg dark:bg-indigo-900/20 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/30">
                         <i class="bi bi-people text-lg"></i>
                     </div>
-                    <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100 dark:bg-indigo-900/10 dark:text-indigo-400">
-                        Active
-                    </span>
                 </div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Team</p>
-                <h3 class="text-4xl font-bold text-gray-900 dark:text-neutral-200 leading-none mt-1">@ViewBag.TeamCount</h3>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Team</p>
+                        <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-bold border border-indigo-100 dark:bg-indigo-900/10 dark:text-indigo-400 mt-2">
+                            Active
+                        </span>
+                    </div>
+                    <h3 class="text-4xl font-bold text-gray-900 dark:text-neutral-200 leading-none">@ViewBag.TeamCount</h3>
+                </div>
             </div>
         </div>
 
@@ -63,9 +71,11 @@
                         <i class="bi bi-calendar-check text-lg"></i>
                     </div>
                 </div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">On Leave</p>
-                <h3 class="text-4xl font-bold text-gray-900 dark:text-neutral-200 leading-none mt-1">@ViewBag.OnLeaveToday</h3>
-                <div class="mt-4 flex flex-col gap-y-1">
+                <div class="flex justify-between items-end mb-4">
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">On Leave</p>
+                    <h3 class="text-4xl font-bold text-gray-900 dark:text-neutral-200 leading-none">@ViewBag.OnLeaveToday</h3>
+                </div>
+                <div class="flex flex-col gap-y-1">
                     <div class="w-full h-1 bg-gray-100 rounded-full dark:bg-neutral-800 overflow-hidden">
                         <div class="h-full bg-blue-600 rounded-full dark:bg-blue-500 transition-all duration-500" style="width: @ViewBag.OnLeavePercent%"></div>
                     </div>
@@ -81,12 +91,16 @@
                     <div class="size-10 flex justify-center items-center bg-green-50 text-green-600 rounded-lg dark:bg-green-900/20 dark:text-green-400 border border-green-100 dark:border-green-900/30">
                         <i class="bi bi-box-seam text-lg"></i>
                     </div>
-                    <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full @(ViewBag.LowStockCount > 0 ? "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/10 dark:text-amber-400" : "bg-green-50 text-green-700 border-green-100 dark:bg-green-900/10 dark:text-green-400") text-[10px] font-bold border">
-                        @(ViewBag.LowStockCount > 0 ? $"{ViewBag.LowStockCount} Low Stock" : "Healthy")
-                    </span>
                 </div>
-                <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Inventory</p>
-                <h3 class="text-4xl font-bold text-gray-900 dark:text-neutral-200 leading-none mt-1">@ViewBag.TotalProducts</h3>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Inventory</p>
+                        <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full @(ViewBag.LowStockCount > 0 ? "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/10 dark:text-amber-400" : "bg-green-50 text-green-700 border-green-100 dark:bg-green-900/10 dark:text-green-400") text-[10px] font-bold border mt-2">
+                            @(ViewBag.LowStockCount > 0 ? $"{ViewBag.LowStockCount} Low Stock" : "Healthy")
+                        </span>
+                    </div>
+                    <h3 class="text-4xl font-bold text-gray-900 dark:text-neutral-200 leading-none">@ViewBag.TotalProducts</h3>
+                </div>
             </div>
         </div>
     </div>
@@ -98,10 +112,10 @@
         <h2 class="text-sm font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Operational Approvals</h2>
     </div>
 
-    <div class="grid sm:grid-cols-2 gap-6">
+    <div class="grid sm:grid-cols-2 gap-6 items-stretch">
         <!-- Pending Leaves Approvals -->
-        <div class="flex flex-col bg-white border border-gray-100 border-l-4 border-l-amber-500 rounded-xl dark:bg-neutral-900 dark:border-neutral-800 shadow-sm overflow-hidden">
-            <div class="p-6">
+        <div class="flex flex-col bg-white border border-gray-100 border-l-4 border-l-amber-500 rounded-xl dark:bg-neutral-900 dark:border-neutral-800 shadow-sm overflow-hidden h-full">
+            <div class="p-6 flex flex-col h-full">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-x-4">
                         <div class="size-12 flex justify-center items-center bg-amber-50 text-amber-600 rounded-xl dark:bg-amber-900/20 dark:text-amber-400 border border-amber-100 dark:border-amber-900/30">
@@ -118,25 +132,30 @@
                 </div>
                 <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">Review and approve employee leave applications. Pending requests require your attention for timely processing.</p>
                 
-                <div class="bg-amber-50/50 border border-amber-100 rounded-xl p-4 mb-6 dark:bg-amber-900/10 dark:border-amber-900/30">
-                    <div class="flex items-center gap-x-3">
-                        <i class="bi bi-clock text-amber-600 dark:text-amber-400"></i>
-                        <div>
-                            <p class="text-xs font-bold text-amber-900 dark:text-amber-300">@ViewBag.PendingLeaves request(s) awaiting review</p>
-                            <p class="text-[10px] text-amber-600/80 dark:text-amber-400/80">Oldest pending: @ViewBag.OldestPendingDays</p>
+                <div class="mt-auto">
+                    <div class="bg-amber-50/50 border border-amber-100 rounded-xl p-4 mb-6 dark:bg-amber-900/10 dark:border-amber-900/30">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-x-3">
+                                <i class="bi bi-clock text-amber-600 dark:text-amber-400"></i>
+                                <div>
+                                    <p class="text-xs font-bold text-amber-900 dark:text-amber-300">request(s) awaiting review</p>
+                                    <p class="text-[10px] text-amber-600/80 dark:text-amber-400/80">Oldest pending: @ViewBag.OldestPendingDays</p>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold text-amber-900 dark:text-amber-300">@ViewBag.PendingLeaves</h3>
                         </div>
                     </div>
-                </div>
 
-                <a asp-controller="LeaveRequests" asp-action="Index" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                    Review Requests
-                </a>
+                    <a asp-controller="LeaveRequests" asp-action="Index" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                        Review Requests
+                    </a>
+                </div>
             </div>
         </div>
 
         <!-- Purchase Orders Approvals -->
-        <div class="flex flex-col bg-white border border-gray-100 border-l-4 border-l-blue-600 rounded-xl dark:bg-neutral-900 dark:border-neutral-800 shadow-sm overflow-hidden">
-            <div class="p-6">
+        <div class="flex flex-col bg-white border border-gray-100 border-l-4 border-l-blue-600 rounded-xl dark:bg-neutral-900 dark:border-neutral-800 shadow-sm overflow-hidden h-full">
+            <div class="p-6 flex flex-col h-full">
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-x-4">
                         <div class="size-12 flex justify-center items-center bg-blue-50 text-blue-600 rounded-xl dark:bg-blue-900/20 dark:text-blue-400 border border-blue-100 dark:border-blue-900/30">
@@ -153,19 +172,24 @@
                 </div>
                 <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">Approve or reject purchase orders submitted by warehouse staff for inventory restocking.</p>
 
-                <div class="bg-amber-50/50 border border-amber-100 rounded-xl p-4 mb-6 dark:bg-amber-900/10 dark:border-amber-900/30">
-                    <div class="flex items-center gap-x-3">
-                        <i class="bi bi-inbox text-amber-600 dark:text-amber-400"></i>
-                        <div>
-                            <p class="text-xs font-bold text-amber-900 dark:text-amber-300">@(ViewBag.PendingOrders ?? 0) Pending Orders</p>
-                            <p class="text-[10px] text-amber-600/80 dark:text-amber-400/80">Awaiting your approval</p>
+                <div class="mt-auto">
+                    <div class="bg-amber-50/50 border border-amber-100 rounded-xl p-4 mb-6 dark:bg-amber-900/10 dark:border-amber-900/30">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-x-3">
+                                <i class="bi bi-inbox text-amber-600 dark:text-amber-400"></i>
+                                <div>
+                                    <p class="text-xs font-bold text-amber-900 dark:text-amber-300">Pending Orders</p>
+                                    <p class="text-[10px] text-amber-600/80 dark:text-amber-400/80">Awaiting your approval</p>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-bold text-amber-900 dark:text-amber-300">@(ViewBag.PendingOrders ?? 0)</h3>
                         </div>
                     </div>
-                </div>
 
-                <a asp-controller="Orders" asp-action="Index" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                    Approve Orders
-                </a>
+                    <a asp-controller="Orders" asp-action="Index" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                        Approve Orders
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -224,15 +248,15 @@
 
                 <div class="grid grid-cols-3 gap-3 mb-8">
                     <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 dark:bg-neutral-800/50 dark:border-neutral-700">
-                        <p class="text-lg font-bold text-gray-900 dark:text-white leading-none">@ViewBag.TotalProducts</p>
+                        <p class="text-lg font-bold text-gray-900 dark:text-white leading-none text-right">@ViewBag.TotalProducts</p>
                         <span class="text-[9px] font-bold text-gray-400 uppercase tracking-tight">Products</span>
                     </div>
                     <div class="p-3 bg-red-50 rounded-xl border border-red-100 dark:bg-red-900/10 dark:border-red-900/30">
-                        <p class="text-lg font-bold text-red-600 dark:text-red-400 leading-none">@ViewBag.LowStockCount</p>
+                        <p class="text-lg font-bold text-red-600 dark:text-red-400 leading-none text-right">@ViewBag.LowStockCount</p>
                         <span class="text-[9px] font-bold text-red-400 uppercase tracking-tight">Low Stock</span>
                     </div>
                     <div class="p-3 bg-green-50 rounded-xl border border-green-100 dark:bg-green-900/10 dark:border-green-900/30">
-                        <p class="text-lg font-bold text-green-600 dark:text-green-400 leading-none">@(ViewBag.InStockPercent)%</p>
+                        <p class="text-lg font-bold text-green-600 dark:text-green-400 leading-none text-right">@(ViewBag.InStockPercent)%</p>
                         <span class="text-[9px] font-bold text-green-400 uppercase tracking-tight">In Stock</span>
                     </div>
                 </div>

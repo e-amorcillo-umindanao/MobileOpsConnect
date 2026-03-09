@@ -1,9 +1,10 @@
-﻿@model IEnumerable<MobileOpsConnect.Models.Product>
+﻿@model PaginatedList<MobileOpsConnect.Models.Product>
 
 @{
     ViewData["Title"] = "Warehouse Operations";
-    int totalProducts = Model.Count();
-    int lowStockCount = Model.Count(p => p.StockQuantity <= 10);
+    int totalProducts = ViewBag.TotalCount ?? 0;
+    int lowStockCount = ViewBag.LowStockCount ?? 0;
+    string currentFilter = ViewData["CurrentFilter"] as string;
 }
 
 <!-- Breadcrumb Navigation -->
@@ -46,7 +47,7 @@
             <button type="button" id="openScannerBtn" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-s-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
                 <i class="bi bi-camera-fill"></i> Scan
             </button>
-            <input type="text" name="searchString" id="warehouseSearchInput" class="py-2.5 px-4 block w-full border-gray-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Instant search by Name or SKU..." value="@ViewData["CurrentFilter"]">
+            <input type="text" name="searchString" id="warehouseSearchInput" class="py-2.5 px-4 block w-full border-gray-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Search by Name or SKU..." value="@currentFilter">
             <button class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-e-lg border border-transparent bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors" type="submit">
                 <i class="bi bi-search"></i>
             </button>
@@ -55,103 +56,119 @@
 </div>
 
 <!-- Product Table Card -->
-<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6 relative overflow-hidden">
     <div class="px-6 py-5 border-b border-gray-100 dark:border-neutral-800">
         <div class="flex items-center gap-x-3">
             <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-[#f4f2ff] text-[#5e4dcd] dark:bg-indigo-900/30 dark:text-indigo-400"><i class="bi bi-box-seam text-lg"></i></span>
             <div>
                 <h3 class="text-sm font-bold text-gray-900 dark:text-neutral-200">Product List</h3>
-                <span class="text-xs text-gray-500 dark:text-neutral-500">@totalProducts item@(totalProducts != 1 ? "s" : "") found</span>
+                <span class="text-xs text-gray-500 dark:text-neutral-500">Page @Model.PageIndex of @Model.TotalPages (@totalProducts total)</span>
             </div>
         </div>
     </div>
 
-    <!-- Desktop Table -->
-    <div class="hidden md:block overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
-            <thead>
-                <tr>
-                    <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500" style="width:15%">SKU</th>
-                    <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500" style="width:30%">Product Name</th>
-                    <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500" style="width:15%">Category</th>
-                    <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500" style="width:15%">Stock</th>
-                    <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500" style="width:25%">Action</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
-                @foreach (var item in Model)
-                {
-                    <tr class="warehouse-product-row hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors" data-search="@(item.Name.ToLower())|@(item.SKU.ToLower())">
-                        <td class="whitespace-nowrap px-6 py-4">
-                            <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-800/20 dark:text-indigo-400">
-                                @item.SKU
-                            </span>
-                        </td>
-                        <td class="whitespace-nowrap px-6 py-4">
-                            <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">@item.Name</span>
-                        </td>
-                        <td class="whitespace-nowrap px-6 py-4">
-                            <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-800/20 dark:text-cyan-400">
-                                @item.Category
-                            </span>
-                        </td>
-                        <td class="whitespace-nowrap px-6 py-4 text-center">
+    @if (!Model.Any())
+    {
+        <div class="text-center py-20 px-6">
+            <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-800 mx-auto mb-4 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400">
+                <i class="bi bi-search text-2xl"></i>
+            </span>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">No products found</h3>
+            <p class="text-sm text-gray-500 dark:text-neutral-400 max-w-xs mx-auto">Try adjusting your search or scan a different product.</p>
+        </div>
+    }
+    else
+    {
+        <!-- Desktop Table -->
+        <div class="hidden md:block overflow-x-auto p-2">
+            <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
+                <thead>
+                    <tr>
+                        <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500" style="width:15%">SKU</th>
+                        <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500" style="width:30%">Product Name</th>
+                        <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500" style="width:15%">Category</th>
+                        <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500" style="width:15%">Stock</th>
+                        <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500" style="width:25%">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
+                    @foreach (var item in Model)
+                    {
+                        <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                            <td class="whitespace-nowrap px-6 py-4">
+                                <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-800/20 dark:text-indigo-400">
+                                    @item.SKU
+                                </span>
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4">
+                                <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">@item.Name</span>
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4">
+                                <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-800/20 dark:text-cyan-400">
+                                    @item.Category
+                                </span>
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4 text-center">
+                                @if (item.StockQuantity <= 10)
+                                {
+                                    <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800/20 dark:text-red-400">
+                                        @item.StockQuantity
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400">
+                                        @item.StockQuantity
+                                    </span>
+                                }
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4 text-center">
+                                <a asp-action="Adjust" asp-route-id="@item.ProductID" class="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+                                    Manage Stock
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="md:hidden p-4 space-y-4">
+            @foreach (var item in Model)
+            {
+                <div class="p-4 rounded-xl bg-gray-50 border border-gray-100 dark:bg-neutral-800 dark:border-neutral-700">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="min-w-0">
+                            <span class="text-sm font-bold text-gray-900 dark:text-white block truncate mb-1">@item.Name</span>
+                            <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-md text-[10px] font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-400 uppercase tracking-wider">@item.SKU</span>
+                        </div>
+                        <div class="shrink-0 ms-2">
                             @if (item.StockQuantity <= 10)
                             {
-                                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800/20 dark:text-red-400">
-                                    @item.StockQuantity
-                                </span>
+                                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-bold bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400">@item.StockQuantity Stock</span>
                             }
                             else
                             {
-                                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400">
-                                    @item.StockQuantity
-                                </span>
+                                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-bold bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400">@item.StockQuantity Stock</span>
                             }
-                        </td>
-                        <td class="whitespace-nowrap px-6 py-4 text-center">
-                            <a asp-action="Adjust" asp-route-id="@item.ProductID" class="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
-                                Manage Stock
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Mobile Cards -->
-    <div class="md:hidden p-4 space-y-4">
-        @foreach (var item in Model)
-        {
-            <div class="warehouse-product-card p-4 rounded-xl bg-gray-50 border border-gray-100 dark:bg-neutral-800 dark:border-neutral-700" data-search="@(item.Name.ToLower())|@(item.SKU.ToLower())">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="min-w-0">
-                        <span class="text-sm font-bold text-gray-900 dark:text-white block truncate mb-1">@item.Name</span>
-                        <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-md text-[10px] font-bold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-400 uppercase tracking-wider">@item.SKU</span>
+                        </div>
                     </div>
-                    <div class="shrink-0 ms-2">
-                        @if (item.StockQuantity <= 10)
-                        {
-                            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-bold bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400">@item.StockQuantity Stock</span>
-                        }
-                        else
-                        {
-                            <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-bold bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400">@item.StockQuantity Stock</span>
-                        }
+                    
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full text-[10px] font-bold bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-400 uppercase tracking-wider">@item.Category</span>
                     </div>
-                </div>
-                
-                <div class="flex items-center justify-between mb-4">
-                    <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full text-[10px] font-bold bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-400 uppercase tracking-wider">@item.Category</span>
-                </div>
 
-                <a asp-action="Adjust" asp-route-id="@item.ProductID" class="w-full py-2 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
-                    Manage Stock
-                </a>
-            </div>
-        }
-    </div>
+                    <a asp-action="Adjust" asp-route-id="@item.ProductID" class="w-full py-2 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+                        Manage Stock
+                    </a>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Pagination -->
+    <partial name="_Pagination" model="Model" />
 </div>
 
 <!-- Scanner Modal (Vanilla JS — no Bootstrap required) -->
@@ -161,7 +178,7 @@
 
     <!-- Modal Content -->
     <div class="relative flex items-center justify-center min-h-full p-2 sm:p-4">
-        <div class="relative w-full max-w-md sm:max-w-md bg-white rounded-2xl shadow-xl dark:bg-neutral-900 overflow-hidden">
+        <div class="relative w-full max-w-md bg-white rounded-2xl shadow-xl dark:bg-neutral-900 overflow-hidden">
             <!-- Modal Header -->
             <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between">
                 <div class="flex items-center gap-x-3">
@@ -185,7 +202,7 @@
                     <i class="bi bi-camera-fill me-1"></i> Point your camera at a product barcode.
                 </p>
                 <p class="text-xs text-gray-400 dark:text-neutral-500 mt-3 text-center">
-                    <i class="bi bi-keyboard me-1"></i> Can't scan? Close and type the SKU manually in the search box.
+                    <i class="bi bi-keyboard me-1"></i> Can't scan? Close and type the SKU manually.
                 </p>
             </div>
         </div>
@@ -204,6 +221,8 @@
         const closeBtn = document.getElementById('closeScannerBtn');
         const torchBtn = document.getElementById('torchToggleBtn');
         const scanStatus = document.getElementById('scanStatus');
+        const searchInput = document.getElementById('warehouseSearchInput');
+        const scanForm = document.getElementById('scanForm');
 
         // ── Audio feedback ──
         function playBeep() {
@@ -217,7 +236,7 @@
                 gain.connect(ctx.destination);
                 osc.start();
                 osc.stop(ctx.currentTime + 0.15);
-            } catch (e) { /* Audio not supported — silent fallback */ }
+            } catch (e) { /* Audio not supported */ }
         }
 
         // ── Modal controls ──
@@ -237,61 +256,38 @@
         // ── Scanner core ──
         function startScanner() {
             if (html5QrcodeScanner) return;
-
-            // Restrict to 1D barcode formats only + enable native BarcodeDetector
-            html5QrcodeScanner = new Html5Qrcode("reader", {
-                formatsToSupport: [
-                    Html5QrcodeSupportedFormats.CODE_128,
-                    Html5QrcodeSupportedFormats.CODE_39,
-                    Html5QrcodeSupportedFormats.EAN_13,
-                    Html5QrcodeSupportedFormats.EAN_8,
-                    Html5QrcodeSupportedFormats.UPC_A,
-                    Html5QrcodeSupportedFormats.UPC_E,
-                    Html5QrcodeSupportedFormats.ITF,
-                    Html5QrcodeSupportedFormats.CODABAR
-                ],
-                useBarCodeDetectorIfSupported: true
-            });
+            html5QrcodeScanner = new Html5Qrcode("reader");
 
             html5QrcodeScanner.start(
                 { facingMode: "environment" },
                 {
                     fps: 10,
-                    qrbox: { width: 300, height: 80 },  // Wider, thinner — optimized for 1D barcodes
+                    qrbox: { width: 300, height: 80 },
                     aspectRatio: 1.7778
                 },
                 (decodedText) => {
-                    // ── Success: beep + vibrate + visual feedback ──
                     playBeep();
                     if (navigator.vibrate) navigator.vibrate(200);
-
-                    scanStatus.innerHTML =
-                        '<span class="text-emerald-600 font-bold"><i class="bi bi-check-circle-fill me-1"></i> Scanned: ' + decodedText + '</span>';
+                    scanStatus.innerHTML = '<span class="text-emerald-600 font-bold"><i class="bi bi-check-circle-fill me-1"></i> Scanned: ' + decodedText + '</span>';
 
                     html5QrcodeScanner.stop().then(() => {
                         html5QrcodeScanner = null;
-
-                        // Brief delay so user sees the result before redirect
                         setTimeout(() => {
                             closeModal();
-                            document.getElementById('barcodeInput').value = decodedText;
-                            document.getElementById('scanForm').submit();
-                        }, 2500);
+                            searchInput.value = decodedText;
+                            scanForm.submit();
+                        }, 1000);
                     });
                 },
-                (errorMessage) => { /* Continuous scanning — ignore per-frame decode failures */ }
+                (errorMessage) => { }
             ).catch((err) => {
-                scanStatus.innerHTML =
-                    '<span class="text-rose-600"><i class="bi bi-exclamation-triangle-fill me-1"></i> Camera access denied. Please allow camera permissions.</span>';
-                console.error("html5-qrcode start error:", err);
+                scanStatus.innerHTML = '<span class="text-rose-600"><i class="bi bi-exclamation-triangle-fill me-1"></i> Camera error. Check permissions.</span>';
             });
 
-            // Show torch button if device supports it
             setTimeout(() => {
                 try {
-                    const track = html5QrcodeScanner.getRunningTrackSettings && html5QrcodeScanner.getRunningTrackSettings();
-                    if (track || true) torchBtn.classList.remove('hidden');
-                } catch (e) { /* torch not supported */ }
+                    torchBtn.classList.remove('hidden');
+                } catch (e) { }
             }, 1000);
         }
 
@@ -310,45 +306,17 @@
             if (!html5QrcodeScanner) return;
             torchOn = !torchOn;
             try {
-                html5QrcodeScanner.applyVideoConstraints({
-                    advanced: [{ torch: torchOn }]
-                });
+                html5QrcodeScanner.applyVideoConstraints({ advanced: [{ torch: torchOn }] });
                 torchBtn.classList.toggle('bg-amber-100', torchOn);
                 torchBtn.classList.toggle('text-amber-600', torchOn);
-            } catch (e) { console.warn("Torch not supported on this device."); }
+            } catch (e) { }
         });
 
         // ── Event listeners ──
         openBtn.addEventListener('click', openModal);
         closeBtn.addEventListener('click', closeModal);
         backdrop.addEventListener('click', closeModal);
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-                closeModal();
-            }
-        });
-
-        // ── Instant Search Logic ──
-        const warehouseSearchInput = document.getElementById('warehouseSearchInput');
-        const productRows = document.querySelectorAll('.warehouse-product-row');
-        const productCards = document.querySelectorAll('.warehouse-product-card');
-
-        warehouseSearchInput.addEventListener('input', function() {
-            const query = this.value.toLowerCase().trim();
-            
-            // Filter Desktop Table
-            productRows.forEach(row => {
-                const searchContent = row.dataset.search;
-                row.style.display = !query || searchContent.includes(query) ? '' : 'none';
-            });
-
-            // Filter Mobile Cards
-            productCards.forEach(card => {
-                const searchContent = card.dataset.search;
-                card.style.display = !query || searchContent.includes(query) ? 'block' : 'none';
-            });
-        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
     })();
     </script>
 }

@@ -1,10 +1,7 @@
-﻿@model List<MobileOpsConnect.Models.PurchaseOrder>
+﻿@model PaginatedList<MobileOpsConnect.Models.PurchaseOrder>
 @{
     ViewData["Title"] = "Purchase Orders";
-    int totalOrders = Model.Count;
-    int pendingCount = Model.Count(po => po.Status == "Pending");
-    int approvedCount = Model.Count(po => po.Status == "Approved");
-    int rejectedCount = Model.Count(po => po.Status == "Rejected");
+    string currentStatus = ViewBag.CurrentStatus ?? "active";
 }
 
 <!-- Breadcrumb Navigation -->
@@ -22,23 +19,17 @@
             Procurement Module
         </span>
         <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
-            <i class="bi bi-clipboard2-data"></i> @totalOrders Order@(totalOrders != 1 ? "s" : "")
+            <i class="bi bi-clipboard2-data"></i> @ViewBag.TotalCount Order@(ViewBag.TotalCount != 1 ? "s" : "")
         </span>
-        @if (pendingCount > 0)
+        @if (ViewBag.PendingCount > 0)
         {
             <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-600 border border-amber-100 dark:bg-amber-900/30 dark:border-amber-800 dark:text-amber-400 tracking-wide uppercase">
-                <i class="bi bi-hourglass-split"></i> @pendingCount Pending
+                <i class="bi bi-hourglass-split"></i> @ViewBag.PendingCount Pending
             </span>
         }
     </div>
     <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Purchase Orders</h1>
     <p class="text-gray-500 text-[15px] dark:text-neutral-400 font-medium">Restock requests, approval tracking & order history</p>
-</div>
-
-<!-- Order Summary Title -->
-<div class="flex items-center gap-x-2 mb-4">
-    <i class="bi bi-speedometer2 text-gray-400"></i>
-    <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Order Summary</h2>
 </div>
 
 <!-- Metrics Grid -->
@@ -49,10 +40,9 @@
                 <i class="bi bi-clipboard2-data-fill text-xl"></i>
             </div>
             <div class="grow">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Total POs</p>
-                <div class="mt-1 flex items-center gap-x-2">
-                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@totalOrders</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium"><i class="bi bi-clipboard2-data"></i> All Time</span>
+                <div class="flex justify-between items-start">
+                    <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Total POs</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@ViewBag.TotalCount</h3>
                 </div>
             </div>
         </div>
@@ -64,13 +54,9 @@
                 <i class="bi bi-clock-history text-xl"></i>
             </div>
             <div class="grow">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Pending</p>
-                <div class="mt-1 flex items-center gap-x-2">
-                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@pendingCount</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(pendingCount > 0 ? "bg-amber-100 text-amber-800" : "bg-green-100 text-green-800")">
-                        <i class="bi @(pendingCount > 0 ? "bi-hourglass-split" : "bi-check-circle-fill")"></i>
-                        @(pendingCount > 0 ? "Awaiting" : "None")
-                    </span>
+                <div class="flex justify-between items-start">
+                    <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Pending</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@ViewBag.PendingCount</h3>
                 </div>
             </div>
         </div>
@@ -82,10 +68,9 @@
                 <i class="bi bi-check2-all text-xl"></i>
             </div>
             <div class="grow">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Approved</p>
-                <div class="mt-1 flex items-center gap-x-2">
-                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@approvedCount</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check-circle-fill"></i> Confirmed</span>
+                <div class="flex justify-between items-start">
+                    <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Approved</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@ViewBag.ApprovedCount</h3>
                 </div>
             </div>
         </div>
@@ -93,415 +78,171 @@
 
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] rounded-lg @(rejectedCount > 0 ? "bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-500" : "bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-500")">
-                <i class="bi @(rejectedCount > 0 ? "bi-x-octagon-fill" : "bi-check2-all") text-xl"></i>
+            <div class="shrink-0 flex justify-center items-center size-[46px] rounded-lg @(ViewBag.RejectedCount > 0 ? "bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-500" : "bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-500")">
+                <i class="bi @(ViewBag.RejectedCount > 0 ? "bi-x-octagon-fill" : "bi-check2-all") text-xl"></i>
             </div>
             <div class="grow">
-                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Rejected</p>
-                <div class="mt-1 flex items-center gap-x-2">
-                    <h3 class="text-xl sm:text-2xl font-medium text-gray-800 dark:text-neutral-200">@rejectedCount</h3>
-                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(rejectedCount > 0 ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800")">
-                        <i class="bi @(rejectedCount > 0 ? "bi-x-circle-fill" : "bi-check-circle-fill")"></i>
-                        @(rejectedCount > 0 ? "Declined" : "None")
-                    </span>
+                <div class="flex justify-between items-start">
+                    <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Rejected</p>
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@ViewBag.RejectedCount</h3>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Order History Title -->
-<div class="flex items-center gap-x-2 mb-4">
-    <i class="bi bi-list-columns-reverse text-gray-400"></i>
-    <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Order History</h2>
-</div>
-
 <!-- Tab Interface -->
 <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
     <div class="flex flex-wrap items-center gap-2">
-        <!-- Search Bar -->
-        <div class="relative">
-            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-400">
-                <i class="bi bi-search text-xs"></i>
-            </div>
-            <input type="text" id="orderSearchInput" class="py-2 px-9 block w-full bg-white border-gray-200 rounded-lg text-xs focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Search orders...">
-        </div>
+        <nav class="flex space-x-2 bg-gray-100 p-1 rounded-xl dark:bg-neutral-800" aria-label="Tabs">
+            <a asp-action="Index" asp-route-status="active" 
+               class="py-2 px-4 inline-flex items-center gap-x-2 text-xs font-bold rounded-lg transition-all @(currentStatus == "active" ? "bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-white" : "text-gray-500 hover:text-gray-700 dark:text-neutral-400")">
+                <i class="bi bi-hourglass-split"></i> Active
+                <span class="py-0.5 px-1.5 rounded-full text-[10px] font-bold @(currentStatus == "active" ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40" : "bg-gray-200 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400")">@ViewBag.PendingCount</span>
+            </a>
+            <a asp-action="Index" asp-route-status="archived" 
+               class="py-2 px-4 inline-flex items-center gap-x-2 text-xs font-bold rounded-lg transition-all @(currentStatus == "archived" ? "bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-white" : "text-gray-500 hover:text-gray-700 dark:text-neutral-400")">
+                <i class="bi bi-archive"></i> Archive
+                <span class="py-0.5 px-1.5 rounded-full text-[10px] font-bold @(currentStatus == "archived" ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40" : "bg-gray-200 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400")">@(ViewBag.ApprovedCount + ViewBag.RejectedCount)</span>
+            </a>
+        </nav>
 
-        @if (User.IsInRole("DepartmentManager") || User.IsInRole("WarehouseStaff"))
+        @if (User.IsInRole("DepartmentManager") || User.IsInRole("WarehouseStaff") || User.IsInRole("SuperAdmin"))
         {
-            <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+            <a asp-action="Create" class="py-2 px-4 inline-flex items-center gap-x-2 text-xs font-bold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
                 <i class="bi bi-plus-circle"></i> Submit New PO
             </a>
         }
     </div>
 </div>
 
-<!-- Active/Archived Status Context -->
-<div id="statusContext" class="flex items-center gap-x-3 mb-4">
-    <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800 dark:bg-indigo-800/30 dark:text-indigo-500">
-        <i id="contextIcon" class="bi bi-hourglass-split text-lg"></i>
-    </span>
-    <div>
-        <p id="contextTitle" class="font-semibold text-sm text-gray-800 dark:text-neutral-200 mb-0">Active Orders</p>
-        <p id="contextDescription" class="text-gray-500 text-xs mb-0 dark:text-neutral-500">Showing @pendingCount pending request@(pendingCount != 1 ? "s" : "")</p>
-    </div>
-</div>
-
-<!-- No Orders View (Managed by JS) -->
-<div id="noOrdersActive" class="hidden text-center py-10 px-6">
-    <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-indigo-50 bg-indigo-100 text-indigo-800 mx-auto mb-4 dark:border-indigo-900 dark:bg-indigo-800 dark:text-indigo-400">
-        <i class="bi bi-check-circle text-2xl"></i>
-    </span>
-    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">All Caught Up!</h3>
-    <p class="text-sm text-gray-500 dark:text-neutral-500">No active purchase orders awaiting processing.</p>
-</div>
-<div id="noOrdersArchived" class="hidden text-center py-10 px-6">
-    <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-400 mx-auto mb-4">
-        <i class="bi bi-archive text-2xl"></i>
-    </span>
-    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">Archive Empty</h3>
-    <p class="text-sm text-gray-500 dark:text-neutral-500">No processed purchase orders found in history.</p>
-</div>
-
 <!-- Order Table Card -->
-<div id="orderTableCard" class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
-    <div class="p-0">
-
-        @if (Model.Count == 0)
-        {
-            <div class="text-center py-10 px-6">
-                <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-indigo-50 bg-indigo-100 text-indigo-800 mx-auto mb-4 dark:border-indigo-900 dark:bg-indigo-800 dark:text-indigo-400">
-                    <i class="bi bi-inbox text-2xl"></i>
-                </span>
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">No Purchase Orders Yet</h3>
-                <p class="text-sm text-gray-500 dark:text-neutral-500">
-                    @if (User.IsInRole("DepartmentManager"))
-                    {
-                        <text>Submit your first purchase order to restock inventory.</text>
-                    }
-                    else
-                    {
-                        <text>No purchase order requests from warehouse staff yet.</text>
-                    }
-                </p>
-            </div>
-        }
-        else
-        {
-            <!-- Desktop Table -->
-            <div class="hidden md:block overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-hash me-1"></i> PO #</th>
-                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-box me-1"></i> Product</th>
-                            <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-layers me-1"></i> Qty</th>
-                            <th scope="col" class="px-6 py-4 text-end text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-currency-exchange me-1"></i> Cost</th>
-                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-person me-1"></i> Requested By</th>
-                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-calendar me-1"></i> Date</th>
-                            <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500"><i class="bi bi-flag me-1"></i> Status</th>
-                            @if ((bool)ViewBag.CanApprove)
-                            {
-                                <th scope="col" class="px-6 py-4 text-end text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Action</th>
-                            }
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
-                        @foreach (var po in Model)
-                        {
-                            <tr class="po-row hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors" 
-                                data-status="@po.Status.ToLower()"
-                                data-search="po-@po.Id.ToString("D4")|@(po.Product?.Name?.ToLower() ?? "")|@(po.RequestedBy?.Email?.ToLower() ?? "")|@po.Status.ToLower()">
-                                <td class="whitespace-nowrap px-6 py-4">
-                                    <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-800/20 dark:text-indigo-400">
-                                        PO-@po.Id.ToString("D4")
-                                    </span>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4">
-                                    <div class="flex items-center gap-x-3">
-                                        <span class="inline-flex justify-center items-center size-[36px] rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-800/30 dark:text-purple-400">
-                                            <i class="bi bi-box-seam text-sm"></i>
-                                        </span>
-                                        <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">@(po.Product?.Name ?? "N/A")</span>
-                                    </div>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-center">
-                                    <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">@po.Quantity</span>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-end">
-                                    <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">₱@po.EstimatedCost.ToString("N2")</span>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4">
-                                    <span class="text-sm text-gray-500 dark:text-neutral-500">@(po.RequestedBy?.Email ?? "N/A")</span>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4">
-                                    <span class="text-sm text-gray-500 dark:text-neutral-500">@po.DateRequested.ToString("MMM dd, yyyy")</span>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-center">
-                                    @if (po.Status == "Pending")
-                                    {
-                                        <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-800/20 dark:text-amber-400">
-                                            <i class="bi bi-clock-fill"></i> Pending
-                                        </span>
-                                    }
-                                    else if (po.Status == "Approved")
-                                    {
-                                        <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400">
-                                            <i class="bi bi-check-circle-fill"></i> Approved
-                                        </span>
-                                    }
-                                    else
-                                    {
-                                        <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800/20 dark:text-red-400">
-                                            <i class="bi bi-x-circle-fill"></i> Rejected
-                                        </span>
-                                    }
-                                </td>
-                                @if ((bool)ViewBag.CanApprove)
-                                {
-                                    <td class="whitespace-nowrap px-6 py-4 text-end">
-                                        @if (po.Status == "Pending")
-                                        {
-                                            <div class="flex justify-end gap-1">
-                                                <form asp-action="ProcessOrder" method="post" class="inline">
-                                                    <input type="hidden" name="id" value="@po.Id" />
-                                                    <input type="hidden" name="actionType" value="Approve" />
-                                                    <button type="submit" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100" title="Approve">
-                                                        <i class="bi bi-check-lg"></i>
-                                                    </button>
-                                                </form>
-                                                <form asp-action="ProcessOrder" method="post" class="inline">
-                                                    <input type="hidden" name="id" value="@po.Id" />
-                                                    <input type="hidden" name="actionType" value="Reject" />
-                                                    <button type="submit" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100" title="Reject">
-                                                        <i class="bi bi-x-lg"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <span class="text-xs text-gray-500 dark:text-neutral-500">
-                                                <i class="bi @(po.Status == "Approved" ? "bi-check-circle-fill text-green-600" : "bi-x-circle-fill text-red-600") me-1"></i>
-                                                @po.DateProcessed?.ToString("MMM dd")
-                                            </span>
-                                        }
-                                    </td>
-                                }
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="md:hidden p-4 space-y-3">
-                @foreach (var po in Model)
-                {
-                    <div class="po-card flex flex-col bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 border-l-4 @(po.Status == "Pending" ? "border-l-amber-500" : po.Status == "Approved" ? "border-l-green-500" : "border-l-red-500")" 
-                         data-status="@po.Status.ToLower()"
-                         data-search="po-@po.Id.ToString("D4")|@(po.Product?.Name?.ToLower() ?? "")|@(po.RequestedBy?.Email?.ToLower() ?? "")|@po.Status.ToLower()">
-                        <div class="flex items-start justify-between mb-3">
-                            <div class="flex items-center gap-x-3">
-                                <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800">
-                                    <i class="bi bi-clipboard2-data-fill"></i>
-                                </span>
-                                <div>
-                                    <p class="font-semibold text-sm text-gray-800 mb-0">PO-@po.Id.ToString("D4")</p>
-                                    <span class="text-xs text-gray-500">@(po.Product?.Name ?? "N/A")</span>
-                                </div>
-                            </div>
-                            @if (po.Status == "Pending")
-                            {
-                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium"><i class="bi bi-clock-fill"></i> Pending</span>
-                            }
-                            else if (po.Status == "Approved")
-                            {
-                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check-circle-fill"></i> Approved</span>
-                            }
-                            else
-                            {
-                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium"><i class="bi bi-x-circle-fill"></i> Rejected</span>
-                            }
-                        </div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-gray-500"><i class="bi bi-layers me-1"></i> @po.Quantity units</span>
-                            <span class="text-sm font-semibold text-gray-800">₱@po.EstimatedCost.ToString("N2")</span>
-                        </div>
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-xs text-gray-500">@(po.RequestedBy?.Email ?? "N/A")</span>
-                            <span class="text-xs text-gray-500">@po.DateRequested.ToString("MMM dd, yyyy")</span>
-                        </div>
-                        @if ((bool)ViewBag.CanApprove && po.Status == "Pending")
-                        {
-                            <div class="flex gap-2">
-                                <form asp-action="ProcessOrder" method="post" class="flex-1">
-                                    <input type="hidden" name="id" value="@po.Id" />
-                                    <input type="hidden" name="actionType" value="Approve" />
-                                    <button type="submit" class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100">
-                                        <i class="bi bi-check-lg"></i> Approve
-                                    </button>
-                                </form>
-                                <form asp-action="ProcessOrder" method="post" class="flex-1">
-                                    <input type="hidden" name="id" value="@po.Id" />
-                                    <input type="hidden" name="actionType" value="Reject" />
-                                    <button type="submit" class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100">
-                                        <i class="bi bi-x-lg"></i> Reject
-                                    </button>
-                                </form>
-                            </div>
-                        }
-                    </div>
-                }
-            </div>
-        }
-
-    </div>
-
-    <!-- Table Footer -->
-    <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
-        <div class="flex flex-wrap justify-between items-center gap-2">
-            <span class="text-xs text-gray-500 dark:text-neutral-500">
-                <i class="bi bi-info-circle me-1"></i>
-                Showing all @totalOrders order@(totalOrders != 1 ? "s" : "")
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6 relative overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 dark:border-neutral-800">
+        <div class="flex items-center gap-x-3">
+             <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800 dark:bg-indigo-800/30 dark:text-indigo-500">
+                <i class="bi @(currentStatus == "active" ? "bi-hourglass-split" : "bi-archive") text-lg"></i>
             </span>
-            <div class="flex gap-1">
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium">@pendingCount Pending</span>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium">@approvedCount Approved</span>
-                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium">@rejectedCount Rejected</span>
+            <div>
+                <p class="font-bold text-sm text-gray-900 dark:text-neutral-200 mb-0">@(currentStatus == "active" ? "Awaiting Approval" : "Processed Orders")</p>
+                <p class="text-gray-500 text-xs mb-0 dark:text-neutral-500">Page @Model.PageIndex of @Model.TotalPages</p>
             </div>
         </div>
     </div>
-</div>
 
-@section Scripts {
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // ── Toast Notifications ──
-        const msg = '@(TempData["Message"] ?? "")';
-        const err = '@(TempData["Error"] ?? "")';
-        const isProcessAction = msg.includes("successfully approved") || msg.includes("successfully rejected") || msg.includes("has been successfully");
+    @if (!Model.Any())
+    {
+        <div class="text-center py-20 px-6">
+            <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-400 mx-auto mb-4">
+                <i class="bi bi-inbox text-2xl"></i>
+            </span>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">No Orders Found</h3>
+            <p class="text-sm text-gray-500 dark:text-neutral-500">There are no @currentStatus purchase orders to display.</p>
+        </div>
+    }
+    else
+    {
+        <!-- Desktop Table -->
+        <div class="hidden md:block overflow-x-auto p-2">
+            <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
+                <thead>
+                    <tr>
+                        <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">PO #</th>
+                        <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Product</th>
+                        <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Qty</th>
+                        <th scope="col" class="px-6 py-4 text-end text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Cost</th>
+                        <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Requester</th>
+                        <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Date</th>
+                        <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Status</th>
+                        @if ((bool)ViewBag.CanApprove)
+                        {
+                            <th scope="col" class="px-6 py-4 text-end text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Action</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
+                    @foreach (var po in Model)
+                    {
+                        <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                            <td class="whitespace-nowrap px-6 py-4 text-xs font-bold text-gray-900 dark:text-white">PO-@po.Id.ToString("D4")</td>
+                            <td class="whitespace-nowrap px-6 py-4">
+                                <div class="flex items-center gap-x-2">
+                                    <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">@(po.Product?.Name ?? "N/A")</span>
+                                </div>
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4 text-center text-sm">@po.Quantity</td>
+                            <td class="whitespace-nowrap px-6 py-4 text-end text-sm font-semibold">₱@po.EstimatedCost.ToString("N2")</td>
+                            <td class="whitespace-nowrap px-6 py-4 text-xs text-gray-500">@(po.RequestedBy?.Email ?? "N/A")</td>
+                            <td class="whitespace-nowrap px-6 py-4 text-xs text-gray-500">@po.DateRequested.ToString("MMM dd, yyyy")</td>
+                            <td class="whitespace-nowrap px-6 py-4 text-center">
+                                @if (po.Status == "Pending") { <span class="py-1 px-2.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wide">Pending</span> }
+                                else if (po.Status == "Approved") { <span class="py-1 px-2.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 uppercase tracking-wide">Approved</span> }
+                                else { <span class="py-1 px-2.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800 uppercase tracking-wide">Rejected</span> }
+                            </td>
+                            @if ((bool)ViewBag.CanApprove)
+                            {
+                                <td class="whitespace-nowrap px-6 py-4 text-end">
+                                    @if (po.Status == "Pending")
+                                    {
+                                        <div class="flex justify-end gap-1">
+                                            <form asp-action="ProcessOrder" method="post" class="inline">
+                                                <input type="hidden" name="id" value="@po.Id" />
+                                                <input type="hidden" name="actionType" value="Approve" />
+                                                <button type="submit" class="p-1.5 rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100"><i class="bi bi-check-lg"></i></button>
+                                            </form>
+                                            <form asp-action="ProcessOrder" method="post" class="inline">
+                                                <input type="hidden" name="id" value="@po.Id" />
+                                                <input type="hidden" name="actionType" value="Reject" />
+                                                <button type="submit" class="p-1.5 rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100"><i class="bi bi-x-lg"></i></button>
+                                            </form>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Processed</span>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-        if (msg) showPageToast("✅", "Success", msg);
-        if (err) showPageToast("❌", "Error", err);
-
-        function showPageToast(icon, title, message) {
-            const container = document.getElementById('toast-container');
-            if (!container) return;
-            const toast = document.createElement('div');
-            toast.className = 'bg-white border text-gray-800 rounded-xl shadow-lg p-4 dark:bg-neutral-900 dark:border-neutral-800 pointer-events-auto transition-all duration-300 opacity-0 translate-x-10';
-            toast.innerHTML = `<div class="flex items-center gap-3">
-                <span class="text-xl">${icon}</span>
-                <div>
-                    <p class="text-sm font-bold">${title}</p>
-                    <p class="text-xs text-gray-500">${message}</p>
+        <!-- Mobile View -->
+        <div class="md:hidden p-4 space-y-3">
+            @foreach (var po in Model)
+            {
+                <div class="bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 border-l-4 @(po.Status == "Pending" ? "border-l-amber-500" : (po.Status == "Approved" ? "border-l-green-500" : "border-l-red-500"))">
+                    <div class="flex justify-between items-start mb-2">
+                         <p class="font-bold text-sm text-gray-900 dark:text-white">PO-@po.Id.ToString("D4")</p>
+                         <span class="text-[10px] font-bold uppercase tracking-wide @(po.Status == "Pending" ? "text-amber-600" : (po.Status == "Approved" ? "text-green-600" : "text-red-600"))">@po.Status</span>
+                    </div>
+                    <p class="text-sm font-semibold mb-1 text-gray-800 dark:text-neutral-200">@(po.Product?.Name ?? "N/A")</p>
+                    <div class="flex justify-between text-xs text-gray-500 mb-3">
+                        <span>@po.Quantity units</span>
+                        <span>₱@po.EstimatedCost.ToString("N2")</span>
+                    </div>
+                    @if ((bool)ViewBag.CanApprove && po.Status == "Pending")
+                    {
+                        <div class="flex gap-2">
+                             <form asp-action="ProcessOrder" method="post" class="flex-1">
+                                <input type="hidden" name="id" value="@po.Id" />
+                                <input type="hidden" name="actionType" value="Approve" />
+                                <button type="submit" class="w-full py-2 bg-green-600 text-white rounded-lg text-xs font-bold">Approve</button>
+                            </form>
+                            <form asp-action="ProcessOrder" method="post" class="flex-1">
+                                <input type="hidden" name="id" value="@po.Id" />
+                                <input type="hidden" name="actionType" value="Reject" />
+                                <button type="submit" class="w-full py-2 bg-red-600 text-white rounded-lg text-xs font-bold">Reject</button>
+                            </form>
+                        </div>
+                    }
                 </div>
-            </div>`;
-            container.appendChild(toast);
-            
-            requestAnimationFrame(() => {
-                toast.classList.remove('opacity-0', 'translate-x-10');
-            });
-
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-x-10');
-                setTimeout(() => toast.remove(), 350);
-            }, 5000);
-        }
-
-        // ── Tab Management ──
-        const tabs = document.querySelectorAll('.tab-btn');
-        const rows = document.querySelectorAll('.po-row');
-        const cards = document.querySelectorAll('.po-card');
-        const contextIcon = document.getElementById('contextIcon');
-        const contextTitle = document.getElementById('contextTitle');
-        const contextDesc = document.getElementById('contextDescription');
-        const noActive = document.getElementById('noOrdersActive');
-        const noArchived = document.getElementById('noOrdersArchived');
-        const desktopTable = document.querySelector('.overflow-x-auto');
-        const mobileList = document.querySelector('.md\\:hidden.p-4');
-
-        const orderSearchInput = document.getElementById('orderSearchInput');
-        let currentTab = 'active';
-
-        function updateVisibility() {
-            const query = orderSearchInput.value.toLowerCase().trim();
-            const targetStatus = currentTab === 'active' ? 'pending' : '';
-            
-            let visibleCount = 0;
-
-            // Header/Context updates
-            if (currentTab === 'active') {
-                contextIcon.className = 'bi bi-hourglass-split text-lg';
-                contextTitle.innerText = 'Active Orders';
-            } else {
-                contextIcon.className = 'bi bi-archive text-lg';
-                contextTitle.innerText = 'Archived Orders';
             }
+        </div>
+    }
 
-            // Filter Desktop Rows
-            rows.forEach(r => {
-                const status = r.getAttribute('data-status');
-                const searchContent = r.getAttribute('data-search');
-                
-                const matchesTab = currentTab === 'active' ? status === 'pending' : status !== 'pending';
-                const matchesSearch = !query || searchContent.includes(query);
-                
-                const isVisible = matchesTab && matchesSearch;
-                r.style.display = isVisible ? '' : 'none';
-                if (isVisible) visibleCount++;
-            });
-
-            // Filter Mobile Cards
-            cards.forEach(c => {
-                const status = c.getAttribute('data-status');
-                const searchContent = c.getAttribute('data-search');
-                
-                const matchesTab = currentTab === 'active' ? status === 'pending' : status !== 'pending';
-                const matchesSearch = !query || searchContent.includes(query);
-                
-                c.style.display = (matchesTab && matchesSearch) ? 'flex' : 'none';
-            });
-
-            const searchContext = query ? ` matching "${query}"` : '';
-            contextDesc.innerText = `Showing ${visibleCount} order${visibleCount !== 1 ? 's' : ''}${searchContext}`;
-            
-            noActive.classList.toggle('hidden', currentTab !== 'active' || visibleCount > 0);
-            noArchived.classList.toggle('hidden', currentTab !== 'archived' || visibleCount > 0);
-
-            const tableCard = document.getElementById('orderTableCard');
-            if (tableCard) tableCard.classList.toggle('hidden', visibleCount === 0);
-            if (mobileList) mobileList.classList.toggle('hidden', visibleCount === 0 || window.innerWidth >= 768);
-        }
-
-        function switchTab(target) {
-            currentTab = target;
-            tabs.forEach(t => {
-                t.classList.remove('active', 'border-indigo-600', 'text-indigo-600', 'dark:text-indigo-500', 'dark:border-indigo-500');
-                t.classList.add('border-transparent', 'text-gray-500', 'dark:text-neutral-400', 'bg-transparent');
-                t.classList.remove('bg-white');
-                t.querySelector('span').classList.remove('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-900/30');
-            });
-
-            const btn = document.querySelector(`[data-tab="${target}"]`);
-            btn.classList.add('active', 'border-indigo-600', 'text-indigo-600', 'dark:text-indigo-500', 'dark:border-indigo-500');
-            btn.classList.remove('border-transparent', 'text-gray-500', 'dark:text-neutral-400');
-            btn.querySelector('span').classList.add('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-900/30');
-
-            updateVisibility();
-        }
-
-        tabs.forEach(btn => {
-            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-        });
-
-        orderSearchInput.addEventListener('input', updateVisibility);
-
-        // Auto-select tab logic
-        if (isProcessAction) {
-            switchTab('archived');
-        } else {
-            switchTab('active');
-        }
-    });
-</script>
-}
+    <!-- Pagination -->
+    <partial name="_Pagination" model="Model" />
+</div>

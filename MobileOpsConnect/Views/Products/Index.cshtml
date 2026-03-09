@@ -1,15 +1,9 @@
-﻿@model IEnumerable<MobileOpsConnect.Models.Product>
+﻿@using MobileOpsConnect.Models
+@model PaginatedList<Product>
 
 @{
     ViewData["Title"] = "Inventory List";
-    int totalProducts = Model.Count();
-    int outOfStockCount = Model.Count(p => p.StockQuantity == 0);
-    int activeCount = totalProducts - outOfStockCount;
-    int lowStockCount = Model.Count(p => p.StockQuantity > 0 && p.StockQuantity <= 10);
-    int healthyCount = activeCount - lowStockCount;
-
-    var activeProducts = Model.Where(p => p.StockQuantity > 0).ToList();
-    var archivedProducts = Model.Where(p => p.StockQuantity == 0).ToList();
+    var currentStatus = ViewBag.CurrentStatus as string ?? "active";
 }
 
 <!-- Breadcrumb Navigation -->
@@ -27,7 +21,7 @@
             Inventory Online
         </span>
         <span class="inline-flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold bg-gray-50 text-gray-500 border border-gray-200 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 tracking-wide uppercase">
-            <i class="bi bi-box-seam"></i> @totalProducts Products Tracked
+            <i class="bi bi-box-seam"></i> @ViewBag.TotalProducts Products Tracked
         </span>
     </div>
     <h1 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Inventory Management</h1>
@@ -52,10 +46,10 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total SKUs</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@totalProducts</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-[#f4f2ff] text-[#5e4dcd] text-[10px] font-bold uppercase tracking-wide dark:bg-indigo-900/20 dark:text-indigo-400 mb-1">
                 <i class="bi bi-tag-fill"></i> Catalog
             </span>
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@ViewBag.TotalProducts</h3>
         </div>
     </div>
 
@@ -68,10 +62,10 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Healthy</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@healthyCount</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide dark:bg-emerald-900/20 dark:text-emerald-400 mb-1">
                 <i class="bi bi-check2-all"></i> In Stock
             </span>
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@(ViewBag.ActiveCount - ViewBag.LowStockCount)</h3>
         </div>
     </div>
 
@@ -84,10 +78,10 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Low Stock</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@lowStockCount</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide dark:bg-rose-900/20 dark:text-rose-400 mb-1">
                 <i class="bi bi-exclamation-triangle-fill"></i> Alert
             </span>
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@ViewBag.LowStockCount</h3>
         </div>
     </div>
 
@@ -100,10 +94,10 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Out of Stock</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@outOfStockCount</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide dark:bg-emerald-900/20 dark:text-emerald-400 mb-1">
                 <i class="bi bi-check-circle-fill"></i> None
             </span>
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@ViewBag.ArchivedCount</h3>
         </div>
     </div>
 </div>
@@ -125,15 +119,17 @@
 </div>
 
 <!-- Tab Header Underline -->
-<nav class="flex space-x-6 border-b border-gray-200 dark:border-neutral-700 mb-6" aria-label="Tabs" role="tablist">
-    <button type="button" class="hs-tab-active:font-bold hs-tab-active:border-gray-800 hs-tab-active:text-gray-900 py-3 px-1 inline-flex items-center gap-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 dark:hs-tab-active:border-white dark:hs-tab-active:text-white dark:text-neutral-400 dark:hover:text-neutral-300 active font-medium" id="inv-active-tab" data-hs-tab="#inv-active-section" aria-controls="inv-active-section" role="tab">
+<nav class="flex space-x-6 border-b border-gray-200 dark:border-neutral-700 mb-6" aria-label="Tabs">
+    <a asp-action="Index" asp-route-status="active" 
+       class="@(currentStatus == "active" ? "border-gray-800 text-gray-900 font-bold dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300") py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap focus:outline-none transition-all">
         <i class="bi bi-box-seam"></i> Active
-        <span class="hs-tab-active:bg-gray-100 hs-tab-active:text-gray-800 inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400 dark:hs-tab-active:bg-neutral-700 dark:hs-tab-active:text-white">@activeCount</span>
-    </button>
-    <button type="button" class="hs-tab-active:font-bold hs-tab-active:border-gray-800 hs-tab-active:text-gray-900 py-3 px-1 inline-flex items-center gap-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-gray-700 focus:outline-none focus:text-gray-700 dark:hs-tab-active:border-white dark:hs-tab-active:text-white dark:text-neutral-400 dark:hover:text-neutral-300 font-medium" id="inv-archived-tab" data-hs-tab="#inv-archived-section" aria-controls="inv-archived-section" role="tab">
+        <span class="@(currentStatus == "active" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400") inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold">@ViewBag.ActiveCount</span>
+    </a>
+    <a asp-action="Index" asp-route-status="archived" 
+       class="@(currentStatus == "archived" ? "border-gray-800 text-gray-900 font-bold dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300") py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap focus:outline-none transition-all">
         <i class="bi bi-archive"></i> Archived
-        <span class="hs-tab-active:bg-gray-100 hs-tab-active:text-gray-800 inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400 dark:hs-tab-active:bg-neutral-700 dark:hs-tab-active:text-white">@outOfStockCount</span>
-    </button>
+        <span class="@(currentStatus == "archived" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400") inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold">@ViewBag.ArchivedCount</span>
+    </a>
 </nav>
 
 <!-- Product Table Card -->
@@ -146,484 +142,187 @@
                     <i class="bi bi-layout-text-window text-lg"></i>
                 </span>
                 <div>
-                    <h3 class="text-sm font-bold text-gray-900 dark:text-neutral-200" id="inv-card-title">Inventory Catalog</h3>
-                    <span class="text-xs text-gray-500 dark:text-neutral-500" id="inv-card-subtitle">@activeCount active product@(activeCount != 1 ? "s" : "")</span>
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-neutral-200">
+                        @(currentStatus == "active" ? "Inventory Catalog" : "Archived Products")
+                    </h3>
+                    <span class="text-xs text-gray-500 dark:text-neutral-500">
+                        Showing page @Model.PageIndex of @Model.TotalPages
+                    </span>
                 </div>
             </div>
-            <div class="flex gap-2 flex-wrap" id="inv-card-badges">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">@healthyCount Stocked</span>
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">@lowStockCount Low</span>
+            <div class="flex gap-2 flex-wrap">
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">
+                    @(ViewBag.ActiveCount - ViewBag.LowStockCount) Stocked
+                </span>
+                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">
+                    @ViewBag.LowStockCount Low
+                </span>
             </div>
         </div>
     </div>
 
     <div class="p-6">
-
-        <!-- ACTIVE PRODUCTS SECTION -->
-        <div id="inv-active-section" role="tabpanel" aria-labelledby="inv-active-tab">
-            
-            <!-- Stock Level Filter Bar -->
-            <div class="flex items-center gap-x-2 mb-6 p-1 bg-gray-50 rounded-xl w-fit dark:bg-neutral-800/50">
-                <button type="button" class="stock-filter-btn active py-1.5 px-4 inline-flex items-center gap-x-2 bg-white text-xs font-bold rounded-lg border border-gray-200 text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-all" data-filter="all">
-                    All Items
-                </button>
-                <button type="button" class="stock-filter-btn py-1.5 px-4 inline-flex items-center gap-x-2 bg-transparent text-xs font-bold rounded-lg border border-transparent text-gray-500 hover:text-emerald-600 focus:outline-none dark:text-neutral-400 dark:hover:text-emerald-400 transition-all" data-filter="healthy">
-                    <span class="size-2 rounded-full bg-emerald-500"></span>
-                    Healthy
-                </button>
-                <button type="button" class="stock-filter-btn py-1.5 px-4 inline-flex items-center gap-x-2 bg-transparent text-xs font-bold rounded-lg border border-transparent text-gray-500 hover:text-rose-600 focus:outline-none dark:text-neutral-400 dark:hover:text-rose-400 transition-all" data-filter="low">
-                    <span class="size-2 rounded-full bg-rose-500"></span>
-                    Low Stock
-                </button>
+        @if (!Model.Any())
+        {
+            <div class="text-center py-24 px-4">
+                <span class="inline-flex justify-center items-center size-14 rounded-full bg-gray-50 text-gray-500 mx-auto mb-4 dark:bg-neutral-800 dark:text-neutral-500">
+                    <i class="bi bi-search text-2xl"></i>
+                </span>
+                <h3 class="text-[17px] font-bold text-gray-900 dark:text-white mb-1.5 tracking-tight">No products found</h3>
+                <p class="text-[13px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">There are no products matching this category or status.</p>
             </div>
-
-            <!-- Search Bar -->
-            <div class="relative max-w-md mb-6">
-                <div class="absolute inset-y-0 start-0 flex items-center pointer-events-none ps-3.5">
-                    <i class="bi bi-search text-gray-400 dark:text-neutral-500"></i>
-                </div>
-                <input type="text" id="searchInput"
-                       class="py-2.5 ps-10 pe-4 block w-full bg-white border-gray-200 rounded-xl text-sm focus:border-indigo-500 focus:ring-indigo-500 shadow-sm dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                       placeholder="Search products by Name, SKU, or Category...">
-            </div>
-
-            @if (activeProducts.Count == 0)
-            {
-                <div class="text-center py-24 px-4">
-                    <span class="inline-flex justify-center items-center size-14 rounded-full bg-emerald-50 text-emerald-600 mx-auto mb-4 dark:bg-emerald-900/30 dark:text-emerald-400">
-                        <i class="bi bi-box text-2xl mb-0.5"></i>
-                    </span>
-                    <h3 class="text-[17px] font-bold text-gray-900 dark:text-white mb-1.5 tracking-tight">No Active Products</h3>
-                    <p class="text-[13px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">All products are currently out of stock.</p>
-                </div>
-            }
-            else
-            {
-                <!-- Desktop Table -->
-                <div class="hidden md:block">
-                    <div class="-m-1.5 overflow-x-auto">
-                        <div class="p-1.5 min-w-full inline-block align-middle">
-                            <div class="border rounded-xl shadow-sm overflow-hidden border-gray-200 dark:border-neutral-700">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-                                    <thead class="bg-gray-50 dark:bg-neutral-800">
-                                        <tr>
-                                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
-                                                <div class="flex items-center gap-x-2"><i class="bi bi-upc-scan"></i> SKU</div>
-                                            </th>
-                                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
-                                                <div class="flex items-center gap-x-2"><i class="bi bi-box"></i> Product</div>
-                                            </th>
-                                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
-                                                <div class="flex items-center gap-x-2"><i class="bi bi-tag"></i> Category</div>
-                                            </th>
-                                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
-                                                <div class="flex items-center gap-x-2"><i class="bi bi-layers"></i> Stock</div>
-                                            </th>
-                                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
-                                                <div class="flex items-center gap-x-2"><i class="bi bi-currency-exchange"></i> Price</div>
-                                            </th>
-                                            <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
-                                        @foreach (var item in activeProducts)
-                                        {
-                                            <tr class="product-row hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors" 
-                                                data-stock-level="@(item.StockQuantity <= 10 ? "low" : "healthy")"
-                                                data-search="@(item.Name.ToLower())|@(item.SKU.ToLower())|@(item.Category.ToLower())">
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-800/20 dark:text-indigo-400">
-                                                        @item.SKU
+        }
+        else
+        {
+            <!-- Desktop Table -->
+            <div class="hidden md:block">
+                <div class="-m-1.5 overflow-x-auto">
+                    <div class="p-1.5 min-w-full inline-block align-middle">
+                        <div class="border rounded-xl shadow-sm overflow-hidden border-gray-200 dark:border-neutral-700">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+                                <thead class="bg-gray-50 dark:bg-neutral-800">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
+                                            <div class="flex items-center gap-x-2"><i class="bi bi-upc-scan"></i> SKU</div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
+                                            <div class="flex items-center gap-x-2"><i class="bi bi-box"></i> Product</div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
+                                            <div class="flex items-center gap-x-2"><i class="bi bi-tag"></i> Category</div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
+                                            <div class="flex items-center gap-x-2"><i class="bi bi-layers"></i> Stock</div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">
+                                            <div class="flex items-center gap-x-2"><i class="bi bi-currency-exchange"></i> Price</div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr class="@(item.StockQuantity == 0 ? "opacity-60" : "") hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                                            <td class="whitespace-nowrap px-6 py-4">
+                                                <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-800/20 dark:text-indigo-400">
+                                                    @item.SKU
+                                                </span>
+                                            </td>
+                                            <td class="whitespace-nowrap px-6 py-4">
+                                                <div class="flex items-center gap-x-3">
+                                                    <span class="inline-flex justify-center items-center size-[38px] rounded-lg @(item.StockQuantity == 0 ? "bg-gray-100 text-gray-500" : "bg-purple-100 text-purple-600")">
+                                                        <i class="bi bi-box-seam"></i>
                                                     </span>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <div class="flex items-center gap-x-3">
-                                                        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-purple-100 text-purple-600 dark:bg-purple-800/30 dark:text-purple-400">
-                                                            <i class="bi bi-box-seam"></i>
-                                                        </span>
-                                                        <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">@item.Name</span>
-                                                    </div>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-800/20 dark:text-cyan-400">
-                                                        <i class="bi bi-tag-fill"></i> @item.Category
+                                                    <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">@item.Name</span>
+                                                </div>
+                                            </td>
+                                            <td class="whitespace-nowrap px-6 py-4">
+                                                <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-800/20 dark:text-cyan-400">
+                                                    <i class="bi bi-tag-fill"></i> @item.Category
+                                                </span>
+                                            </td>
+                                            <td class="whitespace-nowrap px-6 py-4">
+                                                @if (item.StockQuantity == 0)
+                                                {
+                                                    <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-gray-100 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400">
+                                                        Out of Stock
                                                     </span>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    @if (item.StockQuantity <= 10)
-                                                    {
-                                                        <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800/20 dark:text-red-400">
-                                                            <i class="bi bi-exclamation-circle-fill"></i> @item.StockQuantity Low
-                                                        </span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400">
-                                                            <i class="bi bi-check-circle-fill"></i> @item.StockQuantity
-                                                        </span>
-                                                    }
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">₱@item.Price.ToString("N2")</span>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-end">
-                                                    <div class="hs-dropdown [--placement:bottom-right] relative inline-block">
-                                                        <button id="hs-dropdown-@item.ProductID" type="button" class="hs-dropdown-toggle py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
-                                                            Options
-                                                            <i class="bi bi-chevron-down hs-dropdown-open:rotate-180 transition-transform duration-200"></i>
-                                                        </button>
-                                                        <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-40 bg-white shadow-md rounded-lg p-2 mt-2 z-10 border border-gray-200 dark:bg-neutral-900 dark:border-neutral-700" role="menu" aria-orientation="vertical" aria-labelledby="hs-dropdown-@item.ProductID">
-                                                            <a asp-action="Details" asp-route-id="@item.ProductID" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-800">
-                                                                <i class="bi bi-eye"></i> View Details
+                                                }
+                                                else if (item.StockQuantity <= 10)
+                                                {
+                                                    <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800/20 dark:text-red-400">
+                                                        <i class="bi bi-exclamation-circle-fill"></i> @item.StockQuantity Low
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/20 dark:text-green-400">
+                                                        <i class="bi bi-check-circle-fill"></i> @item.StockQuantity
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td class="whitespace-nowrap px-6 py-4">
+                                                <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">₱@item.Price.ToString("N2")</span>
+                                            </td>
+                                            <td class="whitespace-nowrap px-6 py-4 text-end">
+                                                <div class="hs-dropdown [--placement:bottom-right] relative inline-block">
+                                                    <button id="hs-dropdown-@item.ProductID" type="button" class="hs-dropdown-toggle py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800" aria-haspopup="menu" aria-expanded="false" aria-label="Dropdown">
+                                                        Options
+                                                        <i class="bi bi-chevron-down hs-dropdown-open:rotate-180 transition-transform duration-200"></i>
+                                                    </button>
+                                                    <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden min-w-40 bg-white shadow-md rounded-lg p-2 mt-2 z-10 border border-gray-200 dark:bg-neutral-900 dark:border-neutral-700" role="menu" aria-orientation="vertical" aria-labelledby="hs-dropdown-@item.ProductID">
+                                                        <a asp-action="Details" asp-route-id="@item.ProductID" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-800">
+                                                            <i class="bi bi-eye"></i> View Details
+                                                        </a>
+                                                        @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
+                                                        {
+                                                            <a asp-action="Edit" asp-route-id="@item.ProductID" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-800">
+                                                                <i class="bi bi-pencil-square"></i> Edit Product
                                                             </a>
-                                                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
-                                                            {
-                                                                <a asp-action="Edit" asp-route-id="@item.ProductID" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-800">
-                                                                    <i class="bi bi-pencil-square"></i> Edit Product
-                                                                </a>
-                                                                <div class="my-1 border-t border-gray-200 dark:border-neutral-700"></div>
-                                                                <a asp-action="Delete" asp-route-id="@item.ProductID" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-red-600 hover:bg-gray-100 dark:text-red-400 dark:hover:bg-neutral-800">
-                                                                    <i class="bi bi-trash3"></i> Delete
-                                                                </a>
-                                                            }
-                                                        </div>
+                                                            <div class="my-1 border-t border-gray-200 dark:border-neutral-700"></div>
+                                                            <a asp-action="Delete" asp-route-id="@item.ProductID" class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-red-600 hover:bg-gray-100 dark:text-red-400 dark:hover:bg-neutral-800">
+                                                                <i class="bi bi-trash3"></i> Delete
+                                                            </a>
+                                                        }
                                                     </div>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mobile Card List -->
-                <div class="md:hidden space-y-3">
-                    @foreach (var item in activeProducts)
-                    {
-                        <div class="product-card flex flex-col bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 @(item.StockQuantity <= 10 ? "border-l-4 border-l-red-500" : "")" 
-                             data-stock-level="@(item.StockQuantity <= 10 ? "low" : "healthy")"
-                             data-search="@(item.Name.ToLower())|@(item.SKU.ToLower())|@(item.Category.ToLower())">
-                            <div class="flex items-start justify-between mb-3">
-                                <div class="flex items-center gap-x-3 min-w-0">
-                                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg @(item.StockQuantity <= 10 ? "bg-red-100 text-red-800" : "bg-indigo-100 text-indigo-800")">
-                                        <i class="bi @(item.StockQuantity <= 10 ? "bi-exclamation-triangle-fill" : "bi-box-seam-fill")"></i>
-                                    </span>
-                                    <div class="min-w-0">
-                                        <p class="font-semibold text-sm text-gray-800 dark:text-neutral-200 truncate mb-0">@item.Name</p>
-                                        <span class="text-xs text-gray-500 dark:text-neutral-500">@item.SKU</span>
-                                    </div>
-                                </div>
-                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(item.StockQuantity <= 10 ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800")">
-                                    <i class="bi @(item.StockQuantity <= 10 ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill")"></i> @item.StockQuantity
-                                </span>
-                            </div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-cyan-100 text-cyan-800 text-xs font-medium">
-                                    <i class="bi bi-tag-fill"></i> @item.Category
-                                </span>
-                                <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">₱@item.Price.ToString("N2")</span>
-                            </div>
-                            <div class="flex gap-2">
-                                @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
-                                {
-                                    <a asp-action="Edit" asp-route-id="@item.ProductID" class="py-2 px-3 flex-1 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100">
-                                        <i class="bi bi-pencil-square"></i> Edit
-                                    </a>
-                                }
-                                <a asp-action="Details" asp-route-id="@item.ProductID" class="py-2 px-3 flex-1 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                                    <i class="bi bi-eye"></i> Details
-                                </a>
-                                @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
-                                {
-                                    <a asp-action="Delete" asp-route-id="@item.ProductID" class="py-2 px-3 flex-1 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100">
-                                        <i class="bi bi-trash3"></i> Delete
-                                    </a>
-                                }
-                            </div>
-                        </div>
-                    }
-                </div>
-
-                <!-- No Results Empty State -->
-                <div id="active-empty-state" class="text-center py-24 px-4" style="display: none;">
-                    <span class="inline-flex justify-center items-center size-14 rounded-full bg-gray-50 text-gray-500 mx-auto mb-4 dark:bg-neutral-800 dark:text-neutral-500">
-                        <i class="bi bi-search text-2xl"></i>
-                    </span>
-                    <h3 class="text-[17px] font-bold text-gray-900 dark:text-white mb-1.5 tracking-tight">No products found</h3>
-                    <p class="text-[13px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">Try adjusting your search or filters to find what you're looking for.</p>
-                </div>
-            }
-
-        </div>
-
-        <!-- ARCHIVED PRODUCTS SECTION -->
-        <div id="inv-archived-section" class="hidden" role="tabpanel" aria-labelledby="inv-archived-tab">
-
-            @if (archivedProducts.Count == 0)
-            {
-                <div class="text-center py-24 px-4">
-                    <span class="inline-flex justify-center items-center size-14 rounded-full bg-emerald-50 text-emerald-600 mx-auto mb-4 dark:bg-emerald-900/30 dark:text-emerald-400">
-                        <i class="bi bi-box text-2xl mb-0.5"></i>
-                    </span>
-                    <h3 class="text-[17px] font-bold text-gray-900 dark:text-white mb-1.5 tracking-tight">No Archived Products</h3>
-                    <p class="text-[13px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">There are no products in the archive.</p>
-                </div>
-            }
-            else
-            {
-                <!-- Desktop Table -->
-                <div class="hidden md:block">
-                    <div class="-m-1.5 overflow-x-auto">
-                        <div class="p-1.5 min-w-full inline-block align-middle">
-                            <div class="border rounded-xl shadow-sm overflow-hidden border-gray-200 dark:border-neutral-700">
-                                <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-                                    <thead class="bg-gray-50 dark:bg-neutral-800">
-                                        <tr>
-                                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-upc-scan me-1"></i> SKU</th>
-                                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-box me-1"></i> Product</th>
-                                            <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-tag me-1"></i> Category</th>
-                                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-layers me-1"></i> Stock</th>
-                                            <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"><i class="bi bi-currency-exchange me-1"></i> Price</th>
-                                            <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-neutral-500">Actions</th>
+                                                </div>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
-                                        @foreach (var item in archivedProducts)
-                                        {
-                                            <tr class="opacity-60 hover:opacity-100 transition-opacity">
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-800/20 dark:text-indigo-400">@item.SKU</span>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <div class="flex items-center gap-x-3">
-                                                        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400">
-                                                            <i class="bi bi-archive"></i>
-                                                        </span>
-                                                        <span class="block text-sm font-semibold text-gray-500 dark:text-neutral-400">@item.Name</span>
-                                                    </div>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800 dark:bg-cyan-800/20 dark:text-cyan-400">
-                                                        <i class="bi bi-tag-fill"></i> @item.Category
-                                                    </span>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-center">
-                                                    <span class="inline-flex items-center gap-x-1.5 py-1.5 px-3 rounded-md text-xs font-medium bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400">
-                                                        <i class="bi bi-archive-fill"></i> Out of Stock
-                                                    </span>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-end">
-                                                    <span class="text-sm font-semibold text-gray-500 dark:text-neutral-400">₱@item.Price.ToString("N2")</span>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-end">
-                                                    <a asp-action="Details" asp-route-id="@item.ProductID" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Mobile Card List -->
-                <div class="md:hidden space-y-3">
-                    @foreach (var item in archivedProducts)
-                    {
-                        <div class="flex flex-col bg-white border border-l-4 border-l-gray-400 shadow-sm rounded-xl p-4 opacity-60 dark:bg-neutral-900 dark:border-neutral-800">
-                            <div class="flex items-start justify-between mb-3">
-                                <div class="flex items-center gap-x-3 min-w-0">
-                                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-gray-100 text-gray-500">
-                                        <i class="bi bi-archive-fill"></i>
-                                    </span>
-                                    <div class="min-w-0">
-                                        <p class="font-semibold text-sm text-gray-500 truncate mb-0">@item.Name</p>
-                                        <span class="text-xs text-gray-400">@item.SKU</span>
-                                    </div>
+            <!-- Mobile Card List -->
+            <div class="md:hidden space-y-3">
+                @foreach (var item in Model)
+                {
+                    <div class="flex flex-col bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 @(item.StockQuantity <= 10 ? "border-l-4 border-l-red-500" : "border-l-4 border-l-emerald-500") @(item.StockQuantity == 0 ? "opacity-60 grayscale" : "")">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex items-center gap-x-3 min-w-0">
+                                <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg @(item.StockQuantity == 0 ? "bg-gray-100 text-gray-500" : (item.StockQuantity <= 10 ? "bg-red-100 text-red-800" : "bg-indigo-100 text-indigo-800"))">
+                                    <i class="bi @(item.StockQuantity == 0 ? "bi-archive" : (item.StockQuantity <= 10 ? "bi-exclamation-triangle-fill" : "bi-box-seam-fill"))"></i>
+                                </span>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-sm text-gray-800 dark:text-neutral-200 truncate mb-0">@item.Name</p>
+                                    <span class="text-xs text-gray-500 dark:text-neutral-500">@item.SKU</span>
                                 </div>
-                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-gray-100 text-gray-500 text-xs font-medium">
-                                    <i class="bi bi-archive-fill"></i> 0
-                                </span>
                             </div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-cyan-100 text-cyan-800 text-xs font-medium">
-                                    <i class="bi bi-tag-fill"></i> @item.Category
-                                </span>
-                                <span class="text-sm font-semibold text-gray-500">₱@item.Price.ToString("N2")</span>
-                            </div>
-                            <a asp-action="Details" asp-route-id="@item.ProductID" class="py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                            <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(item.StockQuantity == 0 ? "bg-gray-100 text-gray-800" : (item.StockQuantity <= 10 ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"))">
+                                <i class="bi @(item.StockQuantity == 0 ? "bi-archive-fill" : (item.StockQuantity <= 10 ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill"))"></i> @item.StockQuantity
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-cyan-100 text-cyan-800 text-xs font-medium">
+                                <i class="bi bi-tag-fill"></i> @item.Category
+                            </span>
+                            <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">₱@item.Price.ToString("N2")</span>
+                        </div>
+                        <div class="flex gap-2">
+                             <a asp-action="Details" asp-route-id="@item.ProductID" class="py-2 px-3 flex-1 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
                                 <i class="bi bi-eye"></i> Details
                             </a>
+                            @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.ProductID" class="py-2 px-3 flex-1 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.ProductID" class="py-2 px-3 flex-1 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100">
+                                    <i class="bi bi-trash3"></i> Delete
+                                </a>
+                            }
                         </div>
-                    }
-                </div>
-            }
-
-        </div>
-
-    </div>
-
-    <!-- Table Footer -->
-    <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
-        <div class="flex flex-wrap justify-between items-center gap-2">
-            <span class="text-[11px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide" id="inv-footer-text">
-                <i class="bi bi-info-circle me-1"></i>
-                Showing @activeCount active product@(activeCount != 1 ? "s" : "")
-            </span>
-            <div class="flex gap-2" id="inv-footer-badges">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">@healthyCount Healthy</span>
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">@lowStockCount Low</span>
+                    </div>
+                }
             </div>
-        </div>
+        }
     </div>
+
+    <!-- Pagination -->
+    <partial name="_Pagination" model="Model" />
 
 </div>
-
-<!-- Dynamic Header Update Script -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const activeTab = document.getElementById('inv-active-tab');
-        const archivedTab = document.getElementById('inv-archived-tab');
-
-        const tabLabel = document.getElementById('inv-tab-label');
-        const tabCount = document.getElementById('inv-tab-count');
-        const cardTitle = document.getElementById('inv-card-title');
-        const cardSubtitle = document.getElementById('inv-card-subtitle');
-        const cardBadges = document.getElementById('inv-card-badges');
-        const footerText = document.getElementById('inv-footer-text');
-        const footerBadges = document.getElementById('inv-footer-badges');
-
-        const activeCount = @activeCount;
-        const archivedCount = @outOfStockCount;
-        const healthyCount = @healthyCount;
-        const lowStockCount = @lowStockCount;
-
-        if (activeTab) {
-            activeTab.addEventListener('click', () => {
-                tabLabel.textContent = 'Active Products';
-                tabCount.textContent = 'Showing ' + activeCount + ' item' + (activeCount !== 1 ? 's' : '');
-                cardTitle.textContent = 'Inventory Catalog';
-                cardSubtitle.textContent = activeCount + ' active product' + (activeCount !== 1 ? 's' : '');
-                cardBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">' + healthyCount + ' Stocked</span>' +
-                    '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">' + lowStockCount + ' Low</span>';
-                footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + activeCount + ' active product' + (activeCount !== 1 ? 's' : '');
-                footerBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">' + healthyCount + ' Healthy</span>' +
-                    '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">' + lowStockCount + ' Low</span>';
-            });
-        }
-
-        if (archivedTab) {
-            archivedTab.addEventListener('click', () => {
-                tabLabel.textContent = 'Archived Products';
-                tabCount.textContent = 'Showing ' + archivedCount + ' item' + (archivedCount !== 1 ? 's' : '');
-                cardTitle.textContent = 'Archived Products';
-                cardSubtitle.textContent = archivedCount + ' archived product' + (archivedCount !== 1 ? 's' : '');
-                cardBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">0 Stocked</span>' +
-                    '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">0 Low</span>';
-                footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + archivedCount + ' archived product' + (archivedCount !== 1 ? 's' : '');
-                footerBadges.innerHTML = '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">0 Healthy</span>' +
-                    '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">0 Low</span>';
-            });
-        }
-
-        // --- Stock Level & Search Filtering ---
-        const filterBtns = document.querySelectorAll('.stock-filter-btn');
-        const searchInput = document.getElementById('searchInput');
-        const productRows = document.querySelectorAll('.product-row');
-        const productCards = document.querySelectorAll('.product-card');
-
-        let currentFilter = 'all';
-
-        function updateVisibility() {
-            const query = searchInput.value.toLowerCase().trim();
-            let visibleCount = 0;
-            let currentHealthy = 0;
-            let currentLow = 0;
-
-            // Update Desktop Rows
-            productRows.forEach(row => {
-                const stockLevel = row.dataset.stockLevel;
-                const searchContent = row.dataset.search;
-                
-                const matchesFilter = currentFilter === 'all' || stockLevel === currentFilter;
-                const matchesSearch = !query || searchContent.includes(query);
-                
-                const isVisible = matchesFilter && matchesSearch;
-                row.style.display = isVisible ? '' : 'none';
-                
-                if (isVisible) {
-                    visibleCount++;
-                    if (stockLevel === 'healthy') currentHealthy++;
-                    else currentLow++;
-                }
-            });
-
-            // Update Mobile Cards
-            productCards.forEach(card => {
-                const stockLevel = card.dataset.stockLevel;
-                const searchContent = card.dataset.search;
-                
-                const matchesFilter = currentFilter === 'all' || stockLevel === currentFilter;
-                const matchesSearch = !query || searchContent.includes(query);
-                
-                card.style.display = (matchesFilter && matchesSearch) ? 'flex' : 'none';
-            });
-
-            // Update Header & Footer
-            const label = currentFilter === 'all' ? 'active' : currentFilter;
-            const searchContext = query ? ` matching "${query}"` : '';
-            cardSubtitle.textContent = visibleCount + ' ' + label + ' product' + (visibleCount !== 1 ? 's' : '') + searchContext;
-            footerText.innerHTML = '<i class="bi bi-info-circle me-1"></i> Showing ' + visibleCount + ' ' + label + ' product' + (visibleCount !== 1 ? 's' : '') + searchContext;
-            
-            // Toggle Empty State
-            const activeEmptyState = document.getElementById('active-empty-state');
-            if (activeEmptyState) {
-                if (visibleCount === 0 && (query || currentFilter !== 'all')) {
-                    activeEmptyState.style.display = 'block';
-                    document.querySelector('#inv-active-section .hidden.md\\:block')?.classList.add('hidden');
-                    document.querySelector('#inv-active-section .md\\:hidden.space-y-3')?.classList.add('hidden');
-                } else {
-                    activeEmptyState.style.display = 'none';
-                    document.querySelector('#inv-active-section .hidden.md\\:block')?.classList.remove('hidden');
-                    document.querySelector('#inv-active-section .md\\:hidden.space-y-3')?.classList.remove('hidden');
-                }
-            }
-
-            // Re-render badges
-            if (activeTab.classList.contains('active')) {
-                const badgeHtml = (currentFilter === 'all' || currentFilter === 'healthy' ? '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] uppercase tracking-wide font-bold dark:bg-emerald-900/20 dark:text-emerald-400">' + currentHealthy + ' Stocked</span>' : '') +
-                    (currentFilter === 'all' || currentFilter === 'low' ? '<span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400 ms-1">' + currentLow + ' Low</span>' : '');
-                cardBadges.innerHTML = badgeHtml;
-                footerBadges.innerHTML = badgeHtml;
-            }
-        }
-
-        function applyFilter(filter) {
-            currentFilter = filter;
-            
-            // Update button styles
-            filterBtns.forEach(btn => {
-                if (btn.dataset.filter === filter) {
-                    btn.classList.add('active', 'bg-white', 'border-gray-200', 'text-gray-800', 'shadow-sm', 'dark:bg-neutral-900', 'dark:border-neutral-700', 'dark:text-white');
-                    btn.classList.remove('bg-transparent', 'border-transparent', 'text-gray-500', 'dark:text-neutral-400');
-                } else {
-                    btn.classList.remove('active', 'bg-white', 'border-gray-200', 'text-gray-800', 'shadow-sm', 'dark:bg-neutral-900', 'dark:border-neutral-700', 'dark:text-white');
-                    btn.classList.add('bg-transparent', 'border-transparent', 'text-gray-500', 'dark:text-neutral-400');
-                }
-            });
-
-            updateVisibility();
-        }
-
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
-        });
-
-        searchInput.addEventListener('input', updateVisibility);
-    });
-</script>

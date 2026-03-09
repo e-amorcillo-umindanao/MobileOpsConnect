@@ -20,27 +20,36 @@ namespace MobileOpsConnect.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? status, int? page)
         {
             var userId = _userManager.GetUserId(User);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-            var notifications = await _context.InAppNotifications
-                .Where(n => n.UserId == userId)
-                .OrderByDescending(n => n.CreatedAt)
-                .ToListAsync();
+            var query = _context.InAppNotifications
+                .Where(n => n.UserId == userId);
 
-            ViewBag.TotalCount = notifications.Count;
-            ViewBag.UnreadCount = notifications.Count(n => !n.IsRead);
-            ViewBag.ReadCount = notifications.Count(n => n.IsRead);
+            // Calculate counts for summary
+            ViewBag.TotalCount = await query.CountAsync();
+            ViewBag.UnreadCount = await query.CountAsync(n => !n.IsRead);
+            ViewBag.ReadCount = await query.CountAsync(n => n.IsRead);
 
-            // Get count of most common notification type
-            ViewBag.TopType = notifications.GroupBy(n => n.Type)
+            // Get most common notification type
+            ViewBag.TopType = await query.GroupBy(n => n.Type)
                 .OrderByDescending(g => g.Count())
                 .Select(g => g.Key)
-                .FirstOrDefault() ?? "None";
+                .FirstOrDefaultAsync() ?? "None";
 
-            return View(notifications);
+            string currentStatus = status ?? "unread";
+            ViewBag.CurrentStatus = currentStatus;
+
+            if (currentStatus == "unread")
+            {
+                query = query.Where(n => !n.IsRead);
+            }
+
+            var notifications = query.OrderByDescending(n => n.CreatedAt);
+
+            return View(await PaginatedList<InAppNotification>.CreateAsync(notifications.AsNoTracking(), page ?? 1, 10));
         }
 
         [HttpGet]

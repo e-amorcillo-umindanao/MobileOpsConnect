@@ -43,7 +43,7 @@ namespace MobileOpsConnect.Controllers
 
         // GET: Users
         [Authorize(Roles = "SuperAdmin,SystemAdmin")]
-        public async Task<IActionResult> Index(string? role)
+        public async Task<IActionResult> Index(string? role, string? searchString, int? page)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser == null) return Challenge();
@@ -61,7 +61,14 @@ namespace MobileOpsConnect.Controllers
                 if (CanManageUser(currentUser, userRole, user.Id))
                 {
                     // Filter by role if specified
-                    if (string.IsNullOrEmpty(role) || userRole == role)
+                    bool matchesRole = string.IsNullOrEmpty(role) || userRole == role;
+                    
+                    // Filter by search string (Email or Role)
+                    bool matchesSearch = string.IsNullOrEmpty(searchString) || 
+                                       (user.Email != null && user.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
+                                       userRole.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+
+                    if (matchesRole && matchesSearch)
                     {
                         userViewModels.Add(new UserViewModel
                         {
@@ -76,11 +83,8 @@ namespace MobileOpsConnect.Controllers
             // Define hierarchical order
             var roleOrder = new Dictionary<string, int>
             {
-                { "SuperAdmin", 1 },
-                { "SystemAdmin", 2 },
-                { "DepartmentManager", 3 },
-                { "WarehouseStaff", 4 },
-                { "Employee", 5 }
+                { "SuperAdmin", 1 }, { "SystemAdmin", 2 }, { "DepartmentManager", 3 },
+                { "WarehouseStaff", 4 }, { "Employee", 5 }
             };
 
             // Sort hierarchically
@@ -107,16 +111,20 @@ namespace MobileOpsConnect.Controllers
 
             ViewBag.AllRoles = availableRoles;
             ViewBag.SelectedRole = role;
+            ViewBag.SearchString = searchString;
             ViewBag.RoleDisplayNames = new Dictionary<string, string>
             {
-                { "SuperAdmin", "Super Admin" },
-                { "SystemAdmin", "System Admin" },
-                { "DepartmentManager", "Department Manager" },
-                { "WarehouseStaff", "Warehouse Staff" },
+                { "SuperAdmin", "Super Admin" }, { "SystemAdmin", "System Admin" },
+                { "DepartmentManager", "Department Manager" }, { "WarehouseStaff", "Warehouse Staff" },
                 { "Employee", "Employee" }
             };
 
-            return View(sortedViewModels);
+            // Calculate global counts for the entire directory (unfiltered within scope)
+            ViewBag.TotalUsers = userViewModels.Count; 
+            ViewBag.SuperAdminCount = userViewModels.Count(u => u.Role == "SuperAdmin");
+            ViewBag.SystemAdminCount = userViewModels.Count(u => u.Role == "SystemAdmin");
+
+            return View(PaginatedList<UserViewModel>.Create(sortedViewModels, page ?? 1, 10));
         }
 
         // GET: Users/Create
@@ -478,7 +486,7 @@ namespace MobileOpsConnect.Controllers
 
         // GET: Users/EmployeeRecords
         [Authorize(Roles = "DepartmentManager")]
-        public async Task<IActionResult> EmployeeRecords()
+        public async Task<IActionResult> EmployeeRecords(string? searchString, int? page)
         {
             var allUsers = await _userManager.Users.ToListAsync();
             var records = new List<EmployeeRecordViewModel>();
@@ -492,6 +500,13 @@ namespace MobileOpsConnect.Controllers
                 // DepartmentManager can only see staff-level roles (not admins)
                 if (role == "WarehouseStaff" || role == "Employee" || role == "DepartmentManager")
                 {
+                    // Filter by search string if provided
+                    if (!string.IsNullOrEmpty(searchString) && 
+                        !(user.Email != null && user.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        continue;
+                    }
+
                     var pendingLeaves = await _context.LeaveRequests.CountAsync(l => l.UserID == user.Id && l.Status == "Pending");
                     var approvedLeaves = await _context.LeaveRequests.CountAsync(l => l.UserID == user.Id && l.Status == "Approved");
 
@@ -506,7 +521,13 @@ namespace MobileOpsConnect.Controllers
                 }
             }
 
-            return View(records);
+            // Sort by Email
+            var sortedRecords = records.OrderBy(r => r.Email).ToList();
+
+            ViewBag.SearchString = searchString;
+            ViewBag.TotalCount = sortedRecords.Count;
+
+            return View(PaginatedList<EmployeeRecordViewModel>.Create(sortedRecords, page ?? 1, 10));
         }
     }
 }

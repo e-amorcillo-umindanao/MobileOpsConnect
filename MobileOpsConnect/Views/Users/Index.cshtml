@@ -1,12 +1,12 @@
-﻿@model IEnumerable<MobileOpsConnect.Models.UserViewModel>
+﻿@model PaginatedList<MobileOpsConnect.Models.UserViewModel>
 
 @{
     ViewData["Title"] = "User Management";
     bool isSuperAdmin = User.IsInRole("SuperAdmin");
-    int totalUsers = Model.Count();
+    int totalUsers = ViewBag.TotalUsers ?? 0;
     var roleDisplayNames = (Dictionary<string, string>)ViewBag.RoleDisplayNames;
-    int superAdminCount = Model.Count(u => u.Role == "SuperAdmin");
-    int systemAdminCount = Model.Count(u => u.Role == "SystemAdmin");
+    int superAdminCount = ViewBag.SuperAdminCount ?? 0;
+    int systemAdminCount = ViewBag.SystemAdminCount ?? 0;
 }
 
 <!-- Breadcrumb Navigation -->
@@ -50,10 +50,10 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total Users</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@totalUsers</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-[#f4f2ff] text-[#5e4dcd] text-[10px] font-bold uppercase tracking-wide dark:bg-indigo-900/20 dark:text-indigo-400 mb-1">
                 <i class="bi bi-layers"></i> All Roles
             </span>
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@totalUsers</h3>
         </div>
     </div>
 
@@ -66,10 +66,10 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Super Admins</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@superAdminCount</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide dark:bg-rose-900/20 dark:text-rose-400 mb-1">
                 <i class="bi bi-shield-check"></i> Super Admin
             </span>
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@superAdminCount</h3>
         </div>
     </div>
 
@@ -82,10 +82,10 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Sys Admins</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@systemAdminCount</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-600 text-[10px] font-bold uppercase tracking-wide dark:bg-amber-900/20 dark:text-amber-400 mb-1">
                 <i class="bi bi-gear-wide"></i> System Admin
             </span>
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@systemAdminCount</h3>
         </div>
     </div>
 
@@ -109,64 +109,66 @@
 
 <!-- Search Filters Panel -->
 <div class="p-6 bg-white border border-gray-100 shadow-sm rounded-[1.25rem] mb-6 dark:bg-neutral-900 dark:border-neutral-800">
-    <div class="flex items-center gap-x-4 mb-6">
-        <span class="inline-flex justify-center items-center size-[42px] rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
-            <i class="bi bi-funnel text-xl"></i>
-        </span>
-        <div>
-            <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-0.5">Search Filters</p>
-            <span class="text-[13px] font-medium text-gray-400 dark:text-neutral-500">Refine user list by role or account</span>
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-x-4">
+            <span class="inline-flex justify-center items-center size-[42px] rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400">
+                <i class="bi bi-funnel text-xl"></i>
+            </span>
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-0.5">Search Filters</p>
+                <span class="text-[13px] font-medium text-gray-400 dark:text-neutral-500">Refine user list by role or account</span>
+            </div>
         </div>
+        @if (!string.IsNullOrEmpty(ViewBag.SelectedRole) || !string.IsNullOrEmpty(ViewBag.SearchString))
+        {
+            <a asp-action="Index" class="py-2 px-3 inline-flex items-center gap-x-2 text-xs font-semibold rounded-lg border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-800 dark:text-neutral-400">
+                <i class="bi bi-x-circle"></i> Clear Filters
+            </a>
+        }
     </div>
 
-    <!-- Filter Grid -->
-    <div class="grid sm:grid-cols-2 gap-6 mb-6">
-        <!-- Roles Dropdown -->
-        <div>
-            <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-2">Roles</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
-                    <i class="bi bi-person-badge"></i>
+    <form method="get" asp-action="Index" id="filterForm">
+        <div class="grid sm:grid-cols-2 gap-6">
+            <!-- Roles Dropdown -->
+            <div>
+                <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-2">Filter by Role</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <select name="role" onchange="this.form.submit()" class="py-3 ps-11 pe-8 block w-full bg-gray-50 border-gray-200 rounded-lg text-sm font-semibold focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-indigo-400 transition-all cursor-pointer">
+                        <option value="">— All Roles —</option>
+                        @foreach (string roleName in (List<string>)ViewBag.AllRoles)
+                        {
+                            string displayName = roleDisplayNames.GetValueOrDefault(roleName, roleName);
+                            @if (ViewBag.SelectedRole == roleName)
+                            {
+                                <option value="@roleName" selected>@displayName</option>
+                            }
+                            else
+                            {
+                                <option value="@roleName">@displayName</option>
+                            }
+                        }
+                    </select>
                 </div>
-                <select id="roleFilter" class="py-3 ps-11 pe-8 block w-full bg-gray-50 border-gray-200 rounded-lg text-sm font-semibold focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-indigo-400 transition-all cursor-pointer">
-                    <option value="">— All Roles —</option>
-                    @foreach (string roleName in (List<string>)ViewBag.AllRoles)
-                    {
-                        string displayName = roleDisplayNames.GetValueOrDefault(roleName, roleName);
-                        <option value="@roleName" selected="@(ViewBag.SelectedRole == roleName)">@displayName</option>
-                    }
-                </select>
             </div>
-        </div>
 
-        <!-- Individual Users Dropdown -->
-        <div>
-            <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-2">Individual Users</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
-                    <i class="bi bi-search text-xs"></i>
+            <!-- Search Input -->
+            <div>
+                <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-2">Search User</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
+                        <i class="bi bi-search text-xs"></i>
+                    </div>
+                    <input type="text" name="searchString" value="@ViewBag.SearchString" class="py-3 ps-11 pe-4 block w-full bg-gray-50 border-gray-200 rounded-lg text-sm font-medium focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 transition-all" placeholder="Search by email or role...">
+                    <button type="submit" class="absolute inset-y-0 end-0 flex items-center pe-4 text-indigo-600 hover:text-indigo-700">
+                        <i class="bi bi-arrow-right-circle-fill text-lg"></i>
+                    </button>
                 </div>
-                <select id="userFilter" class="py-3 ps-11 pe-8 block w-full bg-gray-50 border-gray-200 rounded-lg text-sm font-semibold focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 transition-all cursor-pointer">
-                    <option value="">— All Users —</option>
-                    @foreach (var user in Model)
-                    {
-                        <option value="@user.Email.ToLower()">@user.Email</option>
-                    }
-                </select>
             </div>
         </div>
-    </div>
-
-    <!-- Instant Search -->
-    <div>
-        <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-2">Instant Filter</label>
-        <div class="relative">
-            <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
-                <i class="bi bi-search text-xs"></i>
-            </div>
-            <input type="text" id="userSearchInput" class="py-3 ps-11 pe-4 block w-full bg-gray-50 border-gray-200 rounded-lg text-sm font-medium focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 transition-all" placeholder="Search by details, action, or user email...">
-        </div>
-    </div>
+    </form>
 </div>
 
 <!-- User Table Card -->
@@ -183,7 +185,7 @@
                 <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
                     @foreach (var item in Model)
                     {
-                        <tr class="user-row hover:bg-gray-50 transition-colors" data-search="@(item.Email.ToLower())|@(item.Role.ToLower())">
+                        <tr class="user-row hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-5">
                                 <div class="flex items-center gap-x-4">
                                     @if (item.Role == "SuperAdmin")
@@ -231,18 +233,20 @@
                             </td>
                         </tr>
                     }
-                    <!-- Empty State for Search -->
-                    <tr id="usersDesktopEmptyState" style="display: none;">
-                        <td colspan="3" class="px-6 py-12 text-center">
-                            <div class="flex flex-col items-center justify-center">
-                                <div class="size-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-4 dark:bg-neutral-800">
-                                    <i class="bi bi-person-x text-2xl text-gray-400"></i>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="px-6 py-12 text-center">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="size-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-4 dark:bg-neutral-800">
+                                        <i class="bi bi-person-x text-2xl text-gray-400"></i>
+                                    </div>
+                                    <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1">No users found</h4>
+                                    <p class="text-xs text-gray-500 dark:text-neutral-500">Try adjusting your filters or search terms</p>
                                 </div>
-                                <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1">No users found</h4>
-                                <p class="text-xs text-gray-500 dark:text-neutral-500">Try adjusting your filters or search terms</p>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -251,7 +255,7 @@
         <div class="md:hidden space-y-4">
             @foreach (var item in Model)
             {
-                <div class="user-card bg-gray-50 rounded-xl p-4 border border-gray-100 dark:bg-neutral-800 dark:border-neutral-700" data-search="@(item.Email.ToLower())|@(item.Role.ToLower())">
+                <div class="user-card bg-gray-50 rounded-xl p-4 border border-gray-100 dark:bg-neutral-800 dark:border-neutral-700">
                     <div class="flex items-center gap-3 mb-3">
                         @if (item.Role == "SuperAdmin")
                         { <span class="inline-flex justify-center items-center size-[38px] rounded-full bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400"><i class="bi bi-shield-lock-fill"></i></span> }
@@ -266,21 +270,31 @@
                     </div>
                 </div>
             }
-            <!-- Mobile Empty State -->
-            <div id="usersMobileEmptyState" class="bg-gray-50 rounded-xl p-10 text-center border border-gray-100 dark:bg-neutral-800 dark:border-neutral-700" style="display: none;">
-                <div class="size-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 dark:bg-neutral-900">
-                    <i class="bi bi-person-x text-2xl text-gray-400"></i>
+            @if (!Model.Any())
+            {
+                <div class="bg-gray-50 rounded-xl p-10 text-center border border-gray-100 dark:bg-neutral-800 dark:border-neutral-700">
+                    <div class="size-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 dark:bg-neutral-900">
+                        <i class="bi bi-person-x text-2xl text-gray-400"></i>
+                    </div>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1">No users found</h4>
+                    <p class="text-xs text-gray-500 dark:text-neutral-500">Try adjusting your filters</p>
                 </div>
-                <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1">No users found</h4>
-                <p class="text-xs text-gray-500 dark:text-neutral-500">Try adjusting your filters</p>
-            </div>
+            }
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- Pagination Integration -->
     <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
+        <partial name="_Pagination" model="Model" />
+    </div>
+
+    <!-- Footer Meta -->
+    <div class="px-6 py-4 bg-gray-50/50 dark:bg-neutral-800/50 border-t border-gray-100 dark:border-neutral-800">
         <div class="flex flex-wrap justify-between items-center gap-2">
-            <span id="footerText" class="text-[11px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide"><i class="bi bi-info-circle me-1"></i> Showing all @totalUsers account@(totalUsers != 1 ? "s" : "")</span>
+            <span class="text-[11px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">
+                <i class="bi bi-info-circle me-1"></i> 
+                Showing @((Model.PageIndex - 1) * 10 + 1) to @(Math.Min(Model.PageIndex * 10, totalUsers)) of @totalUsers account@(totalUsers != 1 ? "s" : "")
+            </span>
             <div class="flex gap-2">
                 <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] uppercase tracking-wide font-bold dark:bg-rose-900/20 dark:text-rose-400">@superAdminCount Super Admin</span>
                 <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-600 text-[10px] uppercase tracking-wide font-bold dark:bg-amber-900/20 dark:text-amber-400">@systemAdminCount System Admin</span>
@@ -332,72 +346,7 @@
 
 @section Scripts {
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const roleFilter = document.getElementById('roleFilter');
-        const userFilter = document.getElementById('userFilter');
-        const userSearchInput = document.getElementById('userSearchInput');
-        
-        const desktopEmptyState = document.getElementById('usersDesktopEmptyState');
-        const mobileEmptyState = document.getElementById('usersMobileEmptyState');
-        const footerText = document.getElementById('footerText');
-        const totalInitial = @totalUsers;
-        const userRows = document.querySelectorAll('.user-row');
-        const userCards = document.querySelectorAll('.user-card');
-
-        // 1. Role Filter (Server-side trigger)
-        roleFilter.addEventListener('change', function() {
-            const role = roleFilter.value;
-            let url = '@Url.Action("Index", "Users")';
-            if (role) {
-                url += `?role=${encodeURIComponent(role)}`;
-            }
-            window.location.href = url;
-        });
-
-        // 2. Client-side Filter Logic (Search + User Dropdown)
-        function applyFilters() {
-            const searchQuery = userSearchInput.value.toLowerCase().trim();
-            const selectedUser = userFilter.value.toLowerCase().trim();
-            let visibleCount = 0;
-
-            // Filter Desktop Table
-            userRows.forEach(row => {
-                const searchContent = row.dataset.search; // Contains email|role
-                const emailMatch = !selectedUser || searchContent.includes(selectedUser);
-                const queryMatch = !searchQuery || searchContent.includes(searchQuery);
-                
-                const isVisible = emailMatch && queryMatch;
-                row.style.display = isVisible ? '' : 'none';
-                if (isVisible) visibleCount++;
-            });
-
-            // Filter Mobile Cards
-            userCards.forEach(card => {
-                const searchContent = card.dataset.search;
-                const emailMatch = !selectedUser || searchContent.includes(selectedUser);
-                const queryMatch = !searchQuery || searchContent.includes(searchQuery);
-                
-                const isVisible = emailMatch && queryMatch;
-                card.style.display = isVisible ? 'block' : 'none';
-            });
-
-            // Update Empty States
-            const isFiltered = searchQuery || selectedUser;
-            if (desktopEmptyState) desktopEmptyState.style.display = (visibleCount === 0 && isFiltered) ? 'table-row' : 'none';
-            if (mobileEmptyState) mobileEmptyState.style.display = (visibleCount === 0 && isFiltered) ? 'block' : 'none';
-
-            // Update Footer Text
-            if (footerText) {
-                if (isFiltered) {
-                    footerText.innerHTML = `<i class="bi bi-info-circle me-1"></i> Showing ${visibleCount} of ${totalInitial} account${totalInitial !== 1 ? 's' : ''}`;
-                } else {
-                    footerText.innerHTML = `<i class="bi bi-info-circle me-1"></i> Showing all ${totalInitial} account${totalInitial !== 1 ? 's' : ''}`;
-                }
-            }
-        }
-
-        userSearchInput.addEventListener('input', applyFilters);
-        userFilter.addEventListener('change', applyFilters);
-    });
+    // Server-side pagination and filtering implemented.
+    // Client-side instant search removed to maintain consistency across pages.
 </script>
 }

@@ -1,13 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Rendering
-@model List<MobileOpsConnect.Models.AuditLog>
+@model PaginatedList<MobileOpsConnect.Models.AuditLog>
 @{
     bool isSuperAdmin = (bool)ViewBag.IsSuperAdmin;
     ViewData["Title"] = isSuperAdmin ? "Global Audit Logs" : "Standard Audit Logs";
-    int totalEvents = ViewBag.TotalEvents;
-    int loginCount = ViewBag.LoginCount;
-    int dataCount = ViewBag.CreateCount;
-    int stockCount = ViewBag.StockCount;
-    int securityCount = ViewBag.SecurityCount;
+    int totalEvents = ViewBag.TotalEvents ?? 0;
+    int loginCount = ViewBag.LoginCount ?? 0;
+    int dataCount = ViewBag.CreateCount ?? 0;
+    int stockCount = ViewBag.StockCount ?? 0;
+    int securityCount = ViewBag.SecurityCount ?? 0;
 }
 
 <!-- Breadcrumb Navigation -->
@@ -30,24 +30,24 @@
 
 <!-- Metrics -->
 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl" style="border-left: 3px solid #6366f1;">
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800" style="border-left: 3px solid #6366f1;">
         <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Total Events</p><h3 class="text-xl font-bold text-indigo-600 mt-1">@totalEvents</h3></div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl" style="border-left: 3px solid #06b6d4;">
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800" style="border-left: 3px solid #06b6d4;">
         <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Data Changes</p><h3 class="text-xl font-bold text-cyan-600 mt-1">@dataCount</h3></div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl" style="border-left: 3px solid #22c55e;">
+    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800" style="border-left: 3px solid #22c55e;">
         <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Stock Moves</p><h3 class="text-xl font-bold text-green-600 mt-1">@stockCount</h3></div>
     </div>
     @if (isSuperAdmin)
     {
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl" style="border-left: 3px solid #ef4444;">
+        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800" style="border-left: 3px solid #ef4444;">
             <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Security Events</p><h3 class="text-xl font-bold text-red-600 mt-1">@securityCount</h3></div>
         </div>
     }
     else
     {
-        <div class="flex flex-col bg-white border shadow-sm rounded-xl" style="border-left: 3px solid #f59e0b;">
+        <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800" style="border-left: 3px solid #f59e0b;">
             <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Login Events</p><h3 class="text-xl font-bold text-amber-600 mt-1">@loginCount</h3></div>
         </div>
     }
@@ -113,99 +113,88 @@
             </div>
         </div>
     </div>
-    
-    <!-- Instant Search -->
-    <div class="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800">
-        <div class="space-y-1.5">
-            <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest px-1 ml-1 cursor-default">Instant Filter</label>
-            <div class="relative">
-                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none text-gray-400">
-                    <i class="bi bi-search"></i>
-                </div>
-                <input type="text" id="auditSearchInput" class="py-2.5 ps-10 pe-4 block w-full bg-gray-50 border-gray-200 rounded-xl text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 transition-all font-medium" placeholder="Search by details, action, or user email...">
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- Log Table -->
-<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
+<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6 relative overflow-hidden">
     <div class="px-6 py-5 border-b border-gray-100 dark:border-neutral-800">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-x-3">
                 <i class="bi bi-journal-text text-gray-400 text-lg"></i>
-                <h3 class="text-sm font-bold text-gray-900 dark:text-neutral-200">@(isSuperAdmin ? "All Activity" : "Activity Log")</h3>
+                <h3 class="text-sm font-bold text-gray-900 dark:text-neutral-200">Activity Log</h3>
             </div>
-            @if (isSuperAdmin)
-            { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="bi bi-shield-fill-exclamation"></i> Global Access</span> }
-            else
-            { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800"><i class="bi bi-eye-fill"></i> Standard View</span> }
+            <span class="text-xs text-gray-500 dark:text-neutral-500">Page @Model.PageIndex of @Model.TotalPages</span>
         </div>
     </div>
-    <div class="p-0">
-        @if (Model.Count == 0)
-        {
-            <div class="text-center py-10">
-                <i class="bi bi-shield-check text-gray-400" style="font-size: 3rem;"></i>
-                <p class="text-gray-500 mt-2">No audit events recorded yet. Events will appear here as users interact with the system.</p>
-            </div>
-        }
-        else
-        {
-            <!-- Desktop Table -->
-            <div class="overflow-x-auto hidden md:block">
-                <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
-                    <thead><tr>
-                        <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Timestamp</th>
-                        <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">User</th>
-                        <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Action</th>
-                        <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Details</th>
-                        <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">IP</th>
-                    </tr></thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
-                        @foreach (var log in Model)
-                        {
-                            var actionBadge = log.Action switch { "LOGIN" => "bg-green-100 text-green-800", "CREATE" => "bg-cyan-100 text-cyan-800", "UPDATE" => "bg-indigo-100 text-indigo-800", "DELETE" => "bg-red-100 text-red-800", "STOCK_IN" => "bg-green-100 text-green-800", "STOCK_OUT" => "bg-amber-100 text-amber-800", "APPROVE" => "bg-green-100 text-green-800", "REJECT" => "bg-red-100 text-red-800", "SECURITY" => "bg-red-100 text-red-800", _ => "bg-purple-100 text-purple-800" };
-                            var actionIcon = log.Action switch { "LOGIN" => "bi-box-arrow-in-right", "CREATE" => "bi-plus-circle-fill", "UPDATE" => "bi-pencil-fill", "DELETE" => "bi-trash-fill", "STOCK_IN" => "bi-arrow-down-circle-fill", "STOCK_OUT" => "bi-arrow-up-circle-fill", "APPROVE" => "bi-check-circle-fill", "REJECT" => "bi-x-circle-fill", "SECURITY" => "bi-shield-fill-exclamation", _ => "bi-activity" };
-                            <tr class="audit-log-row hover:bg-gray-50 transition-colors" style="@(log.IsCritical ? "background: rgba(239,68,68,0.03);" : "")" data-search="@(log.UserEmail.ToLower())|@(log.Action.ToLower())|@(log.Details.ToLower())">
-                                <td class="px-6 py-4"><span class="text-sm text-gray-800">@log.Timestamp.ToString("MMM dd, yyyy")</span><br/><span class="text-xs text-gray-500">@log.Timestamp.ToString("hh:mm:ss tt")</span></td>
-                                <td class="px-6 py-4"><span class="text-sm font-semibold text-gray-800">@log.UserEmail</span>@if (!string.IsNullOrEmpty(log.UserRole)){<br/><span class="text-xs text-gray-500">@log.UserRole</span>}</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium @actionBadge"><i class="bi @actionIcon"></i> @log.Action.Replace("_", " ")</span>
-                                    @if (log.IsCritical){ <i class="bi bi-exclamation-triangle-fill text-red-500 ms-1" title="Security Event"></i> }
-                                </td>
-                                <td class="px-6 py-4"><span class="text-sm text-gray-500" style="max-width:300px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="@log.Details">@log.Details</span></td>
-                                <td class="px-6 py-4"><span class="text-xs text-gray-500 font-mono">@log.IpAddress</span></td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Mobile Cards -->
-            <div class="md:hidden p-4 space-y-4">
-                @foreach (var log in Model)
-                {
-                    var actionBadge = log.Action switch { "LOGIN" => "bg-green-100 text-green-800", "CREATE" => "bg-cyan-100 text-cyan-800", "UPDATE" => "bg-indigo-100 text-indigo-800", "DELETE" => "bg-red-100 text-red-800", "STOCK_IN" => "bg-green-100 text-green-800", "STOCK_OUT" => "bg-amber-100 text-amber-800", "APPROVE" => "bg-green-100 text-green-800", "REJECT" => "bg-red-100 text-red-800", "SECURITY" => "bg-red-100 text-red-800", _ => "bg-purple-100 text-purple-800" };
-                    var actionIcon = log.Action switch { "LOGIN" => "bi-box-arrow-in-right", "CREATE" => "bi-plus-circle-fill", "UPDATE" => "bi-pencil-fill", "DELETE" => "bi-trash-fill", "STOCK_IN" => "bi-arrow-down-circle-fill", "STOCK_OUT" => "bi-arrow-up-circle-fill", "APPROVE" => "bi-check-circle-fill", "REJECT" => "bi-x-circle-fill", "SECURITY" => "bi-shield-fill-exclamation", _ => "bi-activity" };
-                    <div class="audit-log-card p-4 rounded-xl bg-gray-50 border" style="border-left: 3px solid @(log.IsCritical ? "#ef4444" : "#6366f1") !important;" data-search="@(log.UserEmail.ToLower())|@(log.Action.ToLower())|@(log.Details.ToLower())">
-                        <div class="flex items-start justify-between mb-2">
-                            <div class="min-w-0 flex-1"><span class="text-sm font-semibold text-gray-800 block break-all">@log.UserEmail</span>@if (!string.IsNullOrEmpty(log.UserRole)){<span class="text-xs text-gray-500">@log.UserRole</span>}</div>
-                            <div class="ms-2 shrink-0">
-                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full text-xs font-medium @actionBadge"><i class="bi @actionIcon"></i> @log.Action.Replace("_", " ")</span>
+    
+    @if (!Model.Any())
+    {
+        <div class="text-center py-20 px-6">
+            <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-800 mx-auto mb-4 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400">
+                <i class="bi bi-shield-check text-2xl"></i>
+            </span>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">No logs found</h3>
+            <p class="text-sm text-gray-500 dark:text-neutral-400 max-w-xs mx-auto">No events matching your filters were found.</p>
+        </div>
+    }
+    else
+    {
+        <!-- Desktop Table -->
+        <div class="overflow-x-auto hidden md:block">
+            <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
+                <thead><tr>
+                    <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Timestamp</th>
+                    <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">User</th>
+                    <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Action</th>
+                    <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">Details</th>
+                    <th class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest dark:text-neutral-500">IP</th>
+                </tr></thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
+                    @foreach (var log in Model)
+                    {
+                        var actionBadge = log.Action switch { "LOGIN" => "bg-green-100 text-green-800", "CREATE" => "bg-cyan-100 text-cyan-800", "UPDATE" => "bg-indigo-100 text-indigo-800", "DELETE" => "bg-red-100 text-red-800", "STOCK_IN" => "bg-green-100 text-green-800", "STOCK_OUT" => "bg-amber-100 text-amber-800", "APPROVE" => "bg-green-100 text-green-800", "REJECT" => "bg-red-100 text-red-800", "SECURITY" => "bg-red-100 text-red-800", _ => "bg-purple-100 text-purple-800" };
+                        var actionIcon = log.Action switch { "LOGIN" => "bi-box-arrow-in-right", "CREATE" => "bi-plus-circle-fill", "UPDATE" => "bi-pencil-fill", "DELETE" => "bi-trash-fill", "STOCK_IN" => "bi-arrow-down-circle-fill", "STOCK_OUT" => "bi-arrow-up-circle-fill", "APPROVE" => "bi-check-circle-fill", "REJECT" => "bi-x-circle-fill", "SECURITY" => "bi-shield-fill-exclamation", _ => "bi-activity" };
+                        <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800/50 transition-colors" style="@(log.IsCritical ? "background: rgba(239,68,68,0.03);" : "")">
+                            <td class="px-6 py-4"><span class="text-sm text-gray-800 dark:text-neutral-200">@log.Timestamp.ToString("MMM dd, yyyy")</span><br/><span class="text-xs text-gray-500">@log.Timestamp.ToString("hh:mm:ss tt")</span></td>
+                            <td class="px-6 py-4"><span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">@log.UserEmail</span>@if (!string.IsNullOrEmpty(log.UserRole)){<br/><span class="text-xs text-gray-500">@log.UserRole</span>}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium @actionBadge"><i class="bi @actionIcon"></i> @log.Action.Replace("_", " ")</span>
                                 @if (log.IsCritical){ <i class="bi bi-exclamation-triangle-fill text-red-500 ms-1" title="Security Event"></i> }
-                            </div>
-                        </div>
-                        <p class="text-sm text-gray-600 mb-2" style="word-break:break-word;">@log.Details</p>
-                        <div class="flex items-center justify-between text-gray-500">
-                            <span class="text-xs"><i class="bi bi-clock me-1"></i>@log.Timestamp.ToString("MMM dd, yyyy hh:mm tt")</span>
-                            <span class="text-xs font-mono">@log.IpAddress</span>
+                            </td>
+                            <td class="px-6 py-4 truncate max-w-[300px]"><span class="text-sm text-gray-500 dark:text-neutral-400" title="@log.Details">@log.Details</span></td>
+                            <td class="px-6 py-4"><span class="text-xs text-gray-500 font-mono">@log.IpAddress</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="md:hidden p-4 space-y-4">
+            @foreach (var log in Model)
+            {
+                var actionBadge = log.Action switch { "LOGIN" => "bg-green-100 text-green-800", "CREATE" => "bg-cyan-100 text-cyan-800", "UPDATE" => "bg-indigo-100 text-indigo-800", "DELETE" => "bg-red-100 text-red-800", "STOCK_IN" => "bg-green-100 text-green-800", "STOCK_OUT" => "bg-amber-100 text-amber-800", "APPROVE" => "bg-green-100 text-green-800", "REJECT" => "bg-red-100 text-red-800", "SECURITY" => "bg-red-100 text-red-800", _ => "bg-purple-100 text-purple-800" };
+                var actionIcon = log.Action switch { "LOGIN" => "bi-box-arrow-in-right", "CREATE" => "bi-plus-circle-fill", "UPDATE" => "bi-pencil-fill", "DELETE" => "bi-trash-fill", "STOCK_IN" => "bi-arrow-down-circle-fill", "STOCK_OUT" => "bi-arrow-up-circle-fill", "APPROVE" => "bi-check-circle-fill", "REJECT" => "bi-x-circle-fill", "SECURITY" => "bi-shield-fill-exclamation", _ => "bi-activity" };
+                <div class="p-4 rounded-xl bg-gray-50 border dark:bg-neutral-800 dark:border-neutral-700" style="border-left: 3px solid @(log.IsCritical ? "#ef4444" : "#6366f1") !important;">
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="min-w-0 flex-1"><span class="text-sm font-semibold text-gray-800 dark:text-neutral-200 block break-all">@log.UserEmail</span>@if (!string.IsNullOrEmpty(log.UserRole)){<span class="text-xs text-gray-500">@log.UserRole</span>}</div>
+                        <div class="ms-2 shrink-0">
+                            <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-full text-xs font-medium @actionBadge"><i class="bi @actionIcon"></i> @log.Action.Replace("_", " ")</span>
+                            @if (log.IsCritical){ <i class="bi bi-exclamation-triangle-fill text-red-500 ms-1" title="Security Event"></i> }
                         </div>
                     </div>
-                }
-            </div>
-        }
-    </div>
+                    <p class="text-sm text-gray-600 dark:text-neutral-400 mb-2" style="word-break:break-word;">@log.Details</p>
+                    <div class="flex items-center justify-between text-gray-500">
+                        <span class="text-xs"><i class="bi bi-clock me-1"></i>@log.Timestamp.ToString("MMM dd, yyyy hh:mm tt")</span>
+                        <span class="text-xs font-mono">@log.IpAddress</span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Pagination -->
+    <partial name="_Pagination" model="Model" />
 </div>
 
 @section Scripts {
@@ -234,11 +223,9 @@
             const selectedRole = roleFilter.value;
             
             if (!selectedRole) {
-                // Show all optgroups and options
                 optGroups.forEach(og => og.style.display = '');
                 userOptions.forEach(o => o.style.display = '');
             } else {
-                // Hide optgroups that don't match, show the one that does
                 optGroups.forEach(og => {
                     if (og.label === selectedRole) {
                         og.style.display = '';
@@ -251,42 +238,16 @@
         }
 
         roleFilter.addEventListener('change', function() {
-            // When role changes, if the current selected user is NOT in that role, reset user filter
             const selectedRole = roleFilter.value;
             const selectedUserOption = userFilter.options[userFilter.selectedIndex];
-            
             if (selectedRole && selectedUserOption.dataset.role && selectedUserOption.dataset.role !== selectedRole) {
                 userFilter.value = "";
             }
-            
             applyFilters();
         });
 
         userFilter.addEventListener('change', applyFilters);
-
-        // Initial sync on load
         syncDropdowns();
-
-        // ── Instant Search Logic ──
-        const auditSearchInput = document.getElementById('auditSearchInput');
-        const auditRows = document.querySelectorAll('.audit-log-row');
-        const auditCards = document.querySelectorAll('.audit-log-card');
-
-        auditSearchInput.addEventListener('input', function() {
-            const query = this.value.toLowerCase().trim();
-            
-            // Filter Desktop Table
-            auditRows.forEach(row => {
-                const searchContent = row.dataset.search;
-                row.style.display = !query || searchContent.includes(query) ? '' : 'none';
-            });
-
-            // Filter Mobile Cards
-            auditCards.forEach(card => {
-                const searchContent = card.dataset.search;
-                card.style.display = !query || searchContent.includes(query) ? 'block' : 'none';
-            });
-        });
     });
 </script>
 }

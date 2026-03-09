@@ -42,64 +42,91 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: LeaveRequests
-        public async Task<IActionResult> Index(string? view)
+        public async Task<IActionResult> Index(string? view, string? status, string? searchString, int? page)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Challenge();
 
-            // Determine which roles' leaves the current user can see (direct tier only)
             var myRoles = await _userManager.GetRolesAsync(user);
             var myRole = myRoles.FirstOrDefault() ?? "";
             var subordinateRoles = GetSubordinateRoles(myRole);
-            bool isBoss = subordinateRoles.Count > 0;
-
-            // If ?view=my, show the user's own leave history regardless of role
             bool isMyView = string.Equals(view, "my", StringComparison.OrdinalIgnoreCase);
+            
+            // SECURITY: If not a boss and not "my" view, force "my" view
+            if (!isMyView && subordinateRoles.Count == 0)
+            {
+                isMyView = true;
+            }
+
+            ViewBag.IsMyView = isMyView;
+            ViewBag.SelectedStatus = status;
+            ViewBag.SearchString = searchString;
+
+            IQueryable<LeaveRequest> query = _context.LeaveRequests.Include(l => l.User);
+
             if (isMyView)
             {
-                isBoss = false;
+                query = query.Where(l => l.UserID == user.Id);
             }
-            ViewBag.IsMyView = isMyView;
+            // If they have subordinate roles, we need to filter by those roles
+            // Since roles are not in the DB directly (Identity), we still have to do some in-memory filtering
+            // or use a join if possible. For now, we'll stick to the in-memory filtering of the scoped set
+            // but we'll capture the counts for the metrics.
 
-            List<LeaveRequest> requests;
+            var allScannedRequests = await query.ToListAsync();
+            var filteredRequests = new List<LeaveRequest>();
             var userRoles = new Dictionary<string, string>();
 
-            if (isBoss)
+            foreach (var req in allScannedRequests)
             {
-                // Load all requests, then filter to only direct subordinate tier
-                var allRequests = await _context.LeaveRequests.Include(l => l.User).ToListAsync();
-                foreach (var req in allRequests)
+                if (req.User == null) continue;
+                
+                if (!userRoles.ContainsKey(req.UserID))
                 {
-                    if (req.User != null && !userRoles.ContainsKey(req.UserID))
-                    {
-                        var roles = await _userManager.GetRolesAsync(req.User);
-                        userRoles[req.UserID] = roles.FirstOrDefault() ?? "Employee";
-                    }
+                    var roles = await _userManager.GetRolesAsync(req.User);
+                    userRoles[req.UserID] = roles.FirstOrDefault() ?? "Employee";
                 }
-                requests = allRequests.Where(r =>
-                    subordinateRoles.Contains(userRoles.GetValueOrDefault(r.UserID, "Employee"))
-                ).ToList();
-            }
-            else
-            {
-                // Regular employees only see their OWN history
-                requests = await _context.LeaveRequests
-                    .Where(l => l.UserID == user.Id)
-                    .Include(l => l.User)
-                    .ToListAsync();
 
-                foreach (var req in requests)
+                string rRole = userRoles[req.UserID];
+
+                // If not "my" view, check if user is a subordinate
+                if (!isMyView && !subordinateRoles.Contains(rRole))
                 {
-                    if (req.User != null && !userRoles.ContainsKey(req.UserID))
-                    {
-                        var roles = await _userManager.GetRolesAsync(req.User);
-                        userRoles[req.UserID] = roles.FirstOrDefault() ?? "Employee";
-                    }
+                    continue;
                 }
+
+                // Apply Status Filter
+                if (!string.IsNullOrEmpty(status) && status != "All")
+                {
+                    if (status == "Active" && req.Status != "Pending") continue;
+                    if (status == "Archived" && req.Status == "Pending") continue;
+                    if (status != "Active" && status != "Archived" && req.Status != status) continue;
+                }
+
+                // Apply Search Filter
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    bool matchesEmail = req.User.Email != null && req.User.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+                    bool matchesReason = req.Reason != null && req.Reason.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+                    bool matchesType = req.LeaveType != null && req.LeaveType.Contains(searchString, StringComparison.OrdinalIgnoreCase);
+                    if (!matchesEmail && !matchesReason && !matchesType) continue;
+                }
+
+                filteredRequests.Add(req);
             }
 
+            // Calculate metrics based on the scoped set (filtered by role/view but NOT by search/status/page)
+            var metricsSet = isMyView ? allScannedRequests : allScannedRequests.Where(r => subordinateRoles.Contains(userRoles.GetValueOrDefault(r.UserID, ""))).ToList();
+            ViewBag.TotalCount = metricsSet.Count;
+            ViewBag.PendingCount = metricsSet.Count(l => l.Status == "Pending");
+            ViewBag.ApprovedCount = metricsSet.Count(l => l.Status == "Approved");
+            ViewBag.RejectedCount = metricsSet.Count(l => l.Status == "Rejected");
             ViewBag.UserRoles = userRoles;
-            return View(requests);
+
+            // Sort by DateRequested Descending
+            var sortedRequests = filteredRequests.OrderByDescending(r => r.DateRequested).ToList();
+
+            return View(PaginatedList<LeaveRequest>.Create(sortedRequests, page ?? 1, 10));
         }
 
         // GET: LeaveRequests/Details/5

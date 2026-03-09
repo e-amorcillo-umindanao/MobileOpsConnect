@@ -42,10 +42,10 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Inventory Value</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">₱@totalValue.ToString("N0")</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-[#f4f2ff] text-[#5e4dcd] text-[10px] font-bold uppercase tracking-wide dark:bg-indigo-900/20 dark:text-indigo-400 mb-1">
                 <i class="bi bi-box-seam"></i> @totalProducts Products
             </span>
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">₱@totalValue.ToString("N0")</h3>
         </div>
     </div>
 
@@ -58,10 +58,10 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total Products</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@totalProducts</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-purple-50 text-purple-600 text-[10px] font-bold uppercase tracking-wide dark:bg-purple-900/20 dark:text-purple-400 mb-1">
                 <i class="bi bi-grid"></i> Catalog
             </span>
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@totalProducts</h3>
         </div>
     </div>
 
@@ -74,11 +74,11 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Low Stock</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@lowStockCount</h3>
             @if (lowStockCount > 0)
             { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-rose-50 text-rose-600 text-[10px] font-bold uppercase tracking-wide dark:bg-rose-900/20 dark:text-rose-400 mb-1"><i class="bi bi-exclamation-triangle"></i> Reorder Needed</span> }
             else
             { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wide dark:bg-emerald-900/20 dark:text-emerald-400 mb-1"><i class="bi bi-check-circle"></i> Healthy</span> }
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@lowStockCount</h3>
         </div>
     </div>
 
@@ -91,10 +91,10 @@
         </div>
         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Staff On Leave</p>
         <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@onLeaveCount</h3>
             <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-600 text-[10px] font-bold uppercase tracking-wide dark:bg-amber-900/20 dark:text-amber-400 mb-1">
                 @leaveUtilPercent% Workforce
             </span>
+            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@onLeaveCount</h3>
         </div>
     </div>
 </div>
@@ -129,11 +129,12 @@
                     var gradientStr = string.Join(", ", gradientParts);
 
                     <!-- Donut Chart -->
-                    <div class="relative size-48 mx-auto mb-8">
+                    <!-- Responsive Donut Chart -->
+                    <div class="relative size-40 sm:size-48 lg:size-52 mx-auto mb-8">
                         <div class="size-full rounded-full" style="background: conic-gradient(@gradientStr);"></div>
-                        <div class="absolute inset-4 bg-white dark:bg-neutral-900 rounded-full flex flex-col items-center justify-center border-4 border-gray-50 dark:border-neutral-800">
-                            <span class="text-2xl font-bold text-gray-900 dark:text-white">@totalProducts</span>
-                            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Items</span>
+                        <div class="absolute inset-4 sm:inset-5 lg:inset-6 bg-white dark:bg-neutral-900 rounded-full flex flex-col items-center justify-center border-4 border-gray-50 dark:border-neutral-800 shadow-inner">
+                            <span class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">@totalProducts</span>
+                            <span class="text-[9px] sm:text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">Total Items</span>
                         </div>
                     </div>
 
@@ -168,52 +169,59 @@
         </div>
     </div>
 
-    <!-- Actions Required -->
+    <!-- Inventory Health -->
     <div>
         <div class="flex items-center gap-x-2 mb-4">
-            <i class="bi bi-bell text-gray-400"></i>
-            <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Actions Required</h2>
+            <i class="bi bi-heart-pulse text-gray-400"></i>
+            <h2 class="text-xs font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200">Inventory Health</h2>
         </div>
-        <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
-            <div class="p-0">
-                @{ bool hasAlerts = pendingLeaves > 0 || (ViewBag.LowStockAlerts != null && ((IEnumerable<dynamic>)ViewBag.LowStockAlerts).Any()); }
-                @if (!hasAlerts)
-                {
-                    <div class="text-center py-8 px-6">
-                        <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-green-50 bg-green-100 text-green-800 mx-auto mb-4"><i class="bi bi-check-circle-fill text-2xl"></i></span>
-                        <h3 class="text-sm font-semibold text-gray-800 mb-1">All Clear</h3>
-                        <p class="text-xs text-gray-500 mb-0">No critical alerts at this time. Everything is running smoothly.</p>
+        <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 h-full">
+            <div class="p-6">
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-sm font-bold text-gray-800 dark:text-white">Overall Availability</h3>
+                        <span class="text-2xl font-black text-emerald-600 dark:text-emerald-400">@(100 - (totalProducts > 0 ? (lowStockCount * 100 / totalProducts) : 0))%</span>
                     </div>
-                }
-                else
-                {
-                    <div class="p-6 space-y-4">
-                        @if (pendingLeaves > 0)
-                        {
-                            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 flex items-center justify-between">
-                                <div class="flex items-center gap-3">
-                                    <span class="inline-flex justify-center items-center size-[44px] rounded-lg bg-amber-100 text-amber-800"><i class="bi bi-calendar-event-fill text-lg"></i></span>
-                                    <div><p class="text-sm font-bold text-gray-800 mb-0">Leave Requests Pending</p><span class="text-xs text-gray-500"><strong>@pendingLeaves</strong> request@(pendingLeaves != 1 ? "s" : "") awaiting approval</span></div>
-                                </div>
-                                <a asp-controller="LeaveRequests" asp-action="Index" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-amber-200 bg-amber-50 text-amber-800 hover:bg-amber-100"><i class="bi bi-arrow-right"></i> Review</a>
+                    <div class="w-full bg-gray-100 rounded-full h-2.5 dark:bg-neutral-800 overflow-hidden">
+                        <div class="bg-emerald-500 h-2.5 rounded-full transition-all duration-1000" style="width: @(100 - (totalProducts > 0 ? (lowStockCount * 100 / totalProducts) : 0))%"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="p-4 bg-emerald-50 border border-emerald-100 rounded-xl dark:bg-emerald-900/10 dark:border-emerald-900/30">
+                        <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1 text-right">Items In Stock</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white text-right">@(totalProducts - lowStockCount)</p>
+                    </div>
+                    <div class="p-4 bg-rose-50 border border-rose-100 rounded-xl dark:bg-rose-900/10 dark:border-rose-900/30">
+                        <p class="text-[10px] font-bold text-rose-600 uppercase tracking-widest mb-1 text-right">Items Low Stock</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white text-right">@lowStockCount</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 rounded-lg border border-gray-100 dark:border-neutral-800">
+                        <div class="flex items-center gap-x-3">
+                            <div class="size-8 flex justify-center items-center bg-gray-50 text-gray-500 rounded-lg dark:bg-neutral-800">
+                                <i class="bi bi-box"></i>
                             </div>
-                        }
-                        @if (ViewBag.LowStockAlerts != null)
-                        {
-                            foreach (var item in ViewBag.LowStockAlerts)
-                            {
-                                bool isOutOfStock = item.StockQuantity == 0;
-                                <div class="rounded-lg p-4 flex items-center justify-between @(isOutOfStock ? "bg-red-50 border border-red-200" : "bg-amber-50 border border-amber-200")">
-                                    <div class="flex items-center gap-3">
-                                        <span class="inline-flex justify-center items-center size-[44px] rounded-lg @(isOutOfStock ? "bg-red-100 text-red-800" : "bg-amber-100 text-amber-800")"><i class="bi @(isOutOfStock ? "bi-x-circle-fill" : "bi-exclamation-triangle-fill") text-lg"></i></span>
-                                        <div><p class="text-sm font-bold text-gray-800 mb-0">@item.Name</p><span class="text-xs text-gray-500">Only <strong>@item.StockQuantity</strong> remaining</span></div>
-                                    </div>
-                                    <span class="inline-flex items-center py-1 px-2.5 rounded-full text-xs font-semibold @(isOutOfStock ? "bg-red-100 text-red-800" : "bg-amber-100 text-amber-800")">@(isOutOfStock ? "OUT OF STOCK" : "CRITICAL")</span>
-                                </div>
-                            }
-                        }
+                            <span class="text-xs font-bold text-gray-700 dark:text-neutral-300">Catalog Coverage</span>
+                        </div>
+                        <span class="text-xs font-bold text-gray-900 dark:text-white text-right">@totalProducts SKUs</span>
                     </div>
-                }
+                    <div class="flex items-center justify-between p-3 rounded-lg border border-gray-100 dark:border-neutral-800">
+                        <div class="flex items-center gap-x-3">
+                            <div class="size-8 flex justify-center items-center bg-gray-50 text-gray-500 rounded-lg dark:bg-neutral-800">
+                                <i class="bi bi-layers"></i>
+                            </div>
+                            <span class="text-xs font-bold text-gray-700 dark:text-neutral-300">Total Valuation</span>
+                        </div>
+                        <span class="text-xs font-bold text-gray-900 dark:text-white text-right">₱@totalValue.ToString("N0")</span>
+                    </div>
+                </div>
+
+                <a asp-controller="Products" asp-action="Index" class="mt-6 w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
+                    <i class="bi bi-arrow-right text-xs"></i> View Full Inventory
+                </a>
             </div>
         </div>
     </div>

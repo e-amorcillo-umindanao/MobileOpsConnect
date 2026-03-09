@@ -22,9 +22,31 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Products
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? status, int? page)
         {
-            return View(await _context.Products.ToListAsync());
+            status = status ?? "active";
+            var query = _context.Products.AsNoTracking();
+
+            // Counts for tabs (full dataset)
+            ViewBag.ActiveCount = await _context.Products.CountAsync(p => p.StockQuantity > 0);
+            ViewBag.ArchivedCount = await _context.Products.CountAsync(p => p.StockQuantity == 0);
+            ViewBag.CurrentStatus = status;
+
+            // Simple metrics
+            ViewBag.TotalProducts = ViewBag.ActiveCount + ViewBag.ArchivedCount;
+            ViewBag.LowStockCount = await _context.Products.CountAsync(p => p.StockQuantity > 0 && p.StockQuantity <= 10);
+
+            if (status == "archived")
+            {
+                query = query.Where(p => p.StockQuantity == 0);
+            }
+            else
+            {
+                query = query.Where(p => p.StockQuantity > 0);
+            }
+
+            var products = query.OrderBy(p => p.Name);
+            return View(await PaginatedList<Product>.CreateAsync(products, page ?? 1, 10));
         }
 
         // GET: Products/Details/5
