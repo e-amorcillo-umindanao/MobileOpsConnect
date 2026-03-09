@@ -252,53 +252,44 @@
     </h2>
 </div>
 
-<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10">
-    <!-- Card -->
-    <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-6 md:p-8 flex flex-col text-center h-full">
-            <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-indigo-50 text-indigo-500 dark:bg-indigo-900/20 dark:text-indigo-400">
-                <i class="bi bi-calendar-check text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">File Leave Request</h3>
-            <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">Submit a new leave request for manager approval. Track your remaining balance.</p>
-            <a asp-controller="LeaveRequests" asp-action="Create" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                <i class="bi bi-plus-lg"></i> File Leave
+<div class="grid lg:grid-cols-2 gap-12 mb-10">
+    <!-- Self Service -->
+    <div>
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden shadow-sm divide-y divide-gray-100 dark:divide-neutral-800">
+            <!-- File Leave -->
+            <a asp-controller="LeaveRequests" asp-action="Create" class="group p-5 flex items-center gap-x-4 hover:bg-gray-50/50 transition-all dark:hover:bg-neutral-800">
+                <div class="size-10 flex justify-center items-center bg-indigo-50 text-indigo-600 rounded-lg dark:bg-indigo-900/20 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/30">
+                    <i class="bi bi-calendar-event text-lg"></i>
+                </div>
+                <div class="grow">
+                    <h3 class="font-bold text-gray-800 dark:text-white text-sm">File Leave Request</h3>
+                    <p class="text-[10px] text-gray-400 dark:text-neutral-500">Submit a new leave application</p>
+                </div>
+                <i class="bi bi-chevron-right text-gray-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5"></i>
             </a>
-        </div>
-    </div>
 
-    <!-- Card -->
-    <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-6 md:p-8 flex flex-col text-center h-full">
-            <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-amber-50 text-amber-500 dark:bg-amber-900/20 dark:text-amber-400">
-                <i class="bi bi-folder2-open text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">My Leave History</h3>
-            <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-6 leading-relaxed">View all submitted leave requests and their current approval status.</p>
-            <div class="flex gap-2 justify-center flex-wrap mb-6">
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100 dark:border-transparent dark:bg-emerald-900/20 dark:text-emerald-400">
-                    <i class="bi bi-check-circle"></i> @ViewBag.UserApproved Approved
-                </span>
-                <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold border border-amber-100 dark:border-transparent dark:bg-amber-900/20 dark:text-amber-400">
-                    <i class="bi bi-hourglass-split"></i> @ViewBag.UserPending Pending
-                </span>
-            </div>
-            <a asp-controller="LeaveRequests" asp-action="Index" asp-route-view="my" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                View History
+            <!-- My Leave History -->
+            <a asp-controller="LeaveRequests" asp-action="Index" asp-route-view="my" class="group p-5 flex items-center gap-x-4 hover:bg-gray-50/50 transition-all dark:hover:bg-neutral-800">
+                <div class="size-10 flex justify-center items-center bg-amber-50 text-amber-500 rounded-lg dark:bg-amber-900/20 dark:text-amber-400 border border-amber-100 dark:border-amber-900/30">
+                    <i class="bi bi-folder2-open text-lg"></i>
+                </div>
+                <div class="grow">
+                    <h3 class="font-bold text-gray-800 dark:text-white text-sm">My Leave History</h3>
+                    <p class="text-[10px] text-gray-400 dark:text-neutral-500">View submitted leaves & approval status</p>
+                </div>
+                <i class="bi bi-chevron-right text-gray-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5"></i>
             </a>
-        </div>
-    </div>
 
-    <!-- Card -->
-    <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-6 md:p-8 flex flex-col text-center h-full">
-            <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-cyan-50 text-cyan-500 dark:bg-cyan-900/20 dark:text-cyan-400">
-                <i class="bi bi-file-earmark-text text-2xl"></i>
-            </div>
-            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">View Payslip</h3>
-            <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">Access your latest payslip and compensation details</p>
-            <a asp-controller="Payroll" asp-action="MyPayslip" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                <i class="bi bi-file-earmark-text"></i> View Payslip
+            <!-- My Payslip -->
+            <a asp-controller="Payroll" asp-action="MyPayslip" class="group p-5 flex items-center gap-x-4 hover:bg-gray-50/50 transition-all dark:hover:bg-neutral-800">
+                <div class="size-10 flex justify-center items-center bg-cyan-50 text-cyan-600 rounded-lg dark:bg-cyan-900/20 dark:text-cyan-400 border border-cyan-100 dark:border-cyan-900/30">
+                    <i class="bi bi-file-earmark-diff text-lg"></i>
+                </div>
+                <div class="grow">
+                    <h3 class="font-bold text-gray-800 dark:text-white text-sm">View My Payslip</h3>
+                    <p class="text-[10px] text-gray-400 dark:text-neutral-500">Access compensation details</p>
+                </div>
+                <i class="bi bi-chevron-right text-gray-300 dark:text-neutral-600 transition-transform group-hover:translate-x-0.5"></i>
             </a>
         </div>
     </div>

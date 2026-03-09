@@ -72,52 +72,52 @@
 
 <!-- Metrics Grid -->
 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-calendar2-week text-xl"></i></div>
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg dark:bg-indigo-900/20 dark:text-indigo-400"><i class="bi bi-calendar2-week text-xl"></i></div>
             <div class="grow">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-xs uppercase tracking-wide text-gray-500">Total</p>
+                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Total</p>
                     </div>
                     <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@totalRequests</h3>
                 </div>
             </div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg"><i class="bi bi-clock-history text-xl"></i></div>
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg dark:bg-amber-900/20 dark:text-amber-400"><i class="bi bi-clock-history text-xl"></i></div>
             <div class="grow">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-xs uppercase tracking-wide text-gray-500">Pending</p>
+                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Pending</p>
                     </div>
                     <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@pendingCount</h3>
                 </div>
             </div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg"><i class="bi bi-calendar-check text-xl"></i></div>
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg dark:bg-emerald-900/20 dark:text-emerald-400"><i class="bi bi-calendar-check text-xl"></i></div>
             <div class="grow">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-xs uppercase tracking-wide text-gray-500">Approved</p>
+                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Approved</p>
                     </div>
                     <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@approvedCount</h3>
                 </div>
             </div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-red-100 text-red-800 rounded-lg"><i class="bi bi-calendar-x text-xl"></i></div>
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-red-100 text-red-800 rounded-lg dark:bg-rose-900/20 dark:text-rose-400"><i class="bi bi-calendar-x text-xl"></i></div>
             <div class="grow">
                 <div class="flex justify-between items-start">
                     <div>
-                        <p class="text-xs uppercase tracking-wide text-gray-500">Rejected</p>
+                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Rejected</p>
                     </div>
                     <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@rejectedCount</h3>
                 </div>
@@ -135,10 +135,10 @@
 <!-- Action Bar -->
 <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
     <div class="flex items-center gap-x-3">
-        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-funnel-fill text-lg"></i></span>
+        <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800 dark:bg-neutral-800 dark:text-neutral-400"><i class="bi bi-funnel-fill text-lg"></i></span>
         <div>
-            <p class="font-semibold text-sm text-gray-800 mb-0">@(selectedStatus == "Archived" ? "Leave Archive" : "Active Requests")</p>
-            <p class="text-gray-500 text-xs mb-0">Showing @(selectedStatus == "Archived" ? archivedCount : pendingCount) total record@( (selectedStatus == "Archived" ? archivedCount : pendingCount) != 1 ? "s" : "")</p>
+            <p class="font-semibold text-sm text-gray-800 dark:text-white mb-0">@(selectedStatus == "Archived" ? "Leave Archive" : "Active Requests")</p>
+            <p class="text-gray-500 dark:text-neutral-400 text-xs mb-0">Showing @(selectedStatus == "Archived" ? archivedCount : pendingCount) total record@( (selectedStatus == "Archived" ? archivedCount : pendingCount) != 1 ? "s" : "")</p>
         </div>
     </div>
     <div class="flex flex-wrap items-center gap-2">
@@ -166,224 +166,95 @@
 <!-- Tab Header Underline -->
 <nav class="flex space-x-6 border-b border-gray-200 dark:border-neutral-700 mb-6" aria-label="Tabs">
     <a asp-action="Index" asp-route-view="@(isMyView ? "my" : "")" asp-route-status="Active" asp-route-searchString="@ViewBag.SearchString" 
-       class="py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none transition-all @(selectedStatus == "Active" ? "border-gray-800 text-gray-900 dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400")">
+       class="tab-link py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none focus:ring-0 transition-colors @(selectedStatus == "Active" ? "border-gray-800 text-gray-900 dark:border-white dark:text-white active-tab" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 inactive-tab")">
         Active
         <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(selectedStatus == "Active" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@pendingCount</span>
     </a>
     <a asp-action="Index" asp-route-view="@(isMyView ? "my" : "")" asp-route-status="Archived" asp-route-searchString="@ViewBag.SearchString" 
-       class="py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none transition-all @(selectedStatus == "Archived" ? "border-gray-800 text-gray-900 dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400")">
+       class="tab-link py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none focus:ring-0 transition-colors @(selectedStatus == "Archived" ? "border-gray-800 text-gray-900 dark:border-white dark:text-white active-tab" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 inactive-tab")">
         Archive
         <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(selectedStatus == "Archived" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@archivedCount</span>
     </a>
 </nav>
 
-<!-- Leave Table Card -->
-<div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
-
-    <div class="px-6 py-5 border-b border-gray-100 dark:border-neutral-800">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-            <div class="flex items-center gap-x-3">
-                <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-cyan-100 text-cyan-800"><i class="bi bi-table text-lg"></i></span>
-                <div>
-                    <h3 class="text-sm font-semibold text-gray-800 dark:text-neutral-200" id="lv-card-title">Leave Records</h3>
-                    <span class="text-xs text-gray-500" id="lv-card-subtitle">@pendingCount pending application@(pendingCount != 1 ? "s" : "")</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="p-6">
-        @if (!Model.Any())
-        {
-            <div class="text-center py-12">
-                <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-100 bg-gray-50 text-gray-400 mx-auto mb-4">
-                    <i class="bi bi-inbox text-2xl"></i>
-                </span>
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">No Results Found</h3>
-                <p class="text-sm text-gray-500">We couldn't find any leave requests matching your current filters.</p>
-                <a asp-action="Index" asp-route-view="@(isMyView ? "my" : "")" class="mt-4 inline-flex items-center gap-x-2 text-sm font-semibold text-indigo-600 hover:text-indigo-700">
-                    <i class="bi bi-x-circle"></i> Clear Filters
-                </a>
-            </div>
-        }
-        else
-        {
-                <!-- Desktop Table -->
-                <div class="hidden md:block">
-                    <div class="-m-1.5 overflow-x-auto">
-                        <div class="p-1.5 min-w-full inline-block align-middle">
-                            <div class="border rounded-xl shadow-sm overflow-hidden border-gray-200 dark:border-neutral-700">
-                                <table class="min-w-full divide-y divide-gray-100 dark:divide-neutral-800">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">Employee</th>
-                                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">Type</th>
-                                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">Dates</th>
-                                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">Reason</th>
-                                            <th scope="col" class="px-6 py-4 text-center text-[11px] font-bold text-gray-500 uppercase tracking-widest">Status</th>
-                                            <th scope="col" class="px-6 py-4 text-start text-[11px] font-bold text-gray-500 uppercase tracking-widest">Filed</th>
-                                            @if (hasPower)
-                                            {
-                                                <th scope="col" class="px-6 py-4 text-end text-[11px] font-bold text-gray-500 uppercase tracking-widest">Actions</th>
-                                            }
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-100 dark:divide-neutral-800">
-                                        @foreach (var item in Model)
-                                        {
-                                            bool isMyRequest = (item.UserID == currentUserId);
-                                            string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
-                                            int targetRank = rRole == "SuperAdmin" ? 4 : rRole == "SystemAdmin" ? 3 : rRole == "DepartmentManager" ? 2 : 1;
-                                            bool canApproveThisRow = (myRank > targetRank) && item.Status == "Pending";
-
-                                            <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors @(canApproveThisRow ? "border-l-4 border-l-amber-500" : "")">
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <div class="flex items-center gap-x-3">
-                                                        <span class="shrink-0 inline-flex justify-center items-center size-[36px] rounded-full @(RoleIconClass(rRole))">
-                                                            <i class="bi @(RoleIcon(rRole)) text-sm"></i>
-                                                        </span>
-                                                        <div>
-                                                            <p class="text-sm font-semibold text-gray-800 dark:text-neutral-200 mb-0">
-                                                                @(item.User?.UserName ?? "Unknown")
-                                                                @if (isMyRequest)
-                                                                {
-                                                                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium ms-1">YOU</span>
-                                                                }
-                                                            </p>
-                                                            <span class="text-xs text-gray-500">@rRole</span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-cyan-100 text-cyan-800">@item.LeaveType</span>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <p class="text-sm font-semibold text-gray-800 dark:text-neutral-200 mb-0">@item.StartDate.ToString("MMM dd") – @item.EndDate.ToString("MMM dd")</p>
-                                                    <span class="text-xs text-gray-500">@((item.EndDate - item.StartDate).Days + 1) Day@(((item.EndDate - item.StartDate).Days + 1) != 1 ? "s" : "")</span>
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <span class="text-sm text-gray-500 inline-block max-w-[180px] truncate" title="@item.Reason">@item.Reason</span>
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4 text-center">
-                                                    @if (item.Status == "Pending")
-                                                    { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Pending</span> }
-                                                    else if (item.Status == "Approved")
-                                                    { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Approved</span> }
-                                                    else
-                                                    { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Rejected</span> }
-                                                </td>
-                                                <td class="whitespace-nowrap px-6 py-4">
-                                                    <span class="text-sm text-gray-500">@item.DateRequested.ToString("MMM dd, yyyy")</span>
-                                                </td>
-                                                @if (hasPower)
-                                                {
-                                                    <td class="whitespace-nowrap px-6 py-4 text-end">
-                                                        @if (canApproveThisRow)
-                                                        {
-                                                            <div class="flex justify-end gap-1">
-                                                                <form asp-action="Approve" asp-route-id="@item.LeaveID" method="post" class="inline">
-                                                                    @Html.AntiForgeryToken()
-                                                                    <button type="submit" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100" title="Approve"><i class="bi bi-check-lg"></i></button>
-                                                                </form>
-                                                                <form asp-action="Reject" asp-route-id="@item.LeaveID" method="post" class="inline">
-                                                                    @Html.AntiForgeryToken()
-                                                                    <button type="submit" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100" title="Reject"><i class="bi bi-x-lg"></i></button>
-                                                                </form>
-                                                            </div>
-                                                        }
-                                                        else if (item.Status == "Pending")
-                                                        {
-                                                            <span class="text-xs text-gray-400 italic">Higher Approval</span>
-                                                        }
-                                                        else
-                                                        {
-                                                            <span class="text-xs text-gray-400">Processed</span>
-                                                        }
-                                                    </td>
-                                                }
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Mobile Card List -->
-                <div class="md:hidden space-y-3 mt-4">
-                    @foreach (var item in Model)
-                    {
-                        bool isMyRequest = (item.UserID == currentUserId);
-                        string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
-                        int targetRank = rRole == "SuperAdmin" ? 4 : rRole == "SystemAdmin" ? 3 : rRole == "DepartmentManager" ? 2 : 1;
-                        bool canApproveThisRow = (myRank > targetRank) && item.Status == "Pending";
-
-                        <div class="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 @(canApproveThisRow ? "border-l-4 border-l-amber-500" : "")">
-                            <div class="flex items-start justify-between mb-3">
-                                <div class="flex items-center gap-x-3 min-w-0">
-                                    <span class="shrink-0 inline-flex justify-center items-center size-[36px] rounded-full @(RoleIconClass(rRole))">
-                                        <i class="bi @(RoleIcon(rRole)) text-sm"></i>
-                                    </span>
-                                    <div class="min-w-0">
-                                        <p class="text-sm font-semibold text-gray-800 mb-0 truncate">
-                                            @(item.User?.UserName ?? "Unknown")
-                                            @if (isMyRequest) { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-indigo-100 text-indigo-800 text-xs font-medium ms-1">YOU</span> }
-                                        </p>
-                                        <span class="text-xs text-gray-500">@rRole</span>
-                                    </div>
-                                </div>
-                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(item.Status == "Pending" ? "bg-amber-100 text-amber-800" : item.Status == "Approved" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")">@item.Status</span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2 mb-3">
-                                <div class="bg-cyan-50 rounded-lg p-2"><p class="text-gray-500 text-xs mb-0 uppercase font-medium">Type</p><p class="text-sm font-semibold text-gray-800 mb-0">@item.LeaveType</p></div>
-                                <div class="bg-indigo-50 rounded-lg p-2"><p class="text-gray-500 text-xs mb-0 uppercase font-medium">Duration</p><p class="text-sm font-semibold text-gray-800 mb-0">@((item.EndDate - item.StartDate).Days + 1) Day@(((item.EndDate - item.StartDate).Days + 1) != 1 ? "s" : "")</p></div>
-                                <div class="bg-green-50 rounded-lg p-2"><p class="text-gray-500 text-xs mb-0 uppercase font-medium">From</p><p class="text-sm font-semibold text-gray-800 mb-0">@item.StartDate.ToString("MMM dd")</p></div>
-                                <div class="bg-purple-50 rounded-lg p-2"><p class="text-gray-500 text-xs mb-0 uppercase font-medium">To</p><p class="text-sm font-semibold text-gray-800 mb-0">@item.EndDate.ToString("MMM dd")</p></div>
-                            </div>
-                            <div class="bg-gray-50 rounded-lg p-2 mb-2"><p class="text-gray-500 text-xs mb-0 uppercase font-medium">Reason</p><p class="text-sm text-gray-800 mb-0">@item.Reason</p></div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-gray-500 text-xs">Filed: @item.DateRequested.ToString("MMM dd, yyyy")</span>
-                            </div>
-                            @if (canApproveThisRow)
-                            {
-                                <div class="flex gap-2 mt-4">
-                                    <form asp-action="Approve" asp-route-id="@item.LeaveID" method="post" class="flex-1">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100">Approve</button>
-                                    </form>
-                                    <form asp-action="Reject" asp-route-id="@item.LeaveID" method="post" class="flex-1">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100">Reject</button>
-                                    </form>
-                                </div>
-                            }
-                        </div>
-                    }
-                </div>
-        }
-    </div>
-
-    <!-- Pagination Integration -->
-    <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
-        <partial name="_Pagination" model="Model" />
-    </div>
-
-    <!-- Footer -->
-    <div class="px-6 py-4 bg-gray-50/50 dark:bg-neutral-800/50 border-t border-gray-100 dark:border-neutral-800">
-        <div class="flex flex-wrap justify-between items-center gap-2">
-            <span class="text-[11px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">
-                <i class="bi bi-info-circle me-1"></i> 
-                Showing @((Model.PageIndex - 1) * 10 + 1) to @(Math.Min(Model.PageIndex * 10, totalRequests)) of @totalRequests total requests
-            </span>
-        </div>
-    </div>
+<!-- Leave Table Container (Targeted by AJAX) -->
+<div id="table-container">
+    <partial name="_LeaveRequestsTable" model="Model" />
 </div>
 
 
 
-<!-- Tab Toggle Script -->
+<!-- Tab Toggle & Pagination Script (Native AJAX) -->
 <script>
-    // Server-side pagination, status filtering, and search implemented.
-    // Client-side tab switching and search logic removed for consistency.
+    (function () {
+        function loadContent(url, updateHistory = true) {
+            const container = document.getElementById('table-container');
+            if (!container) return;
+
+            container.style.opacity = '0.5';
+
+            fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error();
+                return response.text();
+            })
+            .then(html => {
+                container.innerHTML = html;
+                container.style.opacity = '1';
+                if (updateHistory) history.pushState(null, '', url);
+                updateActiveTab(url);
+            })
+            .catch(() => {
+                // Graceful degradation on failure: full page reload
+                window.location.href = url;
+            });
+        }
+
+        function updateActiveTab(url) {
+            const params = new URLSearchParams(new URL(url, location.origin).search);
+            const status = params.get('status') || 'Active';
+            
+            document.querySelectorAll('.tab-link').forEach(tab => {
+                const tabStatus = new URLSearchParams(
+                    new URL(tab.href, location.origin).search
+                ).get('status') || 'Active';
+                
+                if (tabStatus === status) {
+                    tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'dark:text-neutral-400', 'inactive-tab');
+                    tab.classList.add('border-gray-800', 'text-gray-900', 'dark:border-white', 'dark:text-white', 'active-tab');
+                    
+                    const badge = tab.querySelector('span');
+                    if(badge) {
+                        badge.classList.remove('bg-gray-50', 'text-gray-500', 'dark:bg-neutral-800', 'dark:text-neutral-400');
+                        badge.classList.add('bg-gray-100', 'text-gray-800', 'dark:bg-neutral-700', 'dark:text-white');
+                    }
+                } else {
+                    tab.classList.remove('border-gray-800', 'text-gray-900', 'dark:border-white', 'dark:text-white', 'active-tab');
+                    tab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'dark:text-neutral-400', 'inactive-tab');
+                    
+                    const badge = tab.querySelector('span');
+                    if(badge) {
+                        badge.classList.remove('bg-gray-100', 'text-gray-800', 'dark:bg-neutral-700', 'dark:text-white');
+                        badge.classList.add('bg-gray-50', 'text-gray-500', 'dark:bg-neutral-800', 'dark:text-neutral-400');
+                    }
+                }
+            });
+        }
+
+        // Event delegation - single listener handles tabs AND dynamic pagination links
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('.tab-link, #table-container a[href]');
+            if (link) {
+                e.preventDefault();
+                loadContent(link.getAttribute('href'));
+            }
+        });
+
+        // Browser Back/Forward support
+        window.addEventListener('popstate', () => {
+            loadContent(window.location.href, false);
+        });
+    })();
 </script>

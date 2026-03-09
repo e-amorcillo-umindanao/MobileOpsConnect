@@ -60,7 +60,14 @@ namespace MobileOpsConnect.Controllers
             var orders = query.OrderByDescending(po => po.DateRequested);
 
             ViewBag.CanApprove = User.IsInRole("DepartmentManager") || User.IsInRole("SuperAdmin");
-            return View(await PaginatedList<PurchaseOrder>.CreateAsync(orders.AsNoTracking(), page ?? 1, 10));
+            var paginatedList = await PaginatedList<PurchaseOrder>.CreateAsync(orders.AsNoTracking(), page ?? 1, 10);
+            
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_OrdersTable", paginatedList);
+            }
+
+            return View(paginatedList);
         }
 
         // GET: Orders/Create

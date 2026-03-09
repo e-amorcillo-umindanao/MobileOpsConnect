@@ -46,7 +46,14 @@ namespace MobileOpsConnect.Controllers
             }
 
             var products = query.OrderBy(p => p.Name);
-            return View(await PaginatedList<Product>.CreateAsync(products, page ?? 1, 10));
+            var paginatedList = await PaginatedList<Product>.CreateAsync(products, page ?? 1, 10);
+            
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_ProductsTable", paginatedList);
+            }
+
+            return View(paginatedList);
         }
 
         // GET: Products/Details/5

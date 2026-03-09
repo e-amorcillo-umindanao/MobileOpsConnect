@@ -58,6 +58,12 @@ namespace MobileOpsConnect.Controllers
                 isMyView = true;
             }
 
+            // Fix Data Placement issue: ensure Status always defaults to Active if not provided
+            if (string.IsNullOrEmpty(status))
+            {
+                status = "Active";
+            }
+
             ViewBag.IsMyView = isMyView;
             ViewBag.SelectedStatus = status;
             ViewBag.SearchString = searchString;
@@ -125,8 +131,14 @@ namespace MobileOpsConnect.Controllers
 
             // Sort by DateRequested Descending
             var sortedRequests = filteredRequests.OrderByDescending(r => r.DateRequested).ToList();
+            var paginatedList = PaginatedList<LeaveRequest>.Create(sortedRequests, page ?? 1, 10);
 
-            return View(PaginatedList<LeaveRequest>.Create(sortedRequests, page ?? 1, 10));
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_LeaveRequestsTable", paginatedList);
+            }
+
+            return View(paginatedList);
         }
 
         // GET: LeaveRequests/Details/5
