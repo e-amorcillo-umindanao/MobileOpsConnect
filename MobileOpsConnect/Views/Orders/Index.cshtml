@@ -82,12 +82,12 @@
     <nav class="flex space-x-6" aria-label="Tabs">
         <a asp-action="Index" asp-route-status="active" 
            class="tab-link py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none focus:ring-0 transition-colors @(currentStatus == "active" ? "border-gray-800 text-gray-900 dark:border-white dark:text-white active-tab" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 inactive-tab")">
-            <i class="bi bi-hourglass-split"></i> Active
+            Active
             <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(currentStatus == "active" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@ViewBag.PendingCount</span>
         </a>
         <a asp-action="Index" asp-route-status="archived" 
            class="tab-link py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none focus:ring-0 transition-colors @(currentStatus == "archived" ? "border-gray-800 text-gray-900 dark:border-white dark:text-white active-tab" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 inactive-tab")">
-            <i class="bi bi-archive"></i> Archive
+            Archive
             <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(currentStatus == "archived" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@(ViewBag.ApprovedCount + ViewBag.RejectedCount)</span>
         </a>
     </nav>
