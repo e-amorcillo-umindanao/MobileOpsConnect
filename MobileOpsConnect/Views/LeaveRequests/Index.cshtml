@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @inject UserManager<IdentityUser> UserManager
 @model PaginatedList<MobileOpsConnect.Models.LeaveRequest>
 
@@ -71,55 +71,55 @@
 </div>
 
 <!-- Metrics Grid -->
-<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
-    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg dark:bg-indigo-900/20 dark:text-indigo-400"><i class="bi bi-calendar2-week text-xl"></i></div>
-            <div class="grow">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Total</p>
-                    </div>
-                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@totalRequests</h3>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-8 mt-2">
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="p-3 sm:p-4 md:p-5 flex items-center sm:items-start gap-x-3 sm:gap-x-4 min-w-0">
+            <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-indigo-100 text-indigo-800 rounded-lg dark:bg-indigo-900/20 dark:text-indigo-400">
+                <i class="bi bi-calendar2-week text-lg sm:text-xl"></i>
+            </div>
+            <div class="grow min-w-0">
+                <div class="flex flex-col min-w-0">
+                    <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Total">Total</p>
+                    <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate" title="@totalRequests">@totalRequests</h3>
                 </div>
             </div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg dark:bg-amber-900/20 dark:text-amber-400"><i class="bi bi-clock-history text-xl"></i></div>
-            <div class="grow">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Pending</p>
-                    </div>
-                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@pendingCount</h3>
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="p-3 sm:p-4 md:p-5 flex items-center sm:items-start gap-x-3 sm:gap-x-4 min-w-0">
+            <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-amber-100 text-amber-800 rounded-lg dark:bg-amber-900/20 dark:text-amber-400">
+                <i class="bi bi-clock-history text-lg sm:text-xl"></i>
+            </div>
+            <div class="grow min-w-0">
+                <div class="flex flex-col min-w-0">
+                    <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Pending">Pending</p>
+                    <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate" title="@pendingCount">@pendingCount</h3>
                 </div>
             </div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg dark:bg-emerald-900/20 dark:text-emerald-400"><i class="bi bi-calendar-check text-xl"></i></div>
-            <div class="grow">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Approved</p>
-                    </div>
-                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@approvedCount</h3>
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="p-3 sm:p-4 md:p-5 flex items-center sm:items-start gap-x-3 sm:gap-x-4 min-w-0">
+            <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-green-100 text-green-800 rounded-lg dark:bg-emerald-900/20 dark:text-emerald-400">
+                <i class="bi bi-calendar-check text-lg sm:text-xl"></i>
+            </div>
+            <div class="grow min-w-0">
+                <div class="flex flex-col min-w-0">
+                    <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Approved">Approved</p>
+                    <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate" title="@approvedCount">@approvedCount</h3>
                 </div>
             </div>
         </div>
     </div>
-    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-red-100 text-red-800 rounded-lg dark:bg-rose-900/20 dark:text-rose-400"><i class="bi bi-calendar-x text-xl"></i></div>
-            <div class="grow">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500">Rejected</p>
-                    </div>
-                    <h3 class="text-xl sm:text-2xl font-bold text-gray-800 dark:text-neutral-200">@rejectedCount</h3>
+    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="p-3 sm:p-4 md:p-5 flex items-center sm:items-start gap-x-3 sm:gap-x-4 min-w-0">
+            <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-red-100 text-red-800 rounded-lg dark:bg-rose-900/20 dark:text-rose-400">
+                <i class="bi bi-calendar-x text-lg sm:text-xl"></i>
+            </div>
+            <div class="grow min-w-0">
+                <div class="flex flex-col min-w-0">
+                    <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Rejected">Rejected</p>
+                    <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate" title="@rejectedCount">@rejectedCount</h3>
                 </div>
             </div>
         </div>
