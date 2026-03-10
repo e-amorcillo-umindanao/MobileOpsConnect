@@ -54,15 +54,12 @@
     <div class="p-6">
         @if (!Model.Any())
         {
-            <div class="text-center py-12">
+            <div class="text-center py-20 px-6">
                 <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-400 mx-auto mb-4 dark:border-neutral-800 dark:bg-neutral-800/50">
                     <i class="bi bi-inbox text-2xl"></i>
                 </span>
-                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">No Results Found</h3>
-                <p class="text-sm text-gray-500 dark:text-neutral-500">We couldn't find any leave requests matching your current filters.</p>
-                <a asp-action="Index" asp-route-view="@(isMyView ? "my" : "")" class="mt-4 inline-flex items-center gap-x-2 text-sm font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
-                    <i class="bi bi-x-circle"></i> Clear Filters
-                </a>
+                <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-1">No Leave Requests Found</h3>
+                <p class="text-sm text-gray-500 dark:text-neutral-500">There are no leave requests to display.</p>
             </div>
         }
         else
@@ -223,18 +220,21 @@
         }
     </div>
 
-    <!-- Pagination Integration -->
-    <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
-        <partial name="_Pagination" model="Model" />
-    </div>
-
-    <!-- Footer -->
-    <div class="px-6 py-4 bg-gray-50/50 dark:bg-neutral-800/50 border-t border-gray-100 dark:border-neutral-800 rounded-b-2xl">
-        <div class="flex flex-wrap justify-between items-center gap-2">
-            <span class="text-[11px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">
-                <i class="bi bi-info-circle me-1"></i> 
-                Showing @((Model.PageIndex - 1) * 10 + 1) to @(Math.Min(Model.PageIndex * 10, totalRequests)) of @totalRequests total requests
-            </span>
+    @if (Model.Any())
+    {
+        <!-- Pagination Integration -->
+        <div class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800">
+            <partial name="_Pagination" model="Model" />
         </div>
-    </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 bg-gray-50/50 dark:bg-neutral-800/50 border-t border-gray-100 dark:border-neutral-800 rounded-b-2xl">
+            <div class="flex flex-wrap justify-between items-center gap-2">
+                <span class="text-[11px] text-gray-500 dark:text-neutral-500 font-medium tracking-wide">
+                    <i class="bi bi-info-circle me-1"></i> 
+                    Showing @((Model.PageIndex - 1) * 10 + 1) to @(Math.Min(Model.PageIndex * 10, totalRequests)) of @totalRequests total requests
+                </span>
+            </div>
+        </div>
+    }
 </div>
