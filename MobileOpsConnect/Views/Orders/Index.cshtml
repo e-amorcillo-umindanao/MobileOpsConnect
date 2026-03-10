@@ -1,4 +1,4 @@
-﻿@model PaginatedList<MobileOpsConnect.Models.PurchaseOrder>
+@model PaginatedList<MobileOpsConnect.Models.PurchaseOrder>
 @{
     ViewData["Title"] = "Purchase Orders";
     string currentStatus = ViewBag.CurrentStatus ?? "active";
@@ -76,29 +76,30 @@
     </div>
 </div>
 
-<!-- Tab Interface -->
-<div class="flex flex-wrap justify-between items-center gap-4 mb-6">
-    <div class="flex flex-wrap items-center gap-2">
-        <nav class="flex space-x-2 bg-gray-100 p-1 rounded-xl dark:bg-neutral-800" aria-label="Tabs">
-            <a asp-action="Index" asp-route-status="active" 
-               class="py-2 px-4 inline-flex items-center gap-x-2 text-xs font-bold rounded-lg focus:outline-none focus:ring-0 transition-colors @(currentStatus == "active" ? "bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-white" : "text-gray-500 hover:text-gray-700 dark:text-neutral-400")">
-                <i class="bi bi-hourglass-split"></i> Active
-                <span class="py-0.5 px-1.5 rounded-full text-[10px] font-bold @(currentStatus == "active" ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40" : "bg-gray-200 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400")">@ViewBag.PendingCount</span>
-            </a>
-            <a asp-action="Index" asp-route-status="archived" 
-               class="py-2 px-4 inline-flex items-center gap-x-2 text-xs font-bold rounded-lg focus:outline-none focus:ring-0 transition-colors @(currentStatus == "archived" ? "bg-white text-gray-800 shadow-sm dark:bg-neutral-900 dark:text-white" : "text-gray-500 hover:text-gray-700 dark:text-neutral-400")">
-                <i class="bi bi-archive"></i> Archive
-                <span class="py-0.5 px-1.5 rounded-full text-[10px] font-bold @(currentStatus == "archived" ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40" : "bg-gray-200 text-gray-600 dark:bg-neutral-700 dark:text-neutral-400")">@(ViewBag.ApprovedCount + ViewBag.RejectedCount)</span>
-            </a>
-        </nav>
+<!-- Action Bar & Tab Interface -->
+<div class="flex flex-wrap justify-between items-end gap-4 border-b border-gray-200 dark:border-neutral-700 mb-6">
+    <!-- Tab Header Underline -->
+    <nav class="flex space-x-6" aria-label="Tabs">
+        <a asp-action="Index" asp-route-status="active" 
+           class="tab-link py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none focus:ring-0 transition-colors @(currentStatus == "active" ? "border-gray-800 text-gray-900 dark:border-white dark:text-white active-tab" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 inactive-tab")">
+            <i class="bi bi-hourglass-split"></i> Active
+            <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(currentStatus == "active" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@ViewBag.PendingCount</span>
+        </a>
+        <a asp-action="Index" asp-route-status="archived" 
+           class="tab-link py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none focus:ring-0 transition-colors @(currentStatus == "archived" ? "border-gray-800 text-gray-900 dark:border-white dark:text-white active-tab" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 inactive-tab")">
+            <i class="bi bi-archive"></i> Archive
+            <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(currentStatus == "archived" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@(ViewBag.ApprovedCount + ViewBag.RejectedCount)</span>
+        </a>
+    </nav>
 
-        @if (User.IsInRole("DepartmentManager") || User.IsInRole("WarehouseStaff") || User.IsInRole("SuperAdmin"))
-        {
+    @if (User.IsInRole("DepartmentManager") || User.IsInRole("WarehouseStaff") || User.IsInRole("SuperAdmin"))
+    {
+        <div class="pb-3">
             <a asp-action="Create" class="py-2 px-4 inline-flex items-center gap-x-2 text-xs font-bold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
                 <i class="bi bi-plus-circle"></i> Submit New PO
             </a>
-        }
-    </div>
+        </div>
+    }
 </div>
 
 <!-- Order Table Container (Targeted by AJAX) -->
@@ -144,24 +145,22 @@
                 ).get('status') || 'active';
                 
                 if (tabStatus === status) {
-                    // Make Active
-                    tab.classList.remove('text-gray-500', 'hover:text-gray-700', 'dark:text-neutral-400');
-                    tab.classList.add('bg-white', 'text-gray-800', 'shadow-sm', 'dark:bg-neutral-900', 'dark:text-white', 'active-tab');
+                    tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'dark:text-neutral-400', 'inactive-tab');
+                    tab.classList.add('border-gray-800', 'text-gray-900', 'dark:border-white', 'dark:text-white', 'active-tab');
                     
                     const badge = tab.querySelector('span');
                     if(badge) {
-                        badge.classList.remove('bg-gray-200', 'text-gray-600', 'dark:bg-neutral-700', 'dark:text-neutral-400');
-                        badge.classList.add('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-900/40');
+                        badge.classList.remove('bg-gray-50', 'text-gray-500', 'dark:bg-neutral-800', 'dark:text-neutral-400');
+                        badge.classList.add('bg-gray-100', 'text-gray-800', 'dark:bg-neutral-700', 'dark:text-white');
                     }
                 } else {
-                    // Make Inactive
-                    tab.classList.remove('bg-white', 'text-gray-800', 'shadow-sm', 'dark:bg-neutral-900', 'dark:text-white', 'active-tab');
-                    tab.classList.add('text-gray-500', 'hover:text-gray-700', 'dark:text-neutral-400');
+                    tab.classList.remove('border-gray-800', 'text-gray-900', 'dark:border-white', 'dark:text-white', 'active-tab');
+                    tab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'dark:text-neutral-400', 'inactive-tab');
                     
                     const badge = tab.querySelector('span');
                     if(badge) {
-                        badge.classList.remove('bg-indigo-50', 'text-indigo-600', 'dark:bg-indigo-900/40');
-                        badge.classList.add('bg-gray-200', 'text-gray-600', 'dark:bg-neutral-700', 'dark:text-neutral-400');
+                        badge.classList.remove('bg-gray-100', 'text-gray-800', 'dark:bg-neutral-700', 'dark:text-white');
+                        badge.classList.add('bg-gray-50', 'text-gray-500', 'dark:bg-neutral-800', 'dark:text-neutral-400');
                     }
                 }
             });
