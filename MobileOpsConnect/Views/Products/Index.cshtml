@@ -1,4 +1,4 @@
-﻿@using MobileOpsConnect.Models
+@using MobileOpsConnect.Models
 @model PaginatedList<Product>
 
 @{
@@ -27,56 +27,56 @@
 </div>
 
 <!-- Metrics Grid -->
-<div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-12">
     <!-- Total SKUs -->
-    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex justify-center items-center size-[46px] bg-[#f4f2ff] text-[#5e4dcd] rounded-2xl dark:bg-indigo-900/20 dark:text-indigo-400">
-                <i class="bi bi-box-seam-fill text-xl"></i>
+    <div class="p-4 sm:p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl sm:rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="flex justify-between items-center mb-4 sm:mb-6">
+            <div class="flex justify-center items-center size-10 sm:size-[46px] bg-[#f4f2ff] text-[#5e4dcd] rounded-xl sm:rounded-2xl dark:bg-indigo-900/20 dark:text-indigo-400">
+                <i class="bi bi-box-seam-fill text-lg sm:text-xl"></i>
             </div>
         </div>
-        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total SKUs</p>
-        <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@ViewBag.TotalProducts</h3>
+        <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1 truncate" title="Total SKUs">Total SKUs</p>
+        <div class="flex items-end justify-between mt-auto min-w-0">
+            <h3 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none truncate" title="@ViewBag.TotalProducts">@ViewBag.TotalProducts</h3>
         </div>
     </div>
 
     <!-- Healthy -->
-    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex justify-center items-center size-[46px] bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-2xl dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/30">
-                <i class="bi bi-check-circle text-xl"></i>
+    <div class="p-4 sm:p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl sm:rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="flex justify-between items-center mb-4 sm:mb-6">
+            <div class="flex justify-center items-center size-10 sm:size-[46px] bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-xl sm:rounded-2xl dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/30">
+                <i class="bi bi-check-circle text-lg sm:text-xl"></i>
             </div>
         </div>
-        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Healthy</p>
-        <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@(ViewBag.ActiveCount - ViewBag.LowStockCount)</h3>
+        <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1 truncate" title="Healthy">Healthy</p>
+        <div class="flex items-end justify-between mt-auto min-w-0">
+            <h3 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none truncate" title="@(ViewBag.ActiveCount - ViewBag.LowStockCount)">@(ViewBag.ActiveCount - ViewBag.LowStockCount)</h3>
         </div>
     </div>
 
     <!-- Low Stock -->
-    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex justify-center items-center size-[46px] bg-rose-50 text-rose-500 border border-rose-100 rounded-2xl dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800/30">
-                <i class="bi bi-exclamation-circle text-xl"></i>
+    <div class="p-4 sm:p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl sm:rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="flex justify-between items-center mb-4 sm:mb-6">
+            <div class="flex justify-center items-center size-10 sm:size-[46px] bg-rose-50 text-rose-500 border border-rose-100 rounded-xl sm:rounded-2xl dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800/30">
+                <i class="bi bi-exclamation-circle text-lg sm:text-xl"></i>
             </div>
         </div>
-        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Low Stock</p>
-        <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@ViewBag.LowStockCount</h3>
+        <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1 truncate" title="Low Stock">Low Stock</p>
+        <div class="flex items-end justify-between mt-auto min-w-0">
+            <h3 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none truncate" title="@ViewBag.LowStockCount">@ViewBag.LowStockCount</h3>
         </div>
     </div>
 
     <!-- Out of Stock -->
-    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex justify-center items-center size-[46px] bg-gray-100 text-gray-500 rounded-2xl dark:bg-neutral-800 dark:text-neutral-400">
-                <i class="bi bi-archive text-xl"></i>
+    <div class="p-4 sm:p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl sm:rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="flex justify-between items-center mb-4 sm:mb-6">
+            <div class="flex justify-center items-center size-10 sm:size-[46px] bg-gray-100 text-gray-500 rounded-xl sm:rounded-2xl dark:bg-neutral-800 dark:text-neutral-400">
+                <i class="bi bi-archive text-lg sm:text-xl"></i>
             </div>
         </div>
-        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Out of Stock</p>
-        <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@ViewBag.ArchivedCount</h3>
+        <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1 truncate" title="Out of Stock">Out of Stock</p>
+        <div class="flex items-end justify-between mt-auto min-w-0">
+            <h3 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none truncate" title="@ViewBag.ArchivedCount">@ViewBag.ArchivedCount</h3>
         </div>
     </div>
 </div>

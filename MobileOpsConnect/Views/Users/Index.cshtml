@@ -1,4 +1,4 @@
-﻿@model PaginatedList<MobileOpsConnect.Models.UserViewModel>
+@model PaginatedList<MobileOpsConnect.Models.UserViewModel>
 
 @{
     ViewData["Title"] = "User Management";
@@ -31,46 +31,45 @@
 </div>
 
 <!-- Account Overview -->
-<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10">
+<div class="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 mb-10">
     <!-- Total Users -->
-    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex justify-center items-center size-[46px] bg-[#f4f2ff] text-[#5e4dcd] rounded-2xl dark:bg-indigo-900/20 dark:text-indigo-400">
-                <i class="bi bi-people text-xl"></i>
+    <div class="p-4 sm:p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl sm:rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="flex justify-between items-center mb-4 sm:mb-6">
+            <div class="flex justify-center items-center size-10 sm:size-[46px] bg-[#f4f2ff] text-[#5e4dcd] rounded-xl sm:rounded-2xl dark:bg-indigo-900/20 dark:text-indigo-400">
+                <i class="bi bi-people text-lg sm:text-xl"></i>
             </div>
         </div>
-        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Total Users</p>
-        <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@totalUsers</h3>
+        <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1 truncate" title="Total Users">Total Users</p>
+        <div class="flex items-end justify-between mt-auto min-w-0">
+            <h3 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none truncate" title="@totalUsers">@totalUsers</h3>
         </div>
     </div>
 
     <!-- Super Admins -->
-    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex justify-center items-center size-[46px] bg-rose-50 text-rose-500 rounded-2xl dark:bg-rose-900/20 dark:text-rose-400">
-                <i class="bi bi-shield text-xl"></i>
+    <div class="p-4 sm:p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl sm:rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="flex justify-between items-center mb-4 sm:mb-6">
+            <div class="flex justify-center items-center size-10 sm:size-[46px] bg-rose-50 text-rose-500 rounded-xl sm:rounded-2xl dark:bg-rose-900/20 dark:text-rose-400">
+                <i class="bi bi-shield text-lg sm:text-xl"></i>
             </div>
         </div>
-        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Super Admins</p>
-        <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@superAdminCount</h3>
+        <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1 truncate" title="Super Admins">Super Admins</p>
+        <div class="flex items-end justify-between mt-auto min-w-0">
+            <h3 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none truncate" title="@superAdminCount">@superAdminCount</h3>
         </div>
     </div>
 
     <!-- Sys Admins -->
-    <div class="p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex justify-center items-center size-[46px] bg-amber-50 text-amber-500 rounded-2xl dark:bg-amber-900/20 dark:text-amber-400">
-                <i class="bi bi-gear text-xl"></i>
+    <div class="col-span-2 lg:col-span-1 p-4 sm:p-6 flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl sm:rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+        <div class="flex justify-between items-center mb-4 sm:mb-6">
+            <div class="flex justify-center items-center size-10 sm:size-[46px] bg-amber-50 text-amber-500 rounded-xl sm:rounded-2xl dark:bg-amber-900/20 dark:text-amber-400">
+                <i class="bi bi-gear text-lg sm:text-xl"></i>
             </div>
         </div>
-        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1">Sys Admins</p>
-        <div class="flex items-end justify-between mt-auto">
-            <h3 class="text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none">@systemAdminCount</h3>
+        <p class="text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-1 truncate" title="Sys Admins">Sys Admins</p>
+        <div class="flex items-end justify-between mt-auto min-w-0">
+            <h3 class="text-3xl sm:text-[2.5rem] font-bold text-gray-900 dark:text-white leading-none truncate" title="@systemAdminCount">@systemAdminCount</h3>
         </div>
     </div>
-
 </div>
 
 <!-- Action Bar -->

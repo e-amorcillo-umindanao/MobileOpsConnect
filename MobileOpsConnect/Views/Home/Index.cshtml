@@ -158,7 +158,7 @@
         </div>
 
         <!-- Card: Value -->
-        <div class="bg-white border border-gray-100 rounded-xl p-3 sm:p-5 dark:bg-neutral-900 dark:border-neutral-800 shadow-sm min-w-0">
+        <div class="col-span-2 sm:col-span-1 bg-white border border-gray-100 rounded-xl p-3 sm:p-5 dark:bg-neutral-900 dark:border-neutral-800 shadow-sm min-w-0">
             <div class="flex items-center justify-between gap-x-2">
                 <div class="flex items-center gap-x-2 sm:gap-x-4 min-w-0">
                     <div class="shrink-0 flex justify-center items-center size-8 sm:size-12 bg-white text-gray-600 rounded-xl dark:bg-neutral-800 dark:text-neutral-400 border border-gray-100 dark:border-neutral-700">
@@ -166,7 +166,9 @@
                     </div>
                     <p class="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500 truncate" title="Value">Value</p>
                 </div>
-                <h3 class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-neutral-200 truncate" title="₱@Convert.ToDecimal(ViewBag.TotalValue).ToString("N2")">₱@Convert.ToDecimal(ViewBag.TotalValue).ToString("N2")</h3>
+                <h3 class="text-lg sm:text-2xl font-bold text-gray-900 dark:text-neutral-200 truncate" title="₱@Convert.ToDecimal(ViewBag.TotalValue).ToString("N2")">
+                    <span class="truncate">₱@Convert.ToDecimal(ViewBag.TotalValue).ToString("N2")</span>
+                </h3>
             </div>
         </div>
     </div>
