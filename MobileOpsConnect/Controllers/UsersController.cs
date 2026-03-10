@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -53,7 +53,7 @@ namespace MobileOpsConnect.Controllers
 
             foreach (var user in allUsers)
             {
-                if (user == null) continue;
+                if (user == null || user.Id == currentUser.Id) continue;
                 var roles = await _userManager.GetRolesAsync(user);
                 var userRole = roles.FirstOrDefault() ?? "Employee";
 

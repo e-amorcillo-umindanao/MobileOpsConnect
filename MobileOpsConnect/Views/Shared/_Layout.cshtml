@@ -40,7 +40,12 @@
             html.classList.remove('dark');
         }
     </script>
-    <style>body{opacity:0}body.ready{opacity:1;transition:opacity .15s ease-in}</style>
+    <style>
+        body{opacity:0}
+        body.ready{opacity:1;transition:opacity .15s ease-in}
+        html { background-color: #f9fafb; }
+        html.dark { background-color: #171717; }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-neutral-900 dark:text-neutral-300">
 

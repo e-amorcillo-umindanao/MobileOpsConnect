@@ -179,7 +179,7 @@
 
         // Event delegation - handles tabs AND dynamic pagination links
         document.addEventListener('click', (e) => {
-            const link = e.target.closest('.tab-link, #table-container a[href]');
+            const link = e.target.closest('.tab-link, .pagination-link');
             if (link) {
                 e.preventDefault();
                 loadContent(link.getAttribute('href'));

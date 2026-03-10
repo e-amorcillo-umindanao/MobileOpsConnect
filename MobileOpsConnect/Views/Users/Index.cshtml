@@ -109,31 +109,35 @@
     </div>
 
     <form method="get" asp-action="Index" id="filterForm">
-        <div class="grid sm:grid-cols-2 gap-6">
+        <div class="@(isSuperAdmin ? "block" : "grid sm:grid-cols-2 gap-6")">
+
             <!-- Roles Dropdown -->
-            <div>
-                <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-2">Filter by Role</label>
-                <div class="relative">
-                    <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
-                        <i class="bi bi-person-badge"></i>
+            @if (!isSuperAdmin)
+            {
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-neutral-500 mb-2">Filter by Role</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-4 pointer-events-none text-gray-400">
+                            <i class="bi bi-person-badge"></i>
+                        </div>
+                        <select name="role" onchange="this.form.submit()" class="py-3 ps-11 pe-8 block w-full bg-gray-50 border-gray-200 rounded-lg text-sm font-semibold focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-indigo-400 transition-all cursor-pointer">
+                            <option value="">— All Roles —</option>
+                            @foreach (string roleName in (List<string>)ViewBag.AllRoles)
+                            {
+                                string displayName = roleDisplayNames.GetValueOrDefault(roleName, roleName);
+                                @if (ViewBag.SelectedRole == roleName)
+                                {
+                                    <option value="@roleName" selected>@displayName</option>
+                                }
+                                else
+                                {
+                                    <option value="@roleName">@displayName</option>
+                                }
+                            }
+                        </select>
                     </div>
-                    <select name="role" onchange="this.form.submit()" class="py-3 ps-11 pe-8 block w-full bg-gray-50 border-gray-200 rounded-lg text-sm font-semibold focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-indigo-400 transition-all cursor-pointer">
-                        <option value="">— All Roles —</option>
-                        @foreach (string roleName in (List<string>)ViewBag.AllRoles)
-                        {
-                            string displayName = roleDisplayNames.GetValueOrDefault(roleName, roleName);
-                            @if (ViewBag.SelectedRole == roleName)
-                            {
-                                <option value="@roleName" selected>@displayName</option>
-                            }
-                            else
-                            {
-                                <option value="@roleName">@displayName</option>
-                            }
-                        }
-                    </select>
                 </div>
-            </div>
+            }
 
             <!-- Search Input -->
             <div>

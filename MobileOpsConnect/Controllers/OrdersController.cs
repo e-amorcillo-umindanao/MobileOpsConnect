@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -71,7 +71,7 @@ namespace MobileOpsConnect.Controllers
         }
 
         // GET: Orders/Create
-        [Authorize(Roles = "DepartmentManager,WarehouseStaff")]
+        [Authorize(Roles = "WarehouseStaff")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Products = new SelectList(await _context.Products.OrderBy(p => p.Name).ToListAsync(), "ProductID", "Name");
@@ -81,7 +81,7 @@ namespace MobileOpsConnect.Controllers
         // POST: Orders/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "DepartmentManager,WarehouseStaff")]
+        [Authorize(Roles = "WarehouseStaff")]
         public async Task<IActionResult> Create(int ProductId, int Quantity, string? Notes)
         {
             var currentUser = await _userManager.GetUserAsync(User);

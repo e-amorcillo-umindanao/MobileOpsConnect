@@ -1,4 +1,4 @@
-﻿@model PaginatedList<MobileOpsConnect.Models.Product>
+@model PaginatedList<MobileOpsConnect.Models.Product>
 
 @{
     ViewData["Title"] = "Warehouse Operations";
@@ -189,6 +189,9 @@
                 <p class="text-gray-500 text-sm text-center mb-0 dark:text-neutral-400" id="scanStatus">
                     <i class="bi bi-camera-fill me-1"></i> Point your camera at a product barcode.
                 </p>
+                <button id="scanContinueBtn" type="button" class="hidden w-full mt-4 py-2 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+                    Continue <i class="bi bi-arrow-right"></i>
+                </button>
                 <p class="text-xs text-gray-400 dark:text-neutral-500 mt-3 text-center">
                     <i class="bi bi-keyboard me-1"></i> Can't scan? Close and type the SKU manually.
                 </p>
@@ -203,6 +206,7 @@
     (function () {
         let html5QrcodeScanner = null;
         let torchOn = false;
+        let scanTimeout = null;
         const modal = document.getElementById('scannerModal');
         const backdrop = document.getElementById('scannerBackdrop');
         const openBtn = document.getElementById('openScannerBtn');
@@ -211,6 +215,7 @@
         const scanStatus = document.getElementById('scanStatus');
         const searchInput = document.getElementById('warehouseSearchInput');
         const scanForm = document.getElementById('scanForm');
+        const continueBtn = document.getElementById('scanContinueBtn');
 
         // ── Audio feedback ──
         function playBeep() {
@@ -236,6 +241,8 @@
 
         function closeModal() {
             stopScanner();
+            if (scanTimeout) clearTimeout(scanTimeout);
+            continueBtn.classList.add('hidden');
             modal.classList.add('hidden');
             document.body.style.overflow = '';
             torchOn = false;
@@ -260,11 +267,24 @@
 
                     html5QrcodeScanner.stop().then(() => {
                         html5QrcodeScanner = null;
-                        setTimeout(() => {
+                        
+                        if (scanTimeout) clearTimeout(scanTimeout);
+                        continueBtn.classList.remove('hidden');
+                        
+                        // Setup the manual click handler
+                        continueBtn.onclick = function() {
+                            if (scanTimeout) clearTimeout(scanTimeout);
                             closeModal();
                             searchInput.value = decodedText;
                             scanForm.submit();
-                        }, 1000);
+                        };
+                        
+                        // Setup the auto-fallback
+                        scanTimeout = setTimeout(() => {
+                            closeModal();
+                            searchInput.value = decodedText;
+                            scanForm.submit();
+                        }, 7000); // Extended to 7 seconds per user request
                     });
                 },
                 (errorMessage) => { }
@@ -285,6 +305,7 @@
                     html5QrcodeScanner = null;
                     scanStatus.innerHTML = '<i class="bi bi-camera-fill me-1"></i> Point your camera at a product barcode.';
                     torchBtn.classList.add('hidden');
+                    continueBtn.classList.add('hidden');
                 }).catch(() => { html5QrcodeScanner = null; });
             }
         }

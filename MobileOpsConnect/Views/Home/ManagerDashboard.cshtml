@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Manager Overview";
 }
 
@@ -97,18 +97,18 @@
 
     <div class="grid sm:grid-cols-2 gap-6 items-stretch">
         <!-- Pending Leaves Approvals -->
-        <div class="flex flex-col bg-white border border-gray-100 border-l-4 border-l-amber-500 rounded-xl dark:bg-neutral-900 dark:border-neutral-800 shadow-sm overflow-hidden h-full">
-            <div class="p-6 flex flex-col h-full">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center gap-x-4">
-                        <div class="size-12 flex justify-center items-center bg-amber-50 text-amber-600 rounded-xl dark:bg-amber-900/20 dark:text-amber-400 border border-amber-100 dark:border-amber-900/30">
-                            <i class="bi bi-calendar-event text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Pending Leaves</h3>
-                            <p class="text-xs text-gray-400 dark:text-neutral-500">Employee Requests</p>
-                        </div>
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden shadow-sm h-full">
+            <div class="p-6 flex-grow flex flex-col">
+                <div class="flex items-center gap-x-4 mb-6">
+                    <div class="size-14 flex justify-center items-center bg-white text-gray-800 rounded-xl dark:bg-neutral-800 dark:text-neutral-300 border border-gray-100 dark:border-neutral-700">
+                        <i class="bi bi-calendar-event text-2xl"></i>
                     </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Pending Leaves</h3>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Employee Requests</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between mb-4">
                     <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full @(ViewBag.PendingLeaves > 0 ? "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/10 dark:text-amber-400" : "bg-green-50 text-green-700 border-green-100 dark:bg-green-900/10 dark:text-green-400") text-[10px] font-bold border">
                          @(ViewBag.PendingLeaves > 0 ? "Needs Review" : "All Clear")
                     </span>
@@ -116,64 +116,58 @@
                 <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">Review and approve employee leave applications. Pending requests require your attention for timely processing.</p>
                 
                 <div class="mt-auto">
-                    <div class="bg-amber-50/50 border border-amber-100 rounded-xl p-4 mb-6 dark:bg-amber-900/10 dark:border-amber-900/30">
+                    <div class="bg-amber-50/50 border border-amber-100 rounded-xl p-4 mb-2 dark:bg-amber-900/10 dark:border-amber-900/30">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-x-3">
                                 <i class="bi bi-clock text-amber-600 dark:text-amber-400"></i>
                                 <div>
-                                    <p class="text-xs font-bold text-amber-900 dark:text-amber-300">request(s) awaiting review</p>
-                                    <p class="text-[10px] text-amber-600/80 dark:text-amber-400/80">Oldest pending: @ViewBag.OldestPendingDays</p>
+                                    <h3 class="text-xl font-bold text-amber-900 dark:text-amber-300">@ViewBag.PendingLeaves Requests</h3>
                                 </div>
                             </div>
-                            <h3 class="text-xl font-bold text-amber-900 dark:text-amber-300">@ViewBag.PendingLeaves</h3>
                         </div>
                     </div>
-
-                    <a asp-controller="LeaveRequests" asp-action="Index" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                        Review Requests
-                    </a>
                 </div>
             </div>
+            <a asp-controller="LeaveRequests" asp-action="Index" class="group py-4 px-6 inline-flex justify-center items-center gap-x-2 text-sm font-bold bg-white text-gray-900 hover:bg-gray-50 border-t border-gray-100 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:border-neutral-800 transition-all">
+                Review Requests <i class="bi bi-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+            </a>
         </div>
 
         <!-- Purchase Orders Approvals -->
-        <div class="flex flex-col bg-white border border-gray-100 border-l-4 border-l-blue-600 rounded-xl dark:bg-neutral-900 dark:border-neutral-800 shadow-sm overflow-hidden h-full">
-            <div class="p-6 flex flex-col h-full">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center gap-x-4">
-                        <div class="size-12 flex justify-center items-center bg-blue-50 text-blue-600 rounded-xl dark:bg-blue-900/20 dark:text-blue-400 border border-blue-100 dark:border-blue-900/30">
-                            <i class="bi bi-truck text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Purchase Orders</h3>
-                            <p class="text-xs text-gray-400 dark:text-neutral-500">Restock Requests</p>
-                        </div>
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden shadow-sm h-full">
+            <div class="p-6 flex-grow flex flex-col">
+                <div class="flex items-center gap-x-4 mb-6">
+                    <div class="size-14 flex justify-center items-center bg-white text-gray-800 rounded-xl dark:bg-neutral-800 dark:text-neutral-300 border border-gray-100 dark:border-neutral-700">
+                        <i class="bi bi-truck text-2xl"></i>
                     </div>
-                    <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full bg-green-50 text-green-700 text-[10px] font-bold border border-green-100 dark:bg-green-900/10 dark:text-green-400">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Purchase Orders</h3>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Restock Requests</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between mb-4">
+                     <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full bg-green-50 text-green-700 text-[10px] font-bold border border-green-100 dark:bg-green-900/10 dark:text-green-400">
                         Live
                     </span>
                 </div>
                 <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">Approve or reject purchase orders submitted by warehouse staff for inventory restocking.</p>
 
                 <div class="mt-auto">
-                    <div class="bg-amber-50/50 border border-amber-100 rounded-xl p-4 mb-6 dark:bg-amber-900/10 dark:border-amber-900/30">
+                    <div class="bg-amber-50/50 border border-amber-100 rounded-xl p-4 mb-2 dark:bg-amber-900/10 dark:border-amber-900/30">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-x-3">
                                 <i class="bi bi-inbox text-amber-600 dark:text-amber-400"></i>
                                 <div>
-                                    <p class="text-xs font-bold text-amber-900 dark:text-amber-300">Pending Orders</p>
-                                    <p class="text-[10px] text-amber-600/80 dark:text-amber-400/80">Awaiting your approval</p>
+                                    <h3 class="text-xl font-bold text-amber-900 dark:text-amber-300">@(ViewBag.PendingOrders ?? 0) Orders</h3>
                                 </div>
                             </div>
-                            <h3 class="text-xl font-bold text-amber-900 dark:text-amber-300">@(ViewBag.PendingOrders ?? 0)</h3>
                         </div>
                     </div>
-
-                    <a asp-controller="Orders" asp-action="Index" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                        Approve Orders
-                    </a>
                 </div>
             </div>
+            <a asp-controller="Orders" asp-action="Index" class="group py-4 px-6 inline-flex justify-center items-center gap-x-2 text-sm font-bold bg-white text-gray-900 hover:bg-gray-50 border-t border-gray-100 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:border-neutral-800 transition-all">
+                Approve Orders <i class="bi bi-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+            </a>
         </div>
     </div>
 </div>
@@ -186,8 +180,8 @@
 
     <div class="grid sm:grid-cols-2 gap-6">
         <!-- Analytics Dashboard -->
-        <div class="flex flex-col bg-white border border-gray-100 rounded-xl dark:bg-neutral-900 dark:border-neutral-800 shadow-sm">
-            <div class="p-6">
+        <div class="flex flex-col bg-white border border-gray-100 rounded-xl dark:bg-neutral-900 dark:border-neutral-800 shadow-sm h-full">
+            <div class="p-6 flex-grow flex flex-col">
                 <div class="flex items-center gap-x-4 mb-6">
                     <div class="size-12 flex justify-center items-center bg-indigo-50 text-indigo-600 rounded-xl dark:bg-indigo-900/20 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/30">
                         <i class="bi bi-speedometer2 text-xl"></i>
@@ -209,15 +203,15 @@
                     <div class="w-full bg-indigo-600 rounded-t-sm dark:bg-indigo-600" style="height: 75%"></div>
                 </div>
 
-                <a asp-controller="Home" asp-action="Analytics" class="group w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-800 dark:text-white dark:hover:bg-neutral-800">
+                <a asp-controller="Home" asp-action="Analytics" class="mt-auto group w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-800 dark:text-white dark:hover:bg-neutral-800">
                     <i class="bi bi-arrow-right text-xs transition-transform group-hover:translate-x-1"></i> Open Dashboard
                 </a>
             </div>
         </div>
 
         <!-- Inventory Reports -->
-        <div class="flex flex-col bg-white border border-gray-100 rounded-xl dark:bg-neutral-900 dark:border-neutral-800 shadow-sm">
-            <div class="p-6">
+        <div class="flex flex-col bg-white border border-gray-100 rounded-xl dark:bg-neutral-900 dark:border-neutral-800 shadow-sm h-full">
+            <div class="p-6 flex-grow flex flex-col">
                 <div class="flex items-center gap-x-4 mb-6">
                     <div class="size-12 flex justify-center items-center bg-gray-50 text-gray-600 rounded-xl dark:bg-neutral-800 dark:text-neutral-400 border border-gray-100 dark:border-neutral-700">
                         <i class="bi bi-box-seam text-xl"></i>
@@ -229,22 +223,9 @@
                 </div>
                 <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">Detailed breakdown of stock levels, product categories, and overall inventory valuation.</p>
 
-                <div class="grid grid-cols-3 gap-3 mb-8">
-                    <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 dark:bg-neutral-800/50 dark:border-neutral-700">
-                        <p class="text-lg font-bold text-gray-900 dark:text-white leading-none text-right">@ViewBag.TotalProducts</p>
-                        <span class="text-[9px] font-bold text-gray-400 uppercase tracking-tight">Products</span>
-                    </div>
-                    <div class="p-3 bg-red-50 rounded-xl border border-red-100 dark:bg-red-900/10 dark:border-red-900/30">
-                        <p class="text-lg font-bold text-red-600 dark:text-red-400 leading-none text-right">@ViewBag.LowStockCount</p>
-                        <span class="text-[9px] font-bold text-red-400 uppercase tracking-tight">Low Stock</span>
-                    </div>
-                    <div class="p-3 bg-green-50 rounded-xl border border-green-100 dark:bg-green-900/10 dark:border-green-900/30">
-                        <p class="text-lg font-bold text-green-600 dark:text-green-400 leading-none text-right">@(ViewBag.InStockPercent)%</p>
-                        <span class="text-[9px] font-bold text-green-400 uppercase tracking-tight">In Stock</span>
-                    </div>
-                </div>
 
-                <a asp-controller="Products" asp-action="Index" class="group w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-800 dark:text-white dark:hover:bg-neutral-800">
+
+                <a asp-controller="Products" asp-action="Index" class="mt-auto group w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-900 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-800 dark:text-white dark:hover:bg-neutral-800">
                     <i class="bi bi-arrow-right text-xs transition-transform group-hover:translate-x-1"></i> View Inventory Report
                 </a>
             </div>
@@ -308,26 +289,3 @@
         </div>
     </div>
 
-    <!-- Team Management -->
-    <div>
-        <h2 class="text-sm font-bold text-gray-900 uppercase tracking-widest dark:text-neutral-200 mb-6">Team Management</h2>
-        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden shadow-sm">
-            <div class="p-6 flex-grow">
-                <div class="flex items-center gap-x-4 mb-6">
-                    <div class="size-12 flex justify-center items-center bg-gray-50 text-gray-600 rounded-xl dark:bg-neutral-800 dark:text-neutral-400 border border-gray-100 dark:border-neutral-700">
-                        <i class="bi bi-person-badge text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white">Employee Records</h3>
-                        <p class="text-xs text-gray-400 dark:text-neutral-500">Staff directory &amp; stats</p>
-                    </div>
-                </div>
-                <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">View your team's employee information, roles, and leave activity. Read-only access.</p>
-                
-                <a asp-controller="Users" asp-action="EmployeeRecords" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-all dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                    <i class="bi bi-people text-xs"></i> View Employee Records
-                </a>
-            </div>
-        </div>
-    </div>
-</div>

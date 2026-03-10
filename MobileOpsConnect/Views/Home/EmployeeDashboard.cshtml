@@ -150,15 +150,15 @@
 
         <!-- Next Payslip -->
         <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800">
-          <div class="p-5 flex items-center gap-x-5">
-            <div class="shrink-0 flex justify-center items-center size-[48px] bg-cyan-50/50 text-cyan-500 rounded-xl dark:bg-cyan-900/20 dark:text-cyan-400">
-              <i class="bi bi-wallet2 text-xl"></i>
+          <div class="p-5 flex items-center justify-between w-full gap-x-4">
+            <div class="flex items-center gap-x-4 min-w-0">
+                <div class="shrink-0 flex justify-center items-center size-[48px] bg-cyan-50/50 text-cyan-500 rounded-xl dark:bg-cyan-900/20 dark:text-cyan-400">
+                  <i class="bi bi-wallet2 text-xl"></i>
+                </div>
+                <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 truncate" title="Next Pay">Next Pay</p>
             </div>
-            <div class="grow flex flex-col justify-center">
-              <p class="text-[10px] uppercase font-bold tracking-widest text-gray-400 dark:text-neutral-500 mb-1">Next Pay</p>
-              <div class="flex items-baseline justify-between">
+            <div class="text-right shrink-0">
                 <h3 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight leading-none">@ViewBag.NextPayDate</h3>
-              </div>
             </div>
           </div>
         </div>
@@ -176,73 +176,92 @@
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
         <!-- Purchase Order Card -->
-        <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
-            <div class="p-6 md:p-8 flex flex-col text-center h-full">
-                <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-amber-50 text-amber-500 dark:bg-amber-900/20 dark:text-amber-400">
-                    <i class="bi bi-cart3 text-2xl"></i>
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden shadow-sm h-full">
+            <div class="p-6 flex-grow flex flex-col">
+                <div class="flex items-center gap-x-4 mb-6">
+                    <div class="size-14 flex justify-center items-center bg-white text-gray-800 rounded-xl dark:bg-neutral-800 dark:text-neutral-300 border border-gray-100 dark:border-neutral-700">
+                        <i class="bi bi-cart3 text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Purchase Order</h3>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Restock Orders</p>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Purchase Order</h3>
-                <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">View requests and submit new restock orders</p>
-                <a asp-controller="Orders" asp-action="Index" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                    <i class="bi bi-arrow-right"></i> Open
-                </a>
+                <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">View requests and submit new restock orders.</p>
             </div>
+            <a asp-controller="Orders" asp-action="Index" class="group py-4 px-6 inline-flex justify-center items-center gap-x-2 text-sm font-bold bg-white text-gray-900 hover:bg-gray-50 border-t border-gray-100 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:border-neutral-800 transition-all w-full">
+                Open <i class="bi bi-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+            </a>
         </div>
         
-        <!-- Card -->
-        <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
-            <div class="p-6 md:p-8 flex flex-col text-center h-full">
-                <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-indigo-50 text-indigo-500 dark:bg-indigo-900/20 dark:text-indigo-400">
-                    <i class="bi bi-arrow-left-right text-2xl"></i>
+        <!-- Stock In / Out Card -->
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden shadow-sm h-full">
+            <div class="p-6 flex-grow flex flex-col">
+                <div class="flex items-center gap-x-4 mb-6">
+                    <div class="size-14 flex justify-center items-center bg-white text-gray-800 rounded-xl dark:bg-neutral-800 dark:text-neutral-300 border border-gray-100 dark:border-neutral-700">
+                        <i class="bi bi-arrow-left-right text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Stock In / Out</h3>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Stock Movements</p>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Stock In / Out</h3>
-                <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">Process incoming and outgoing stock movements</p>
-                <a asp-controller="Warehouse" asp-action="Index" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                    <i class="bi bi-arrow-right"></i> Open
-                </a>
+                <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">Process incoming and outgoing stock movements.</p>
             </div>
+            <a asp-controller="Warehouse" asp-action="Index" class="group py-4 px-6 inline-flex justify-center items-center gap-x-2 text-sm font-bold bg-white text-gray-900 hover:bg-gray-50 border-t border-gray-100 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:border-neutral-800 transition-all w-full">
+                Open <i class="bi bi-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+            </a>
         </div>
         
-        <!-- Card -->
-        <div class="flex flex-col bg-white border border-gray-100 rounded-3xl dark:bg-neutral-900 dark:border-neutral-800">
-            <div class="p-6 md:p-8 flex flex-col text-center h-full">
-                <div class="inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 bg-cyan-50 text-cyan-500 dark:bg-cyan-900/20 dark:text-cyan-400">
-                    <i class="bi bi-search text-2xl"></i>
+        <!-- Inventory List Card -->
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden shadow-sm h-full">
+            <div class="p-6 flex-grow flex flex-col">
+                <div class="flex items-center gap-x-4 mb-6">
+                    <div class="size-14 flex justify-center items-center bg-white text-gray-800 rounded-xl dark:bg-neutral-800 dark:text-neutral-300 border border-gray-100 dark:border-neutral-700">
+                        <i class="bi bi-search text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">Inventory List</h3>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Global Store</p>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Inventory List</h3>
-                <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">Search and browse all products in the system</p>
-                <a asp-controller="Products" asp-action="Index" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                    <i class="bi bi-arrow-right"></i> Browse
-                </a>
+                <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">Search and browse all products in the system.</p>
             </div>
+            <a asp-controller="Products" asp-action="Index" class="group py-4 px-6 inline-flex justify-center items-center gap-x-2 text-sm font-bold bg-white text-gray-900 hover:bg-gray-50 border-t border-gray-100 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:border-neutral-800 transition-all w-full">
+                Browse <i class="bi bi-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+            </a>
         </div>
 
-        <!-- Card -->
-        <div class="flex flex-col bg-white border border-gray-100 border-l-4 @(ViewBag.LowStockCount > 0 ? "border-l-red-500" : "border-l-emerald-500") rounded-3xl dark:bg-neutral-900 dark:border-t-neutral-800 dark:border-r-neutral-800 dark:border-b-neutral-800">
-            <div class="p-6 md:p-8 flex flex-col text-center h-full">
-                <div class="relative inline-flex justify-center items-center size-[64px] rounded-full mx-auto mb-6 @(ViewBag.LowStockCount > 0 ? "bg-red-50 text-red-500 dark:bg-red-900/20 dark:text-red-400" : "bg-emerald-50 text-emerald-500 dark:bg-emerald-900/20 dark:text-emerald-400")">
-                    <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-bell text-2xl" : "bi-check-circle text-2xl")"></i>
-                    @if (ViewBag.LowStockCount > 0)
-                    {
-                        <span class="absolute top-[2px] right-[2px] size-3.5 bg-red-500 border-2 border-white rounded-full dark:border-neutral-900"></span>
-                    }
+        <!-- Low Stock Alerts Card -->
+        <div class="flex flex-col bg-white border border-gray-100 rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden shadow-sm h-full">
+            <div class="p-6 flex-grow flex flex-col">
+                <div class="flex items-center gap-x-4 mb-6">
+                    <div class="relative size-14 flex justify-center items-center bg-white text-gray-800 rounded-xl dark:bg-neutral-800 dark:text-neutral-300 border border-gray-100 dark:border-neutral-700">
+                        <i class="bi @(ViewBag.LowStockCount > 0 ? "bi-bell text-2xl" : "bi-check-circle text-2xl")"></i>
+                        @if (ViewBag.LowStockCount > 0)
+                        {
+                            <span class="absolute top-[-4px] right-[-4px] size-3.5 bg-red-500 border-2 border-white rounded-full dark:border-neutral-900"></span>
+                        }
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold @(ViewBag.LowStockCount > 0 ? "text-red-600 dark:text-red-500" : "text-emerald-600 dark:text-emerald-500")">Low Stock Alerts</h3>
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-neutral-500">Inventory Status</p>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold @(ViewBag.LowStockCount > 0 ? "text-red-600 dark:text-red-500" : "text-emerald-600 dark:text-emerald-500") mb-2">Low Stock Alerts</h3>
-                <p class="text-sm text-gray-500 dark:text-neutral-400 grow mb-8 leading-relaxed">@(ViewBag.LowStockCount > 0 ? "Items below threshold — reorder needed" : "Inventory levels are healthy")</p>
-                
-                @if (ViewBag.LowStockCount > 0)
-                {
-                    <a asp-controller="Warehouse" asp-action="LowStock" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none transition-all w-full">
-                        <i class="bi bi-exclamation-octagon"></i> View Alerts (@ViewBag.LowStockCount)
-                    </a>
-                }
-                else
-                {
-                    <a asp-controller="Warehouse" asp-action="LowStock" class="mt-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none transition-all w-full dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800">
-                        <i class="bi bi-shield-check"></i> Check Levels
-                    </a>
-                }
+                <p class="text-gray-500 dark:text-neutral-400 text-sm leading-relaxed mb-6">@(ViewBag.LowStockCount > 0 ? "Items below threshold — reorder needed." : "Inventory levels are healthy for all standard items.")</p>
             </div>
+            @if (ViewBag.LowStockCount > 0)
+            {
+                <a asp-controller="Warehouse" asp-action="LowStock" class="group py-4 px-6 inline-flex justify-center items-center gap-x-2 text-sm font-bold bg-red-50 text-red-700 hover:bg-red-100 border-t border-gray-100 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20 dark:border-neutral-800 transition-all w-full">
+                    View Alerts (@ViewBag.LowStockCount) <i class="bi bi-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Warehouse" asp-action="LowStock" class="group py-4 px-6 inline-flex justify-center items-center gap-x-2 text-sm font-bold bg-white text-gray-900 hover:bg-gray-50 border-t border-gray-100 dark:bg-neutral-900 dark:text-white dark:hover:bg-neutral-800 dark:border-neutral-800 transition-all w-full">
+                    Check Levels <i class="bi bi-arrow-right text-xs transition-transform group-hover:translate-x-1"></i>
+                </a>
+            }
         </div>
     </div>
 }

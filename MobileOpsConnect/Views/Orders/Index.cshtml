@@ -84,7 +84,7 @@
         </a>
     </nav>
 
-    @if (User.IsInRole("DepartmentManager") || User.IsInRole("WarehouseStaff") || User.IsInRole("SuperAdmin"))
+    @if (User.IsInRole("WarehouseStaff") || User.IsInRole("SuperAdmin"))
     {
         <div class="pb-3">
             <a asp-action="Create" class="py-2 px-4 inline-flex items-center gap-x-2 text-xs font-bold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">

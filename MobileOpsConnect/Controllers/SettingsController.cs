@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authorization;
@@ -94,7 +94,7 @@ namespace MobileOpsConnect.Controllers
             var query = _context.AuditLogs.AsQueryable();
             if (!isSuperAdmin)
             {
-                query = query.Where(l => !l.IsCritical);
+                query = query.Where(l => !l.IsCritical && l.UserRole != "SuperAdmin");
             }
 
             // Apply Filters
@@ -136,6 +136,11 @@ namespace MobileOpsConnect.Controllers
                 .Where(n => roleOrder.ContainsKey(n!))
                 .OrderBy(n => roleOrder.GetValueOrDefault(n!, 99))
                 .ToList();
+
+            if (!isSuperAdmin)
+            {
+                allRoles.Remove("SuperAdmin");
+            }
             
             // Get all users with their roles for the dropdown
             var usersWithRoles = await (from u in _context.Users
@@ -144,6 +149,11 @@ namespace MobileOpsConnect.Controllers
                                       select new { u.Id, u.Email, RoleName = r.Name })
                                       .OrderBy(x => x.Email)
                                       .ToListAsync();
+
+            if (!isSuperAdmin)
+            {
+                usersWithRoles = usersWithRoles.Where(u => u.RoleName != "SuperAdmin").ToList();
+            }
 
             var usersByRoleTable = usersWithRoles
                 .Where(x => roleOrder.ContainsKey(x.RoleName!))
