@@ -20,58 +20,50 @@
 <!-- Metrics Grid -->
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-8 mt-2">
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
-        <div class="p-3 sm:p-4 md:p-5 flex items-center sm:items-start gap-x-3 sm:gap-x-4 min-w-0">
-            <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-indigo-100 text-indigo-800 rounded-lg dark:bg-indigo-800/30 dark:text-indigo-500">
-                <i class="bi bi-clipboard2-data-fill text-lg sm:text-xl"></i>
-            </div>
-            <div class="grow min-w-0">
-                <div class="flex flex-col min-w-0">
-                    <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Total POs">Total POs</p>
-                    <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate" title="@ViewBag.TotalCount">@ViewBag.TotalCount</h3>
+        <div class="p-3 sm:p-4 md:p-5 flex items-center justify-between w-full gap-x-3 sm:gap-x-4 min-w-0">
+            <div class="flex items-center gap-x-3 sm:gap-x-4 min-w-0">
+                <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-indigo-100 text-indigo-800 rounded-lg dark:bg-indigo-800/30 dark:text-indigo-500">
+                    <i class="bi bi-clipboard2-data-fill text-lg sm:text-xl"></i>
                 </div>
+                <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Total POs">Total POs</p>
             </div>
+            <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate text-right shrink-0" title="@ViewBag.TotalCount">@ViewBag.TotalCount</h3>
         </div>
     </div>
 
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
-        <div class="p-3 sm:p-4 md:p-5 flex items-center sm:items-start gap-x-3 sm:gap-x-4 min-w-0">
-            <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-amber-100 text-amber-800 rounded-lg dark:bg-amber-800/30 dark:text-amber-500">
-                <i class="bi bi-clock-history text-lg sm:text-xl"></i>
-            </div>
-            <div class="grow min-w-0">
-                <div class="flex flex-col min-w-0">
-                    <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Pending">Pending</p>
-                    <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate" title="@ViewBag.PendingCount">@ViewBag.PendingCount</h3>
+        <div class="p-3 sm:p-4 md:p-5 flex items-center justify-between w-full gap-x-3 sm:gap-x-4 min-w-0">
+            <div class="flex items-center gap-x-3 sm:gap-x-4 min-w-0">
+                <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-amber-100 text-amber-800 rounded-lg dark:bg-amber-800/30 dark:text-amber-500">
+                    <i class="bi bi-clock-history text-lg sm:text-xl"></i>
                 </div>
+                <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Pending">Pending</p>
             </div>
+            <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate text-right shrink-0" title="@ViewBag.PendingCount">@ViewBag.PendingCount</h3>
         </div>
     </div>
 
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
-        <div class="p-3 sm:p-4 md:p-5 flex items-center sm:items-start gap-x-3 sm:gap-x-4 min-w-0">
-            <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-green-100 text-green-800 rounded-lg dark:bg-green-800/30 dark:text-green-500">
-                <i class="bi bi-check2-all text-lg sm:text-xl"></i>
-            </div>
-            <div class="grow min-w-0">
-                <div class="flex flex-col min-w-0">
-                    <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Approved">Approved</p>
-                    <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate" title="@ViewBag.ApprovedCount">@ViewBag.ApprovedCount</h3>
+        <div class="p-3 sm:p-4 md:p-5 flex items-center justify-between w-full gap-x-3 sm:gap-x-4 min-w-0">
+            <div class="flex items-center gap-x-3 sm:gap-x-4 min-w-0">
+                <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-green-100 text-green-800 rounded-lg dark:bg-green-800/30 dark:text-green-500">
+                    <i class="bi bi-check2-all text-lg sm:text-xl"></i>
                 </div>
+                <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Approved">Approved</p>
             </div>
+            <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate text-right shrink-0" title="@ViewBag.ApprovedCount">@ViewBag.ApprovedCount</h3>
         </div>
     </div>
 
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
-        <div class="p-3 sm:p-4 md:p-5 flex items-center sm:items-start gap-x-3 sm:gap-x-4 min-w-0">
-            <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] rounded-lg @(ViewBag.RejectedCount > 0 ? "bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-500" : "bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-500")">
-                <i class="bi @(ViewBag.RejectedCount > 0 ? "bi-x-octagon-fill" : "bi-check2-all") text-lg sm:text-xl"></i>
-            </div>
-            <div class="grow min-w-0">
-                <div class="flex flex-col min-w-0">
-                    <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Rejected">Rejected</p>
-                    <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate" title="@ViewBag.RejectedCount">@ViewBag.RejectedCount</h3>
+        <div class="p-3 sm:p-4 md:p-5 flex items-center justify-between w-full gap-x-3 sm:gap-x-4 min-w-0">
+            <div class="flex items-center gap-x-3 sm:gap-x-4 min-w-0">
+                <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] rounded-lg @(ViewBag.RejectedCount > 0 ? "bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-500" : "bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-500")">
+                    <i class="bi @(ViewBag.RejectedCount > 0 ? "bi-x-octagon-fill" : "bi-check2-all") text-lg sm:text-xl"></i>
                 </div>
+                <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Rejected">Rejected</p>
             </div>
+            <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate text-right shrink-0" title="@ViewBag.RejectedCount">@ViewBag.RejectedCount</h3>
         </div>
     </div>
 </div>

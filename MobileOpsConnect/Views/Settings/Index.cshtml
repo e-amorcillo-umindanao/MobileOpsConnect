@@ -1,4 +1,4 @@
-﻿@model MobileOpsConnect.Models.SystemSetting
+@model MobileOpsConnect.Models.SystemSetting
 
 @{
     ViewData["Title"] = "System Configuration";
@@ -35,31 +35,47 @@
 <!-- Current Settings Overview -->
 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
     <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5">
-            <p class="text-xs uppercase tracking-wide text-gray-500">Company</p>
-            <h3 class="text-lg font-medium text-gray-800 mt-1 truncate" title="@Model.CompanyName">@Model.CompanyName</h3>
-            <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check-circle-fill"></i> Active</span>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full gap-2 min-w-0">
+            <div class="flex flex-col items-start gap-y-1.5 min-w-0">
+                <p class="text-xs uppercase tracking-wide text-gray-500 truncate w-full" title="Company">Company</p>
+                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-[10px] font-medium whitespace-nowrap"><i class="bi bi-check-circle-fill"></i> Active</span>
+            </div>
+            <div class="text-right shrink-0 max-w-[50%] min-w-0">
+                <h3 class="text-lg font-medium text-gray-800 truncate" title="@Model.CompanyName">@Model.CompanyName</h3>
+            </div>
         </div>
     </div>
     <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5">
-            <p class="text-xs uppercase tracking-wide text-gray-500">Tax Rate</p>
-            <h3 class="text-lg font-medium text-gray-800 mt-1">@Model.TaxRate<span class="text-sm text-gray-500">%</span></h3>
-            <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium"><i class="bi bi-receipt"></i> Applied</span>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full gap-2 min-w-0">
+            <div class="flex flex-col items-start gap-y-1.5 min-w-0">
+                <p class="text-xs uppercase tracking-wide text-gray-500 truncate w-full" title="Tax Rate">Tax Rate</p>
+                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-[10px] font-medium whitespace-nowrap"><i class="bi bi-receipt"></i> Applied</span>
+            </div>
+            <div class="text-right shrink-0 max-w-[50%] min-w-0">
+                <h3 class="text-lg font-medium text-gray-800 truncate" title="@Model.TaxRate%">@Model.TaxRate<span class="text-[10px] text-gray-400 font-medium ml-0.5">%</span></h3>
+            </div>
         </div>
     </div>
     <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5">
-            <p class="text-xs uppercase tracking-wide text-gray-500">Low Stock</p>
-            <h3 class="text-lg font-medium text-gray-800 mt-1">@Model.LowStockThreshold <span class="text-sm text-gray-500">units</span></h3>
-            <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium"><i class="bi bi-exclamation-triangle-fill"></i> Threshold</span>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full gap-2 min-w-0">
+            <div class="flex flex-col items-start gap-y-1.5 min-w-0">
+                <p class="text-xs uppercase tracking-wide text-gray-500 truncate w-full" title="Low Stock">Low Stock</p>
+                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-[10px] font-medium whitespace-nowrap"><i class="bi bi-exclamation-triangle-fill"></i> Threshold</span>
+            </div>
+            <div class="text-right shrink-0 max-w-[50%] min-w-0">
+                <h3 class="text-lg font-medium text-gray-800 truncate" title="@Model.LowStockThreshold units">@Model.LowStockThreshold <span class="text-[10px] text-gray-400 font-medium ml-0.5">units</span></h3>
+            </div>
         </div>
     </div>
     <div class="flex flex-col bg-white border shadow-sm rounded-xl">
-        <div class="p-4 md:p-5">
-            <p class="text-xs uppercase tracking-wide text-gray-500">Support</p>
-            <h3 class="text-sm font-medium text-gray-800 mt-1 truncate" title="@Model.SupportEmail">@Model.SupportEmail</h3>
-            <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-cyan-100 text-cyan-800 text-xs font-medium"><i class="bi bi-headset"></i> Linked</span>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full gap-2 min-w-0">
+            <div class="flex flex-col items-start gap-y-1.5 min-w-0">
+                <p class="text-xs uppercase tracking-wide text-gray-500 truncate w-full" title="Support">Support</p>
+                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-cyan-100 text-cyan-800 text-[10px] font-medium whitespace-nowrap"><i class="bi bi-headset"></i> Linked</span>
+            </div>
+            <div class="text-right shrink-0 max-w-[60%] min-w-0">
+                <h3 class="text-sm font-medium text-gray-800 truncate" title="@Model.SupportEmail">@Model.SupportEmail</h3>
+            </div>
         </div>
     </div>
 </div>

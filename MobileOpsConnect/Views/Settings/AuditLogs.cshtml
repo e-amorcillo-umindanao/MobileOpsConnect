@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Mvc.Rendering
 @model PaginatedList<MobileOpsConnect.Models.AuditLog>
 @{
     bool isSuperAdmin = (bool)ViewBag.IsSuperAdmin;
@@ -26,24 +26,49 @@
 <!-- Metrics -->
 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800" style="border-left: 3px solid #6366f1;">
-        <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Total Events</p><h3 class="text-xl font-bold text-indigo-600 mt-1">@totalEvents</h3></div>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full h-full gap-2 min-w-0">
+            <p class="text-xs uppercase tracking-wide text-gray-500 truncate" title="Total Events">Total Events</p>
+            <div class="text-right shrink-0">
+                <h3 class="text-2xl font-bold text-indigo-600 leading-none">@totalEvents</h3>
+            </div>
+        </div>
     </div>
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800" style="border-left: 3px solid #06b6d4;">
-        <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Data Changes</p><h3 class="text-xl font-bold text-cyan-600 mt-1">@dataCount</h3></div>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full h-full gap-2 min-w-0">
+            <p class="text-xs uppercase tracking-wide text-gray-500 truncate" title="Data Changes">Data Changes</p>
+            <div class="text-right shrink-0">
+                <h3 class="text-2xl font-bold text-cyan-600 leading-none">@dataCount</h3>
+            </div>
+        </div>
     </div>
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800" style="border-left: 3px solid #22c55e;">
-        <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Stock Moves</p><h3 class="text-xl font-bold text-green-600 mt-1">@stockCount</h3></div>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full h-full gap-2 min-w-0">
+            <p class="text-xs uppercase tracking-wide text-gray-500 truncate" title="Stock Moves">Stock Moves</p>
+            <div class="text-right shrink-0">
+                <h3 class="text-2xl font-bold text-green-600 leading-none">@stockCount</h3>
+            </div>
+        </div>
     </div>
     @if (isSuperAdmin)
     {
         <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800" style="border-left: 3px solid #ef4444;">
-            <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Security Events</p><h3 class="text-xl font-bold text-red-600 mt-1">@securityCount</h3></div>
+            <div class="p-4 md:p-5 flex items-center justify-between w-full h-full gap-2 min-w-0">
+                <p class="text-xs uppercase tracking-wide text-gray-500 truncate" title="Security Events">Security Events</p>
+                <div class="text-right shrink-0">
+                    <h3 class="text-2xl font-bold text-red-600 leading-none">@securityCount</h3>
+                </div>
+            </div>
         </div>
     }
     else
     {
         <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800" style="border-left: 3px solid #f59e0b;">
-            <div class="p-4"><p class="text-xs uppercase tracking-wide text-gray-500">Login Events</p><h3 class="text-xl font-bold text-amber-600 mt-1">@loginCount</h3></div>
+            <div class="p-4 md:p-5 flex items-center justify-between w-full h-full gap-2 min-w-0">
+                <p class="text-xs uppercase tracking-wide text-gray-500 truncate" title="Login Events">Login Events</p>
+                <div class="text-right shrink-0">
+                    <h3 class="text-2xl font-bold text-amber-600 leading-none">@loginCount</h3>
+                </div>
+            </div>
         </div>
     }
 </div>

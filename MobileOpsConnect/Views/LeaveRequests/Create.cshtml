@@ -1,4 +1,4 @@
-﻿@model MobileOpsConnect.Models.LeaveRequest
+@model MobileOpsConnect.Models.LeaveRequest
 @using MobileOpsConnect.Services
 
 @{
@@ -43,27 +43,57 @@
 
 <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg"><i class="bi bi-calendar-check text-xl"></i></div>
-            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Balance</p><div class="mt-1 flex items-center gap-x-2"><h3 class="text-xl font-medium text-gray-800">12 <span class="text-sm text-gray-500">days</span></h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check-circle-fill"></i> Available</span></div></div>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full gap-x-4">
+            <div class="flex items-center gap-x-4 min-w-0">
+                <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg"><i class="bi bi-calendar-check text-xl"></i></div>
+                <p class="text-xs uppercase tracking-wide text-gray-500 truncate" title="Balance">Balance</p>
+            </div>
+            <div class="text-right shrink-0">
+                <div class="flex items-center gap-x-2 justify-end">
+                    <h3 class="text-xl font-medium text-gray-800">12 <span class="text-[13px] text-gray-500">days</span></h3>
+                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check-circle-fill"></i> Available</span>
+                </div>
+            </div>
         </div>
     </div>
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-calendar-minus text-xl"></i></div>
-            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Total Filed</p><div class="mt-1"><h3 class="text-xl font-medium text-gray-800">@(ViewBag.MyTotalCount ?? 0) <span class="text-sm text-gray-500">requests</span></h3><span class="text-xs text-gray-500">accumulated history</span></div></div>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full gap-x-4">
+            <div class="flex items-center gap-x-4 min-w-0">
+                <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-calendar-minus text-xl"></i></div>
+                <p class="text-xs uppercase tracking-wide text-gray-500 truncate" title="Total Filed">Total Filed</p>
+            </div>
+            <div class="text-right shrink-0">
+                <h3 class="text-xl font-medium text-gray-800 truncate">@(ViewBag.MyTotalCount ?? 0) <span class="text-[13px] text-gray-500">requests</span></h3>
+                <span class="text-xs text-gray-500 block text-right mt-0.5">accumulated history</span>
+            </div>
         </div>
     </div>
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg"><i class="bi bi-clock-history text-xl"></i></div>
-            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Pending</p><div class="mt-1 flex items-center gap-x-2"><h3 class="text-xl font-medium text-gray-800">@(ViewBag.MyPendingCount ?? 0)</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium"><i class="bi bi-hourglass-split"></i> Awaiting</span></div></div>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full gap-x-4">
+            <div class="flex items-center gap-x-4 min-w-0">
+                <div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg"><i class="bi bi-clock-history text-xl"></i></div>
+                <p class="text-xs uppercase tracking-wide text-gray-500 truncate" title="Pending">Pending</p>
+            </div>
+            <div class="text-right shrink-0">
+                <div class="flex items-center gap-x-2 justify-end">
+                    <h3 class="text-xl font-medium text-gray-800">@(ViewBag.MyPendingCount ?? 0)</h3>
+                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-amber-100 text-amber-800 text-xs font-medium"><i class="bi bi-hourglass-split"></i> Awaiting</span>
+                </div>
+            </div>
         </div>
     </div>
     <div class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
-        <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-emerald-100 text-emerald-800 rounded-lg"><i class="bi bi-calendar-heart text-xl"></i></div>
-            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Approved</p><div class="mt-1 flex items-center gap-x-2"><h3 class="text-xl font-medium text-gray-800">@(ViewBag.MyApprovedCount ?? 0)</h3><span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check2-all"></i> Approved</span></div></div>
+        <div class="p-4 md:p-5 flex items-center justify-between w-full gap-x-4">
+            <div class="flex items-center gap-x-4 min-w-0">
+                <div class="shrink-0 flex justify-center items-center size-[46px] bg-emerald-100 text-emerald-800 rounded-lg"><i class="bi bi-calendar-heart text-xl"></i></div>
+                <p class="text-xs uppercase tracking-wide text-gray-500 truncate" title="Approved">Approved</p>
+            </div>
+            <div class="text-right shrink-0">
+                <div class="flex items-center gap-x-2 justify-end">
+                    <h3 class="text-xl font-medium text-gray-800">@(ViewBag.MyApprovedCount ?? 0)</h3>
+                    <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-green-100 text-green-800 text-xs font-medium"><i class="bi bi-check2-all"></i> Approved</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
