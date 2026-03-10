@@ -1,0 +1,478 @@
+﻿
+MobileOpsConnect\Views\Accounting\Details.cshtm
+l:56:                <div class="flex 
+items-center py-4 gap-x-3"><span 
+class="shrink-0 inline-flex justify-center 
+items-center size-[40px] rounded-lg 
+bg-indigo-100 text-indigo-800"><i class="bi 
+bi-calendar3"></i></span><div><span 
+class="text-xs uppercase text-gray-500 
+font-medium">Transaction Date</span><p 
+class="text-sm font-semibold text-gray-800 
+mb-0">@Model.TransactionDate.ToString("MMMM 
+dd, yyyy")</p></div></div>
+MobileOpsConnect\Views\Accounting\Details.cshtm
+l:57:                <div class="flex 
+items-center py-4 gap-x-3"><span 
+class="shrink-0 inline-flex justify-center 
+items-center size-[40px] rounded-lg 
+bg-indigo-100 text-indigo-800"><i class="bi 
+bi-tag"></i></span><div><span class="text-xs 
+uppercase text-gray-500 
+font-medium">Category</span><p class="text-sm 
+font-semibold text-gray-800 
+mb-0">@Model.Category</p></div></div>
+MobileOpsConnect\Views\Accounting\Details.cshtm
+l:58:                <div class="flex 
+items-center py-4 gap-x-3"><span 
+class="shrink-0 inline-flex justify-center 
+items-center size-[40px] rounded-lg 
+bg-indigo-100 text-indigo-800"><i class="bi 
+bi-card-text"></i></span><div><span 
+class="text-xs uppercase text-gray-500 
+font-medium">Description</span><p 
+class="text-sm font-semibold text-gray-800 
+mb-0">@Model.Description</p></div></div>
+MobileOpsConnect\Views\Accounting\Details.cshtm
+l:59:                <div class="flex 
+items-center py-4 gap-x-3"><span 
+class="shrink-0 inline-flex justify-center 
+items-center size-[40px] rounded-lg 
+bg-indigo-100 text-indigo-800"><i class="bi 
+bi-hash"></i></span><div><span class="text-xs 
+uppercase text-gray-500 font-medium">Reference 
+#</span><p class="text-sm font-semibold 
+text-gray-800 mb-0">@(Model.ReferenceNumber ?? 
+"N/A")</p></div></div>
+MobileOpsConnect\Views\Accounting\Details.cshtm
+l:60:                <div class="flex 
+items-center py-4 gap-x-3"><span 
+class="shrink-0 inline-flex justify-center 
+items-center size-[40px] rounded-lg 
+bg-indigo-100 text-indigo-800"><i class="bi 
+bi-person"></i></span><div><span 
+class="text-xs uppercase text-gray-500 
+font-medium">Recorded By</span><p 
+class="text-sm font-semibold text-gray-800 
+mb-0">@(Model.RecordedBy?.Email ?? 
+"Unknown")</p></div></div>
+MobileOpsConnect\Views\Accounting\Details.cshtm
+l:61:                <div class="flex 
+items-center py-4 gap-x-3"><span 
+class="shrink-0 inline-flex justify-center 
+items-center size-[40px] rounded-lg 
+bg-indigo-100 text-indigo-800"><i class="bi 
+bi-clock"></i></span><div><span class="text-xs 
+uppercase text-gray-500 font-medium">Recorded 
+On</span><p class="text-sm font-semibold 
+text-gray-800 
+mb-0">@Model.CreatedAt.ToString("MMMM dd, yyyy 
+h:mm tt")</p></div></div>
+MobileOpsConnect\Views\Home\Analytics.cshtml:14
+1:                        <h3 class="text-sm 
+font-semibold text-gray-800 mb-1">No Data 
+Available</h3>
+MobileOpsConnect\Views\LeaveRequests\Create.csh
+tml:53:                    <h3 class="text-xl 
+font-medium text-gray-800">12 <span 
+class="text-[13px] 
+text-gray-500">days</span></h3>
+MobileOpsConnect\Views\LeaveRequests\Create.csh
+tml:66:                <h3 class="text-xl 
+font-medium text-gray-800 
+truncate">@(ViewBag.MyTotalCount ?? 0) <span 
+class="text-[13px] 
+text-gray-500">requests</span></h3>
+MobileOpsConnect\Views\LeaveRequests\Create.csh
+tml:79:                    <h3 class="text-xl 
+font-medium 
+text-gray-800">@(ViewBag.MyPendingCount ?? 
+0)</h3>
+MobileOpsConnect\Views\LeaveRequests\Create.csh
+tml:93:                    <h3 class="text-xl 
+font-medium 
+text-gray-800">@(ViewBag.MyApprovedCount ?? 
+0)</h3>
+MobileOpsConnect\Views\LeaveRequests\Create.csh
+tml:111:                        <span 
+class="inline-flex justify-center items-center 
+size-[38px] rounded-lg bg-gray-100 
+text-gray-800"><i class="bi bi-calendar-event 
+text-lg"></i></span>
+MobileOpsConnect\Views\LeaveRequests\Create.csh
+tml:113:                            <h3 
+class="text-sm font-semibold 
+text-gray-800">Philippine Public Holidays 
+@PhilippineTime.Now.Year</h3>
+MobileOpsConnect\Views\LeaveRequests\Create.csh
+tml:139:                                       
+     <span class="text-sm font-semibold 
+text-gray-800">@h.Date.ToString("MMM dd, 
+yyyy")</span><br />
+MobileOpsConnect\Views\LeaveRequests\Create.csh
+tml:142:                                       
+ <td class="whitespace-nowrap px-6 py-3"><span 
+class="text-sm font-semibold 
+text-gray-800">@h.LocalName</span></td>
+MobileOpsConnect\Views\LeaveRequests\Create.csh
+tml:162:                        <span 
+class="inline-flex justify-center items-center 
+size-[56px] rounded-full border-4 
+border-gray-50 bg-gray-100 text-gray-800 
+mx-auto mb-3"><i class="bi bi-calendar-x 
+text-xl"></i></span>
+MobileOpsConnect\Views\LeaveRequests\Create.csh
+tml:163:                        <p 
+class="text-sm font-semibold text-gray-800 
+mb-1">Holiday data unavailable</p>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:84:                <h3 class="text-lg 
+font-medium text-gray-800">₱@totalEarnings.ToSt
+ring("N2")</h3>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:96:                <h3 class="text-lg 
+font-medium text-gray-800">₱@totalDeductions.To
+String("N2")</h3>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:120:                <h3 class="text-lg 
+font-medium text-gray-800">Paid</h3>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:139:            <h4 class="text-lg font-bold 
+text-gray-800 mb-1">MobileOps Connect Inc.</h4>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:154:                        <p class="text-sm 
+font-semibold text-gray-800 
+mb-0.5">@currentUser</p>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:164:                            <span 
+class="text-sm font-semibold 
+text-gray-800">Status:</span>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:188:                        <h3 
+class="text-sm font-semibold 
+text-gray-800">Earnings</h3>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:191:                        <div class="flex 
+justify-between items-center px-4 py-3 
+bg-green-50"><div class="flex items-center 
+gap-x-2"><i class="bi bi-briefcase 
+text-green-600 text-sm"></i><span 
+class="text-sm font-medium 
+text-gray-800">Basic Salary</span></div><span 
+class="text-sm font-semibold text-gray-800">₱@b
+asicSalary.ToString("N2")</span></div>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:193:                        <div class="flex 
+justify-between items-center px-4 py-3"><div 
+class="flex items-center gap-x-2"><i class="bi 
+bi-clock-history text-amber-500 
+text-sm"></i><span class="text-sm font-medium 
+text-gray-800">Overtime Pay</span></div><span 
+class="text-sm font-semibold text-gray-800">₱@o
+vertime.ToString("N2")</span></div>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:195:                        <div class="flex 
+justify-between items-center px-4 py-3 
+bg-green-50"><div class="flex items-center 
+gap-x-2"><i class="bi bi-gift text-purple-500 
+text-sm"></i><span class="text-sm font-medium 
+text-gray-800">Allowances</span></div><span 
+class="text-sm font-semibold text-gray-800">₱@a
+llowance.ToString("N2")</span></div>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:197:                        <div class="flex 
+justify-between items-center px-4 py-3 
+bg-green-100"><div class="flex items-center 
+gap-x-2"><span class="inline-flex 
+justify-center items-center size-[24px] 
+rounded-md bg-green-200 text-green-800"><i 
+class="bi bi-check-lg" 
+style="font-size:0.75rem;"></i></span><span 
+class="text-sm font-bold text-gray-800">Total 
+Earnings</span></div><span class="text-sm 
+font-bold text-green-700">₱@totalEarnings.ToStr
+ing("N2")</span></div>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:205:                        <h3 
+class="text-sm font-semibold 
+text-gray-800">Deductions</h3>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:208:                        <div class="flex 
+justify-between items-center px-4 py-3 
+bg-red-50/50"><div class="flex items-center 
+gap-x-2"><i class="bi bi-shield-check 
+text-indigo-500 text-sm"></i><span 
+class="text-sm font-medium text-gray-800">SSS 
+Contribution</span></div><span class="text-sm 
+font-semibold text-red-600">−₱@sss.ToString("N2
+")</span></div>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:210:                        <div class="flex 
+justify-between items-center px-4 py-3"><div 
+class="flex items-center gap-x-2"><i class="bi 
+bi-heart-pulse text-cyan-500 
+text-sm"></i><span class="text-sm font-medium 
+text-gray-800">PhilHealth</span></div><span 
+class="text-sm font-semibold text-red-600">−₱@p
+hilhealth.ToString("N2")</span></div>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:212:                        <div class="flex 
+justify-between items-center px-4 py-3 
+bg-red-50/50"><div class="flex items-center 
+gap-x-2"><i class="bi bi-house-heart 
+text-amber-500 text-sm"></i><span 
+class="text-sm font-medium 
+text-gray-800">Pag-IBIG</span></div><span 
+class="text-sm font-semibold text-red-600">−₱@p
+agibig.ToString("N2")</span></div>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:214:                        <div class="flex 
+justify-between items-center px-4 py-3"><div 
+class="flex items-center gap-x-2"><i class="bi 
+bi-bank text-purple-500 text-sm"></i><span 
+class="text-sm font-medium 
+text-gray-800">Withholding 
+Tax</span></div><span class="text-sm 
+font-semibold text-red-600">−₱@tax.ToString("N2
+")</span></div>
+MobileOpsConnect\Views\Payroll\MyPayslip.cshtml
+:216:                        <div class="flex 
+justify-between items-center px-4 py-3 
+bg-red-100"><div class="flex items-center 
+gap-x-2"><span class="inline-flex 
+justify-center items-center size-[24px] 
+rounded-md bg-red-200 text-red-800"><i 
+class="bi bi-dash-lg" 
+style="font-size:0.75rem;"></i></span><span 
+class="text-sm font-bold text-gray-800">Total 
+Deductions</span></div><span class="text-sm 
+font-bold text-red-700">−₱@totalDeductions.ToSt
+ring("N2")</span></div>
+MobileOpsConnect\Views\Products\Delete.cshtml:3
+2:        <h3 class="text-sm font-semibold 
+text-gray-800 mb-1">Are you sure you want to 
+archive this product?</h3>
+MobileOpsConnect\Views\Products\Delete.cshtml:4
+7:            <div class="grow"><p 
+class="text-xs uppercase tracking-wide 
+text-gray-500">SKU Code</p><h3 class="text-xl 
+font-medium text-gray-800 
+mt-1">@Model.SKU</h3></div>
+MobileOpsConnect\Views\Products\Delete.cshtml:5
+3:            <div class="grow"><p 
+class="text-xs uppercase tracking-wide 
+text-gray-500">Product Name</p><h3 
+class="text-xl font-medium text-gray-800 
+mt-1">@Model.Name</h3></div>
+MobileOpsConnect\Views\Products\Delete.cshtml:5
+9:            <div class="grow"><p 
+class="text-xs uppercase tracking-wide 
+text-gray-500">Category</p><h3 class="text-xl 
+font-medium text-gray-800 
+mt-1">@(string.IsNullOrEmpty(Model.Category) ? 
+"Uncategorized" : Model.Category)</h3></div>
+MobileOpsConnect\Views\Products\Delete.cshtml:6
+7:                <h3 class="text-xl 
+font-medium text-gray-800 
+mt-1">@Model.StockQuantity</h3>
+MobileOpsConnect\Views\Products\Delete.cshtml:8
+0:            <div class="grow"><p 
+class="text-xs uppercase tracking-wide 
+text-gray-500">Unit Price</p><h3 
+class="text-xl font-medium text-gray-800 
+mt-1">₱@Model.Price.ToString("N2")</h3></div>
+MobileOpsConnect\Views\Products\Delete.cshtml:8
+5:            <div class="shrink-0 flex 
+justify-center items-center size-[46px] 
+bg-gray-100 text-gray-800 rounded-lg"><i 
+class="bi bi-clock-history text-xl"></i></div>
+MobileOpsConnect\Views\Products\Delete.cshtml:8
+6:            <div class="grow"><p 
+class="text-xs uppercase tracking-wide 
+text-gray-500">Last Updated</p><h3 
+class="text-xl font-medium text-gray-800 
+mt-1">@Model.LastUpdated.ToString("MMM dd, 
+yyyy")</h3></div>
+MobileOpsConnect\Views\Products\Details.cshtml:
+103:                    <div 
+class="grow"><span class="text-xs uppercase 
+text-gray-500 font-medium">SKU Code</span><p 
+class="text-sm font-semibold text-gray-800 
+mb-0">@Model.SKU</p></div>
+MobileOpsConnect\Views\Products\Details.cshtml:
+107:                    <div 
+class="grow"><span class="text-xs uppercase 
+text-gray-500 font-medium">Product 
+Name</span><p class="text-sm font-semibold 
+text-gray-800 mb-0">@Model.Name</p></div>
+MobileOpsConnect\Views\Products\Details.cshtml:
+111:                    <div 
+class="grow"><span class="text-xs uppercase 
+text-gray-500 font-medium">Category</span><p 
+class="text-sm font-semibold text-gray-800 
+mb-0">@Model.Category</p></div>
+MobileOpsConnect\Views\Products\Details.cshtml:
+115:                    <div 
+class="grow"><span class="text-xs uppercase 
+text-gray-500 font-medium">Stock 
+Quantity</span><p class="text-sm font-semibold 
+text-gray-800 mb-0">@Model.StockQuantity 
+units</p></div>
+MobileOpsConnect\Views\Products\Details.cshtml:
+119:                    <div 
+class="grow"><span class="text-xs uppercase 
+text-gray-500 font-medium">Price</span><p 
+class="text-sm font-semibold text-gray-800 
+mb-0">₱@Model.Price.ToString("N2")</p></div>
+MobileOpsConnect\Views\Products\Details.cshtml:
+123:                    <div 
+class="grow"><span class="text-xs uppercase 
+text-gray-500 font-medium">Last 
+Updated</span><p class="text-sm font-semibold 
+text-gray-800 
+mb-0">@Model.LastUpdated.ToString("MMMM dd, 
+yyyy — h:mm tt")</p></div>
+MobileOpsConnect\Views\Settings\Index.cshtml:44
+:                <h3 class="text-lg 
+font-medium text-gray-800 truncate" title="@Mod
+el.CompanyName">@Model.CompanyName</h3>
+MobileOpsConnect\Views\Settings\Index.cshtml:55
+:                <h3 class="text-lg 
+font-medium text-gray-800 truncate" 
+title="@Model.TaxRate%">@Model.TaxRate<span 
+class="text-[10px] text-gray-400 font-medium 
+ml-0.5">%</span></h3>
+MobileOpsConnect\Views\Settings\Index.cshtml:66
+:                <h3 class="text-lg 
+font-medium text-gray-800 truncate" 
+title="@Model.LowStockThreshold 
+units">@Model.LowStockThreshold <span 
+class="text-[10px] text-gray-400 font-medium 
+ml-0.5">units</span></h3>
+MobileOpsConnect\Views\Settings\Index.cshtml:77
+:                <h3 class="text-sm 
+font-medium text-gray-800 truncate" title="@Mod
+el.SupportEmail">@Model.SupportEmail</h3>
+MobileOpsConnect\Views\Settings\Index.cshtml:16
+2:                            <a 
+asp-controller="Home" asp-action="Index" 
+class="w-full py-3 px-4 inline-flex 
+justify-center items-center gap-x-2 text-sm 
+font-medium rounded-lg border border-gray-200 
+bg-white text-gray-800 shadow-sm 
+hover:bg-gray-50 transition-colors">
+MobileOpsConnect\Views\Shared\_Layout.cshtml:14
+4:                    <a asp-area="" 
+asp-controller="Home" asp-action="Privacy" 
+class="hover:text-gray-800 hover:underline 
+transition-all flex items-center gap-1.5">
+MobileOpsConnect\Views\Users\Edit.cshtml:62:   
+             <div><h3 class="text-lg font-bold 
+text-gray-800 mb-0">Super Admin</h3><p 
+class="text-sm text-gray-500 mb-0">You hold 
+the highest role in the system</p></div>
+MobileOpsConnect\Views\Users\Edit.cshtml:67:   
+                 <h3 class="text-sm font-bold 
+text-gray-800 mb-1 break-all">@Model.Email</h3>
+MobileOpsConnect\Views\Users\Edit.cshtml:72:   
+                 <h3 class="text-sm font-bold 
+text-gray-800 mb-1">Super Admin</h3>
+MobileOpsConnect\Views\Users\Edit.cshtml:111:  
+                      <h5 class="font-bold 
+text-gray-800" 
+id="deleteAccountModalLabel">Confirm Account 
+Deletion</h5>
+MobileOpsConnect\Views\Users\Edit.cshtml:113:  
+                  <button type="button" 
+class="size-8 inline-flex justify-center 
+items-center gap-x-2 rounded-full border 
+border-transparent bg-white text-gray-800 
+hover:bg-gray-100 disabled:opacity-50 
+disabled:pointer-events-none" 
+data-hs-overlay="#deleteAccountModal" 
+aria-label="Close">
+MobileOpsConnect\Views\Users\Edit.cshtml:128:  
+                          <label 
+for="confirmPassword" class="block text-sm 
+font-semibold text-gray-800 mb-2"><i class="bi 
+bi-lock-fill text-red-500 me-1"></i> Verify 
+Password</label>
+MobileOpsConnect\Views\Users\Edit.cshtml:135:  
+                  <button type="button" 
+class="py-2.5 px-4 inline-flex items-center 
+gap-x-2 text-sm font-medium rounded-lg border 
+border-gray-200 bg-white text-gray-800 
+shadow-sm hover:bg-gray-50 transition-colors" 
+data-hs-overlay="#deleteAccountModal">
+MobileOpsConnect\Views\Users\Edit.cshtml:174:  
+                      <h3 class="text-sm 
+font-semibold text-gray-800 mb-4 flex 
+items-center gap-2"><i class="bi 
+bi-person-badge text-indigo-500"></i> Current 
+Status</h3>
+MobileOpsConnect\Views\Users\Edit.cshtml:190:  
+                              <h4 
+class="text-base font-bold text-gray-800 
+mb-0">@Model.CurrentRole</h4>
+MobileOpsConnect\Views\Users\EmployeeRecords.cs
+html:56:                <h3 class="text-lg 
+font-semibold text-gray-800 mb-1">No Records 
+Found</h3>
+MobileOpsConnect\Views\Users\EmployeeRecords.cs
+html:93:                                       
+ <span class="text-sm font-semibold 
+text-gray-800">@emp.Email</span>
+MobileOpsConnect\Views\Users\EmployeeRecords.cs
+html:126:                                <span 
+class="text-sm font-semibold 
+text-gray-800">@emp.Email</span>
+MobileOpsConnect\Views\Users\Index.cshtml:319: 
+                       <h3 
+id="deleteUserModalLabel" class="font-bold 
+text-gray-800">Remove System Admin</h3>
+MobileOpsConnect\Views\Users\Index.cshtml:321: 
+                   <button type="button" 
+class="size-8 inline-flex justify-center 
+items-center gap-x-2 rounded-full border 
+border-transparent bg-gray-100 text-gray-800 
+hover:bg-gray-200" aria-label="Close" 
+data-hs-overlay="#deleteUserModal">
+MobileOpsConnect\Views\Users\Index.cshtml:326: 
+                   <p class="text-gray-800 
+mb-2">Are you sure you want to permanently 
+remove this System Admin?</p>
+MobileOpsConnect\Views\Users\Index.cshtml:330: 
+                   <button type="button" 
+class="py-2 px-3 inline-flex items-center 
+gap-x-2 text-sm font-medium rounded-lg border 
+border-gray-200 bg-white text-gray-800 
+shadow-sm hover:bg-gray-50" 
+data-hs-overlay="#deleteUserModal"><i 
+class="bi bi-x-lg"></i> Cancel</button>
+MobileOpsConnect\Views\Warehouse\Adjust.cshtml:
+21:            <h3 class="text-xl font-bold 
+text-gray-800 mb-1">@Model.Name</h3>
+MobileOpsConnect\Areas\Identity\Pages\Account\L
+ogin.cshtml:70:            <button 
+type="button" id="toggleLoginPassword" 
+class="absolute inset-y-0 end-0 flex 
+items-center z-20 px-3 cursor-pointer 
+text-gray-400 rounded-e-md hover:text-gray-900 
+dark:hover:text-white transition-colors">
+MobileOpsConnect\Areas\Identity\Pages\Account\M
+anage\TwoFactorAuthentication.cshtml:9:    <h2 
+class="text-lg font-semibold text-gray-800 
+flex items-center gap-x-2"><i class="bi 
+bi-shield-lock-fill text-green-500"></i> 
+Two-Factor Authentication</h2>
+MobileOpsConnect\Areas\Identity\Pages\Account\M
+anage\TwoFactorAuthentication.cshtml:19:       
+     <h3 class="text-lg font-bold 
+text-gray-800 mb-2">Two-Factor 
+Authentication</h3>
+MobileOpsConnect\Areas\Identity\Pages\Account\M
+anage\TwoFactorAuthentication.cshtml:45:       
+         <p class="text-sm font-semibold 
+text-gray-800 mb-1">Note</p>
+
+

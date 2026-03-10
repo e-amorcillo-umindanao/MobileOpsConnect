@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model TwoFactorAuthenticationModel
 @{
     ViewData["Title"] = "Two-Factor Authentication";
@@ -6,44 +6,44 @@
 }
 
 <div class="flex items-center gap-x-3 mb-4">
-    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2"><i class="bi bi-shield-lock-fill text-green-500"></i> Two-Factor Authentication</h2>
-    <div class="grow border-t border-gray-200"></div>
+    <h2 class="text-lg font-semibold text-gray-800 flex items-center gap-x-2 dark:text-white"><i class="bi bi-shield-lock-fill text-green-500"></i> Two-Factor Authentication</h2>
+    <div class="grow border-t border-gray-200 dark:border-neutral-800"></div>
 </div>
 
 <partial name="_StatusMessage" for="StatusMessage" />
 
-<div class="flex flex-col bg-white border shadow-sm rounded-xl">
+<div class="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800">
     <div class="p-6">
         <div class="text-center p-6">
-            <span class="inline-flex justify-center items-center size-[64px] rounded-xl bg-green-100 text-green-800 mx-auto mb-4"><i class="bi bi-shield-lock text-2xl"></i></span>
-            <h3 class="text-lg font-bold text-gray-800 mb-2">Two-Factor Authentication</h3>
-            <p class="text-sm text-gray-500 mb-5">
+            <span class="inline-flex justify-center items-center size-[64px] rounded-xl bg-green-100 text-green-800 mx-auto mb-4 dark:bg-green-900/30 dark:text-green-400"><i class="bi bi-shield-lock text-2xl"></i></span>
+            <h3 class="text-lg font-bold text-gray-800 mb-2 dark:text-white">Two-Factor Authentication</h3>
+            <p class="text-sm text-gray-500 mb-5 dark:text-neutral-400">
                 Two-factor authentication adds an extra layer of security to your account.
                 This feature requires an authenticator app to generate verification codes.
             </p>
 
             @if (Model.Is2faEnabled)
             {
-                <div class="inline-flex items-center gap-2 py-2 px-4 rounded-lg bg-green-50 border border-green-200 mb-5">
-                    <i class="bi bi-check-circle-fill text-green-600"></i>
-                    <span class="text-sm font-semibold text-green-700">2FA is currently enabled</span>
+                <div class="inline-flex items-center gap-2 py-2 px-4 rounded-lg bg-green-50 border border-green-200 mb-5 dark:bg-green-900/10 dark:border-green-800">
+                    <i class="bi bi-check-circle-fill text-green-600 dark:text-green-500"></i>
+                    <span class="text-sm font-semibold text-green-700 dark:text-green-500">2FA is currently enabled</span>
                 </div>
             }
             else
             {
-                <div class="inline-flex items-center gap-2 py-2 px-4 rounded-lg bg-amber-50 border border-amber-200 mb-5">
-                    <i class="bi bi-exclamation-triangle-fill text-amber-600"></i>
-                    <span class="text-sm font-semibold text-amber-700">2FA is not yet configured</span>
+                <div class="inline-flex items-center gap-2 py-2 px-4 rounded-lg bg-amber-50 border border-amber-200 mb-5 dark:bg-amber-900/10 dark:border-amber-800">
+                    <i class="bi bi-exclamation-triangle-fill text-amber-600 dark:text-amber-500"></i>
+                    <span class="text-sm font-semibold text-amber-700 dark:text-amber-500">2FA is not yet configured</span>
                 </div>
             }
         </div>
 
         <!-- Info Notice -->
-        <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-4 flex items-start gap-3">
-            <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800 shrink-0"><i class="bi bi-info-circle"></i></span>
+        <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-4 flex items-start gap-3 dark:bg-indigo-900/10 dark:border-indigo-800">
+            <span class="inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800 shrink-0 dark:bg-indigo-900/40 dark:text-indigo-400"><i class="bi bi-info-circle"></i></span>
             <div>
-                <p class="text-sm font-semibold text-gray-800 mb-1">Note</p>
-                <p class="text-xs text-gray-500 mb-0">
+                <p class="text-sm font-semibold text-gray-800 mb-1 dark:text-white">Note</p>
+                <p class="text-xs text-gray-500 mb-0 dark:text-neutral-400">
                     Two-factor authentication configuration is managed by your system administrator.
                     Contact your admin if you need to enable or disable this feature.
                 </p>

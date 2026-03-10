@@ -42,7 +42,7 @@ namespace MobileOpsConnect.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            RequirePassword = await _userManager.HasPasswordAsync(user);
+            RequirePassword = await _userManager.HasPasswordAsync(user!);
             return Page();
         }
 
@@ -54,7 +54,7 @@ namespace MobileOpsConnect.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            RequirePassword = await _userManager.HasPasswordAsync(user);
+            RequirePassword = await _userManager.HasPasswordAsync(user!);
             if (RequirePassword)
             {
                 if (!await _userManager.CheckPasswordAsync(user!, Input.Password))

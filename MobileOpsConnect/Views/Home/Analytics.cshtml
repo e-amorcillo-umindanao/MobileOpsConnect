@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Analytics Dashboard";
     decimal totalValue = (decimal)ViewBag.TotalValue;
     int totalProducts = (int)ViewBag.TotalProducts;
@@ -137,9 +137,11 @@
                 else
                 {
                     <div class="text-center py-8">
-                        <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-indigo-50 bg-indigo-100 text-indigo-800 mx-auto mb-4"><i class="bi bi-inbox text-2xl"></i></span>
-                        <h3 class="text-sm font-semibold text-gray-800 mb-1">No Data Available</h3>
-                        <p class="text-xs text-gray-500 mb-0">Inventory distribution data will appear here once products are added.</p>
+                        <div class="flex flex-col items-center justify-center p-8 text-center bg-gray-50 rounded-lg border border-dashed border-gray-200 mt-4 dark:bg-neutral-800/50 dark:border-neutral-700">
+                        <i class="bi bi-bar-chart text-4xl text-gray-300 mb-2 dark:text-neutral-600"></i>
+                        <h3 class="text-sm font-semibold text-gray-800 dark:text-white mb-1">No Data Available</h3>
+                        <p class="text-xs text-gray-500 dark:text-neutral-400">Not enough records processed recently to generate this dataset.</p>
+                    </div>
                     </div>
                 }
             </div>

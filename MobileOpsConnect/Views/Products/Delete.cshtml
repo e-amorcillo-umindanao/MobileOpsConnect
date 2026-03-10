@@ -1,4 +1,4 @@
-﻿@model MobileOpsConnect.Models.Product
+@model MobileOpsConnect.Models.Product
 
 @{
     ViewData["Title"] = "Archive Product";
@@ -43,28 +43,28 @@
 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
     <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-cyan-100 text-cyan-800 rounded-lg"><i class="bi bi-upc-scan text-xl"></i></div>
-            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">SKU Code</p><h3 class="text-xl font-medium text-gray-800 mt-1">@Model.SKU</h3></div>
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-cyan-100 text-cyan-800 rounded-lg dark:bg-cyan-900/40 dark:text-cyan-400"><i class="bi bi-upc-scan text-xl"></i></div>
+            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-400">SKU Code</p><h3 class="text-xl font-medium text-gray-800 mt-1 dark:text-white">@Model.SKU</h3></div>
         </div>
     </div>
     <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg"><i class="bi bi-box-seam text-xl"></i></div>
-            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Product Name</p><h3 class="text-xl font-medium text-gray-800 mt-1">@Model.Name</h3></div>
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-indigo-100 text-indigo-800 rounded-lg dark:bg-indigo-900/40 dark:text-indigo-400"><i class="bi bi-box-seam text-xl"></i></div>
+            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-400">Product Name</p><h3 class="text-xl font-medium text-gray-800 mt-1 dark:text-white">@Model.Name</h3></div>
         </div>
     </div>
     <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-purple-100 text-purple-800 rounded-lg"><i class="bi bi-tag-fill text-xl"></i></div>
-            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Category</p><h3 class="text-xl font-medium text-gray-800 mt-1">@(string.IsNullOrEmpty(Model.Category) ? "Uncategorized" : Model.Category)</h3></div>
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-purple-100 text-purple-800 rounded-lg dark:bg-purple-900/40 dark:text-purple-400"><i class="bi bi-tag-fill text-xl"></i></div>
+            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-400">Category</p><h3 class="text-xl font-medium text-gray-800 mt-1 dark:text-white">@(string.IsNullOrEmpty(Model.Category) ? "Uncategorized" : Model.Category)</h3></div>
         </div>
     </div>
     <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg"><i class="bi bi-stack text-xl"></i></div>
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-amber-100 text-amber-800 rounded-lg dark:bg-amber-900/40 dark:text-amber-400"><i class="bi bi-stack text-xl"></i></div>
             <div class="grow">
-                <p class="text-xs uppercase tracking-wide text-gray-500">Current Stock</p>
-                <h3 class="text-xl font-medium text-gray-800 mt-1">@Model.StockQuantity</h3>
+                <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-400">Current Stock</p>
+                <h3 class="text-xl font-medium text-gray-800 mt-1 dark:text-white">@Model.StockQuantity</h3>
                 @if (Model.StockQuantity == 0)
                 { <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md bg-red-100 text-red-800 text-xs font-medium"><i class="bi bi-x-circle-fill"></i> Out of Stock</span> }
                 else if (Model.StockQuantity <= 10)
@@ -76,14 +76,14 @@
     </div>
     <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg"><i class="bi bi-currency-exchange text-xl"></i></div>
-            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Unit Price</p><h3 class="text-xl font-medium text-gray-800 mt-1">₱@Model.Price.ToString("N2")</h3></div>
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-green-100 text-green-800 rounded-lg dark:bg-green-900/40 dark:text-green-400"><i class="bi bi-currency-exchange text-xl"></i></div>
+            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-400">Unit Price</p><h3 class="text-xl font-medium text-gray-800 mt-1 dark:text-white">₱@Model.Price.ToString("N2")</h3></div>
         </div>
     </div>
     <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-[1.25rem] dark:bg-neutral-900 dark:border-neutral-800">
         <div class="p-4 md:p-5 flex gap-x-4">
-            <div class="shrink-0 flex justify-center items-center size-[46px] bg-gray-100 text-gray-800 rounded-lg"><i class="bi bi-clock-history text-xl"></i></div>
-            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500">Last Updated</p><h3 class="text-xl font-medium text-gray-800 mt-1">@Model.LastUpdated.ToString("MMM dd, yyyy")</h3></div>
+            <div class="shrink-0 flex justify-center items-center size-[46px] bg-gray-100 text-gray-800 rounded-lg dark:bg-neutral-800 dark:text-neutral-400"><i class="bi bi-clock-history text-xl"></i></div>
+            <div class="grow"><p class="text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-400">Last Updated</p><h3 class="text-xl font-medium text-gray-800 mt-1 dark:text-white">@Model.LastUpdated.ToString("MMM dd, yyyy")</h3></div>
         </div>
     </div>
 </div>

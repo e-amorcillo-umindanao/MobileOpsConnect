@@ -1,4 +1,4 @@
-﻿@model PaginatedList<MobileOpsConnect.Models.EmployeeRecordViewModel>
+@model PaginatedList<MobileOpsConnect.Models.EmployeeRecordViewModel>
 @{
     ViewData["Title"] = "Employee Records";
     int totalCount = ViewBag.TotalCount ?? 0;
@@ -86,11 +86,11 @@
                                 _ => "Employee"
                             };
 
-                            <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors">
+                            <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800/10 transition-colors">
                                 <td class="whitespace-nowrap px-6 py-4">
                                     <div class="flex items-center gap-x-3">
-                                        <span class="shrink-0 inline-flex justify-center items-center size-[32px] rounded-full bg-purple-100 text-purple-800"><i class="bi bi-person-fill text-sm"></i></span>
-                                        <span class="text-sm font-semibold text-gray-800">@emp.Email</span>
+                                        <span class="shrink-0 inline-flex justify-center items-center size-[32px] rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-400"><i class="bi bi-person-fill text-sm"></i></span>
+                                        <span class="text-sm font-semibold text-gray-800 dark:text-white">@emp.Email</span>
                                     </div>
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4">
@@ -121,20 +121,20 @@
                 {
                     <div class="flex flex-col bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800">
                         <div class="flex items-center gap-x-3 mb-3">
-                            <span class="shrink-0 inline-flex justify-center items-center size-[32px] rounded-full bg-purple-100 text-purple-800"><i class="bi bi-person-fill text-sm"></i></span>
+                            <span class="shrink-0 inline-flex justify-center items-center size-[32px] rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-400"><i class="bi bi-person-fill text-sm"></i></span>
                             <div>
-                                <span class="text-sm font-semibold text-gray-800">@emp.Email</span>
-                                <span class="block text-xs text-gray-500">@emp.Role</span>
+                                <span class="text-sm font-semibold text-gray-800 dark:text-white">@emp.Email</span>
+                                <span class="block text-xs text-gray-500 dark:text-neutral-400">@emp.Role</span>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
-                            <div class="bg-green-50 rounded-lg p-2 text-center">
-                                <p class="text-sm font-bold text-green-700 mb-0">@emp.ApprovedLeaves</p>
-                                <span class="text-xs text-gray-500">Approved</span>
+                            <div class="bg-green-50 rounded-lg p-2 text-center dark:bg-green-900/10">
+                                <p class="text-sm font-bold text-green-700 mb-0 dark:text-green-500">@emp.ApprovedLeaves</p>
+                                <span class="text-xs text-gray-500 dark:text-neutral-500">Approved</span>
                             </div>
-                            <div class="bg-amber-50 rounded-lg p-2 text-center">
-                                <p class="text-sm font-bold mb-0 @(emp.PendingLeaves > 0 ? "text-amber-700" : "text-gray-400")">@emp.PendingLeaves</p>
-                                <span class="text-xs text-gray-500">Pending</span>
+                            <div class="bg-amber-50 rounded-lg p-2 text-center dark:bg-amber-900/10">
+                                <p class="text-sm font-bold mb-0 @(emp.PendingLeaves > 0 ? "text-amber-700 dark:text-amber-500" : "text-gray-400 dark:text-neutral-500")">@emp.PendingLeaves</p>
+                                <span class="text-xs text-gray-500 dark:text-neutral-500">Pending</span>
                             </div>
                         </div>
                     </div>

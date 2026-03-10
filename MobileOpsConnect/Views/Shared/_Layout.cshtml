@@ -1,4 +1,4 @@
-﻿@inject IConfiguration Configuration
+@inject IConfiguration Configuration
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,10 +30,11 @@
     <script>
         // Check local storage or OS preference to set initial theme BEFORE body loads
         const html = document.querySelector('html');
-        const isDark = localStorage.getItem('hs_theme') === 'dark' || 
-            (!('hs_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        const saved = localStorage.getItem('hs_theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
         
-        if (isDark) {
+        if (theme === 'dark') {
             html.classList.add('dark');
         } else {
             html.classList.remove('dark');

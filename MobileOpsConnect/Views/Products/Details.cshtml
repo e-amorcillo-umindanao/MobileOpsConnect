@@ -1,4 +1,4 @@
-﻿@model MobileOpsConnect.Models.Product
+@model MobileOpsConnect.Models.Product
 
 @{
     ViewData["Title"] = "Product Details";
@@ -99,28 +99,28 @@
         <div class="p-6">
             <div class="divide-y divide-gray-100 dark:divide-neutral-800">
                 <div class="flex items-center py-4 gap-x-3">
-                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800"><i class="bi bi-upc-scan"></i></span>
-                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium">SKU Code</span><p class="text-sm font-semibold text-gray-800 mb-0">@Model.SKU</p></div>
+                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-400"><i class="bi bi-upc-scan"></i></span>
+                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium dark:text-neutral-400">SKU Code</span><p class="text-sm font-semibold text-gray-800 mb-0 dark:text-white">@Model.SKU</p></div>
                 </div>
                 <div class="flex items-center py-4 gap-x-3">
-                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-purple-100 text-purple-800"><i class="bi bi-box-seam"></i></span>
-                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium">Product Name</span><p class="text-sm font-semibold text-gray-800 mb-0">@Model.Name</p></div>
+                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-400"><i class="bi bi-box-seam"></i></span>
+                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium dark:text-neutral-400">Product Name</span><p class="text-sm font-semibold text-gray-800 mb-0 dark:text-white">@Model.Name</p></div>
                 </div>
                 <div class="flex items-center py-4 gap-x-3">
-                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-cyan-100 text-cyan-800"><i class="bi bi-bookmark-star-fill"></i></span>
-                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium">Category</span><p class="text-sm font-semibold text-gray-800 mb-0">@Model.Category</p></div>
+                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-400"><i class="bi bi-bookmark-star-fill"></i></span>
+                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium dark:text-neutral-400">Category</span><p class="text-sm font-semibold text-gray-800 mb-0 dark:text-white">@Model.Category</p></div>
                 </div>
                 <div class="flex items-center py-4 gap-x-3">
-                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg @(isLowStock ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800")"><i class="bi @(isLowStock ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill")"></i></span>
-                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium">Stock Quantity</span><p class="text-sm font-semibold text-gray-800 mb-0">@Model.StockQuantity units</p></div>
+                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg @(isLowStock ? "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400" : "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400")"><i class="bi @(isLowStock ? "bi-exclamation-triangle-fill" : "bi-check-circle-fill")"></i></span>
+                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium dark:text-neutral-400">Stock Quantity</span><p class="text-sm font-semibold text-gray-800 mb-0 dark:text-white">@Model.StockQuantity units</p></div>
                 </div>
                 <div class="flex items-center py-4 gap-x-3">
-                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-amber-100 text-amber-800"><i class="bi bi-cash-stack"></i></span>
-                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium">Price</span><p class="text-sm font-semibold text-gray-800 mb-0">₱@Model.Price.ToString("N2")</p></div>
+                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-400"><i class="bi bi-cash-stack"></i></span>
+                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium dark:text-neutral-400">Price</span><p class="text-sm font-semibold text-gray-800 mb-0 dark:text-white">₱@Model.Price.ToString("N2")</p></div>
                 </div>
                 <div class="flex items-center py-4 gap-x-3">
-                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-purple-100 text-purple-800"><i class="bi bi-clock-history"></i></span>
-                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium">Last Updated</span><p class="text-sm font-semibold text-gray-800 mb-0">@Model.LastUpdated.ToString("MMMM dd, yyyy — h:mm tt")</p></div>
+                    <span class="shrink-0 inline-flex justify-center items-center size-[40px] rounded-lg bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-400"><i class="bi bi-clock-history"></i></span>
+                    <div class="grow"><span class="text-xs uppercase text-gray-500 font-medium dark:text-neutral-400">Last Updated</span><p class="text-sm font-semibold text-gray-800 mb-0 dark:text-white">@Model.LastUpdated.ToString("MMMM dd, yyyy — h:mm tt")</p></div>
                 </div>
             </div>
         </div>
