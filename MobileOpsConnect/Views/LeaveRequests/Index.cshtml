@@ -71,7 +71,7 @@
 </div>
 
 <!-- Metrics Grid -->
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-8 mt-2">
+<div class="grid grid-cols-2 @((User.IsInRole("SuperAdmin") && isMyView) ? "lg:grid-cols-3" : "lg:grid-cols-4") gap-3 sm:gap-4 lg:gap-6 mb-8 mt-2">
     <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
         <div class="p-3 sm:p-4 md:p-5 flex items-center justify-between w-full gap-x-3 sm:gap-x-4 min-w-0">
             <div class="flex items-center gap-x-3 sm:gap-x-4 min-w-0">
@@ -105,17 +105,20 @@
             <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate text-right shrink-0" title="@approvedCount">@approvedCount</h3>
         </div>
     </div>
-    <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
-        <div class="p-3 sm:p-4 md:p-5 flex items-center justify-between w-full gap-x-3 sm:gap-x-4 min-w-0">
-            <div class="flex items-center gap-x-3 sm:gap-x-4 min-w-0">
-                <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-red-100 text-red-800 rounded-lg dark:bg-rose-900/20 dark:text-rose-400">
-                    <i class="bi bi-calendar-x text-lg sm:text-xl"></i>
+    @if (!(User.IsInRole("SuperAdmin") && isMyView))
+    {
+        <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-xl dark:bg-neutral-900 dark:border-neutral-800 min-w-0">
+            <div class="p-3 sm:p-4 md:p-5 flex items-center justify-between w-full gap-x-3 sm:gap-x-4 min-w-0">
+                <div class="flex items-center gap-x-3 sm:gap-x-4 min-w-0">
+                    <div class="shrink-0 flex justify-center items-center size-10 sm:size-[46px] bg-red-100 text-red-800 rounded-lg dark:bg-rose-900/20 dark:text-rose-400">
+                        <i class="bi bi-calendar-x text-lg sm:text-xl"></i>
+                    </div>
+                    <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Rejected">Rejected</p>
                 </div>
-                <p class="text-[10px] sm:text-xs uppercase tracking-wide text-gray-500 dark:text-neutral-500 truncate" title="Rejected">Rejected</p>
+                <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate text-right shrink-0" title="@rejectedCount">@rejectedCount</h3>
             </div>
-            <h3 class="text-lg sm:text-2xl font-bold text-gray-800 dark:text-neutral-200 truncate text-right shrink-0" title="@rejectedCount">@rejectedCount</h3>
         </div>
-    </div>
+    }
 </div>
 
 <!-- Leave Directory Title -->
