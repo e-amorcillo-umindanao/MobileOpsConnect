@@ -62,7 +62,7 @@
                         </div>
                     </div>
                     <div class="p-6">
-                        <form asp-action="StockIn">
+                        <form asp-action="StockIn" method="post">
                             <input type="hidden" name="id" value="@Model.ProductID" />
                             <div class="grid gap-y-5">
                                 <div class="grid sm:grid-cols-2 gap-4">
@@ -97,7 +97,7 @@
                         </div>
                     </div>
                     <div class="p-6">
-                        <form asp-action="StockOut">
+                        <form asp-action="StockOut" method="post">
                             <input type="hidden" name="id" value="@Model.ProductID" />
                             <div class="grid gap-y-5">
                                 <div class="grid sm:grid-cols-2 gap-4">
