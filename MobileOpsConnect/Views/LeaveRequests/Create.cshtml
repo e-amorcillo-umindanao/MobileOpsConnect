@@ -1,5 +1,6 @@
 @model MobileOpsConnect.Models.LeaveRequest
 @using MobileOpsConnect.Services
+@using MobileOpsConnect.Models
 
 @{
     ViewData["Title"] = "File Leave Request";
@@ -222,11 +223,11 @@
                                             <span class="text-xs text-gray-500">@l.StartDate.ToString("MMM d") &rarr; @l.EndDate.ToString("MMM d")</span>
                                         </td>
                                         <td class="whitespace-nowrap px-6 py-3 text-center">
-                                            @if (l.Status == "Pending")
+                                            @if (l.Status == LeaveRequestStatus.Pending)
                                             {
                                                 <span class="inline-flex items-center py-0.5 px-2 rounded-md bg-amber-50 text-amber-600 text-[10px] font-bold uppercase tracking-wider border border-amber-100">Pending</span>
                                             }
-                                            else if (l.Status == "Approved")
+                                            else if (l.Status == LeaveRequestStatus.Approved)
                                             {
                                                 <span class="inline-flex items-center py-0.5 px-2 rounded-md bg-emerald-50 text-emerald-600 text-[10px] font-bold uppercase tracking-wider border border-emerald-100">Approved</span>
                                             }
@@ -270,7 +271,7 @@
 
         <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 mb-6">
             <div class="p-6">
-                <form asp-action="Create">
+                <form asp-action="Create" method="post">
                 <div class="grid gap-y-5">
                     <!-- Leave Type -->
                     <div>
@@ -311,7 +312,7 @@
 
                     <!-- Actions -->
                     <div class="flex gap-2 pt-2 border-t border-gray-100 mt-2">
-                        <input type="submit" value="Submit Request" class="py-2.5 px-3 flex-1 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] cursor-pointer transition-colors" />
+                        <input type="submit" value="Submit Request" class="btn-moc-primary flex-1 cursor-pointer" />
                         <a asp-controller="Home" asp-action="Index" class="py-2.5 px-3 flex-[0.5] inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 transition-colors dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300">
                             Cancel
                         </a>

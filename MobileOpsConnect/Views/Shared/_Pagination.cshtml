@@ -12,7 +12,7 @@
     {
         if (key != "page")
         {
-            routeData[key] = Context.Request.Query[key];
+            routeData[key] = Context.Request.Query[key].ToString();
         }
     }
 }

@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Identity
+@using MobileOpsConnect.Models
 @inject UserManager<IdentityUser> UserManager
 @model PaginatedList<MobileOpsConnect.Models.LeaveRequest>
 
@@ -90,7 +91,7 @@
                                             bool isMyRequest = (item.UserID == currentUserId);
                                             string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
                                             int targetRank = rRole == "SuperAdmin" ? 4 : rRole == "SystemAdmin" ? 3 : rRole == "DepartmentManager" ? 2 : 1;
-                                            bool canApproveThisRow = (myRank > targetRank) && item.Status == "Pending";
+                                            bool canApproveThisRow = (myRank > targetRank) && item.Status == LeaveRequestStatus.Pending;
 
                                             <tr class="hover:bg-gray-50 dark:hover:bg-neutral-800 transition-colors @(canApproveThisRow ? "border-l-4 border-l-amber-500" : "")">
                                                 <td class="whitespace-nowrap px-6 py-4">
@@ -121,9 +122,9 @@
                                                     <span class="text-sm text-gray-500 dark:text-neutral-400 inline-block max-w-[180px] truncate" title="@item.Reason">@item.Reason</span>
                                                 </td>
                                                 <td class="whitespace-nowrap px-6 py-4 text-center">
-                                                    @if (item.Status == "Pending")
+                                                    @if (item.Status == LeaveRequestStatus.Pending)
                                                     { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-800/30 dark:text-amber-500">Pending</span> }
-                                                    else if (item.Status == "Approved")
+                                                    else if (item.Status == LeaveRequestStatus.Approved)
                                                     { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-emerald-800/30 dark:text-emerald-500">Approved</span> }
                                                     else
                                                     { <span class="inline-flex items-center gap-x-1 py-1 px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-rose-800/30 dark:text-rose-500">Rejected</span> }
@@ -139,15 +140,16 @@
                                                             <div class="flex justify-end gap-1">
                                                                 <form asp-action="Approve" asp-route-id="@item.LeaveID" method="post" class="inline">
                                                                     @Html.AntiForgeryToken()
-                                                                    <button type="submit" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-500 dark:hover:bg-emerald-800/50" title="Approve"><i class="bi bi-check-lg"></i></button>
+                                                                    <button type="submit" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-500 dark:hover:bg-emerald-800/50" title="Approve" onclick="return confirm('Approve leave request #@item.LeaveID?');"><i class="bi bi-check-lg"></i></button>
                                                                 </form>
                                                                 <form asp-action="Reject" asp-route-id="@item.LeaveID" method="post" class="inline">
                                                                     @Html.AntiForgeryToken()
-                                                                    <button type="submit" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100 dark:border-rose-800 dark:bg-rose-900/30 dark:text-rose-500 dark:hover:bg-rose-800/50" title="Reject"><i class="bi bi-x-lg"></i></button>
+                                                                    <input type="hidden" name="decisionReason" value="" />
+                                                                    <button type="submit" class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100 dark:border-rose-800 dark:bg-rose-900/30 dark:text-rose-500 dark:hover:bg-rose-800/50" title="Reject" onclick="return openLeaveRejectModal(@item.LeaveID, this.form);"><i class="bi bi-x-lg"></i></button>
                                                                 </form>
                                                             </div>
                                                         }
-                                                        else if (item.Status == "Pending")
+                                                        else if (item.Status == LeaveRequestStatus.Pending)
                                                         {
                                                             <span class="text-xs text-gray-400 italic dark:text-neutral-600">Higher Approval</span>
                                                         }
@@ -173,7 +175,7 @@
                         bool isMyRequest = (item.UserID == currentUserId);
                         string rRole = userRoles.ContainsKey(item.UserID) ? userRoles[item.UserID] : "Employee";
                         int targetRank = rRole == "SuperAdmin" ? 4 : rRole == "SystemAdmin" ? 3 : rRole == "DepartmentManager" ? 2 : 1;
-                        bool canApproveThisRow = (myRank > targetRank) && item.Status == "Pending";
+                        bool canApproveThisRow = (myRank > targetRank) && item.Status == LeaveRequestStatus.Pending;
 
                         <div class="flex flex-col bg-white border border-gray-200 shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 @(canApproveThisRow ? "border-l-4 border-l-amber-500" : "")">
                             <div class="flex items-start justify-between mb-3">
@@ -189,7 +191,7 @@
                                         <span class="text-xs text-gray-500 dark:text-neutral-500">@rRole</span>
                                     </div>
                                 </div>
-                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(item.Status == "Pending" ? "bg-amber-100 text-amber-800 dark:bg-amber-800/30 dark:text-amber-500" : item.Status == "Approved" ? "bg-green-100 text-green-800 dark:bg-emerald-800/30 dark:text-emerald-500" : "bg-red-100 text-red-800 dark:bg-rose-800/30 dark:text-rose-500")">@item.Status</span>
+                                <span class="inline-flex items-center gap-x-1 py-0.5 px-2 rounded-md text-xs font-medium @(item.Status == LeaveRequestStatus.Pending ? "bg-amber-100 text-amber-800 dark:bg-amber-800/30 dark:text-amber-500" : item.Status == LeaveRequestStatus.Approved ? "bg-green-100 text-green-800 dark:bg-emerald-800/30 dark:text-emerald-500" : "bg-red-100 text-red-800 dark:bg-rose-800/30 dark:text-rose-500")">@item.Status</span>
                             </div>
                             <div class="grid grid-cols-2 gap-2 mb-3">
                                 <div class="bg-cyan-50 dark:bg-cyan-900/20 rounded-lg p-2"><p class="text-gray-500 dark:text-neutral-500 text-xs mb-0 uppercase font-medium">Type</p><p class="text-sm font-semibold text-gray-800 dark:text-neutral-200 mb-0">@item.LeaveType</p></div>
@@ -206,11 +208,12 @@
                                 <div class="flex gap-2 mt-4">
                                     <form asp-action="Approve" asp-route-id="@item.LeaveID" method="post" class="flex-1">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-500 dark:hover:bg-emerald-800/50">Approve</button>
+                                        <button type="submit" class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100 dark:border-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-500 dark:hover:bg-emerald-800/50" onclick="return confirm('Approve leave request #@item.LeaveID?');">Approve</button>
                                     </form>
                                     <form asp-action="Reject" asp-route-id="@item.LeaveID" method="post" class="flex-1">
                                         @Html.AntiForgeryToken()
-                                        <button type="submit" class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100 dark:border-rose-800 dark:bg-rose-900/30 dark:text-rose-500 dark:hover:bg-rose-800/50">Reject</button>
+                                        <input type="hidden" name="decisionReason" value="" />
+                                        <button type="submit" class="w-full py-2 px-3 inline-flex justify-center items-center gap-x-2 text-xs font-medium rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100 dark:border-rose-800 dark:bg-rose-900/30 dark:text-rose-500 dark:hover:bg-rose-800/50" onclick="return openLeaveRejectModal(@item.LeaveID, this.form);">Reject</button>
                                     </form>
                                 </div>
                             }
@@ -237,4 +240,80 @@
             </div>
         </div>
     }
+
+    <div id="leaveRejectModal" class="hidden fixed inset-0 z-[120] bg-black/40 backdrop-blur-sm items-center justify-center p-4">
+        <div class="w-full max-w-md rounded-2xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 shadow-xl">
+            <div class="px-5 py-4 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white">Reject Leave Request</h3>
+                <button type="button" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" onclick="closeLeaveRejectModal()" aria-label="Close reject reason dialog">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-3">
+                <p id="leaveRejectLabel" class="text-sm text-gray-600 dark:text-neutral-300"></p>
+                <label for="leaveRejectReason" class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-neutral-400">Rejection reason</label>
+                <textarea id="leaveRejectReason" rows="4" class="w-full rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm" placeholder="Explain why this leave request is rejected..."></textarea>
+                <p id="leaveRejectError" class="hidden text-xs text-red-600">Rejection reason is required.</p>
+            </div>
+            <div class="px-5 py-4 border-t border-gray-100 dark:border-neutral-800 flex justify-end gap-2">
+                <button type="button" class="px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700" onclick="closeLeaveRejectModal()">Cancel</button>
+                <button type="button" class="px-3 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700" onclick="submitLeaveRejectModal()">Reject Request</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    (function () {
+        if (!window._leaveRejectState) {
+            window._leaveRejectState = { form: null, leaveId: null };
+        }
+
+        window.openLeaveRejectModal = function (leaveId, form) {
+            window._leaveRejectState.form = form;
+            window._leaveRejectState.leaveId = leaveId;
+
+            const modal = document.getElementById('leaveRejectModal');
+            const label = document.getElementById('leaveRejectLabel');
+            const reason = document.getElementById('leaveRejectReason');
+            const error = document.getElementById('leaveRejectError');
+
+            if (!modal || !label || !reason || !error) return false;
+
+            label.textContent = `Provide a reason for rejecting leave request #${leaveId}.`;
+            reason.value = '';
+            error.classList.add('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            reason.focus();
+
+            return false;
+        };
+
+        window.closeLeaveRejectModal = function () {
+            const modal = document.getElementById('leaveRejectModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        window.submitLeaveRejectModal = function () {
+            const state = window._leaveRejectState;
+            const reason = document.getElementById('leaveRejectReason');
+            const error = document.getElementById('leaveRejectError');
+            if (!state?.form || !reason || !error) return;
+
+            const value = reason.value.trim();
+            if (!value) {
+                error.classList.remove('hidden');
+                reason.focus();
+                return;
+            }
+
+            const input = state.form.querySelector('input[name="decisionReason"]');
+            if (input) input.value = value;
+            closeLeaveRejectModal();
+            state.form.submit();
+        };
+    })();
+</script>

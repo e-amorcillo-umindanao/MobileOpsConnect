@@ -41,20 +41,22 @@ namespace MobileOpsConnect.Controllers
 
             // Calculate counts for summary
             ViewBag.TotalCount = await query.CountAsync();
-            ViewBag.PendingCount = await query.CountAsync(po => po.Status == "Pending");
-            ViewBag.ApprovedCount = await query.CountAsync(po => po.Status == "Approved");
-            ViewBag.RejectedCount = await query.CountAsync(po => po.Status == "Rejected");
+            ViewBag.PendingCount = await query.CountAsync(po => po.Status == PurchaseOrderStatus.Pending);
+            ViewBag.ApprovedCount = await query.CountAsync(po => po.Status == PurchaseOrderStatus.Approved);
+            ViewBag.RejectedCount = await query.CountAsync(po => po.Status == PurchaseOrderStatus.Rejected);
 
-            string currentStatus = status ?? "active";
+            string currentStatus = ListStatusFilters.Normalize(status);
             ViewBag.CurrentStatus = currentStatus;
+            ViewBag.ActiveTabValue = ListStatusFilters.Active;
+            ViewBag.ArchivedTabValue = ListStatusFilters.Archived;
 
-            if (currentStatus == "active")
+            if (currentStatus == ListStatusFilters.Active)
             {
-                query = query.Where(po => po.Status == "Pending");
+                query = query.Where(po => po.Status == PurchaseOrderStatus.Pending);
             }
-            else if (currentStatus == "archived")
+            else if (currentStatus == ListStatusFilters.Archived)
             {
-                query = query.Where(po => po.Status != "Pending");
+                query = query.Where(po => po.Status != PurchaseOrderStatus.Pending);
             }
 
             var orders = query.OrderByDescending(po => po.DateRequested);
@@ -100,7 +102,7 @@ namespace MobileOpsConnect.Controllers
                 Quantity = Quantity,
                 EstimatedCost = product.Price * Quantity,
                 RequestedById = currentUser.Id,
-                Status = "Pending",
+                Status = PurchaseOrderStatus.Pending,
                 DateRequested = PhilippineTime.Now,
                 Notes = Notes
             };
@@ -135,12 +137,12 @@ namespace MobileOpsConnect.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "DepartmentManager")]
-        public async Task<IActionResult> ProcessOrder(int id, string actionType)
+        public async Task<IActionResult> ProcessOrder(int id, string actionType, string? decisionReason)
         {
             var order = await _context.PurchaseOrders.Include(po => po.Product).FirstOrDefaultAsync(po => po.Id == id);
             if (order == null) return NotFound();
 
-            if (order.Status != "Pending")
+            if (order.Status != PurchaseOrderStatus.Pending)
             {
                 TempData["Error"] = $"Purchase Order #{id} has already been {order.Status.ToLower()}.";
                 return RedirectToAction(nameof(Index));
@@ -150,8 +152,16 @@ namespace MobileOpsConnect.Controllers
             if (currentUser == null) return Challenge();
             var action = actionType?.Trim() ?? "Approve";
             var isApproval = action.Equals("Approve", StringComparison.OrdinalIgnoreCase);
+            var reason = (decisionReason ?? string.Empty).Trim();
+            if (!isApproval && string.IsNullOrWhiteSpace(reason))
+            {
+                TempData["Error"] = "Rejection reason is required.";
+                return RedirectToAction(nameof(Index));
+            }
 
-            order.Status = isApproval ? "Approved" : "Rejected";
+            var shortReason = reason.Length > 200 ? reason[..200] + "..." : reason;
+
+            order.Status = isApproval ? PurchaseOrderStatus.Approved : PurchaseOrderStatus.Rejected;
             order.ApprovedById = currentUser.Id;
             order.DateProcessed = PhilippineTime.Now;
 
@@ -162,12 +172,16 @@ namespace MobileOpsConnect.Controllers
             // Notify the requester about the decision
             await _notificationService.SendToUserAsync(order.RequestedById,
                 isApproval ? "✅ Order Approved" : "❌ Order Rejected",
-                $"Purchase Order #{id} ({order.Product?.Name}) has been {pastTense} by {currentUser.Email}.");
+                isApproval
+                    ? $"Purchase Order #{id} ({order.Product?.Name}) has been {pastTense} by {currentUser.Email}."
+                    : $"Purchase Order #{id} ({order.Product?.Name}) has been {pastTense} by {currentUser.Email}. Reason: {shortReason}");
 
             // In-App Notification
             await _inAppNotificationService.CreateAsync(order.RequestedById,
                 isApproval ? "✅ Order Approved" : "❌ Order Rejected",
-                $"Your PO for {order.Product?.Name} has been {pastTense}.",
+                isApproval
+                    ? $"Your PO for {order.Product?.Name} has been {pastTense}."
+                    : $"Your PO for {order.Product?.Name} has been {pastTense}. Reason: {shortReason}",
                 "Order", isApproval ? "bi-check-circle" : "bi-x-circle", "/Orders/Index");
 
             // If approved, notify warehouse staff about incoming stock
@@ -186,13 +200,16 @@ namespace MobileOpsConnect.Controllers
 
             // Audit log
             var roles = await _userManager.GetRolesAsync(currentUser);
-            await _auditService.LogAsync(currentUser.Id, currentUser.Email!, roles.FirstOrDefault() ?? "", isApproval ? "APPROVE" : "REJECT", $"{(isApproval ? "Approved" : "Rejected")} purchase order #{id} ({order.Product?.Name}).", HttpContext.Connection.RemoteIpAddress?.ToString());
+            var auditDetails = isApproval
+                ? $"Approved purchase order #{id} ({order.Product?.Name})."
+                : $"Rejected purchase order #{id} ({order.Product?.Name}). Reason: {reason}";
+            await _auditService.LogAsync(currentUser.Id, currentUser.Email!, roles.FirstOrDefault() ?? "", isApproval ? "APPROVE" : "REJECT", auditDetails, HttpContext.Connection.RemoteIpAddress?.ToString());
 
             // Real-time broadcast (SignalR)
             await _hubContext.Clients.Group("role_WarehouseStaff")
-                .SendAsync("PurchaseOrderUpdated", id, order.Product?.Name, order.Quantity, isApproval ? "Approved" : "Rejected", currentUser.Email);
+                .SendAsync("PurchaseOrderUpdated", id, order.Product?.Name, order.Quantity, isApproval ? PurchaseOrderStatus.Approved : PurchaseOrderStatus.Rejected, currentUser.Email);
             await _hubContext.Clients.Group("role_DepartmentManager")
-                .SendAsync("PurchaseOrderUpdated", id, order.Product?.Name, order.Quantity, isApproval ? "Approved" : "Rejected", currentUser.Email);
+                .SendAsync("PurchaseOrderUpdated", id, order.Product?.Name, order.Quantity, isApproval ? PurchaseOrderStatus.Approved : PurchaseOrderStatus.Rejected, currentUser.Email);
 
             TempData["Message"] = $"Purchase Order #{id} has been successfully {pastTense}.";
             return RedirectToAction(nameof(Index));

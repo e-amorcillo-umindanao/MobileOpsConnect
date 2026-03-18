@@ -25,10 +25,10 @@ namespace MobileOpsConnect.Controllers
         private readonly IAuditService _auditService;
         private readonly IInAppNotificationService _inAppNotificationService;
         private readonly HolidayService _holidayService;
-        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IBackgroundTaskQueue _backgroundTaskQueue;
         private readonly ILogger<LeaveRequestsController> _logger;
 
-        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IInAppNotificationService inAppNotificationService, IHubContext<InventoryHub> hubContext, IAuditService auditService, HolidayService holidayService, IServiceScopeFactory scopeFactory, ILogger<LeaveRequestsController> logger)
+        public LeaveRequestsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, INotificationService notificationService, IInAppNotificationService inAppNotificationService, IHubContext<InventoryHub> hubContext, IAuditService auditService, HolidayService holidayService, IBackgroundTaskQueue backgroundTaskQueue, ILogger<LeaveRequestsController> logger)
         {
             _context = context;
             _userManager = userManager;
@@ -37,7 +37,7 @@ namespace MobileOpsConnect.Controllers
             _hubContext = hubContext;
             _auditService = auditService;
             _holidayService = holidayService;
-            _scopeFactory = scopeFactory;
+            _backgroundTaskQueue = backgroundTaskQueue;
             _logger = logger;
         }
 
@@ -58,80 +58,81 @@ namespace MobileOpsConnect.Controllers
                 isMyView = true;
             }
 
-            // Fix Data Placement issue: ensure Status always defaults to Active if not provided
-            if (string.IsNullOrEmpty(status))
-            {
-                status = "Active";
-            }
+            status = ListStatusFilters.Normalize(status);
 
             ViewBag.IsMyView = isMyView;
             ViewBag.SelectedStatus = status;
+            ViewBag.ActiveTabValue = ListStatusFilters.Active;
+            ViewBag.ArchivedTabValue = ListStatusFilters.Archived;
             ViewBag.SearchString = searchString;
 
-            IQueryable<LeaveRequest> query = _context.LeaveRequests.Include(l => l.User);
+            Dictionary<string, string> userRoles;
+            IQueryable<LeaveRequest> scopedQuery;
 
             if (isMyView)
             {
-                query = query.Where(l => l.UserID == user.Id);
+                userRoles = new Dictionary<string, string> { [user.Id] = myRole };
+                scopedQuery = _context.LeaveRequests
+                    .Include(l => l.User)
+                    .Where(l => l.UserID == user.Id);
             }
-            // If they have subordinate roles, we need to filter by those roles
-            // Since roles are not in the DB directly (Identity), we still have to do some in-memory filtering
-            // or use a join if possible. For now, we'll stick to the in-memory filtering of the scoped set
-            // but we'll capture the counts for the metrics.
-
-            var allScannedRequests = await query.ToListAsync();
-            var filteredRequests = new List<LeaveRequest>();
-            var userRoles = new Dictionary<string, string>();
-
-            foreach (var req in allScannedRequests)
+            else
             {
-                if (req.User == null) continue;
-                
-                if (!userRoles.ContainsKey(req.UserID))
-                {
-                    var roles = await _userManager.GetRolesAsync(req.User);
-                    userRoles[req.UserID] = roles.FirstOrDefault() ?? "Employee";
-                }
+                var subordinateRoleRows = await (
+                    from ur in _context.UserRoles
+                    join r in _context.Roles on ur.RoleId equals r.Id
+                    where subordinateRoles.Contains(r.Name!)
+                    select new { ur.UserId, RoleName = r.Name! }
+                ).ToListAsync();
 
-                string rRole = userRoles[req.UserID];
+                userRoles = subordinateRoleRows
+                    .GroupBy(x => x.UserId)
+                    .ToDictionary(g => g.Key, g => g.First().RoleName);
 
-                // If not "my" view, check if user is a subordinate
-                if (!isMyView && !subordinateRoles.Contains(rRole))
-                {
-                    continue;
-                }
-
-                // Apply Status Filter
-                if (!string.IsNullOrEmpty(status) && status != "All")
-                {
-                    if (status == "Active" && req.Status != "Pending") continue;
-                    if (status == "Archived" && req.Status == "Pending") continue;
-                    if (status != "Active" && status != "Archived" && req.Status != status) continue;
-                }
-
-                // Apply Search Filter
-                if (!string.IsNullOrEmpty(searchString))
-                {
-                    bool matchesEmail = req.User.Email != null && req.User.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase);
-                    bool matchesReason = req.Reason != null && req.Reason.Contains(searchString, StringComparison.OrdinalIgnoreCase);
-                    bool matchesType = req.LeaveType != null && req.LeaveType.Contains(searchString, StringComparison.OrdinalIgnoreCase);
-                    if (!matchesEmail && !matchesReason && !matchesType) continue;
-                }
-
-                filteredRequests.Add(req);
+                var subordinateUserIds = userRoles.Keys.ToList();
+                scopedQuery = _context.LeaveRequests
+                    .Include(l => l.User)
+                    .Where(l => subordinateUserIds.Contains(l.UserID));
             }
 
-            // Calculate metrics based on the scoped set (filtered by role/view but NOT by search/status/page)
-            var metricsSet = isMyView ? allScannedRequests : allScannedRequests.Where(r => subordinateRoles.Contains(userRoles.GetValueOrDefault(r.UserID, ""))).ToList();
-            ViewBag.TotalCount = metricsSet.Count;
-            ViewBag.PendingCount = metricsSet.Count(l => l.Status == "Pending");
-            ViewBag.ApprovedCount = metricsSet.Count(l => l.Status == "Approved");
-            ViewBag.RejectedCount = metricsSet.Count(l => l.Status == "Rejected");
+            // Metrics are based on role/view scope only.
+            ViewBag.TotalCount = await scopedQuery.CountAsync();
+            ViewBag.PendingCount = await scopedQuery.CountAsync(l => l.Status == LeaveRequestStatus.Pending);
+            ViewBag.ApprovedCount = await scopedQuery.CountAsync(l => l.Status == LeaveRequestStatus.Approved);
+            ViewBag.RejectedCount = await scopedQuery.CountAsync(l => l.Status == LeaveRequestStatus.Rejected);
             ViewBag.UserRoles = userRoles;
 
-            // Sort by DateRequested Descending
-            var sortedRequests = filteredRequests.OrderByDescending(r => r.DateRequested).ToList();
-            var paginatedList = PaginatedList<LeaveRequest>.Create(sortedRequests, page ?? 1, 10);
+            var filteredQuery = scopedQuery;
+
+            if (!string.IsNullOrEmpty(status) && status != ListStatusFilters.All)
+            {
+                if (status == ListStatusFilters.Active)
+                {
+                    filteredQuery = filteredQuery.Where(req => req.Status == LeaveRequestStatus.Pending);
+                }
+                else if (status == ListStatusFilters.Archived)
+                {
+                    filteredQuery = filteredQuery.Where(req => req.Status != LeaveRequestStatus.Pending);
+                }
+                else
+                {
+                    filteredQuery = filteredQuery.Where(req => req.Status == status);
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                var term = searchString.Trim();
+                filteredQuery = filteredQuery.Where(req =>
+                    (req.User != null && req.User.Email != null && req.User.Email.Contains(term)) ||
+                    req.Reason.Contains(term) ||
+                    req.LeaveType.Contains(term));
+            }
+
+            var paginatedList = await PaginatedList<LeaveRequest>.CreateAsync(
+                filteredQuery.OrderByDescending(r => r.DateRequested).AsNoTracking(),
+                page ?? 1,
+                10);
 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
@@ -160,6 +161,7 @@ namespace MobileOpsConnect.Controllers
 
             // SECURITY: Only the owner or a direct-tier superior can view details
             var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
             var myRoles = await _userManager.GetRolesAsync(user);
             var myRole = myRoles.FirstOrDefault() ?? "";
             var subordinateRoles = GetSubordinateRoles(myRole);
@@ -188,9 +190,9 @@ namespace MobileOpsConnect.Controllers
 
                 ViewBag.RecentLeaves = myLeaves.Take(10).ToList();
                 ViewBag.MyTotalCount = myLeaves.Count;
-                ViewBag.MyPendingCount = myLeaves.Count(l => l.Status == "Pending");
-                ViewBag.MyApprovedCount = myLeaves.Count(l => l.Status == "Approved");
-                ViewBag.MyRejectedCount = myLeaves.Count(l => l.Status == "Rejected");
+                ViewBag.MyPendingCount = myLeaves.Count(l => l.Status == LeaveRequestStatus.Pending);
+                ViewBag.MyApprovedCount = myLeaves.Count(l => l.Status == LeaveRequestStatus.Approved);
+                ViewBag.MyRejectedCount = myLeaves.Count(l => l.Status == LeaveRequestStatus.Rejected);
             }
 
             // Fetch Philippine public holidays from Nager.Date API
@@ -240,12 +242,12 @@ namespace MobileOpsConnect.Controllers
                 // SuperAdmin leaves are auto-approved (no one above them)
                 if (filerRole == "SuperAdmin")
                 {
-                    leaveRequest.Status = "Approved";
+                    leaveRequest.Status = LeaveRequestStatus.Approved;
                     leaveRequest.ApprovedById = user.Id;
                 }
                 else
                 {
-                    leaveRequest.Status = "Pending";
+                    leaveRequest.Status = LeaveRequestStatus.Pending;
                 }
 
                 _context.Add(leaveRequest);
@@ -260,15 +262,14 @@ namespace MobileOpsConnect.Controllers
                 var userEmail = user.Email!;
                 var userIp = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-                _ = Task.Run(async () =>
+                await _backgroundTaskQueue.QueueBackgroundWorkItemAsync(async (serviceProvider, cancellationToken) =>
                 {
                     try
                     {
-                        using var scope = _scopeFactory.CreateScope();
-                        var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-                        var inAppNotificationService = scope.ServiceProvider.GetRequiredService<IInAppNotificationService>();
-                        var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
-                        var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
+                        var notificationService = serviceProvider.GetRequiredService<INotificationService>();
+                        var inAppNotificationService = serviceProvider.GetRequiredService<IInAppNotificationService>();
+                        var auditService = serviceProvider.GetRequiredService<IAuditService>();
+                        var hubContext = serviceProvider.GetRequiredService<IHubContext<InventoryHub>>();
 
                         if (filerRole != "SuperAdmin")
                         {
@@ -291,7 +292,7 @@ namespace MobileOpsConnect.Controllers
                                 "Leave", "bi-calendar-plus", "/LeaveRequests/Index");
 
                             var displayName = userEmail.Split('@')[0];
-                            await hubContext.Clients.Group($"role_{targetRole}").SendAsync("LeaveStatusChanged", leaveId, "Pending", userId, displayName);
+                            await hubContext.Clients.Group($"role_{targetRole}").SendAsync("LeaveStatusChanged", leaveId, LeaveRequestStatus.Pending, userId, displayName);
                         }
 
                         await auditService.LogAsync(userId, userEmail, filerRole, "CREATE", $"Filed {leaveType} leave request ({startDate:MMM dd} – {endDate:MMM dd}).", userIp);
@@ -300,6 +301,7 @@ namespace MobileOpsConnect.Controllers
                     {
                         _logger.LogError(ex, "Background notification failed for leave request #{LeaveId}", leaveId);
                     }
+                    await ValueTask.CompletedTask;
                 });
 
                 return RedirectToAction(nameof(Index), new { view = "my" });
@@ -324,7 +326,7 @@ namespace MobileOpsConnect.Controllers
             if (leaveRequest == null) return NotFound();
 
             // GUARD: Prevent double-approval
-            if (leaveRequest.Status != "Pending")
+            if (leaveRequest.Status != LeaveRequestStatus.Pending)
             {
                 TempData["Error"] = $"Leave request #{id} has already been {leaveRequest.Status.ToLower()}.";
                 return RedirectToAction(nameof(Index));
@@ -340,7 +342,7 @@ namespace MobileOpsConnect.Controllers
             int requesterRank = await GetRank(requester);
             if (approverRank <= requesterRank) return Forbid();
 
-            leaveRequest.Status = "Approved";
+            leaveRequest.Status = LeaveRequestStatus.Approved;
             leaveRequest.ApprovedById = approver.Id;
             await _context.SaveChangesAsync();
 
@@ -354,16 +356,15 @@ namespace MobileOpsConnect.Controllers
             var approverEmail = approver.Email!;
             var approverIp = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            _ = Task.Run(async () =>
+            await _backgroundTaskQueue.QueueBackgroundWorkItemAsync(async (serviceProvider, cancellationToken) =>
             {
                 try
                 {
-                    using var scope = _scopeFactory.CreateScope();
-                    var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-                    var inAppNotificationService = scope.ServiceProvider.GetRequiredService<IInAppNotificationService>();
-                    var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
-                    var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
-                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                    var notificationService = serviceProvider.GetRequiredService<INotificationService>();
+                    var inAppNotificationService = serviceProvider.GetRequiredService<IInAppNotificationService>();
+                    var auditService = serviceProvider.GetRequiredService<IAuditService>();
+                    var hubContext = serviceProvider.GetRequiredService<IHubContext<InventoryHub>>();
+                    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
                     var approveMsg = $"Your {leaveType} leave ({startDate:MMM dd} – {endDate:MMM dd}) has been approved.";
                     await notificationService.SendToUserAsync(requesterId, "✅ Leave Approved", approveMsg);
@@ -374,15 +375,19 @@ namespace MobileOpsConnect.Controllers
                         $"Your {leaveType} leave request has been approved.",
                         "Leave", "bi-check-circle", "/LeaveRequests/Index?view=my");
 
-                    await hubContext.Clients.User(requesterId).SendAsync("LeaveStatusChanged", leaveId, "Approved", requesterId, "");
+                    await hubContext.Clients.User(requesterId).SendAsync("LeaveStatusChanged", leaveId, LeaveRequestStatus.Approved, requesterId, "");
 
-                    var approverRoles = await userManager.GetRolesAsync(await userManager.FindByIdAsync(approverId));
+                    var approverIdentity = await userManager.FindByIdAsync(approverId);
+                    var approverRoles = approverIdentity != null
+                        ? await userManager.GetRolesAsync(approverIdentity)
+                        : new List<string>();
                     await auditService.LogAsync(approverId, approverEmail, approverRoles.FirstOrDefault() ?? "", "APPROVE", $"Approved leave request #{leaveId} ({leaveType}).", approverIp);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Background notification failed for leave approval #{LeaveId}", leaveId);
                 }
+                await ValueTask.CompletedTask;
             });
 
             return RedirectToAction(nameof(Index));
@@ -392,13 +397,13 @@ namespace MobileOpsConnect.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "SuperAdmin,SystemAdmin,DepartmentManager")]
-        public async Task<IActionResult> Reject(int id)
+        public async Task<IActionResult> Reject(int id, string? decisionReason)
         {
             var leaveRequest = await _context.LeaveRequests.FindAsync(id);
             if (leaveRequest == null) return NotFound();
 
             // GUARD: Prevent double-rejection
-            if (leaveRequest.Status != "Pending")
+            if (leaveRequest.Status != LeaveRequestStatus.Pending)
             {
                 TempData["Error"] = $"Leave request #{id} has already been {leaveRequest.Status.ToLower()}.";
                 return RedirectToAction(nameof(Index));
@@ -406,6 +411,13 @@ namespace MobileOpsConnect.Controllers
 
             var rejector = await _userManager.GetUserAsync(User);
             if (rejector == null) return Challenge();
+            var reason = (decisionReason ?? string.Empty).Trim();
+            if (string.IsNullOrWhiteSpace(reason))
+            {
+                TempData["Error"] = "Rejection reason is required.";
+                return RedirectToAction(nameof(Index));
+            }
+            var shortReason = reason.Length > 200 ? reason[..200] + "..." : reason;
 
             // HIERARCHY: Rejector rank must be strictly higher than requester rank
             var requester = await _userManager.FindByIdAsync(leaveRequest.UserID);
@@ -414,7 +426,7 @@ namespace MobileOpsConnect.Controllers
             int requesterRank = await GetRank(requester);
             if (rejectorRank <= requesterRank) return Forbid();
 
-            leaveRequest.Status = "Rejected";
+            leaveRequest.Status = LeaveRequestStatus.Rejected;
             leaveRequest.ApprovedById = rejector.Id;
             await _context.SaveChangesAsync();
 
@@ -427,36 +439,41 @@ namespace MobileOpsConnect.Controllers
             var rejectorId = rejector.Id;
             var rejectorEmail = rejector.Email!;
             var rejectorIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var rejectReason = reason;
+            var rejectReasonShort = shortReason;
 
-            _ = Task.Run(async () =>
+            await _backgroundTaskQueue.QueueBackgroundWorkItemAsync(async (serviceProvider, cancellationToken) =>
             {
                 try
                 {
-                    using var scope = _scopeFactory.CreateScope();
-                    var notificationService = scope.ServiceProvider.GetRequiredService<INotificationService>();
-                    var inAppNotificationService = scope.ServiceProvider.GetRequiredService<IInAppNotificationService>();
-                    var auditService = scope.ServiceProvider.GetRequiredService<IAuditService>();
-                    var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<InventoryHub>>();
-                    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                    var notificationService = serviceProvider.GetRequiredService<INotificationService>();
+                    var inAppNotificationService = serviceProvider.GetRequiredService<IInAppNotificationService>();
+                    var auditService = serviceProvider.GetRequiredService<IAuditService>();
+                    var hubContext = serviceProvider.GetRequiredService<IHubContext<InventoryHub>>();
+                    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-                    var rejectMsg = $"Your {leaveType} leave ({startDate:MMM dd} – {endDate:MMM dd}) has been rejected.";
+                    var rejectMsg = $"Your {leaveType} leave ({startDate:MMM dd} – {endDate:MMM dd}) has been rejected. Reason: {rejectReasonShort}";
                     await notificationService.SendToUserAsync(requesterId, "❌ Leave Rejected", rejectMsg);
 
                     // In-App Notification
                     await inAppNotificationService.CreateAsync(requesterId,
                         "❌ Leave Rejected",
-                        $"Your {leaveType} leave request has been rejected.",
+                        $"Your {leaveType} leave request has been rejected. Reason: {rejectReasonShort}",
                         "Leave", "bi-x-circle", "/LeaveRequests/Index?view=my");
 
-                    await hubContext.Clients.User(requesterId).SendAsync("LeaveStatusChanged", leaveId, "Rejected", requesterId, "");
+                    await hubContext.Clients.User(requesterId).SendAsync("LeaveStatusChanged", leaveId, LeaveRequestStatus.Rejected, requesterId, "");
 
-                    var rejectorRoles = await userManager.GetRolesAsync(await userManager.FindByIdAsync(rejectorId));
-                    await auditService.LogAsync(rejectorId, rejectorEmail, rejectorRoles.FirstOrDefault() ?? "", "REJECT", $"Rejected leave request #{leaveId} ({leaveType}).", rejectorIp);
+                    var rejectorIdentity = await userManager.FindByIdAsync(rejectorId);
+                    var rejectorRoles = rejectorIdentity != null
+                        ? await userManager.GetRolesAsync(rejectorIdentity)
+                        : new List<string>();
+                    await auditService.LogAsync(rejectorId, rejectorEmail, rejectorRoles.FirstOrDefault() ?? "", "REJECT", $"Rejected leave request #{leaveId} ({leaveType}). Reason: {rejectReason}", rejectorIp);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Background notification failed for leave rejection #{LeaveId}", leaveId);
                 }
+                await ValueTask.CompletedTask;
             });
 
             return RedirectToAction(nameof(Index));
@@ -471,7 +488,7 @@ namespace MobileOpsConnect.Controllers
             if (leaveRequest == null) return NotFound();
 
             // Security: Only allow edit if it's still Pending
-            if (leaveRequest.Status != "Pending") return Forbid();
+            if (leaveRequest.Status != LeaveRequestStatus.Pending) return Forbid();
 
             // Security: Only the owner can edit their own request
             var currentUser = await _userManager.GetUserAsync(User);
@@ -492,7 +509,7 @@ namespace MobileOpsConnect.Controllers
             if (leaveRequest == null) return NotFound();
 
             // SECURITY: Re-check that the request is still "Pending"
-            if (leaveRequest.Status != "Pending") return Forbid();
+            if (leaveRequest.Status != LeaveRequestStatus.Pending) return Forbid();
 
             // SECURITY: Only the owner can edit their own request
             var currentUser = await _userManager.GetUserAsync(User);
@@ -539,6 +556,7 @@ namespace MobileOpsConnect.Controllers
 
             // SECURITY: Only the owner or a direct-tier superior can access delete
             var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
             var myRoles = await _userManager.GetRolesAsync(user);
             var myRole = myRoles.FirstOrDefault() ?? "";
             var subordinateRoles = GetSubordinateRoles(myRole);
@@ -564,10 +582,11 @@ namespace MobileOpsConnect.Controllers
             if (leaveRequest == null) return NotFound();
 
             // SECURITY: Only allow deletion of Pending requests
-            if (leaveRequest.Status != "Pending") return Forbid();
+            if (leaveRequest.Status != LeaveRequestStatus.Pending) return Forbid();
 
             // SECURITY: Only the owner or a direct-tier superior can delete
             var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
             var myRoles = await _userManager.GetRolesAsync(user);
             var myRole = myRoles.FirstOrDefault() ?? "";
             var subordinateRoles = GetSubordinateRoles(myRole);

@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Identity
+@using MobileOpsConnect.Models
 @inject UserManager<IdentityUser> UserManager
 @model PaginatedList<MobileOpsConnect.Models.LeaveRequest>
 
@@ -25,7 +26,9 @@
     int rejectedCount = ViewBag.RejectedCount ?? 0;
     int archivedCount = approvedCount + rejectedCount;
 
-    string selectedStatus = ViewBag.SelectedStatus ?? "Active"; // Default to Active
+    string activeTabValue = ViewBag.ActiveTabValue ?? ListStatusFilters.Active;
+    string archivedTabValue = ViewBag.ArchivedTabValue ?? ListStatusFilters.Archived;
+    string selectedStatus = ViewBag.SelectedStatus ?? activeTabValue;
 }
 
 @functions {
@@ -132,8 +135,8 @@
     <div class="flex items-center gap-x-3">
         <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800 dark:bg-neutral-800 dark:text-neutral-400"><i class="bi bi-funnel-fill text-lg"></i></span>
         <div>
-            <p class="font-semibold text-sm text-gray-800 dark:text-white mb-0">@(selectedStatus == "Archived" ? "Leave Archive" : "Active Requests")</p>
-            <p class="text-gray-500 dark:text-neutral-400 text-xs mb-0">Showing @(selectedStatus == "Archived" ? archivedCount : pendingCount) total record@( (selectedStatus == "Archived" ? archivedCount : pendingCount) != 1 ? "s" : "")</p>
+            <p class="font-semibold text-sm text-gray-800 dark:text-white mb-0">@(selectedStatus == "archived" ? "Leave Archive" : "Active Requests")</p>
+            <p class="text-gray-500 dark:text-neutral-400 text-xs mb-0">Showing @(selectedStatus == "archived" ? archivedCount : pendingCount) total record@( (selectedStatus == "archived" ? archivedCount : pendingCount) != 1 ? "s" : "")</p>
         </div>
     </div>
     <div class="flex flex-wrap items-center gap-2">
@@ -144,14 +147,14 @@
             <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-gray-400">
                 <i class="bi bi-search text-xs"></i>
             </div>
-            <input type="text" name="searchString" value="@ViewBag.SearchString" class="py-2 ps-9 pe-16 block w-full bg-white border-gray-200 rounded-lg text-xs focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Search requests...">
+            <input type="text" name="searchString" value="@ViewBag.SearchString" aria-label="Search leave requests" class="py-2 ps-9 pe-16 block w-full bg-white border-gray-200 rounded-lg text-xs focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Search requests...">
             <button type="submit" class="absolute inset-y-0 end-0 flex items-center pe-3 text-indigo-600 hover:text-indigo-700 font-semibold text-[10px] uppercase tracking-wider">
                 Search
             </button>
         </form>
         @if (!hasPower)
         {
-            <a asp-action="Create" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+            <a asp-action="Create" class="btn-moc-primary inline-flex items-center gap-x-2">
                 Apply for Leave
             </a>
         }
@@ -160,15 +163,15 @@
 
 <!-- Tab Header Underline -->
 <nav class="flex space-x-6 border-b border-gray-200 dark:border-neutral-700 mb-6" aria-label="Tabs">
-    <a asp-action="Index" asp-route-view="@(isMyView ? "my" : "")" asp-route-status="Active" asp-route-searchString="@ViewBag.SearchString" 
-       class="tab-link py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none focus:ring-0 transition-colors @(selectedStatus == "Active" ? "border-gray-800 text-gray-900 dark:border-white dark:text-white active-tab" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 inactive-tab")">
+    <a asp-action="Index" asp-route-view="@(isMyView ? "my" : "")" asp-route-status="@activeTabValue" asp-route-searchString="@ViewBag.SearchString" 
+       class="tab-link py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none focus:ring-0 transition-colors @(selectedStatus == activeTabValue ? "border-gray-800 text-gray-900 dark:border-white dark:text-white active-tab" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 inactive-tab")">
         Active
-        <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(selectedStatus == "Active" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@pendingCount</span>
+        <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(selectedStatus == activeTabValue ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@pendingCount</span>
     </a>
-    <a asp-action="Index" asp-route-view="@(isMyView ? "my" : "")" asp-route-status="Archived" asp-route-searchString="@ViewBag.SearchString" 
-       class="tab-link py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none focus:ring-0 transition-colors @(selectedStatus == "Archived" ? "border-gray-800 text-gray-900 dark:border-white dark:text-white active-tab" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 inactive-tab")">
+    <a asp-action="Index" asp-route-view="@(isMyView ? "my" : "")" asp-route-status="@archivedTabValue" asp-route-searchString="@ViewBag.SearchString" 
+       class="tab-link py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap font-bold focus:outline-none focus:ring-0 transition-colors @(selectedStatus == archivedTabValue ? "border-gray-800 text-gray-900 dark:border-white dark:text-white active-tab" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 inactive-tab")">
         Archive
-        <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(selectedStatus == "Archived" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@archivedCount</span>
+        <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(selectedStatus == archivedTabValue ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@archivedCount</span>
     </a>
 </nav>
 
@@ -182,6 +185,8 @@
 <!-- Tab Toggle & Pagination Script (Native AJAX) -->
 <script>
     (function () {
+        const TAB_STATUS_ACTIVE = '@activeTabValue';
+
         function loadContent(url, updateHistory = true) {
             const container = document.getElementById('table-container');
             if (!container) return;
@@ -209,12 +214,12 @@
 
         function updateActiveTab(url) {
             const params = new URLSearchParams(new URL(url, location.origin).search);
-            const status = params.get('status') || 'Active';
+            const status = params.get('status') || TAB_STATUS_ACTIVE;
             
             document.querySelectorAll('.tab-link').forEach(tab => {
                 const tabStatus = new URLSearchParams(
                     new URL(tab.href, location.origin).search
-                ).get('status') || 'Active';
+                ).get('status') || TAB_STATUS_ACTIVE;
                 
                 if (tabStatus === status) {
                     tab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'dark:text-neutral-400', 'inactive-tab');
@@ -249,6 +254,10 @@
 
         // Browser Back/Forward support
         window.addEventListener('popstate', () => {
+            loadContent(window.location.href, false);
+        });
+
+        window.addEventListener('moc:leave-status-changed', () => {
             loadContent(window.location.href, false);
         });
     })();

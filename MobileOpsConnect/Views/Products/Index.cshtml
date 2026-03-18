@@ -3,7 +3,9 @@
 
 @{
     ViewData["Title"] = "Inventory List";
-    var currentStatus = ViewBag.CurrentStatus as string ?? "active";
+    string activeTabValue = ViewBag.ActiveTabValue ?? "active";
+    string archivedTabValue = ViewBag.ArchivedTabValue ?? "archived";
+    var currentStatus = ViewBag.CurrentStatus as string ?? activeTabValue;
 }
 
 <!-- Breadcrumb Navigation -->
@@ -90,7 +92,7 @@
 
         @if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin") || User.IsInRole("DepartmentManager"))
         {
-            <a asp-action="Create" class="py-2.5 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] focus:outline-none focus:bg-[#1a1a1a]">
+                <a asp-action="Create" class="btn-moc-primary inline-flex items-center gap-x-2">
                 <i class="bi bi-plus text-lg leading-none"></i> New Product
             </a>
         }
@@ -99,15 +101,15 @@
 
 <!-- Tab Header Underline -->
 <nav class="flex space-x-6 border-b border-gray-200 dark:border-neutral-700 mb-6" aria-label="Tabs">
-    <a asp-action="Index" asp-route-status="active" 
-       class="tab-link @(currentStatus == "active" ? "border-gray-800 text-gray-900 font-bold dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300") py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap focus:outline-none focus:ring-0 transition-colors">
+    <a asp-action="Index" asp-route-status="@activeTabValue" 
+       class="tab-link @(currentStatus == activeTabValue ? "border-gray-800 text-gray-900 font-bold dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300") py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap focus:outline-none focus:ring-0 transition-colors">
         <i class="bi bi-box-seam"></i> Active
-        <span class="@(currentStatus == "active" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400") inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold">@ViewBag.ActiveCount</span>
+        <span class="@(currentStatus == activeTabValue ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400") inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold">@ViewBag.ActiveCount</span>
     </a>
-    <a asp-action="Index" asp-route-status="archived" 
-       class="tab-link @(currentStatus == "archived" ? "border-gray-800 text-gray-900 font-bold dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300") py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap focus:outline-none focus:ring-0 transition-colors">
+    <a asp-action="Index" asp-route-status="@archivedTabValue" 
+       class="tab-link @(currentStatus == archivedTabValue ? "border-gray-800 text-gray-900 font-bold dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 dark:text-neutral-400 dark:hover:text-neutral-300") py-3 px-1 inline-flex items-center gap-2 border-b-2 text-sm whitespace-nowrap focus:outline-none focus:ring-0 transition-colors">
         <i class="bi bi-archive"></i> Archived
-        <span class="@(currentStatus == "archived" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400") inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold">@ViewBag.ArchivedCount</span>
+        <span class="@(currentStatus == archivedTabValue ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400") inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold">@ViewBag.ArchivedCount</span>
     </a>
 </nav>
 
@@ -146,12 +148,12 @@
 
         function updateActiveTab(url) {
             const params = new URLSearchParams(new URL(url, location.origin).search);
-            const status = params.get('status') || 'active'; // Match casing of default status
+            const status = params.get('status') || TAB_STATUS_ACTIVE;
             
             document.querySelectorAll('.tab-link').forEach(tab => {
                 const tabStatus = new URLSearchParams(
                     new URL(tab.href, location.origin).search
-                ).get('status') || 'active';
+                ).get('status') || TAB_STATUS_ACTIVE;
                 
                 if (tabStatus === status) {
                     // Make Active
@@ -188,6 +190,10 @@
 
         // Browser Back/Forward support
         window.addEventListener('popstate', () => {
+            loadContent(window.location.href, false);
+        });
+
+        window.addEventListener('moc:stock-updated', () => {
             loadContent(window.location.href, false);
         });
     })();

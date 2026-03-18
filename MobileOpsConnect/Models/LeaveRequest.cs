@@ -38,7 +38,8 @@ namespace MobileOpsConnect.Models
 
         // --- APPROVAL WORKFLOW ---
         // Default status is "Pending"
-        public string Status { get; set; } = "Pending";
+        [StringLength(20)]
+        public string Status { get; set; } = LeaveRequestStatus.Pending;
 
         // Who approved it? (Nullable, because it starts as null)
         public string? ApprovedById { get; set; }

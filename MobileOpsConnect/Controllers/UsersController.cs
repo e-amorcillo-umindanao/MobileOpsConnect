@@ -308,6 +308,7 @@ namespace MobileOpsConnect.Controllers
             if (!ModelState.IsValid) return View(model);
 
             var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null) return Challenge();
             var user = await _userManager.FindByIdAsync(model.Id);
             if (user == null) return NotFound();
 
@@ -507,8 +508,8 @@ namespace MobileOpsConnect.Controllers
                         continue;
                     }
 
-                    var pendingLeaves = await _context.LeaveRequests.CountAsync(l => l.UserID == user.Id && l.Status == "Pending");
-                    var approvedLeaves = await _context.LeaveRequests.CountAsync(l => l.UserID == user.Id && l.Status == "Approved");
+                    var pendingLeaves = await _context.LeaveRequests.CountAsync(l => l.UserID == user.Id && l.Status == LeaveRequestStatus.Pending);
+                    var approvedLeaves = await _context.LeaveRequests.CountAsync(l => l.UserID == user.Id && l.Status == LeaveRequestStatus.Approved);
 
                     records.Add(new EmployeeRecordViewModel
                     {

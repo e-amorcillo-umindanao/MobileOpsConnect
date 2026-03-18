@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace MobileOpsConnect.Services
 {
@@ -10,11 +11,14 @@ namespace MobileOpsConnect.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<ExchangeRateService> _logger;
+        private readonly IMemoryCache _cache;
+        private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(30);
 
-        public ExchangeRateService(HttpClient httpClient, ILogger<ExchangeRateService> logger)
+        public ExchangeRateService(HttpClient httpClient, ILogger<ExchangeRateService> logger, IMemoryCache cache)
         {
             _httpClient = httpClient;
             _logger = logger;
+            _cache = cache;
         }
 
         /// <summary>
@@ -23,9 +27,17 @@ namespace MobileOpsConnect.Services
         /// </summary>
         public async Task<ExchangeRateResult> GetRatesAsync(string baseCurrency = "PHP")
         {
+            var normalizedBase = (baseCurrency ?? "PHP").Trim().ToUpperInvariant();
+            var cacheKey = $"exchange-rates::{normalizedBase}";
+
+            if (_cache.TryGetValue(cacheKey, out ExchangeRateResult? cachedResult) && cachedResult != null)
+            {
+                return cachedResult;
+            }
+
             try
             {
-                var url = $"https://open.er-api.com/v6/latest/{baseCurrency}";
+                var url = $"https://open.er-api.com/v6/latest/{normalizedBase}";
                 var response = await _httpClient.GetAsync(url);
                 response.EnsureSuccessStatusCode();
 
@@ -36,7 +48,7 @@ namespace MobileOpsConnect.Services
                 if (root.GetProperty("result").GetString() != "success")
                 {
                     _logger.LogWarning("Exchange Rate API returned non-success result.");
-                    return ExchangeRateResult.Empty(baseCurrency);
+                    return ExchangeRateResult.Empty(normalizedBase);
                 }
 
                 var rates = new Dictionary<string, decimal>();
@@ -52,18 +64,21 @@ namespace MobileOpsConnect.Services
                     ? timeEl.GetString() ?? "Unknown"
                     : "Unknown";
 
-                return new ExchangeRateResult
+                var result = new ExchangeRateResult
                 {
-                    BaseCurrency = baseCurrency,
+                    BaseCurrency = normalizedBase,
                     Rates = rates,
                     LastUpdated = lastUpdate,
                     IsSuccess = true
                 };
+
+                _cache.Set(cacheKey, result, CacheDuration);
+                return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to fetch exchange rates from API.");
-                return ExchangeRateResult.Empty(baseCurrency);
+                return ExchangeRateResult.Empty(normalizedBase);
             }
         }
     }

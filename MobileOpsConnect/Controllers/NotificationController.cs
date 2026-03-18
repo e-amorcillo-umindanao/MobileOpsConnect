@@ -44,7 +44,6 @@ namespace MobileOpsConnect.Controllers
         /// Called automatically from the client-side JavaScript.
         /// </summary>
         [HttpPost]
-        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> RegisterToken([FromBody] RegisterTokenRequest request)
         {
             if (string.IsNullOrWhiteSpace(request?.Token))
@@ -160,7 +159,6 @@ namespace MobileOpsConnect.Controllers
         /// Stores the raw Web Push subscription for standard push delivery (iOS Safari).
         /// </summary>
         [HttpPost]
-        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> RegisterSubscription([FromBody] RegisterSubscriptionRequest request)
         {
             if (string.IsNullOrWhiteSpace(request?.Endpoint))
@@ -211,7 +209,6 @@ namespace MobileOpsConnect.Controllers
         /// Called during the logout process.
         /// </summary>
         [HttpPost]
-        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> UnregisterSubscription([FromBody] UnregisterSubscriptionRequest request)
         {
             if (string.IsNullOrWhiteSpace(request?.Endpoint))

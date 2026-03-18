@@ -14,6 +14,17 @@
         return;
     }
 
+    function getCsrfToken() {
+        return document.querySelector('meta[name="request-verification-token"]')?.getAttribute('content') || '';
+    }
+
+    function csrfJsonHeaders() {
+        const token = getCsrfToken();
+        return token
+            ? { 'Content-Type': 'application/json', 'RequestVerificationToken': token }
+            : { 'Content-Type': 'application/json' };
+    }
+
     // Convert URL-safe base64 to Uint8Array (needed for PushManager.subscribe)
     function urlBase64ToUint8Array(base64String) {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -51,7 +62,7 @@
             const subJson = subscription.toJSON();
             const response = await fetch('/Notification/RegisterSubscription', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: csrfJsonHeaders(),
                 body: JSON.stringify({
                     endpoint: subJson.endpoint,
                     p256dh: subJson.keys?.p256dh ?? '',
@@ -76,7 +87,7 @@
                 // 1. Tell server to remove from DB while we still have the session cookie
                 await fetch('/Notification/UnregisterSubscription', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: csrfJsonHeaders(),
                     body: JSON.stringify({ endpoint: subscription.endpoint }),
                 });
 

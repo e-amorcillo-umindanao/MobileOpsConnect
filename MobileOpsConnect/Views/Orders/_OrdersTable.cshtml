@@ -1,3 +1,4 @@
+@using MobileOpsConnect.Models
 @model PaginatedList<MobileOpsConnect.Models.PurchaseOrder>
 @{
     string currentStatus = ViewBag.CurrentStatus ?? "active";
@@ -62,25 +63,26 @@
                             <td class="whitespace-nowrap px-6 py-4 text-xs text-gray-500">@(po.RequestedBy?.Email ?? "N/A")</td>
                             <td class="whitespace-nowrap px-6 py-4 text-xs text-gray-500">@po.DateRequested.ToString("MMM dd, yyyy")</td>
                             <td class="whitespace-nowrap px-6 py-4 text-center">
-                                @if (po.Status == "Pending") { <span class="py-1 px-2.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wide">Pending</span> }
-                                else if (po.Status == "Approved") { <span class="py-1 px-2.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 uppercase tracking-wide">Approved</span> }
+                                @if (po.Status == PurchaseOrderStatus.Pending) { <span class="py-1 px-2.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wide">Pending</span> }
+                                else if (po.Status == PurchaseOrderStatus.Approved) { <span class="py-1 px-2.5 rounded-full text-[10px] font-bold bg-green-100 text-green-800 uppercase tracking-wide">Approved</span> }
                                 else { <span class="py-1 px-2.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800 uppercase tracking-wide">Rejected</span> }
                             </td>
                             @if ((bool)ViewBag.CanApprove)
                             {
                                 <td class="whitespace-nowrap px-6 py-4 text-end">
-                                    @if (po.Status == "Pending")
+                                    @if (po.Status == PurchaseOrderStatus.Pending)
                                     {
                                         <div class="flex justify-end gap-1">
                                             <form asp-action="ProcessOrder" method="post" class="inline">
                                                 <input type="hidden" name="id" value="@po.Id" />
                                                 <input type="hidden" name="actionType" value="Approve" />
-                                                <button type="submit" class="p-1.5 rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100"><i class="bi bi-check-lg"></i></button>
+                                                <button type="submit" class="p-1.5 rounded-lg border border-green-200 bg-green-50 text-green-800 hover:bg-green-100" onclick="return confirm('Approve purchase order #@po.Id?');"><i class="bi bi-check-lg"></i></button>
                                             </form>
                                             <form asp-action="ProcessOrder" method="post" class="inline">
                                                 <input type="hidden" name="id" value="@po.Id" />
                                                 <input type="hidden" name="actionType" value="Reject" />
-                                                <button type="submit" class="p-1.5 rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100"><i class="bi bi-x-lg"></i></button>
+                                                <input type="hidden" name="decisionReason" value="" />
+                                                <button type="submit" class="p-1.5 rounded-lg border border-red-200 bg-red-50 text-red-800 hover:bg-red-100" onclick="return openOrderRejectModal(@po.Id, this.form);"><i class="bi bi-x-lg"></i></button>
                                             </form>
                                         </div>
                                     }
@@ -100,28 +102,29 @@
         <div class="md:hidden p-4 space-y-3">
             @foreach (var po in Model)
             {
-                <div class="bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 border-l-4 @(po.Status == "Pending" ? "border-l-amber-500" : (po.Status == "Approved" ? "border-l-green-500" : "border-l-red-500"))">
+                <div class="bg-white border shadow-sm rounded-xl p-4 dark:bg-neutral-900 dark:border-neutral-800 border-l-4 @(po.Status == PurchaseOrderStatus.Pending ? "border-l-amber-500" : (po.Status == PurchaseOrderStatus.Approved ? "border-l-green-500" : "border-l-red-500"))">
                     <div class="flex justify-between items-start mb-2">
                          <p class="font-bold text-sm text-gray-900 dark:text-white">PO-@po.Id.ToString("D4")</p>
-                         <span class="text-[10px] font-bold uppercase tracking-wide @(po.Status == "Pending" ? "text-amber-600" : (po.Status == "Approved" ? "text-green-600" : "text-red-600"))">@po.Status</span>
+                         <span class="text-[10px] font-bold uppercase tracking-wide @(po.Status == PurchaseOrderStatus.Pending ? "text-amber-600" : (po.Status == PurchaseOrderStatus.Approved ? "text-green-600" : "text-red-600"))">@po.Status</span>
                     </div>
                     <p class="text-sm font-semibold mb-1 text-gray-800 dark:text-neutral-200">@(po.Product?.Name ?? "N/A")</p>
                     <div class="flex justify-between text-xs text-gray-500 mb-3">
                         <span>@po.Quantity units</span>
                         <span>₱@po.EstimatedCost.ToString("N2")</span>
                     </div>
-                    @if ((bool)ViewBag.CanApprove && po.Status == "Pending")
+                    @if ((bool)ViewBag.CanApprove && po.Status == PurchaseOrderStatus.Pending)
                     {
                         <div class="flex gap-2">
                              <form asp-action="ProcessOrder" method="post" class="flex-1">
                                 <input type="hidden" name="id" value="@po.Id" />
                                 <input type="hidden" name="actionType" value="Approve" />
-                                <button type="submit" class="w-full py-2 bg-green-600 text-white rounded-lg text-xs font-bold">Approve</button>
+                                <button type="submit" class="w-full py-2 bg-green-600 text-white rounded-lg text-xs font-bold" onclick="return confirm('Approve purchase order #@po.Id?');">Approve</button>
                             </form>
                             <form asp-action="ProcessOrder" method="post" class="flex-1">
                                 <input type="hidden" name="id" value="@po.Id" />
                                 <input type="hidden" name="actionType" value="Reject" />
-                                <button type="submit" class="w-full py-2 bg-red-600 text-white rounded-lg text-xs font-bold">Reject</button>
+                                <input type="hidden" name="decisionReason" value="" />
+                                <button type="submit" class="w-full py-2 bg-red-600 text-white rounded-lg text-xs font-bold" onclick="return openOrderRejectModal(@po.Id, this.form);">Reject</button>
                             </form>
                         </div>
                     }
@@ -132,4 +135,80 @@
 
     <!-- Pagination -->
     <partial name="_Pagination" model="Model" />
+
+    <div id="orderRejectModal" class="hidden fixed inset-0 z-[120] bg-black/40 backdrop-blur-sm items-center justify-center p-4">
+        <div class="w-full max-w-md rounded-2xl bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 shadow-xl">
+            <div class="px-5 py-4 border-b border-gray-100 dark:border-neutral-800 flex items-center justify-between">
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white">Reject Purchase Order</h3>
+                <button type="button" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" onclick="closeOrderRejectModal()" aria-label="Close reject reason dialog">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-3">
+                <p id="orderRejectLabel" class="text-sm text-gray-600 dark:text-neutral-300"></p>
+                <label for="orderRejectReason" class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-neutral-400">Rejection reason</label>
+                <textarea id="orderRejectReason" rows="4" class="w-full rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-3 py-2 text-sm" placeholder="Explain why this request is rejected..."></textarea>
+                <p id="orderRejectError" class="hidden text-xs text-red-600">Rejection reason is required.</p>
+            </div>
+            <div class="px-5 py-4 border-t border-gray-100 dark:border-neutral-800 flex justify-end gap-2">
+                <button type="button" class="px-3 py-2 text-sm rounded-lg border border-gray-200 dark:border-neutral-700" onclick="closeOrderRejectModal()">Cancel</button>
+                <button type="button" class="px-3 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700" onclick="submitOrderRejectModal()">Reject Order</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+    (function () {
+        if (!window._orderRejectState) {
+            window._orderRejectState = { form: null, orderId: null };
+        }
+
+        window.openOrderRejectModal = function (orderId, form) {
+            window._orderRejectState.form = form;
+            window._orderRejectState.orderId = orderId;
+
+            const modal = document.getElementById('orderRejectModal');
+            const label = document.getElementById('orderRejectLabel');
+            const reason = document.getElementById('orderRejectReason');
+            const error = document.getElementById('orderRejectError');
+
+            if (!modal || !label || !reason || !error) return false;
+
+            label.textContent = `Provide a reason for rejecting PO #${orderId}.`;
+            reason.value = '';
+            error.classList.add('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            reason.focus();
+
+            return false;
+        };
+
+        window.closeOrderRejectModal = function () {
+            const modal = document.getElementById('orderRejectModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+
+        window.submitOrderRejectModal = function () {
+            const state = window._orderRejectState;
+            const reason = document.getElementById('orderRejectReason');
+            const error = document.getElementById('orderRejectError');
+            if (!state?.form || !reason || !error) return;
+
+            const value = reason.value.trim();
+            if (!value) {
+                error.classList.remove('hidden');
+                reason.focus();
+                return;
+            }
+
+            const input = state.form.querySelector('input[name="decisionReason"]');
+            if (input) input.value = value;
+            closeOrderRejectModal();
+            state.form.submit();
+        };
+    })();
+</script>

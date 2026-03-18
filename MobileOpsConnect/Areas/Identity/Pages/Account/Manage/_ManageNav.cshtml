@@ -1,7 +1,8 @@
 ﻿@inject SignInManager<IdentityUser> SignInManager
 
 @{
-    var hasPassword = await SignInManager.UserManager.HasPasswordAsync(await SignInManager.UserManager.GetUserAsync(User));
+    var signedInUser = await SignInManager.UserManager.GetUserAsync(User);
+    var hasPassword = signedInUser != null && await SignInManager.UserManager.HasPasswordAsync(signedInUser);
 }
 
 <div class="flex flex-col bg-white border border-gray-100 shadow-sm rounded-2xl dark:bg-neutral-900 dark:border-neutral-800 overflow-hidden">

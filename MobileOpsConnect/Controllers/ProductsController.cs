@@ -24,19 +24,21 @@ namespace MobileOpsConnect.Controllers
         // GET: Products
         public async Task<IActionResult> Index(string? status, int? page)
         {
-            status = status ?? "active";
+            status = ListStatusFilters.Normalize(status);
             var query = _context.Products.AsNoTracking();
 
             // Counts for tabs (full dataset)
             ViewBag.ActiveCount = await _context.Products.CountAsync(p => p.StockQuantity > 0);
             ViewBag.ArchivedCount = await _context.Products.CountAsync(p => p.StockQuantity == 0);
             ViewBag.CurrentStatus = status;
+            ViewBag.ActiveTabValue = ListStatusFilters.Active;
+            ViewBag.ArchivedTabValue = ListStatusFilters.Archived;
 
             // Simple metrics
             ViewBag.TotalProducts = ViewBag.ActiveCount + ViewBag.ArchivedCount;
             ViewBag.LowStockCount = await _context.Products.CountAsync(p => p.StockQuantity > 0 && p.StockQuantity <= 10);
 
-            if (status == "archived")
+            if (status == ListStatusFilters.Archived)
             {
                 query = query.Where(p => p.StockQuantity == 0);
             }

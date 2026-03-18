@@ -38,7 +38,7 @@ namespace MobileOpsConnect.Controllers
             // On leave today: approved leaves where today falls within start–end range
             var today = PhilippineTime.Today;
             var onLeaveToday = await _context.LeaveRequests
-                .CountAsync(l => l.Status == "Approved" && l.StartDate <= today && l.EndDate >= today);
+                .CountAsync(l => l.Status == LeaveRequestStatus.Approved && l.StartDate <= today && l.EndDate >= today);
 
             // 1. SuperAdmin & SystemAdmin
             if (User.IsInRole("SuperAdmin") || User.IsInRole("SystemAdmin"))
@@ -50,7 +50,7 @@ namespace MobileOpsConnect.Controllers
                     var sysAdmins = await _userManager.GetUsersInRoleAsync("SystemAdmin");
                     var sysAdminIds = sysAdmins.Select(u => u.Id).ToHashSet();
                     pendingLeaves = await _context.LeaveRequests
-                        .CountAsync(l => l.Status == "Pending" && sysAdminIds.Contains(l.UserID));
+                        .CountAsync(l => l.Status == LeaveRequestStatus.Pending && sysAdminIds.Contains(l.UserID));
                 }
                 else // SystemAdmin
                 {
@@ -58,7 +58,7 @@ namespace MobileOpsConnect.Controllers
                     var deptManagers = await _userManager.GetUsersInRoleAsync("DepartmentManager");
                     var deptManagerIds = deptManagers.Select(u => u.Id).ToHashSet();
                     pendingLeaves = await _context.LeaveRequests
-                        .CountAsync(l => l.Status == "Pending" && deptManagerIds.Contains(l.UserID));
+                        .CountAsync(l => l.Status == LeaveRequestStatus.Pending && deptManagerIds.Contains(l.UserID));
                 }
 
                 // ── Business overview (already existed) ──
@@ -100,9 +100,9 @@ namespace MobileOpsConnect.Controllers
                 var currentUser = await _userManager.GetUserAsync(User);
                 var currentUserId = currentUser?.Id ?? "";
                 ViewBag.UserApproved = await _context.LeaveRequests
-                    .CountAsync(l => l.UserID == currentUserId && l.Status == "Approved");
+                    .CountAsync(l => l.UserID == currentUserId && l.Status == LeaveRequestStatus.Approved);
                 ViewBag.UserPending = await _context.LeaveRequests
-                    .CountAsync(l => l.UserID == currentUserId && l.Status == "Pending");
+                    .CountAsync(l => l.UserID == currentUserId && l.Status == LeaveRequestStatus.Pending);
 
                 return View();
             }
@@ -120,7 +120,7 @@ namespace MobileOpsConnect.Controllers
                 var whUsers = await _userManager.GetUsersInRoleAsync("WarehouseStaff");
                 var subIds = empUsers.Select(u => u.Id).Concat(whUsers.Select(u => u.Id)).ToHashSet();
                 var scopedPendingLeavesDashboard = await _context.LeaveRequests
-                    .CountAsync(l => l.Status == "Pending" && subIds.Contains(l.UserID));
+                    .CountAsync(l => l.Status == LeaveRequestStatus.Pending && subIds.Contains(l.UserID));
                 ViewBag.PendingLeaves = scopedPendingLeavesDashboard;
                 ViewBag.OnLeaveToday = onLeaveToday;
                 ViewBag.TotalProducts = totalProducts;
@@ -139,7 +139,7 @@ namespace MobileOpsConnect.Controllers
 
                 // Oldest pending leave
                 var oldestPending = await _context.LeaveRequests
-                    .Where(l => l.Status == "Pending")
+                    .Where(l => l.Status == LeaveRequestStatus.Pending)
                     .OrderBy(l => l.DateRequested)
                     .Select(l => l.DateRequested)
                     .FirstOrDefaultAsync();
@@ -159,15 +159,15 @@ namespace MobileOpsConnect.Controllers
                 ViewBag.OnLeavePercent = teamCount > 0 ? (onLeaveToday * 100) / teamCount : 0;
 
                 // Pending purchase orders for approval
-                ViewBag.PendingOrders = await _context.PurchaseOrders.CountAsync(po => po.Status == "Pending");
+                ViewBag.PendingOrders = await _context.PurchaseOrders.CountAsync(po => po.Status == PurchaseOrderStatus.Pending);
 
                 // User's own leave stats (for My Leave History card)
                 var currentUser = await _userManager.GetUserAsync(User);
                 var currentUserId = currentUser?.Id ?? "";
                 ViewBag.UserApproved = await _context.LeaveRequests
-                    .CountAsync(l => l.UserID == currentUserId && l.Status == "Approved");
+                    .CountAsync(l => l.UserID == currentUserId && l.Status == LeaveRequestStatus.Approved);
                 ViewBag.UserPending = await _context.LeaveRequests
-                    .CountAsync(l => l.UserID == currentUserId && l.Status == "Pending");
+                    .CountAsync(l => l.UserID == currentUserId && l.Status == LeaveRequestStatus.Pending);
 
                 return View("ManagerDashboard");
             }
@@ -184,13 +184,13 @@ namespace MobileOpsConnect.Controllers
 
                 // ── Employee (Echo) leave metrics ──
                 var userApproved = await _context.LeaveRequests
-                    .CountAsync(l => l.UserID == userId && l.Status == "Approved");
+                    .CountAsync(l => l.UserID == userId && l.Status == LeaveRequestStatus.Approved);
                 var userPending = await _context.LeaveRequests
-                    .CountAsync(l => l.UserID == userId && l.Status == "Pending");
+                    .CountAsync(l => l.UserID == userId && l.Status == LeaveRequestStatus.Pending);
 
                 // Calculate total leave days used (sum of days per approved leave)
                 var approvedLeaves = await _context.LeaveRequests
-                    .Where(l => l.UserID == userId && l.Status == "Approved")
+                    .Where(l => l.UserID == userId && l.Status == LeaveRequestStatus.Approved)
                     .Select(l => new { l.StartDate, l.EndDate })
                     .ToListAsync();
                 var totalLeaveDaysUsed = approvedLeaves.Sum(l => (l.EndDate - l.StartDate).Days + 1);
@@ -237,7 +237,7 @@ namespace MobileOpsConnect.Controllers
             var today = PhilippineTime.Today;
             var allUsers = await _userManager.Users.CountAsync();
             var onLeaveToday = await _context.LeaveRequests
-                .CountAsync(l => l.Status == "Approved" && l.StartDate <= today && l.EndDate >= today);
+                .CountAsync(l => l.Status == LeaveRequestStatus.Approved && l.StartDate <= today && l.EndDate >= today);
             ViewBag.LeaveUtilPercent = allUsers > 0 ? (onLeaveToday * 100) / allUsers : 0;
             ViewBag.OnLeaveCount = onLeaveToday;
 
@@ -272,7 +272,7 @@ namespace MobileOpsConnect.Controllers
                 var whUsers = await _userManager.GetUsersInRoleAsync("WarehouseStaff");
                 var subIds = empUsers.Select(u => u.Id).Concat(whUsers.Select(u => u.Id)).ToHashSet();
                 scopedPendingLeavesAnalytics = await _context.LeaveRequests
-                    .CountAsync(l => l.Status == "Pending" && subIds.Contains(l.UserID));
+                    .CountAsync(l => l.Status == LeaveRequestStatus.Pending && subIds.Contains(l.UserID));
             }
             else if (User.IsInRole("SuperAdmin"))
             {
@@ -281,12 +281,12 @@ namespace MobileOpsConnect.Controllers
                 var sysAdmins = await _userManager.GetUsersInRoleAsync("SystemAdmin");
                 var sysAdminIds = sysAdmins.Select(u => u.Id).ToHashSet();
                 scopedPendingLeavesAnalytics = await _context.LeaveRequests
-                    .CountAsync(l => l.Status == "Pending" && sysAdminIds.Contains(l.UserID));
+                    .CountAsync(l => l.Status == LeaveRequestStatus.Pending && sysAdminIds.Contains(l.UserID));
             }
             else
             {
                 scopedPendingLeavesAnalytics = await _context.LeaveRequests
-                    .CountAsync(l => l.Status == "Pending");
+                    .CountAsync(l => l.Status == LeaveRequestStatus.Pending);
             }
             ViewBag.PendingLeaves = scopedPendingLeavesAnalytics;
 

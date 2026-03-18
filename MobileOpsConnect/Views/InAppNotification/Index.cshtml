@@ -1,11 +1,13 @@
 @model PaginatedList<MobileOpsConnect.Models.InAppNotification>
 @{
     ViewData["Title"] = "Notifications";
+    string unreadTabValue = ViewBag.UnreadTabValue ?? "unread";
+    string allTabValue = ViewBag.AllTabValue ?? "all";
     int totalCount = ViewBag.TotalCount ?? 0;
     int unreadCount = ViewBag.UnreadCount ?? 0;
     int readCount = ViewBag.ReadCount ?? 0;
     string topType = ViewBag.TopType ?? "None";
-    string currentStatus = ViewBag.CurrentStatus ?? "unread";
+    string currentStatus = ViewBag.CurrentStatus ?? unreadTabValue;
 }
 
 <!-- Breadcrumb Navigation -->
@@ -73,10 +75,10 @@
 <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
     <div class="flex items-center gap-x-3">
         <span class="inline-flex justify-center items-center size-[38px] rounded-lg bg-indigo-100 text-indigo-800 dark:bg-indigo-800/30 dark:text-indigo-500">
-            <i class="bi @(currentStatus == "unread" ? "bi-envelope" : "bi-bell") text-lg"></i>
+            <i class="bi @(currentStatus == unreadTabValue ? "bi-envelope" : "bi-bell") text-lg"></i>
         </span>
         <div>
-            <p class="font-semibold text-sm text-gray-800 mb-0 dark:text-white">@(currentStatus == "unread" ? "Unread Activity" : "All Activity")</p>
+            <p class="font-semibold text-sm text-gray-800 mb-0 dark:text-white">@(currentStatus == unreadTabValue ? "Unread Activity" : "All Activity")</p>
             <p class="text-gray-500 text-xs mb-0 dark:text-neutral-400">Page @Model.PageIndex of @Model.TotalPages</p>
         </div>
     </div>
@@ -92,15 +94,15 @@
 
 <!-- Tab Header -->
 <nav class="flex space-x-6 border-b border-gray-200 dark:border-neutral-700 mb-6" aria-label="Tabs">
-    <a asp-action="Index" asp-route-status="unread" 
-       class="py-3 px-1 inline-flex items-center gap-2 border-b-2 @(currentStatus == "unread" ? "border-gray-800 text-gray-900 font-bold dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 font-medium dark:text-neutral-400 dark:hover:text-neutral-300") focus:outline-none transition-all">
+    <a asp-action="Index" asp-route-status="@unreadTabValue" 
+       class="py-3 px-1 inline-flex items-center gap-2 border-b-2 @(currentStatus == unreadTabValue ? "border-gray-800 text-gray-900 font-bold dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 font-medium dark:text-neutral-400 dark:hover:text-neutral-300") focus:outline-none transition-all">
         Unread
-        <span id="tab-unread-count" class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(currentStatus == "unread" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@unreadCount</span>
+        <span id="tab-unread-count" class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(currentStatus == unreadTabValue ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@unreadCount</span>
     </a>
-    <a asp-action="Index" asp-route-status="all" 
-       class="py-3 px-1 inline-flex items-center gap-2 border-b-2 @(currentStatus == "all" ? "border-gray-800 text-gray-900 font-bold dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 font-medium dark:text-neutral-400 dark:hover:text-neutral-300") focus:outline-none transition-all">
+    <a asp-action="Index" asp-route-status="@allTabValue" 
+       class="py-3 px-1 inline-flex items-center gap-2 border-b-2 @(currentStatus == allTabValue ? "border-gray-800 text-gray-900 font-bold dark:border-white dark:text-white" : "border-transparent text-gray-500 hover:text-gray-700 font-medium dark:text-neutral-400 dark:hover:text-neutral-300") focus:outline-none transition-all">
         All History
-        <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(currentStatus == "all" ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@totalCount</span>
+        <span class="inline-flex items-center py-0.5 px-2 rounded-full text-[10px] font-bold @(currentStatus == allTabValue ? "bg-gray-100 text-gray-800 dark:bg-neutral-700 dark:text-white" : "bg-gray-50 text-gray-500 dark:bg-neutral-800 dark:text-neutral-400")">@totalCount</span>
     </a>
 </nav>
 
@@ -113,7 +115,7 @@
                 <span class="inline-flex justify-center items-center size-[62px] rounded-full border-4 border-gray-50 bg-gray-100 text-gray-800 mx-auto mb-4 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400">
                     <i class="bi bi-bell-slash text-2xl"></i>
                 </span>
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">No activity @(currentStatus == "unread" ? "unread" : "yet")</h3>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-1">No activity @(currentStatus == unreadTabValue ? "unread" : "yet")</h3>
                 <p class="text-sm text-gray-500 dark:text-neutral-400 max-w-xs mx-auto">Notifications and system updates will appear here once they arrive.</p>
             </div>
         }

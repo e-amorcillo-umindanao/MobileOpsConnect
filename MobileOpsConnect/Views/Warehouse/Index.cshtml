@@ -4,7 +4,7 @@
     ViewData["Title"] = "Warehouse Operations";
     int totalProducts = ViewBag.TotalCount ?? 0;
     int lowStockCount = ViewBag.LowStockCount ?? 0;
-    string currentFilter = ViewData["CurrentFilter"] as string;
+    string currentFilter = ViewData["CurrentFilter"] as string ?? string.Empty;
 }
 
 <!-- Breadcrumb Navigation -->
@@ -35,8 +35,8 @@
             <button type="button" id="openScannerBtn" class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-s-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 transition-colors">
                 <i class="bi bi-camera-fill"></i> Scan
             </button>
-            <input type="text" name="searchString" id="warehouseSearchInput" class="py-2.5 px-4 block w-full border-gray-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Search by Name or SKU..." value="@currentFilter">
-            <button class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-e-lg border border-transparent bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors" type="submit">
+            <input type="text" name="searchString" id="warehouseSearchInput" aria-label="Search warehouse products by name or SKU" class="py-2.5 px-4 block w-full border-gray-200 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400" placeholder="Search by Name or SKU..." value="@currentFilter">
+            <button class="btn-moc-primary rounded-e-lg rounded-s-none border border-transparent shadow-none" type="submit">
                 <i class="bi bi-search"></i>
             </button>
         </div>
@@ -111,7 +111,7 @@
                                 }
                             </td>
                             <td class="whitespace-nowrap px-6 py-4 text-center">
-                                <a asp-action="Adjust" asp-route-id="@item.ProductID" class="py-1.5 px-3 inline-flex items-center gap-x-2 text-xs font-semibold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+                                <a asp-action="Adjust" asp-route-id="@item.ProductID" class="btn-moc-primary inline-flex items-center gap-x-2 text-xs font-semibold px-3 py-1.5">
                                     Manage Stock
                                 </a>
                             </td>
@@ -147,7 +147,7 @@
                         <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full text-[10px] font-bold bg-cyan-100 text-cyan-800 dark:bg-cyan-900/40 dark:text-cyan-400 uppercase tracking-wider">@item.Category</span>
                     </div>
 
-                    <a asp-action="Adjust" asp-route-id="@item.ProductID" class="w-full py-2 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+                    <a asp-action="Adjust" asp-route-id="@item.ProductID" class="btn-moc-primary w-full inline-flex justify-center items-center gap-x-2 text-sm font-bold">
                         Manage Stock
                     </a>
                 </div>
@@ -189,7 +189,7 @@
                 <p class="text-gray-500 text-sm text-center mb-0 dark:text-neutral-400" id="scanStatus">
                     <i class="bi bi-camera-fill me-1"></i> Point your camera at a product barcode.
                 </p>
-                <button id="scanContinueBtn" type="button" class="hidden w-full mt-4 py-2 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold rounded-lg border border-[#0d0d0d] bg-[#0d0d0d] text-white hover:bg-[#1a1a1a] transition-colors">
+                <button id="scanContinueBtn" type="button" class="hidden btn-moc-primary w-full mt-4 inline-flex justify-center items-center gap-x-2 text-sm font-bold">
                     Continue <i class="bi bi-arrow-right"></i>
                 </button>
                 <p class="text-xs text-gray-400 dark:text-neutral-500 mt-3 text-center">

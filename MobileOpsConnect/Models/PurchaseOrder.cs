@@ -31,7 +31,7 @@ namespace MobileOpsConnect.Models
 
         [Required]
         [StringLength(20)]
-        public string Status { get; set; } = "Pending"; // Pending, Approved, Rejected
+        public string Status { get; set; } = PurchaseOrderStatus.Pending;
 
         public string? ApprovedById { get; set; }
 

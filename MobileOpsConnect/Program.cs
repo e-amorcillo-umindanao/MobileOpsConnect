@@ -7,6 +7,7 @@ using MobileOpsConnect.Models;
 using MobileOpsConnect.Services;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,51 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
+builder.Services.AddMemoryCache();
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = (context, _) =>
+    {
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+        {
+            context.HttpContext.Response.Headers.RetryAfter = Math.Ceiling(retryAfter.TotalSeconds).ToString();
+        }
+
+        return ValueTask.CompletedTask;
+    };
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+    {
+        var path = httpContext.Request.Path.Value ?? string.Empty;
+
+        if (path.StartsWith("/Identity/Account/Login", StringComparison.OrdinalIgnoreCase))
+        {
+            return RateLimitPartition.GetFixedWindowLimiter("auth-login", _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+                AutoReplenishment = true
+            });
+        }
+
+        if (path.StartsWith("/Notification", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/InAppNotification", StringComparison.OrdinalIgnoreCase))
+        {
+            return RateLimitPartition.GetSlidingWindowLimiter("notifications", _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 60,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 6,
+                QueueLimit = 0,
+                AutoReplenishment = true
+            });
+        }
+
+        return RateLimitPartition.GetNoLimiter("default");
+    });
+});
 
 // === FIREBASE CLOUD MESSAGING SETUP ===
 var firebaseKeyPath = builder.Configuration["Firebase:ServiceAccountKeyPath"] ?? "firebase-service-account.json";
@@ -48,6 +94,8 @@ builder.Services.AddScoped<INotificationService, FcmNotificationService>();
 builder.Services.AddScoped<IInAppNotificationService, InAppNotificationService>();
 
 builder.Services.AddScoped<IAuditService, AuditService>();
+builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+builder.Services.AddHostedService<QueuedHostedService>();
 
 // === EXTERNAL API SERVICES ===
 builder.Services.AddHttpClient<ExchangeRateService>();
@@ -99,6 +147,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();

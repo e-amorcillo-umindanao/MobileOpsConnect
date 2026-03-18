@@ -47,6 +47,17 @@
     let _notificationHandlerRegistered = false;
     let _bounceTimeout = null;
 
+    function getCsrfToken() {
+        return document.querySelector('meta[name="request-verification-token"]')?.getAttribute('content') || '';
+    }
+
+    function csrfJsonHeaders() {
+        const token = getCsrfToken();
+        return token
+            ? { 'RequestVerificationToken': token, 'Content-Type': 'application/json' }
+            : { 'Content-Type': 'application/json' };
+    }
+
     async function fetchNotifications(force = false) {
         const now = Date.now();
         if (!force && now - _lastFetchTime < 1000) return; // Rate limit anti-spam
@@ -122,7 +133,10 @@
     async function handleNotificationClick(element, url) {
         const id = element.dataset.id;
         try {
-            await fetch(`/InAppNotification/MarkRead?id=${id}`, { method: 'POST' });
+            await fetch(`/InAppNotification/MarkRead?id=${id}`, {
+                method: 'POST',
+                headers: csrfJsonHeaders()
+            });
             if (url && url !== '#' && url !== 'null') {
                 window.location.href = url;
             } else {
@@ -168,7 +182,10 @@
 
         try {
             // Step 2: Persist to server in background
-            const response = await fetch('/InAppNotification/MarkAllAsRead', { method: 'POST' });
+            const response = await fetch('/InAppNotification/MarkAllAsRead', {
+                method: 'POST',
+                headers: csrfJsonHeaders()
+            });
             if (!response.ok) {
                 console.error('[Bell] MarkAllAsRead failed on server');
                 fetchNotifications(true); // Rollback to actual state
@@ -205,7 +222,10 @@
 
         try {
             // Step 2: Persist in background
-            const response = await fetch('/InAppNotification/ClearAll', { method: 'POST' });
+            const response = await fetch('/InAppNotification/ClearAll', {
+                method: 'POST',
+                headers: csrfJsonHeaders()
+            });
             if (!response.ok) {
                 console.error('[Bell] ClearAll failed on server');
                 fetchNotifications(true); // Rollback

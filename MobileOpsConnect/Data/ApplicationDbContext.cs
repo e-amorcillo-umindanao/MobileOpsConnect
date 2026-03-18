@@ -29,6 +29,16 @@ namespace MobileOpsConnect.Data
             builder.Entity<Product>()
                 .HasIndex(p => p.SKU)
                 .IsUnique();
+
+            builder.Entity<LeaveRequest>()
+                .ToTable(t => t.HasCheckConstraint(
+                    "CK_LeaveRequests_Status",
+                    $"[Status] IN ('{LeaveRequestStatus.Pending}','{LeaveRequestStatus.Approved}','{LeaveRequestStatus.Rejected}')"));
+
+            builder.Entity<PurchaseOrder>()
+                .ToTable(t => t.HasCheckConstraint(
+                    "CK_PurchaseOrders_Status",
+                    $"[Status] IN ('{PurchaseOrderStatus.Pending}','{PurchaseOrderStatus.Approved}','{PurchaseOrderStatus.Rejected}')"));
         }
     }
 }

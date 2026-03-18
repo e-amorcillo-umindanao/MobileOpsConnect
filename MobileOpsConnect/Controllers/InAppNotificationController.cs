@@ -39,10 +39,12 @@ namespace MobileOpsConnect.Controllers
                 .Select(g => g.Key)
                 .FirstOrDefaultAsync() ?? "None";
 
-            string currentStatus = status ?? "unread";
+            string currentStatus = NotificationStatusFilters.Normalize(status);
             ViewBag.CurrentStatus = currentStatus;
+            ViewBag.UnreadTabValue = NotificationStatusFilters.Unread;
+            ViewBag.AllTabValue = NotificationStatusFilters.All;
 
-            if (currentStatus == "unread")
+            if (currentStatus == NotificationStatusFilters.Unread)
             {
                 query = query.Where(n => !n.IsRead);
             }
@@ -82,7 +84,6 @@ namespace MobileOpsConnect.Controllers
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> MarkRead(int id)
         {
             var userId = _userManager.GetUserId(User);
@@ -100,7 +101,6 @@ namespace MobileOpsConnect.Controllers
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> MarkAllAsRead()
         {
             var userId = _userManager.GetUserId(User);
@@ -123,7 +123,6 @@ namespace MobileOpsConnect.Controllers
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> ClearAll()
         {
             var userId = _userManager.GetUserId(User);
